@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Internal notes</title>
+  <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=switzer@400,500,600&display=swap">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/gallery.css">
+  <link rel="stylesheet" href="css/notes.css">
+</head>
+<body>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-plus" viewBox="0 0 14 14"><path d="M7 2.5v9M2.5 7h9" fill="none" stroke="currentColor" stroke-width="var(--icon-stroke)"/></symbol>
+    <symbol id="i-plus-bold" viewBox="0 0 14 14"><path d="M7 2.5v9M2.5 7h9" fill="none" stroke="currentColor" stroke-width="var(--icon-stroke)"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 14 14"><g transform="translate(-0.404 -0.406) scale(1.0577)" stroke-linecap="round" stroke-linejoin="round" style="stroke-width: calc(var(--icon-stroke) * 0.945)"><path d="M7 4.2V7l1.8 1.6M12.2 7A5.2 5.2 0 1 1 1.8 7a5.2 5.2 0 0 1 10.4 0Z" fill="none" stroke="currentColor"/></g></symbol>
+    <symbol id="i-chevron" viewBox="0 0 14 14"><path d="M3.5 5.5 7 9l3.5-3.5" fill="none" stroke="currentColor" stroke-width="var(--icon-stroke)"/></symbol>
+    <symbol id="i-check" viewBox="0 0 14 14"><path d="M3 7.2 5.6 10 11 4.2" fill="none" stroke="currentColor" stroke-width="var(--icon-stroke)"/></symbol>
+    <symbol id="i-search" viewBox="0 0 14 14"><g transform="translate(-1.531 -1.678) scale(0.9778)" stroke-linecap="round" stroke-linejoin="round" style="stroke-width: calc(var(--icon-stroke) * 1.023)"><circle cx="7.5" cy="7.5" r="4.25" fill="none" stroke="currentColor"/><path d="M11 11.2 14.2 14.5" fill="none" stroke="currentColor"/></g></symbol>
+    <symbol id="i-close" viewBox="0 0 14 14"><path d="M3.5 3.5 10.5 10.5M10.5 3.5 3.5 10.5" fill="none" stroke="currentColor" stroke-width="var(--icon-stroke)"/></symbol>
+    <symbol id="i-filter" viewBox="0 0 14 14"><path d="M1.5 3h11M4 7h6M6 11h2" fill="none" stroke="currentColor" stroke-width="var(--icon-stroke)"/></symbol>
+    <symbol id="i-home" viewBox="0 0 14 14"><g transform="translate(-1.39 -1.483) scale(0.9322)" stroke-linecap="round" stroke-linejoin="round" style="stroke-width: calc(var(--icon-stroke) * 1.073)"><path d="M3.2 8.1 9 3.2l5.8 4.9V15H11v-4.2H7V15H3.2z" fill="none" stroke="currentColor"/></g></symbol>
+    <symbol id="i-board" viewBox="0 0 14 14"><rect x="1.5" y="2" width="11" height="10" rx="1.2" fill="none" stroke="currentColor" stroke-width="var(--icon-stroke)"/><path d="M5.2 2v10M8.8 2v10" fill="none" stroke="currentColor" stroke-width="var(--icon-stroke)"/></symbol>
+    <symbol id="i-todo" viewBox="0 0 14 14"><rect x="1.5" y="1.8" width="3.2" height="3.2" rx=".6" fill="none" stroke="currentColor" stroke-width="var(--icon-stroke)"/><rect x="1.5" y="8.8" width="3.2" height="3.2" rx=".6" fill="none" stroke="currentColor" stroke-width="var(--icon-stroke)"/><path d="M6.6 3.4h6M6.6 10.4h6" fill="none" stroke="currentColor" stroke-width="var(--icon-stroke)"/></symbol>
+    <symbol id="i-bubble" viewBox="0 0 14 14"><g transform="translate(0.053 14.081) scale(0.014474)"><path d="M250-410h300v-60H250v60Zm0-120h460v-60H250v60Zm0-120h460v-60H250v60ZM100-118.46v-669.23Q100-818 121-839q21-21 51.31-21h615.38Q818-860 839-839q21 21 21 51.31v455.38Q860-302 839-281q-21 21-51.31 21H241.54L100-118.46ZM216-320h571.69q4.62 0 8.46-3.85 3.85-3.84 3.85-8.46v-455.38q0-4.62-3.85-8.46-3.84-3.85-8.46-3.85H172.31q-4.62 0-8.46 3.85-3.85 3.84-3.85 8.46v523.08L216-320Z" fill="currentColor" stroke="currentColor" stroke-width="7" stroke-linejoin="round"/></g></symbol>
+    <symbol id="i-user" viewBox="0 0 14 14"><circle cx="7" cy="5" r="2.2" fill="none" stroke="currentColor" stroke-width="var(--icon-stroke)"/><path d="M3 11.5c.6-1.8 2-2.7 4-2.7s3.4.9 4 2.7" fill="none" stroke="currentColor" stroke-width="var(--icon-stroke)"/></symbol>
+    <symbol id="i-mic" viewBox="0 0 16 16"><rect x="6" y="2" width="4" height="7" rx="2" fill="none" stroke="currentColor" stroke-width="var(--icon-stroke)"/><path d="M4 8a4 4 0 0 0 8 0M8 12v2" fill="none" stroke="currentColor" stroke-width="var(--icon-stroke)"/></symbol>
+    <symbol id="i-up" viewBox="0 0 16 16"><path d="M8 12V4M5 7l3-3 3 3" fill="none" stroke="currentColor" stroke-width="var(--icon-stroke)"/></symbol>
+    <symbol id="i-share" viewBox="0 0 14 14"><g transform="translate(-3.389 -3.389) scale(1.2222)" stroke-linecap="round" stroke-linejoin="round" style="stroke-width: calc(var(--icon-stroke) * 0.818)"><path d="M4 13 13 4M8 4h5v5" fill="none" stroke="currentColor"/></g></symbol>
+    <symbol id="i-edit" viewBox="0 0 18 18"><path d="M11 4.5 13.5 7 7 13.5H4.5V11z" fill="none" stroke="currentColor" stroke-width="var(--icon-stroke)"/></symbol>
+    <symbol id="i-list" viewBox="0 0 14 14"><path d="M3 3.5h8M3 7h8M3 10.5h5" fill="none" stroke="currentColor" stroke-width="var(--icon-stroke)"/></symbol>
+    <symbol id="i-sidebar" viewBox="0 0 14 14"><g transform="translate(7 7) scale(0.88) translate(-7 -7)" stroke-linecap="round" stroke-linejoin="round" style="stroke-width: calc(var(--icon-stroke) * 1.136)"><rect x="1.5" y="1.5" width="11" height="11" rx="1.2" fill="none" stroke="currentColor"/><path d="M5.5 1.5v11" fill="none" stroke="currentColor"/></g></symbol>
+    <symbol id="i-print" viewBox="0 0 14 14"><path d="M4 5V2.5h6V5M3 5h8a1.5 1.5 0 0 1 1.5 1.5V9H10v2.5H4V9H1.5V6.5A1.5 1.5 0 0 1 3 5Z" fill="none" stroke="currentColor" stroke-width="var(--icon-stroke)"/></symbol>
+    <symbol id="i-warn" viewBox="0 0 14 14"><path d="M7 5.4V8M7 1.8 1.4 11.2h11.2L7 1.8Z" fill="none" stroke="currentColor" stroke-width="var(--icon-stroke)" stroke-linecap="square"/><rect x="6.7" y="9.2" width=".6" height=".6" fill="currentColor"/></symbol>
+    <symbol id="i-dots" viewBox="0 0 14 14"><path d="M6.4 1.5h1.2V2.6H6.4zM6.4 6.4h1.2v1.2H6.4zM6.4 11.4h1.2v1.1H6.4z" fill="currentColor"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 14 14"><g transform="translate(-3.421 -2.205) scale(1.1579)" stroke-linecap="round" stroke-linejoin="round" style="stroke-width: calc(var(--icon-stroke) * 0.864)"><path d="M9 3.2a3.4 3.4 0 0 1 3.4 3.4c0 2 .4 3 1.1 3.9H4.5c.7-.9 1.1-1.9 1.1-3.9A3.4 3.4 0 0 1 9 3.2Z" fill="none" stroke="currentColor"/><path d="M7.5 11.2a1.5 1.5 0 0 0 3 0" fill="none" stroke="currentColor"/></g></symbol>
+    <symbol id="i-doc" viewBox="0 0 14 14"><g transform="translate(-0.765 14.765) scale(0.016176)"><path d="M212.31-200H560v-200h200v-347.69q0-5.39-3.46-8.85t-8.85-3.46H212.31q-5.39 0-8.85 3.46t-3.46 8.85v535.38q0 5.39 3.46 8.85t8.85 3.46Zm0 60q-29.92 0-51.12-21.19Q140-182.39 140-212.31v-535.38q0-29.92 21.19-51.12Q182.39-820 212.31-820h535.38q29.92 0 51.12 21.19Q820-777.61 820-747.69v373.46L585.77-140H212.31Zm85.38-270.77v-60H480v60H297.69Zm0-159.23v-60h364.62v60H297.69Z" fill="currentColor"/></g></symbol>
+    <symbol id="i-grid" viewBox="0 0 14 14"><g transform="translate(-1.534 -1.534) scale(0.9483)" stroke-linecap="round" stroke-linejoin="round" style="stroke-width: calc(var(--icon-stroke) * 1.055)"><rect x="3.2" y="3.2" width="4.8" height="4.8" rx="1.1" fill="none" stroke="currentColor"/><rect x="10" y="3.2" width="4.8" height="4.8" rx="1.1" fill="none" stroke="currentColor"/><rect x="3.2" y="10" width="4.8" height="4.8" rx="1.1" fill="none" stroke="currentColor"/><rect x="10" y="10" width="4.8" height="4.8" rx="1.1" fill="none" stroke="currentColor"/></g></symbol>
+    <symbol id="i-clipboard" viewBox="0 0 14 14"><g transform="translate(-0.734 -0.391) scale(0.8594)" stroke-linecap="round" stroke-linejoin="round" style="stroke-width: calc(var(--icon-stroke) * 1.164)"><rect x="4.2" y="3.6" width="9.6" height="11.4" rx="1.4" fill="none" stroke="currentColor"/><rect x="7" y="2.2" width="4" height="2.6" rx=".6" fill="none" stroke="currentColor"/><path d="M6.6 8.4h4.8M6.6 11h4.8" fill="none" stroke="currentColor"/></g></symbol>
+    <symbol id="i-alert" viewBox="0 0 14 14"><g transform="translate(-0.765 14.765) scale(0.016176)"><path d="M480-291.54q13.73 0 23.02-9.38 9.29-9.39 9.29-22.93 0-13.53-9.29-22.92-9.29-9.38-23.02-9.38t-23.02 9.38q-9.29 9.39-9.29 22.92 0 13.54 9.29 22.93 9.29 9.38 23.02 9.38Zm-30-139.23h60v-241.54h-60v241.54ZM338.46-140 140-338.28v-283.26L338.28-820h283.26L820-621.72v283.26L621.72-140H338.46ZM364-200h232l164-164v-232L596-760H364L200-596v232l164 164Zm116-280Z" fill="currentColor"/></g></symbol>
+    <symbol id="i-calendar" viewBox="0 0 14 14"><g transform="translate(-1.25 -1.067) scale(0.9167)" stroke-linecap="round" stroke-linejoin="round" style="stroke-width: calc(var(--icon-stroke) * 1.091)"><rect x="3" y="4.2" width="12" height="10.6" rx="1.4" fill="none" stroke="currentColor"/><path d="M3 7.6h12M6.4 2.8v2.6M11.6 2.8v2.6" fill="none" stroke="currentColor"/></g></symbol>
+    <symbol id="i-phone" viewBox="0 0 14 14"><g transform="translate(-4.833 -3.157) scale(1.2935)" stroke-linecap="round" stroke-linejoin="round" style="stroke-width: calc(var(--icon-stroke) * 0.773)"><path d="M6.1 3.6h1.8l.7 1.8-1.2.7a6.4 6.4 0 0 0 3.5 3.5l.7-1.2 1.8.7v1.8a1.2 1.2 0 0 1-1.3 1.2A8.4 8.4 0 0 1 4.9 4.9a1.2 1.2 0 0 1 1.2-1.3Z" fill="none" stroke="currentColor"/></g></symbol>
+    <symbol id="i-bubble-lines" viewBox="0 0 14 14"><g transform="translate(0.053 14.081) scale(0.014474)"><path d="M333.85-417.69h292.3V-432q0-37.85-40.73-61.77T480-517.69q-64.69 0-105.42 23.92-40.73 23.92-40.73 61.77v14.31Zm195.73-172.73Q550-610.85 550-640t-20.42-49.58Q509.15-710 480-710t-49.58 20.42Q410-669.15 410-640t20.42 49.58Q450.85-570 480-570t49.58-20.42ZM100-118.46v-669.23Q100-818 121-839q21-21 51.31-21h615.38Q818-860 839-839q21 21 21 51.31v455.38Q860-302 839-281q-21 21-51.31 21H241.54L100-118.46ZM216-320h571.69q4.62 0 8.46-3.85 3.85-3.84 3.85-8.46v-455.38q0-4.62-3.85-8.46-3.84-3.85-8.46-3.85H172.31q-4.62 0-8.46 3.85-3.85 3.84-3.85 8.46v523.08L216-320Z" fill="currentColor" stroke="currentColor" stroke-width="7" stroke-linejoin="round"/></g></symbol>
+    <symbol id="i-card" viewBox="0 0 14 14"><g transform="translate(-0.734 -0.734) scale(0.8594)" stroke-linecap="round" stroke-linejoin="round" style="stroke-width: calc(var(--icon-stroke) * 1.164)"><rect x="2.6" y="4.2" width="12.8" height="9.6" rx="1.4" fill="none" stroke="currentColor"/><path d="M2.6 7.4h12.8" fill="none" stroke="currentColor"/><circle cx="9" cy="10.6" r="1.3" fill="none" stroke="currentColor"/></g></symbol>
+    <symbol id="i-wrench" viewBox="0 0 14 14"><g transform="translate(-0.203 0.114) scale(0.7741)" stroke-linecap="round" stroke-linejoin="round" style="stroke-width: calc(var(--icon-stroke) * 1.292)"><path d="M11.1 4.6a.8.8 0 0 0 0 1.1l1.2 1.2a.8.8 0 0 0 1.1 0l2.6-2.6a4.2 4.2 0 0 1-5.6 5.6L4.6 15.7a1.5 1.5 0 0 1-2.1-2.1l5.8-5.8a4.2 4.2 0 0 1 5.6-5.6L11.1 4.6Z" fill="none" stroke="currentColor" stroke-linejoin="round"/></g></symbol>
+    <symbol id="i-gauge" viewBox="0 0 14 14"><g transform="translate(-1.534 -2.197) scale(0.9483)" stroke-linecap="round" stroke-linejoin="round" style="stroke-width: calc(var(--icon-stroke) * 1.055)"><path d="M3.4 12.4a5.6 5.6 0 1 1 11.2 0" fill="none" stroke="currentColor" stroke-linecap="round"/><path d="M9 12.2 11.6 8.2M3.2 12.6h11.6" fill="none" stroke="currentColor" stroke-linecap="round"/></g></symbol>
+    <symbol id="i-book" viewBox="0 0 14 14"><g transform="translate(0.053 13.947) scale(0.014474)"><path d="M302.31-100q-50.69 0-86.5-35.81T180-222.31V-730q0-54.15 37.92-92.08Q255.85-860 310-860h470v575.38q-25.77 0-44.04 18.27t-18.27 44.04q0 25.77 18.27 44.04T780-160v60H302.31ZM240-326.23q13.62-9.31 29.19-13.85 15.58-4.53 33.12-4.53h25.38V-800H310q-28.85 0-49.42 20.58Q240-758.85 240-730v403.77Zm147.69-18.38H720V-800H387.69v455.39ZM240-326.23v-466.08 466.08ZM302.31-160h373.77q-8.7-13.62-13.54-28.88-4.85-15.27-4.85-33.43 0-17.15 4.54-32.92 4.54-15.77 13.85-29.39H302.31q-26.77 0-44.54 18.27T240-222.31q0 26.77 17.77 44.54T302.31-160Z" fill="currentColor"/></g></symbol>
+    <symbol id="i-gear" viewBox="0 0 14 14"><g transform="translate(-0.971 -0.971) scale(0.8857)" stroke-linecap="round" stroke-linejoin="round" style="stroke-width: calc(var(--icon-stroke) * 1.129)"><path d="M7.22 4.6 7.68 2.79h2.64l.46 1.81 1.14.66 1.8-.51 1.32 2.29-1.34 1.3v1.32l1.34 1.3-1.32 2.29-1.8-.51-1.14.66-.46 1.81H7.68l-.46-1.81-1.14-.66-1.8.51L2.96 10.96l1.34-1.3V8.34L2.96 7.04l1.32-2.29 1.8.51 1.14-.66Z" fill="none" stroke="currentColor" stroke-linejoin="round"/><circle cx="9" cy="9" r="1.85" fill="none" stroke="currentColor"/></g></symbol>
+  </svg>
+
+  <aside class="side" id="workspace" aria-label="Workspace">
+    <div class="side-top">
+      <div class="side-brand">
+        <span class="side-mark">M</span>
+        <span class="side-title">Mobile Test</span>
+        <svg class="i" width="16" height="16"><use href="#i-chevron"/></svg>
+      </div>
+      <button class="side-icon" type="button" data-side-collapse aria-expanded="true" aria-controls="workspace" aria-label="Collapse sidebar"><svg class="i" width="18" height="18"><use href="#i-sidebar"/></svg></button>
+    </div>
+    <div class="side-fixed">
+      <form class="search side-search" role="search">
+        <svg class="i" width="18" height="18"><use href="#i-search"/></svg>
+        <input type="search" placeholder="Search" aria-label="Search">
+        <kbd>⌘ K</kbd>
+      </form>
+      <div class="side-links">
+        <a href="notes.html"><svg class="i" width="18" height="18"><use href="#i-home"/></svg>Home</a>
+        <a class="tip-host" href="notes.html"><svg class="i" width="18" height="18"><use href="#i-bubble"/></svg>Messages<span class="tip">Messages <span>Opt M</span></span></a>
+        <a class="tip-host" href="notes.html"><svg class="i" width="18" height="18"><use href="#i-bell"/></svg>Notifications<span class="tip">Notifications <span>Opt N</span></span></a>
+        <a href="notes.html" aria-current="page"><svg class="i" width="18" height="18"><use href="#i-doc"/></svg>Internal notes</a>
+      </div>
+    </div>
+    <div class="side-scroll">
+      <div class="side-group" data-side-group>
+        <button class="side-fold" type="button" data-side-toggle aria-expanded="true">Pinned <svg class="i" width="14" height="14"><use href="#i-chevron"/></svg></button>
+        <div class="side-links" data-side-list>
+          <a href="notes.html"><svg class="i" width="18" height="18"><use href="#i-grid"/></svg>Boards</a>
+          <a href="notes.html"><svg class="i" width="18" height="18"><use href="#i-clipboard"/></svg>To-Dos</a>
+          <a href="notes.html"><svg class="i" width="18" height="18"><use href="#i-alert"/></svg>Complaints</a>
+          <a href="notes.html"><svg class="i" width="18" height="18"><use href="#i-calendar"/></svg>Schedule</a>
+        </div>
+      </div>
+      <div class="side-group" data-side-group>
+        <button class="side-fold" type="button" data-side-toggle aria-expanded="true">Guest <svg class="i" width="14" height="14"><use href="#i-chevron"/></svg></button>
+        <div class="side-links" data-side-list>
+          <a href="notes.html"><svg class="i" width="18" height="18"><use href="#i-phone"/></svg>Calls</a>
+          <a href="notes.html"><svg class="i" width="18" height="18"><use href="#i-bubble-lines"/></svg>Guest messages</a>
+          <a href="notes.html"><svg class="i" width="18" height="18"><use href="#i-clock"/></svg>Wake-up calls</a>
+        </div>
+      </div>
+      <div class="side-group" data-side-group>
+        <button class="side-fold" type="button" data-side-toggle aria-expanded="false">Operations <svg class="i" width="14" height="14"><use href="#i-chevron"/></svg></button>
+        <div class="side-links" data-side-list hidden>
+          <a href="notes.html"><svg class="i" width="18" height="18"><use href="#i-grid"/></svg>Boards</a>
+          <a href="notes.html"><svg class="i" width="18" height="18"><use href="#i-clipboard"/></svg>To-Dos</a>
+          <a href="notes.html"><svg class="i" width="18" height="18"><use href="#i-alert"/></svg>Complaints</a>
+          <a href="notes.html"><svg class="i" width="18" height="18"><use href="#i-calendar"/></svg>Schedule</a>
+          <a href="notes.html"><svg class="i" width="18" height="18"><use href="#i-card"/></svg>Cash &amp; bank</a>
+        </div>
+      </div>
+      <div class="side-group" data-side-group>
+        <button class="side-fold" type="button" data-side-toggle aria-expanded="false">Facilities <svg class="i" width="14" height="14"><use href="#i-chevron"/></svg></button>
+        <div class="side-links" data-side-list hidden>
+          <a href="notes.html"><svg class="i" width="18" height="18"><use href="#i-wrench"/></svg>PM</a>
+          <a href="notes.html"><svg class="i" width="18" height="18"><use href="#i-gauge"/></svg>Readings</a>
+        </div>
+      </div>
+      <div class="side-group" data-side-group>
+        <button class="side-fold" type="button" data-side-toggle aria-expanded="true">Records <svg class="i" width="14" height="14"><use href="#i-chevron"/></svg></button>
+        <div class="side-links" data-side-list>
+          <a href="notes.html" aria-current="page"><svg class="i" width="18" height="18"><use href="#i-doc"/></svg>Internal notes</a>
+          <a href="notes.html"><svg class="i" width="18" height="18"><use href="#i-book"/></svg>Knowledge base</a>
+        </div>
+      </div>
+      <div class="side-group" data-side-group>
+        <button class="side-fold" type="button" data-side-toggle aria-expanded="false">Sales <svg class="i" width="14" height="14"><use href="#i-chevron"/></svg></button>
+        <div class="side-links" data-side-list hidden>
+          <a href="notes.html"><svg class="i" width="18" height="18"><use href="#i-share"/></svg>Sales</a>
+        </div>
+      </div>
+    </div>
+    <div class="side-user">
+      <span class="person"><img class="avatar" src="assets/avatar-sarah.png" alt=""><span class="person-copy"><span>Sarah</span><span class="sub">Mobile Test</span></span></span>
+      <button class="side-icon" type="button" aria-label="Settings"><svg class="i" width="18" height="18"><use href="#i-gear"/></svg></button>
+    </div>
+  </aside>
+
+  <main class="notes-page">
+    <header class="page-head">
+      <div class="page-title">
+        <span class="page-mark" aria-hidden="true"><svg class="i" width="18" height="18"><use href="#i-doc"/></svg></span>
+        <h1>Internal notes</h1>
+        <p class="count" data-count>4</p>
+      </div>
+      <form class="search" role="search">
+        <svg class="i" width="18" height="18"><use href="#i-search"/></svg>
+        <input type="search" placeholder="Search notes" aria-label="Search notes">
+        <button class="clear" type="button" hidden aria-label="Clear search"><svg class="i" width="14" height="14"><use href="#i-close"/></svg></button>
+      </form>
+    </header>
+    <div class="page-filters">
+      <div class="tabs-fade">
+      <div class="tabs tabs-bar" role="tablist" aria-label="Departments">
+        <button class="tab" type="button" role="tab" data-dept="All" aria-selected="true">All <span class="count" data-dept-count="All">4</span></button>
+        <button class="tab" type="button" role="tab" data-dept="Front Desk" aria-selected="false">Front Desk <span class="count" data-dept-count="Front Desk">4</span></button>
+        <button class="tab" type="button" role="tab" data-dept="Housekeeping" aria-selected="false">Housekeeping <span class="count" data-dept-count="Housekeeping">0</span></button>
+        <button class="tab" type="button" role="tab" data-dept="Maintenance" aria-selected="false">Maintenance <span class="count" data-dept-count="Maintenance">0</span></button>
+        <button class="tab" type="button" role="tab" data-dept="Food &amp; Beverage" aria-selected="false">Food &amp; Beverage <span class="count" data-dept-count="Food &amp; Beverage">0</span></button>
+        <button class="tab" type="button" role="tab" data-dept="Sales" aria-selected="false">Sales <span class="count" data-dept-count="Sales">0</span></button>
+        <button class="tab" type="button" role="tab" data-dept="Management" aria-selected="false">Management <span class="count" data-dept-count="Management">0</span></button>
+      </div>
+      </div>
+      <div class="filter-row">
+        <div class="filter-chips">
+          <button class="chip chip-filter" type="button"><span class="chip-k">Room</span>: Room 12 <svg class="i x" width="10" height="10"><use href="#i-plus"/></svg></button>
+          <button class="chip chip-filter" type="button"><span class="chip-k">Room</span>: Room 12 <svg class="i x" width="10" height="10"><use href="#i-plus"/></svg></button>
+          <button class="chip chip-filter" type="button"><span class="chip-k">Room</span>: Room 12 <svg class="i x" width="10" height="10"><use href="#i-plus"/></svg></button>
+          <button class="chip chip-filter" type="button"><span class="chip-k">Urgency</span>: Urgent <svg class="i x" width="10" height="10"><use href="#i-plus"/></svg></button>
+        </div>
+        <div class="filter-actions">
+          <div class="drop" data-menu>
+            <button class="trigger" type="button" data-menu-button aria-expanded="false" aria-haspopup="menu">
+              <span class="pair"><svg class="i" width="14" height="14"><use href="#i-filter"/></svg><span class="fit-label"><span data-menu-label>Filters</span><span aria-hidden="true">Filters</span><span aria-hidden="true">7d</span><span aria-hidden="true">24h</span><span aria-hidden="true">30d</span></span></span>
+              <svg class="i" width="14" height="14"><use href="#i-chevron"/></svg>
+            </button>
+            <div class="menu" role="menu" hidden>
+              <button class="menu-item" type="button" role="menuitemradio" data-value="7d" aria-checked="true">7d<svg class="i check" width="14" height="14"><use href="#i-check"/></svg></button>
+              <button class="menu-item" type="button" role="menuitemradio" data-value="24h" aria-checked="false">24h<svg class="i check" width="14" height="14"><use href="#i-check"/></svg></button>
+              <button class="menu-item" type="button" role="menuitemradio" data-value="30d" aria-checked="false">30d<svg class="i check" width="14" height="14"><use href="#i-check"/></svg></button>
+            </div>
+          </div>
+          <button class="btn btn-secondary" type="button"><svg class="i" width="14" height="14"><use href="#i-print"/></svg>Print</button>
+          <button class="btn" type="button" data-new><svg class="i" width="14" height="14"><use href="#i-plus-bold"/></svg>New</button>
+        </div>
+      </div>
+    </div>
+    <div class="stage">
+
+        <div class="table-wrap">
+          <div class="grid live notes-grid" role="table">
+            <div class="head" role="columnheader"><span><svg class="i" width="14" height="14"><use href="#i-list"/></svg>Note</span></div>
+            <div class="head" role="columnheader"><span><svg class="i" width="14" height="14"><use href="#i-filter"/></svg>Department</span></div>
+            <div class="head" role="columnheader"><span><svg class="i" width="14" height="14"><use href="#i-bubble"/></svg>Replies</span></div>
+            <div class="head" role="columnheader"><span><svg class="i" width="14" height="14"><use href="#i-clock"/></svg>Opened</span></div>
+
+            <button class="row cell-task" type="button" role="row" data-note="enroll" aria-pressed="true">Eligible enrollments 10/19/26 <svg class="i chev" width="14" height="14"><use href="#i-chevron"/></svg></button>
+            <div class="row" role="cell"><span class="dept">Front Desk</span></div>
+            <div class="row" role="cell">1</div>
+            <div class="row cell-open" role="cell">Oct 19, 6:25 AM</div>
+
+            <button class="row cell-task" type="button" role="row" data-note="qviana">Qviana called out today 10/19/26 <svg class="i chev" width="14" height="14"><use href="#i-chevron"/></svg></button>
+            <div class="row" role="cell"><span class="dept">Front Desk</span></div>
+            <div class="row" role="cell">0</div>
+            <div class="row cell-open" role="cell">1d</div>
+
+            <button class="row cell-task" type="button" role="row" data-note="gss">GSS Scores 10/19/26 <svg class="i chev" width="14" height="14"><use href="#i-chevron"/></svg></button>
+            <div class="row" role="cell"><span class="dept">Front Desk</span></div>
+            <div class="row" role="cell">0</div>
+            <div class="row cell-open" role="cell">1d</div>
+
+            <button class="row cell-task" type="button" role="row" data-note="elite">Elite Arrivals 10/19/26 <svg class="i chev" width="14" height="14"><use href="#i-chevron"/></svg></button>
+            <div class="row" role="cell"><span class="dept">Front Desk</span></div>
+            <div class="row" role="cell">0</div>
+            <div class="row cell-open" role="cell">1d</div>
+          </div>
+        </div>
+
+        <article class="detail" data-detail="enroll">
+          <span class="stack-copy">
+            <span class="meta-k">Note</span>
+            <span class="meta-v">Eligible enrollments 10/19/26</span>
+          </span>
+          <p>31 Eligible enrollments</p>
+          <div class="comment">
+            <span class="mini-line"><img class="avatar mini" src="assets/avatar-sarah.png" alt="">Sarah <span class="meta-k">now</span></span>
+            <p>okay</p>
+          </div>
+          <form class="msg" data-composer>
+            <span class="lead"><img class="avatar mini" src="assets/avatar-sarah.png" alt=""><input aria-label="Write a reply" placeholder="Write a message..."></span>
+            <button class="well" type="submit" aria-label="Send"><svg class="i" width="16" height="16"><use href="#i-up"/></svg></button>
+          </form>
+        </article>
+        <article class="detail" data-detail="qviana" hidden>
+          <span class="stack-copy"><span class="meta-k">Note</span><span class="meta-v">Qviana called out today 10/19/26</span></span>
+          <p>No body yet. Reply to add the call-out detail.</p>
+          <form class="msg" data-composer>
+            <span class="lead"><img class="avatar mini" src="assets/avatar-sarah.png" alt=""><input aria-label="Write a reply" placeholder="Write a message..."></span>
+            <button class="well" type="submit" aria-label="Send"><svg class="i" width="16" height="16"><use href="#i-up"/></svg></button>
+          </form>
+        </article>
+        <article class="detail" data-detail="gss" hidden>
+          <span class="stack-copy"><span class="meta-k">Note</span><span class="meta-v">GSS Scores 10/19/26</span></span>
+          <p>I want to recommend: 51.5/63.0 – 11.5 Elite Appreciation: 56.2/64.8 – 8.5 Cleanliness: 63.0/70.5 – 7.4 Staff Service: 61.9/74.2 – 12.3 Maintenance: 57.9/63.5 – 5.6 F&amp;B Questions: 61.8/63.5 – 11.7</p>
+          <form class="msg" data-composer>
+            <span class="lead"><img class="avatar mini" src="assets/avatar-sarah.png" alt=""><input aria-label="Write a reply" placeholder="Write a message..."></span>
+            <button class="well" type="submit" aria-label="Send"><svg class="i" width="16" height="16"><use href="#i-up"/></svg></button>
+          </form>
+        </article>
+        <article class="detail" data-detail="elite" hidden>
+          <span class="stack-copy"><span class="meta-k">Note</span><span class="meta-v">Elite Arrivals 10/19/26</span></span>
+          <p>63 Elite Arrivals Ambassador – 1 Titanium – 11 Platinum – 14 Gold – 23 Silver – 14</p>
+          <form class="msg" data-composer>
+            <span class="lead"><img class="avatar mini" src="assets/avatar-sarah.png" alt=""><input aria-label="Write a reply" placeholder="Write a message..."></span>
+            <button class="well" type="submit" aria-label="Send"><svg class="i" width="16" height="16"><use href="#i-up"/></svg></button>
+          </form>
+        </article>
+
+    </div>
+  </main>
+  <aside class="lance-side" aria-label="Lance">
+    <header class="lance-bar">
+      <span>Lance</span>
+      <span class="lance-tools">
+        <button class="side-icon" type="button" aria-label="History"><svg class="i" width="18" height="18"><use href="#i-clock"/></svg></button>
+        <button class="side-icon" type="button" aria-label="New chat"><svg class="i" width="18" height="18"><use href="#i-edit"/></svg></button>
+        <button class="side-icon" type="button" aria-label="Expand"><svg class="i" width="18" height="18"><use href="#i-share"/></svg></button>
+        <button class="side-icon" type="button" aria-label="Panel"><svg class="i" width="18" height="18"><use href="#i-list"/></svg></button>
+      </span>
+    </header>
+    <div class="lance-home">
+      <span class="lance-logo" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M2 2h5v12H2zM2 9h12v5H2z"/></svg></span>
+      <p class="lance-hello">How can I help you today?</p>
+      <button class="lance-suggest" type="button" data-suggest><svg class="i" width="14" height="14"><use href="#i-list"/></svg>Review internal notes</button>
+      <button class="lance-suggest" type="button" data-suggest><svg class="i" width="14" height="14"><use href="#i-list"/></svg>Run a cash count</button>
+      <button class="lance-suggest" type="button" data-suggest><svg class="i" width="14" height="14"><use href="#i-list"/></svg>Open the boards</button>
+    </div>
+    <div class="lance-dock">
+      <form class="lance" data-composer>
+        <span class="lead"><button class="well" type="button" aria-label="Add"><svg class="i" width="16" height="16"><use href="#i-plus"/></svg></button><input aria-label="Ask Lance anything" placeholder="Ask Lance anything..."></span>
+        <span class="tools">
+          <span class="drop" data-menu>
+            <button class="mode" type="button" data-menu-button aria-expanded="false" aria-haspopup="menu"><span data-menu-label>Normal</span> <svg class="i" width="14" height="14"><use href="#i-chevron"/></svg></button>
+            <div class="menu" role="menu" hidden>
+              <button class="menu-item" type="button" role="menuitemradio" data-value="Lite" aria-checked="false"><span class="mode-copy"><b>Lite</b><span>Fastest responses</span></span><svg class="i check" width="14" height="14"><use href="#i-check"/></svg></button>
+              <button class="menu-item" type="button" role="menuitemradio" data-value="Normal" aria-checked="true"><span class="mode-copy"><b>Normal</b><span>Balanced speed and quality</span></span><svg class="i check" width="14" height="14"><use href="#i-check"/></svg></button>
+              <button class="menu-item" type="button" role="menuitemradio" data-value="Ultra" aria-checked="false"><span class="mode-copy"><b>Ultra</b><span>Deepest reasoning, slower</span></span><svg class="i check" width="14" height="14"><use href="#i-check"/></svg></button>
+            </div>
+          </span>
+          <button class="well" type="button" aria-label="Microphone"><svg class="i" width="16" height="16"><use href="#i-mic"/></svg></button>
+          <button class="well" type="submit" aria-label="Send"><svg class="i" width="16" height="16"><use href="#i-up"/></svg></button>
+        </span>
+      </form>
+    </div>
+  </aside>
+  <script src="js/gallery.js"></script>
+  <script src="js/notes.js"></script>
+</body>
+</html>

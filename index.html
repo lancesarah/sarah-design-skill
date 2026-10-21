@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Design system components</title>
+  <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=switzer@400,500,600&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital@0;1&display=swap">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/gallery.css">
+</head>
+<body>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-plus" viewBox="0 0 14 14"><path d="M7 2.5v9M2.5 7h9" fill="none" stroke="currentColor" stroke-width="1"/></symbol>
+    <symbol id="i-plus-bold" viewBox="0 0 14 14"><path d="M7 2.5v9M2.5 7h9" fill="none" stroke="currentColor" stroke-width="1"/></symbol>
+    <symbol id="i-share" viewBox="0 0 18 18"><path d="M4 13 13 4M8 4h5v5" fill="none" stroke="currentColor" stroke-width="1"/></symbol>
+    <symbol id="i-edit" viewBox="0 0 18 18"><path d="M11 4.5 13.5 7 7 13.5H4.5V11z" fill="none" stroke="currentColor" stroke-width="1"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 18 18"><path d="M4.5 5.5h9M7 5.5V4h4v1.5M6 5.5l.5 8h5l.5-8" fill="none" stroke="currentColor" stroke-width="1"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 14 14"><path d="M7 4.2V7l1.8 1.6M12.2 7A5.2 5.2 0 1 1 1.8 7a5.2 5.2 0 0 1 10.4 0Z" fill="none" stroke="currentColor" stroke-width="1"/></symbol>
+    <symbol id="i-chevron" viewBox="0 0 14 14"><path d="M3.5 5.5 7 9l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1"/></symbol>
+    <symbol id="i-check" viewBox="0 0 14 14"><path d="M3 7.2 5.6 10 11 4.2" fill="none" stroke="currentColor" stroke-width="1"/></symbol>
+    <symbol id="i-search" viewBox="0 0 18 18"><circle cx="7.5" cy="7.5" r="4.25" fill="none" stroke="currentColor" stroke-width="1"/><path d="M11 11.2 14.2 14.5" fill="none" stroke="currentColor" stroke-width="1"/></symbol>
+    <symbol id="i-close" viewBox="0 0 14 14"><path d="M3.5 3.5 10.5 10.5M10.5 3.5 3.5 10.5" fill="none" stroke="currentColor" stroke-width="1"/></symbol>
+    <symbol id="i-filter" viewBox="0 0 14 14"><path d="M1.5 3h11M4 7h6M6 11h2" fill="none" stroke="currentColor" stroke-width="1"/></symbol>
+    <symbol id="i-mic" viewBox="0 0 16 16"><rect x="6" y="2" width="4" height="7" rx="2" fill="none" stroke="currentColor"/><path d="M4 8a4 4 0 0 0 8 0M8 12v2" fill="none" stroke="currentColor"/></symbol>
+    <symbol id="i-up" viewBox="0 0 16 16"><path d="M8 12V4M5 7l3-3 3 3" fill="none" stroke="currentColor"/></symbol>
+    <symbol id="i-home" viewBox="0 0 14 14"><path d="M2 6.2 7 2.2l5 4V12H9V8H5v4H2z" fill="none" stroke="currentColor" stroke-width="1"/></symbol>
+    <symbol id="i-board" viewBox="0 0 14 14"><rect x="1.5" y="2" width="11" height="10" rx="1.2" fill="none" stroke="currentColor" stroke-width="1"/><path d="M5.2 2v10M8.8 2v10" fill="none" stroke="currentColor" stroke-width="1"/></symbol>
+    <symbol id="i-todo" viewBox="0 0 14 14"><rect x="1.5" y="1.8" width="3.2" height="3.2" rx=".6" fill="none" stroke="currentColor" stroke-width="1"/><rect x="1.5" y="8.8" width="3.2" height="3.2" rx=".6" fill="none" stroke="currentColor" stroke-width="1"/><path d="M6.6 3.4h6M6.6 10.4h6" fill="none" stroke="currentColor" stroke-width="1"/></symbol>
+    <symbol id="i-list" viewBox="0 0 14 14"><path d="M3 3.5h8M3 7h8M3 10.5h5" fill="none" stroke="currentColor" stroke-width="1"/></symbol>
+    <symbol id="i-sidebar" viewBox="0 0 14 14"><g transform="translate(7 7) scale(0.88) translate(-7 -7)" stroke-linecap="round" stroke-linejoin="round" style="stroke-width: calc(var(--icon-stroke) * 1.136)"><rect x="1.5" y="1.5" width="11" height="11" rx="1.2" fill="none" stroke="currentColor"/><path d="M5.5 1.5v11" fill="none" stroke="currentColor"/></g></symbol>
+    <symbol id="i-user" viewBox="0 0 14 14"><circle cx="7" cy="5" r="2.2" fill="none" stroke="currentColor" stroke-width="1"/><path d="M3 11.5c.6-1.8 2-2.7 4-2.7s3.4.9 4 2.7" fill="none" stroke="currentColor" stroke-width="1"/></symbol>
+    <symbol id="i-warn" viewBox="0 0 14 14"><path d="M7 5.4V8M7 1.8 1.4 11.2h11.2L7 1.8Z" fill="none" stroke="currentColor" stroke-linecap="square"/><rect x="6.7" y="9.2" width=".6" height=".6" fill="currentColor"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 14 14"><g transform="translate(0.053 14.081) scale(0.014474)"><path d="M480-291.54q13.73 0 23.02-9.38 9.29-9.39 9.29-22.93 0-13.53-9.29-22.92-9.29-9.38-23.02-9.38t-23.02 9.38q-9.29 9.39-9.29 22.92 0 13.54 9.29 22.93 9.29 9.38 23.02 9.38Zm-30-139.23h60v-241.54h-60v241.54ZM338.46-140 140-338.28v-283.26L338.28-820h283.26L820-621.72v283.26L621.72-140H338.46ZM364-200h232l164-164v-232L596-760H364L200-596v232l164 164Zm116-280Z" fill="currentColor"/></g></symbol>
+    <symbol id="i-bubble" viewBox="0 0 14 14"><path d="M2 3.2h10v6.2H8.2L7 11V9.4H2z" fill="none" stroke="currentColor" stroke-width="1"/></symbol>
+    <symbol id="i-dots" viewBox="0 0 14 14"><path d="M6.4 1.5h1.2V2.6H6.4zM6.4 6.4h1.2v1.2H6.4zM6.4 11.4h1.2v1.1H6.4z" fill="currentColor"/></symbol>
+  </svg>
+
+  <main class="canvas">
+    <header class="page-head">
+      <h1>Design system components</h1>
+      <nav class="index" aria-label="Components">
+        <div>
+          <strong>Foundations</strong>
+          <a href="#color">Color</a>
+          <a href="#spacing">Spacing</a>
+        </div>
+        <div>
+          <strong>Buttons</strong>
+          <a href="#text-icon">Text and icon</a>
+          <a href="#primary">Primary button</a>
+          <a href="#secondary">Secondary button</a>
+          <a href="#chip">Chip</a>
+        </div>
+        <div>
+          <strong>Menus</strong>
+          <a href="#menu">Drop down menu</a>
+          <a href="#confirm">Delete confirmation</a>
+        </div>
+        <div>
+          <strong>Fields</strong>
+          <a href="#search">Search bar</a>
+          <a href="#fields">Text fields</a>
+          <a href="#titles">Title and subtitle</a>
+        </div>
+        <div>
+          <strong>Navigation</strong>
+          <a href="#tabs">Primary tabs</a>
+          <a href="#segments">Secondary tabs</a>
+          <a href="#sidebar">Sidebar</a>
+        </div>
+        <div>
+          <strong>People</strong>
+          <a href="#profile">Profile picture</a>
+          <a href="#lance">Lance bot</a>
+          <a href="#lance-side">Lance sidebar</a>
+          <a href="#messaging">Messaging</a>
+        </div>
+        <div>
+          <strong>Feedback</strong>
+          <a href="#toast">Toast</a>
+          <a href="#tip">Tool tip</a>
+          <a href="#status">Status</a>
+          <a href="#urgency">Urgency</a>
+          <a href="#table">Table</a>
+          <a href="notes.html">Internal notes</a>
+        </div>
+      </nav>
+    </header>
+
+    <div class="group">
+      <h2>Foundations</h2>
+      <section id="color">
+        <h2>Color</h2>
+        <div class="swatches">
+          <div class="swatch"><i style="background: var(--sidebar-grey)"></i><b>--sidebar-grey</b><code>#f6f6f6</code><span>Page background, hovers, table header, search bar, Lance bot, standard urgency</span></div>
+          <div class="swatch"><i style="background: var(--grey)"></i><b>--grey</b><code>#eaeaea</code><span>Dividers, strokes, messaging composer</span></div>
+          <div class="swatch"><i style="background: var(--black-50)"></i><b>--black-50</b><code>#808080</code><span>Secondary text, placeholders, meta labels</span></div>
+          <div class="swatch"><i style="background: var(--black-25)"></i><b>--black-25</b><code>#bfbfbf</code><span>Tab counts, focus ring</span></div>
+          <div class="swatch"><i style="background: var(--black-12)"></i><b>--black-12</b><code>#dbdbdb</code><span>Hover outlines, icon-button hover</span></div>
+          <div class="swatch"><i style="background: var(--white)"></i><b>--white</b><code>#ffffff</code><span>Surfaces, text on filled buttons</span></div>
+          <div class="swatch"><i style="background: var(--black)"></i><b>--black</b><code>#000000</code><span>Primary text, toast, tooltip</span></div>
+          <div class="swatch"><i style="background: var(--action)"></i><b>--action</b><code>#3593dd</code><span>Primary button, active send, filter chip, switch track, in-progress status</span></div>
+          <div class="swatch"><i style="background: var(--action-hover)"></i><b>--action-hover</b><code>#1f6ca9</code><span>Primary button hover</span></div>
+          <div class="swatch"><i style="background: var(--destructive)"></i><b>--destructive</b><code>#e34144</code><span>Delete button, danger menu item</span></div>
+          <div class="swatch"><i style="background: var(--tag-text)"></i><b>--tag-text</b><code>#c09d00</code><span>Department tag text</span></div>
+          <div class="swatch"><i style="background: var(--tag-bg)"></i><b>--tag-bg</b><code>rgb(248 204 6 / 15%)</code><span>Department tag fill</span></div>
+          <div class="swatch"><i style="background: var(--urgency-urgent)"></i><b>--urgency-urgent</b><code>#f76164</code><span>Urgent label, unread count</span></div>
+          <div class="swatch"><i style="background: var(--urgency-urgent-bg)"></i><b>--urgency-urgent-bg</b><code>rgb(247 97 100 / 5%)</code><span>Urgent chip fill</span></div>
+          <div class="swatch"><i style="background: var(--urgency-high)"></i><b>--urgency-high</b><code>#ff9300</code><span>High urgency label, open status</span></div>
+          <div class="swatch"><i style="background: var(--urgency-high-bg)"></i><b>--urgency-high-bg</b><code>rgb(255 147 0 / 5%)</code><span>High chip fill</span></div>
+          <div class="swatch"><i style="background: var(--urgency-low)"></i><b>--urgency-low</b><code>#8ccd1a</code><span>Low urgency label</span></div>
+          <div class="swatch"><i style="background: var(--urgency-low-bg)"></i><b>--urgency-low-bg</b><code>rgb(140 205 26 / 5%)</code><span>Low chip fill</span></div>
+          <div class="swatch"><i style="background: var(--status-complete)"></i><b>--status-complete</b><code>#8ccd1a</code><span>Completed status. Same hex as low, separate token</span></div>
+          <div class="swatch"><i style="background: var(--filter-chip-bg)"></i><b>--filter-chip-bg</b><code>rgb(53 147 221 / 5%)</code><span>Filter chip fill, 5% of action</span></div>
+          <div class="swatch"><i style="background: var(--switch-knob)"></i><b>--switch-knob</b><code>#f5f5f5</code><span>Switch knob</span></div>
+        </div>
+      </section>
+
+      <section id="spacing">
+        <h2>Spacing</h2>
+        <div class="spaces">
+          <div class="space"><span>--space-2</span><i style="width: var(--space-2)"></i><code>2px</code></div>
+          <div class="space"><span>--space-4</span><i style="width: var(--space-4)"></i><code>4px</code></div>
+          <div class="space"><span>--space-8</span><i style="width: var(--space-8)"></i><code>8px</code></div>
+          <div class="space"><span>--space-10</span><i style="width: var(--space-10)"></i><code>10px</code></div>
+          <div class="space"><span>--space-12</span><i style="width: var(--space-12)"></i><code>12px</code></div>
+          <div class="space"><span>--space-14</span><i style="width: var(--space-14)"></i><code>14px</code></div>
+          <div class="space"><span>--space-16</span><i style="width: var(--space-16)"></i><code>16px</code></div>
+          <div class="space"><span>--space-20</span><i style="width: var(--space-20)"></i><code>20px</code></div>
+          <div class="space"><span>--space-25</span><i style="width: var(--space-25)"></i><code>25px</code></div>
+        </div>
+      </section>
+    </div>
+
+    <div class="group">
+      <h2>Buttons</h2>
+    <section id="text-icon">
+      <h2>Text and icon</h2>
+      <div class="stack">
+        <span class="stack-live"><span class="k">Interactive</span><span class="frame"><button class="text-icon" type="button"><svg class="i" width="18" height="18"><use href="#i-share"/></svg>Share</button></span></span>
+        <span class="frame"><span class="text-icon ref"><svg class="i" width="18" height="18"><use href="#i-share"/></svg>Share</span></span>
+        <span class="frame"><span class="text-icon sm ref"><svg class="i" width="14" height="14"><use href="#i-share"/></svg>Share</span></span>
+        <span class="frame"><span class="text-icon btn-delete ref"><svg class="i" width="14" height="14"><use href="#i-trash"/></svg>Delete</span></span>
+        <span class="frame"><span class="text-icon btn-delete btn-delete-line ref"><svg class="i" width="14" height="14"><use href="#i-trash"/></svg>Delete</span></span>
+      </div>
+    </section>
+
+    <section class="band">
+      <div>
+        <h2 id="primary">Primary button</h2>
+        <div class="cols">
+          <div class="col"><span class="k">Interactive</span><button class="btn" type="button"><svg class="i" width="14" height="14"><use href="#i-plus-bold"/></svg>New</button></div>
+          <div class="col"><span class="k">Base</span><span class="btn ref"><svg class="i" width="14" height="14"><use href="#i-plus-bold"/></svg>New</span></div>
+          <div class="col"><span class="k">Base</span><span class="btn btn-icon ref" aria-hidden="true"><svg class="i" width="14" height="14"><use href="#i-plus-bold"/></svg></span></div>
+          <div class="col"><span class="k">Hover</span><span class="btn is-hover ref"><svg class="i" width="14" height="14"><use href="#i-plus-bold"/></svg>New</span></div>
+        </div>
+      </div>
+      <div>
+        <h2 id="secondary">Secondary button</h2>
+        <div class="cols">
+          <div class="col"><span class="k">Interactive</span><button class="btn btn-secondary" type="button"><svg class="i" width="14" height="14"><use href="#i-plus"/></svg>New</button></div>
+          <div class="col"><span class="k">Base</span><span class="btn btn-secondary ref"><svg class="i" width="14" height="14"><use href="#i-plus"/></svg>New</span></div>
+          <div class="col"><span class="k">Base</span><span class="btn btn-secondary btn-icon ref" aria-hidden="true"><svg class="i" width="14" height="14"><use href="#i-plus"/></svg></span></div>
+          <div class="col"><span class="k">Hover</span><span class="btn btn-secondary is-hover ref"><svg class="i" width="14" height="14"><use href="#i-plus"/></svg>New</span></div>
+        </div>
+      </div>
+      <div>
+        <h2 id="chip">Chip</h2>
+        <div class="cols">
+          <div class="col"><span class="k">Interactive</span><button class="chip" type="button">New</button></div>
+          <div class="col"><span class="k">Base</span><span class="chip ref">New</span></div>
+          <div class="col"><span class="k">Hover</span><span class="chip is-hover ref">New</span></div>
+          <div class="col"><span class="k">Base</span><span class="chip chip-icon ref"><svg class="i" width="14" height="14"><use href="#i-plus"/></svg></span></div>
+          <div class="col"><span class="k">Hover</span><span class="chip chip-icon is-hover ref"><svg class="i" width="14" height="14"><use href="#i-plus"/></svg></span></div>
+          <div class="col"><span class="k">Hover</span><span class="chip is-hover ref"><svg class="i" width="14" height="14"><use href="#i-plus"/></svg>New</span></div>
+          <div class="col">
+            <span class="k">Hover</span>
+            <span class="chip chip-filter ref"><span class="chip-k">Room</span>: Room 12 <svg class="i x" width="10" height="10"><use href="#i-plus"/></svg></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    </div>
+
+    <div class="group">
+      <h2>Menus</h2>
+    <section id="menu">
+      <h2>Drop down menu</h2>
+      <div class="cols drop-row">
+        <div class="col">
+          <span class="k">Interactive</span>
+          <div class="drop" data-menu>
+            <button class="trigger" type="button" data-menu-button aria-expanded="false" aria-haspopup="menu">
+              <span class="pair"><svg class="i" width="14" height="14"><use data-menu-icon href="#i-clock"/></svg><span data-menu-label class="dim">Anytime</span></span>
+              <svg class="i" width="14" height="14"><use href="#i-chevron"/></svg>
+            </button>
+            <div class="menu" role="menu" hidden>
+              <label class="menu-search"><svg class="i" width="18" height="18"><use href="#i-search"/></svg><input type="search" data-menu-search placeholder="Search..." aria-label="Search options"></label>
+              <span class="menu-rule"></span>
+              <button class="menu-item" type="button" role="menuitemradio" data-value="Share" data-icon="#i-share" aria-checked="false"><svg class="i" width="18" height="18"><use href="#i-share"/></svg>Share<svg class="i check" width="14" height="14"><use href="#i-check"/></svg></button>
+              <button class="menu-item" type="button" role="menuitemradio" data-value="Edit" data-icon="#i-edit" aria-checked="false"><svg class="i" width="18" height="18"><use href="#i-edit"/></svg>Edit<svg class="i check" width="14" height="14"><use href="#i-check"/></svg></button>
+              <button class="menu-item danger" type="button" role="menuitem" data-value="Delete" data-icon="#i-trash"><svg class="i" width="18" height="18"><use href="#i-trash"/></svg>Delete</button>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <span class="k">Base</span>
+          <div class="drop ref">
+            <span class="trigger"><span class="pair"><svg class="i" width="14" height="14"><use href="#i-clock"/></svg><span class="dim">Anytime</span></span><svg class="i" width="14" height="14"><use href="#i-chevron"/></svg></span>
+            <div class="menu">
+              <span class="menu-item"><svg class="i" width="18" height="18"><use href="#i-share"/></svg>Share</span>
+              <span class="menu-item"><svg class="i" width="18" height="18"><use href="#i-edit"/></svg>Edit</span>
+              <span class="menu-item danger"><svg class="i" width="18" height="18"><use href="#i-trash"/></svg>Delete</span>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <span class="k">Hover</span>
+          <div class="drop ref">
+            <span class="trigger is-hover"><span class="pair"><svg class="i" width="14" height="14"><use href="#i-clock"/></svg><span class="dim">Anytime</span></span><svg class="i" width="14" height="14"><use href="#i-chevron"/></svg></span>
+            <div class="menu">
+              <span class="menu-item is-hover"><svg class="i" width="18" height="18"><use href="#i-share"/></svg>Share</span>
+              <span class="menu-item"><svg class="i" width="18" height="18"><use href="#i-edit"/></svg>Edit</span>
+              <span class="menu-item danger"><svg class="i" width="18" height="18"><use href="#i-trash"/></svg>Delete</span>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <span class="k">Searchable</span>
+          <div class="drop ref">
+            <span class="trigger"><span class="pair"><svg class="i" width="14" height="14"><use href="#i-clock"/></svg><span class="dim">Anytime</span></span><svg class="i" width="14" height="14"><use href="#i-chevron"/></svg></span>
+            <div class="menu">
+              <span class="menu-search"><svg class="i" width="18" height="18"><use href="#i-search"/></svg>Search...</span>
+              <span class="menu-rule"></span>
+              <span class="menu-item"><svg class="i" width="18" height="18"><use href="#i-share"/></svg>Share</span>
+              <span class="menu-item"><svg class="i" width="18" height="18"><use href="#i-edit"/></svg>Edit</span>
+              <span class="menu-item danger"><svg class="i" width="18" height="18"><use href="#i-trash"/></svg>Delete</span>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <span class="k">Option selected</span>
+          <div class="drop ref">
+            <span class="trigger"><span class="pair"><svg class="i" width="14" height="14"><use href="#i-share"/></svg>Share</span><svg class="i" width="14" height="14"><use href="#i-chevron"/></svg></span>
+            <div class="menu">
+              <span class="menu-item" aria-checked="true"><svg class="i" width="18" height="18"><use href="#i-share"/></svg>Share<svg class="i check" width="14" height="14"><use href="#i-check"/></svg></span>
+              <span class="menu-item"><svg class="i" width="18" height="18"><use href="#i-edit"/></svg>Edit</span>
+              <span class="menu-item danger"><svg class="i" width="18" height="18"><use href="#i-trash"/></svg>Delete</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="note">The width of the menu should be a minimum 20 px difference between the selector box and the actual drop down menu. If it’s too close in width, it looks unintentional.</p>
+    </section>
+
+    <section id="confirm">
+      <h2>Delete confirmation</h2>
+      <div class="cols">
+        <div class="col">
+          <span class="k">Interactive</span>
+          <div class="confirm">
+            <strong>Delete this ______?</strong>
+            <p>“test” will be permanently removed for the whole team.</p>
+            <div class="confirm-actions">
+              <button class="btn btn-secondary" type="button">Cancel</button>
+              <button class="btn btn-danger" type="button">Delete</button>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <span class="k">Base</span>
+          <div class="confirm ref">
+            <strong>Delete this ______?</strong>
+            <p>“test” will be permanently removed for the whole team.</p>
+            <div class="confirm-actions">
+              <span class="btn btn-secondary">Cancel</span>
+              <span class="btn btn-danger">Delete</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    </div>
+
+    <div class="group">
+      <h2>Fields</h2>
+    <section id="titles">
+      <h2>Title and subtitle options</h2>
+      <div class="cols cols-even">
+        <div class="col">
+          <span class="k">Top and bottom</span>
+          <span class="stack-copy ref"><span class="meta-k">Description</span><span class="meta-v">broken screw near the window</span></span>
+        </div>
+        <div class="col">
+          <span class="k">Side by side</span>
+          <span class="side-pair ref"><span class="meta-k">Location</span><span class="meta-v">Guestroom</span></span>
+        </div>
+      </div>
+    </section>
+
+    <section id="search">
+      <h2>Search bar</h2>
+      <div class="cols">
+        <div class="col">
+          <span class="k">Interactive</span>
+          <form class="search" role="search">
+            <svg class="i" width="18" height="18"><use href="#i-search"/></svg>
+            <input type="search" placeholder="Search notes" aria-label="Search notes">
+            <button class="clear" type="button" hidden aria-label="Clear search"><svg class="i" width="14" height="14"><use href="#i-close"/></svg></button>
+          </form>
+        </div>
+        <div class="col"><span class="k">Base</span><div class="search ref"><svg class="i" width="18" height="18"><use href="#i-search"/></svg><span>Search notes</span></div></div>
+        <div class="col"><span class="k">Hover</span><div class="search is-hover ref"><svg class="i" width="18" height="18"><use href="#i-search"/></svg><span>Search notes</span></div></div>
+        <div class="col"><span class="k">Interaction</span><div class="search ref" style="color: var(--black)"><svg class="i" width="18" height="18"><use href="#i-search"/></svg><span>Hi I’m Sarah</span><svg class="i" width="14" height="14"><use href="#i-close"/></svg></div></div>
+        <div class="col"><span class="k">Search icon</span><div class="search search-icon ref"><svg class="i" width="18" height="18"><use href="#i-search"/></svg></div></div>
+        <div class="col"><span class="k">Search icon</span><div class="search search-icon ref"><svg class="i" width="18" height="18"><use href="#i-search"/></svg></div></div>
+        <div class="col"><span class="k">Search icon hover</span><div class="search search-icon is-hover ref"><svg class="i" width="18" height="18"><use href="#i-search"/></svg></div></div>
+      </div>
+      <p class="note">Width of the search bar can change, but this should be attempted to standardize where possible.</p>
+    </section>
+
+
+
+    <section id="fields">
+      <h2>Text fields</h2>
+      <div class="cols">
+        <div class="col"><span class="k">Interactive</span><label class="field"><span>Text field title</span><input value="Example text" aria-label="Text field title"></label></div>
+        <div class="col"><span class="k">Base</span><label class="field ref"><span>Text field title</span><input value="Example text" tabindex="-1"></label></div>
+        <div class="col"><span class="k">Base</span><label class="field ref"><span>Text field title</span><textarea tabindex="-1">Example text</textarea></label></div>
+      </div>
+    </section>
+
+    </div>
+
+    <div class="group">
+      <h2>People</h2>
+    <section id="profile">
+      <h2>Profile picture</h2>
+      <div class="cols profile-cols">
+        <div class="col"><span class="k">Interactive</span><button class="avatar" type="button" aria-label="SM">SM</button></div>
+        <div class="col"><span class="k">Base</span><span class="avatar ref">SM</span></div>
+        <div class="col"><span class="k">Picture and name</span><span class="person ref"><span class="avatar">SM</span><span>Sarah Mou</span></span></div>
+        <div class="col"><span class="k">Miniature tag</span><span class="mini-line ref"><span class="avatar mini">SM</span>Sarah</span></div>
+        <div class="col"><span class="k">Miniature tag</span><span class="mini-pill ref"><span class="avatar mini">SM</span>Sarah</span></div>
+        <div class="col"><span class="k">Picture and role</span><span class="person ref"><span class="avatar">SM</span><span class="person-copy"><span>Sarah Mou</span><span class="sub">Housekeeper</span></span></span></div>
+        <div class="col"><span class="k">Picture and title</span><span class="person ref"><span class="avatar lg">SM</span><span class="person-copy person-title"><span class="who">Sarah Mou  <span>Today ·10:38 AM</span></span><span class="title">Eligible Enrollments 10/16/26</span></span></span></div>
+        <div class="col">
+          <span class="k">Miniature tag</span>
+          <span class="mini-stack">
+            <span class="mini-pill"><span class="avatar mini">SM</span>Sarah</span>
+            <button class="msg-btn" type="button"><svg class="i" width="14" height="14"><use href="#i-bubble"/></svg>Message</button>
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <section id="lance">
+      <h2>Lance bot</h2>
+      <div class="cols">
+        <div class="col">
+          <span class="k">Interactive</span>
+          <form class="lance" data-composer>
+            <span class="lead"><button class="well" type="button" aria-label="Add"><svg class="i" width="16" height="16"><use href="#i-plus"/></svg></button><input aria-label="Ask Lance anything" placeholder="Ask Lance anything..."></span>
+            <span class="tools"><button class="mode" type="button">Normal <svg class="i" width="14" height="14"><use href="#i-chevron"/></svg></button><button class="well" type="button" aria-label="Microphone"><svg class="i" width="16" height="16"><use href="#i-mic"/></svg></button><button class="well" type="submit" aria-label="Send"><svg class="i" width="16" height="16"><use href="#i-up"/></svg></button></span>
+          </form>
+        </div>
+        <div class="col"><span class="k">Base</span><div class="lance ref"><span class="lead"><span class="well"><svg class="i" width="16" height="16"><use href="#i-plus"/></svg></span>Ask Lance anything...</span><span class="tools"><span class="mode">Normal <svg class="i" width="14" height="14"><use href="#i-chevron"/></svg></span><span class="well"><svg class="i" width="16" height="16"><use href="#i-mic"/></svg></span><span class="well"><svg class="i" width="16" height="16"><use href="#i-up"/></svg></span></span></div></div>
+        <div class="col"><span class="k">Hover</span><div class="lance is-hover ref"><span class="lead"><span class="well"><svg class="i" width="16" height="16"><use href="#i-plus"/></svg></span>Ask Lance anything...</span><span class="tools"><span class="mode">Normal <svg class="i" width="14" height="14"><use href="#i-chevron"/></svg></span><span class="well"><svg class="i" width="16" height="16"><use href="#i-mic"/></svg></span><span class="well"><svg class="i" width="16" height="16"><use href="#i-up"/></svg></span></span></div></div>
+        <div class="col"><span class="k">Interaction</span><div class="lance is-typed ref"><span class="lead"><span class="well"><svg class="i" width="16" height="16"><use href="#i-plus"/></svg></span>How many rooms are occupied?</span><span class="tools"><span class="mode">Normal <svg class="i" width="14" height="14"><use href="#i-chevron"/></svg></span><span class="well is-on"><svg class="i" width="16" height="16"><use href="#i-mic"/></svg></span><span class="well"><svg class="i" width="16" height="16"><use href="#i-up"/></svg></span></span></div></div>
+        <div class="col"><span class="k">Hover individual items</span><div class="lance is-typed ref"><span class="lead"><span class="well"><svg class="i" width="16" height="16"><use href="#i-plus"/></svg></span>How many rooms are occupied?</span><span class="tools"><span class="mode">Normal <svg class="i" width="14" height="14"><use href="#i-chevron"/></svg></span><span class="well is-on"><svg class="i" width="16" height="16"><use href="#i-mic"/></svg></span><span class="well is-on"><svg class="i" width="16" height="16"><use href="#i-up"/></svg></span></span></div></div>
+      </div>
+    </section>
+
+    <section id="lance-side">
+      <h2>Lance sidebar</h2>
+      <div class="lance-frame">
+        <aside class="lance-side" aria-label="Lance">
+          <header class="lance-bar">
+            <span>Lance</span>
+            <span class="lance-tools">
+              <button class="side-icon" type="button" aria-label="History"><svg class="i" width="18" height="18"><use href="#i-clock"/></svg></button>
+              <button class="side-icon" type="button" aria-label="New chat"><svg class="i" width="18" height="18"><use href="#i-edit"/></svg></button>
+              <button class="side-icon" type="button" aria-label="Expand"><svg class="i" width="18" height="18"><use href="#i-share"/></svg></button>
+              <button class="side-icon" type="button" aria-label="Panel"><svg class="i" width="18" height="18"><use href="#i-list"/></svg></button>
+            </span>
+          </header>
+          <div class="lance-home">
+            <span class="lance-logo" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M2 2h5v12H2zM2 9h12v5H2z"/></svg></span>
+            <p class="lance-hello">How can I help you today?</p>
+            <button class="lance-suggest" type="button" data-suggest><svg class="i" width="14" height="14"><use href="#i-list"/></svg>Review internal notes</button>
+            <button class="lance-suggest" type="button" data-suggest><svg class="i" width="14" height="14"><use href="#i-list"/></svg>Run a cash count</button>
+            <button class="lance-suggest" type="button" data-suggest><svg class="i" width="14" height="14"><use href="#i-list"/></svg>Open the boards</button>
+          </div>
+          <div class="lance-dock">
+            <form class="lance" data-composer>
+              <span class="lead"><button class="well" type="button" aria-label="Add"><svg class="i" width="16" height="16"><use href="#i-plus"/></svg></button><input aria-label="Ask Lance anything" placeholder="Ask Lance anything..."></span>
+              <span class="tools">
+                <span class="drop" data-menu>
+                  <button class="mode" type="button" data-menu-button aria-expanded="false" aria-haspopup="menu"><span data-menu-label>Normal</span> <svg class="i" width="14" height="14"><use href="#i-chevron"/></svg></button>
+                  <div class="menu" role="menu" hidden>
+                    <button class="menu-item" type="button" role="menuitemradio" data-value="Lite" aria-checked="false"><span class="mode-copy"><b>Lite</b><span>Fastest responses</span></span><svg class="i check" width="14" height="14"><use href="#i-check"/></svg></button>
+                    <button class="menu-item" type="button" role="menuitemradio" data-value="Normal" aria-checked="true"><span class="mode-copy"><b>Normal</b><span>Balanced speed and quality</span></span><svg class="i check" width="14" height="14"><use href="#i-check"/></svg></button>
+                    <button class="menu-item" type="button" role="menuitemradio" data-value="Ultra" aria-checked="false"><span class="mode-copy"><b>Ultra</b><span>Deepest reasoning, slower</span></span><svg class="i check" width="14" height="14"><use href="#i-check"/></svg></button>
+                  </div>
+                </span>
+                <button class="well" type="button" aria-label="Microphone"><svg class="i" width="16" height="16"><use href="#i-mic"/></svg></button>
+                <button class="well" type="submit" aria-label="Send"><svg class="i" width="16" height="16"><use href="#i-up"/></svg></button>
+              </span>
+            </form>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="messaging">
+      <h2>Messaging</h2>
+      <div class="cols">
+        <div class="col">
+          <span class="k">Interactive</span>
+          <form class="msg" data-composer>
+            <span class="lead"><button class="well" type="button" aria-label="Add"><svg class="i" width="16" height="16"><use href="#i-plus"/></svg></button><input aria-label="Write a message" placeholder="Write a message..."></span>
+            <button class="well" type="submit" aria-label="Send"><svg class="i" width="16" height="16"><use href="#i-up"/></svg></button>
+          </form>
+        </div>
+        <div class="col"><span class="k">Base</span><div class="msg ref"><span class="lead"><span class="well"><svg class="i" width="16" height="16"><use href="#i-plus"/></svg></span>Write a message...</span><span class="well"><svg class="i" width="16" height="16"><use href="#i-up"/></svg></span></div></div>
+        <div class="col"><span class="k">Photo</span><div class="msg ref"><span class="lead"><span class="avatar mini" style="width:30px;height:30px;font-size:10px">SM</span>Write a message...</span><span class="well"><svg class="i" width="16" height="16"><use href="#i-up"/></svg></span></div></div>
+        <div class="col"><span class="k">Hover</span><div class="msg is-hover ref"><span class="lead"><span class="well"><svg class="i" width="16" height="16"><use href="#i-plus"/></svg></span>Write a message...</span><span class="well"><svg class="i" width="16" height="16"><use href="#i-up"/></svg></span></div></div>
+        <div class="col"><span class="k">Interaction</span><div class="msg is-typed ref"><span class="lead"><span class="well"><svg class="i" width="16" height="16"><use href="#i-plus"/></svg></span>Hello world!</span><span class="well is-on"><svg class="i" width="16" height="16"><use href="#i-up"/></svg></span></div></div>
+      </div>
+    </section>
+
+    </div>
+
+    <div class="group">
+      <h2>Feedback</h2>
+    <section id="toast">
+      <h2>Toast</h2>
+      <div class="cols">
+        <div class="col">
+          <span class="k">Interactive</span>
+          <div class="toast" data-toast>
+            <svg width="16" height="16" viewBox="0 0 18 18" aria-hidden="true"><path fill="var(--status-complete)" fill-rule="evenodd" d="M9 0a9 9 0 1 0 0 18A9 9 0 0 0 9 0Zm3.65 6.66-1.05-.86-4 4.9-1.75-1.76-.95.96 2.8 2.8 4.95-6.04Z"/></svg>
+            <span>New to-do created</span><span class="when">· Now</span>
+            <button class="toast-link" type="button" data-toast-hide>See task</button>
+          </div>
+        </div>
+        <div class="col">
+          <span class="k">Base</span>
+          <div class="toast ref">
+            <svg width="16" height="16" viewBox="0 0 18 18" aria-hidden="true"><path fill="var(--status-complete)" fill-rule="evenodd" d="M9 0a9 9 0 1 0 0 18A9 9 0 0 0 9 0Zm3.65 6.66-1.05-.86-4 4.9-1.75-1.76-.95.96 2.8 2.8 4.95-6.04Z"/></svg>
+            <span>New to-do created</span><span class="when">· Now</span><span class="toast-link">See task</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="tip">
+      <h2>Tool tip</h2>
+      <div class="cols">
+        <div class="col">
+          <span class="k">Interactive</span>
+          <button class="tip-host" type="button">Messages<span class="tip">Messages <span>Opt M</span></span></button>
+        </div>
+        <div class="col"><span class="k">Base</span><span class="tip ref">Messages <span>Opt M</span></span></div>
+      </div>
+    </section>
+
+
+    <section id="status">
+      <h2>Status symbols</h2>
+      <div class="cols">
+        <div class="col symbol-col">
+          <span class="k">Base</span>
+          <span class="status"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M17 9a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z" fill="none" stroke="var(--urgency-high)" stroke-width="2"/></svg>Open</span>
+          <span class="status"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M17 9a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z" fill="none" stroke="var(--action)" stroke-width="2"/><path d="M9 14.4a5.4 5.4 0 0 0 0-10.8V9l0 5.4Z" fill="var(--action)"/></svg>In progress</span>
+          <span class="status"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path fill="var(--status-complete)" fill-rule="evenodd" d="M9 0a9 9 0 1 0 0 18A9 9 0 0 0 9 0Zm3.65 6.66-1.05-.86-4 4.9-1.75-1.76-.95.96 2.8 2.8 4.95-6.04Z"/></svg>Completed</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="urgency">
+      <h2>Urgency symbols</h2>
+      <div class="cols">
+        <div class="col symbol-col">
+          <span class="k">Base</span>
+          <span class="urgency urgency-urgent"><svg class="i" width="14" height="14"><use href="#i-warn"/></svg>Urgent</span>
+          <span class="urgency urgency-high">High</span>
+          <span class="urgency urgency-standard">Standard</span>
+          <span class="urgency urgency-low">Low</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="table">
+      <h2>Table</h2>
+      <div class="cols" style="gap: 48px">
+        <div class="col">
+          <span class="k">Interactive</span>
+          <div class="table-wrap">
+            <div class="grid live">
+              <div class="head"><span><svg class="i" width="14" height="14"><use href="#i-home"/></svg>Room</span></div>
+              <div class="head"><span><svg class="i" width="14" height="14"><use href="#i-list"/></svg>To do</span></div>
+              <div class="head"><span>Type</span></div>
+              <div class="head"><span>Urgency</span></div>
+              <div class="head"><span>Status</span></div>
+              <div class="head"><span><svg class="i" width="14" height="14"><use href="#i-user"/></svg>Assigned</span></div>
+              <div class="head"><span><svg class="i" width="14" height="14"><use href="#i-clock"/></svg>Opened</span></div>
+              <div class="row">112</div>
+              <div class="row cell-task">Guestroom · Bath Towels <svg class="i chev" width="14" height="14"><use href="#i-chevron"/></svg></div>
+              <div class="row">Housekeeping</div>
+              <div class="row"><span class="urgency urgency-urgent"><svg class="i" width="14" height="14"><use href="#i-warn"/></svg>Urgent</span></div>
+              <div class="row"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M17 9a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z" fill="none" stroke="var(--urgency-high)" stroke-width="2"/></svg></div>
+              <div class="row"><span class="avatar mini">SM</span> Sarah</div>
+              <div class="row cell-open">now</div>
+            </div>
+            <p class="count">Showing 8 of 19</p>
+          </div>
+        </div>
+        <div class="col">
+          <span class="k">Base</span>
+          <div class="table-wrap ref">
+            <div class="grid">
+              <div class="head"><span><svg class="i" width="14" height="14"><use href="#i-home"/></svg>Room</span></div>
+              <div class="head"><span><svg class="i" width="14" height="14"><use href="#i-list"/></svg>To do</span></div>
+              <div class="head"><span>Type</span></div>
+              <div class="head"><span>Urgency</span></div>
+              <div class="head"><span>Status</span></div>
+              <div class="head"><span><svg class="i" width="14" height="14"><use href="#i-user"/></svg>Assigned</span></div>
+              <div class="head"><span><svg class="i" width="14" height="14"><use href="#i-clock"/></svg>Opened</span></div>
+              <div>112</div>
+              <div>Guestroom · Bath Towels</div>
+              <div>Housekeeping</div>
+              <div><span class="urgency urgency-urgent"><svg class="i" width="14" height="14"><use href="#i-warn"/></svg>Urgent</span></div>
+              <div><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M17 9a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z" fill="none" stroke="var(--urgency-high)" stroke-width="2"/></svg></div>
+              <div><span class="avatar mini">SM</span> Sarah</div>
+              <div class="cell-open">now</div>
+            </div>
+            <p class="count">Showing 8 of 19</p>
+          </div>
+        </div>
+        <div class="col">
+          <span class="k">Hover</span>
+          <div class="table-wrap ref">
+            <div class="grid is-row-hover">
+              <div class="head"><span><svg class="i" width="14" height="14"><use href="#i-home"/></svg>Room</span></div>
+              <div class="head"><span><svg class="i" width="14" height="14"><use href="#i-list"/></svg>To do</span></div>
+              <div class="head"><span>Type</span></div>
+              <div class="head"><span>Urgency</span></div>
+              <div class="head"><span>Status</span></div>
+              <div class="head"><span><svg class="i" width="14" height="14"><use href="#i-user"/></svg>Assigned</span></div>
+              <div class="head"><span><svg class="i" width="14" height="14"><use href="#i-clock"/></svg>Opened</span></div>
+              <div class="row">112</div>
+              <div class="row cell-task">Guestroom · Bath Towels <svg class="i chev" width="14" height="14"><use href="#i-chevron"/></svg></div>
+              <div class="row">Housekeeping</div>
+              <div class="row"><span class="urgency urgency-urgent"><svg class="i" width="14" height="14"><use href="#i-warn"/></svg>Urgent</span></div>
+              <div class="row"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M17 9a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z" fill="none" stroke="var(--urgency-high)" stroke-width="2"/></svg></div>
+              <div class="row"><span class="avatar mini">SM</span> Sarah</div>
+              <div class="row cell-open">now</div>
+            </div>
+            <p class="count">Showing 8 of 19</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    </div>
+
+    <div class="group">
+      <h2>Navigation</h2>
+    <section id="sidebar">
+      <h2>Sidebar</h2>
+      <div class="side-frame">
+        <aside class="side" aria-label="Workspace">
+          <div class="side-top">
+            <div class="side-brand">
+              <span class="side-mark">M</span>
+              <span class="side-title">Mobile Test</span>
+              <svg class="i" width="16" height="16"><use href="#i-chevron"/></svg>
+            </div>
+            <button class="side-icon" type="button" aria-label="Toggle panel"><svg class="i" width="18" height="18"><use href="#i-sidebar"/></svg></button>
+          </div>
+          <div class="side-fixed">
+            <form class="search side-search" role="search">
+              <svg class="i" width="18" height="18"><use href="#i-search"/></svg>
+              <input type="search" placeholder="Search" aria-label="Search">
+              <kbd>⌘ K</kbd>
+            </form>
+            <div class="side-links">
+              <a href="notes.html"><svg class="i" width="18" height="18"><use href="#i-home"/></svg>Home</a>
+              <a class="tip-host" href="notes.html"><svg class="i" width="18" height="18"><use href="#i-bubble"/></svg>Messages<span class="tip">Messages <span>Opt M</span></span></a>
+              <a class="tip-host" href="notes.html"><svg class="i" width="18" height="18"><use href="#i-warn"/></svg>Notifications<span class="tip">Notifications <span>Opt N</span></span></a>
+              <a href="notes.html" aria-current="page"><svg class="i" width="18" height="18"><use href="#i-list"/></svg>Internal notes</a>
+            </div>
+          </div>
+          <div class="side-scroll">
+            <div class="side-group" data-side-group>
+              <button class="side-fold" type="button" data-side-toggle aria-expanded="true">Pinned <svg class="i" width="14" height="14"><use href="#i-chevron"/></svg></button>
+              <div class="side-links" data-side-list>
+                <a href="notes.html"><svg class="i" width="18" height="18"><use href="#i-board"/></svg>Boards</a>
+                <a href="notes.html"><svg class="i" width="18" height="18"><use href="#i-todo"/></svg>To-Dos</a>
+                <a href="notes.html"><svg class="i" width="18" height="18"><use href="#i-alert"/></svg>Complaints</a>
+                <a href="notes.html"><svg class="i" width="18" height="18"><use href="#i-clock"/></svg>Schedule</a>
+              </div>
+            </div>
+            <div class="side-group" data-side-group>
+              <button class="side-fold" type="button" data-side-toggle aria-expanded="true">Guest <svg class="i" width="14" height="14"><use href="#i-chevron"/></svg></button>
+              <div class="side-links" data-side-list>
+                <a href="notes.html"><svg class="i" width="18" height="18"><use href="#i-mic"/></svg>Calls</a>
+                <a href="notes.html"><svg class="i" width="18" height="18"><use href="#i-bubble"/></svg>Guest messages</a>
+                <a href="notes.html"><svg class="i" width="18" height="18"><use href="#i-clock"/></svg>Wake-up calls</a>
+              </div>
+            </div>
+            <div class="side-group" data-side-group>
+              <button class="side-fold" type="button" data-side-toggle aria-expanded="false">Operations <svg class="i" width="14" height="14"><use href="#i-chevron"/></svg></button>
+              <div class="side-links" data-side-list hidden>
+                <a href="notes.html"><svg class="i" width="18" height="18"><use href="#i-board"/></svg>Boards</a>
+                <a href="notes.html"><svg class="i" width="18" height="18"><use href="#i-todo"/></svg>To-Dos</a>
+                <a href="notes.html"><svg class="i" width="18" height="18"><use href="#i-alert"/></svg>Complaints</a>
+                <a href="notes.html"><svg class="i" width="18" height="18"><use href="#i-clock"/></svg>Schedule</a>
+                <a href="notes.html"><svg class="i" width="18" height="18"><use href="#i-filter"/></svg>Cash &amp; bank</a>
+              </div>
+            </div>
+            <div class="side-group" data-side-group>
+              <button class="side-fold" type="button" data-side-toggle aria-expanded="false">Facilities <svg class="i" width="14" height="14"><use href="#i-chevron"/></svg></button>
+              <div class="side-links" data-side-list hidden>
+                <a href="notes.html"><svg class="i" width="18" height="18"><use href="#i-edit"/></svg>PM</a>
+                <a href="notes.html"><svg class="i" width="18" height="18"><use href="#i-clock"/></svg>Readings</a>
+              </div>
+            </div>
+            <div class="side-group" data-side-group>
+              <button class="side-fold" type="button" data-side-toggle aria-expanded="true">Records <svg class="i" width="14" height="14"><use href="#i-chevron"/></svg></button>
+              <div class="side-links" data-side-list>
+                <a href="notes.html" aria-current="page"><svg class="i" width="18" height="18"><use href="#i-list"/></svg>Internal notes</a>
+                <a class="tip-host" href="notes.html"><svg class="i" width="18" height="18"><use href="#i-warn"/></svg>Notifications<span class="tip">Notifications <span>Opt N</span></span></a>
+              </div>
+            </div>
+            <div class="side-group" data-side-group>
+              <button class="side-fold" type="button" data-side-toggle aria-expanded="false">Sales <svg class="i" width="14" height="14"><use href="#i-chevron"/></svg></button>
+              <div class="side-links" data-side-list hidden>
+                <a href="notes.html"><svg class="i" width="18" height="18"><use href="#i-share"/></svg>Sales</a>
+              </div>
+            </div>
+          </div>
+          <div class="side-user">
+            <span class="person"><img class="avatar" src="assets/avatar-sarah.png" alt=""><span class="person-copy"><span>Sarah</span><span class="sub">Mobile Test</span></span></span>
+            <button class="side-icon" type="button" aria-label="Settings"><svg class="i" width="18" height="18"><use href="#i-dots"/></svg></button>
+          </div>
+        </aside>
+      </div>
+    </section>
+    <section id="segments">
+      <h2>Secondary tabs 3 MAX</h2>
+      <div class="cols" style="gap: 43px">
+        <div class="col">
+          <span class="k">Interactive</span>
+          <div class="segmented" role="tablist" data-tabs>
+            <button class="segment" type="button" role="tab" aria-selected="true">Open</button>
+            <button class="segment" type="button" role="tab" aria-selected="false">Scheduled</button>
+            <button class="segment" type="button" role="tab" aria-selected="false">Completed</button>
+          </div>
+        </div>
+        <div class="col">
+          <span class="k">Base</span>
+          <div class="segmented ref" role="tablist">
+            <span class="segment" aria-selected="true">Open</span>
+            <span class="segment">Scheduled</span>
+            <span class="segment">Completed</span>
+          </div>
+        </div>
+        <div class="col">
+          <span class="k">Hover</span>
+          <div class="segmented ref" role="tablist">
+            <span class="segment" aria-selected="true">Open</span>
+            <span class="segment is-hover">Scheduled</span>
+            <span class="segment">Completed</span>
+          </div>
+        </div>
+        <div class="col">
+          <span class="k">Hover</span>
+          <div class="segmented ref" role="tablist">
+            <span class="segment">Open</span>
+            <span class="segment" aria-selected="true">Scheduled</span>
+            <span class="segment">Completed</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="tabs">
+      <h2>Primary tabs</h2>
+      <div class="cols" style="gap: 43px">
+        <div class="col tab-col">
+          <span class="k">Interactive</span>
+          <div class="tabs" role="tablist" data-tabs>
+            <button class="tab" type="button" role="tab" aria-selected="true">Open <span class="count">8</span></button>
+            <button class="tab" type="button" role="tab" aria-selected="false">Scheduled <span class="count">2</span></button>
+            <button class="tab" type="button" role="tab" aria-selected="false">Completed <span class="count">346</span></button>
+          </div>
+          <div class="tabs-bar">
+            <div class="tabs" role="tablist" data-tabs>
+              <button class="tab" type="button" role="tab" aria-selected="true">Open <span class="count">8</span></button>
+              <button class="tab" type="button" role="tab" aria-selected="false">Scheduled <span class="count">2</span></button>
+              <button class="tab" type="button" role="tab" aria-selected="false">Completed <span class="count">346</span></button>
+            </div>
+          </div>
+        </div>
+        <div class="col tab-col">
+          <span class="k">Base</span>
+          <div class="tabs ref">
+            <span class="tab" aria-selected="true">Open <span class="count">8</span></span>
+            <span class="tab">Scheduled <span class="count">2</span></span>
+            <span class="tab">Completed <span class="count">346</span></span>
+          </div>
+          <div class="tabs-bar ref">
+            <div class="tabs">
+              <span class="tab" aria-selected="true">Open <span class="count">8</span></span>
+              <span class="tab">Scheduled <span class="count">2</span></span>
+              <span class="tab">Completed <span class="count">346</span></span>
+            </div>
+          </div>
+        </div>
+        <div class="col tab-col">
+          <span class="k">Hover</span>
+          <div class="tabs ref">
+            <span class="tab is-hover">Open <span class="count">8</span></span>
+            <span class="tab">Scheduled <span class="count">2</span></span>
+            <span class="tab">Completed <span class="count">346</span></span>
+          </div>
+          <div class="tabs-bar ref">
+            <div class="tabs">
+              <span class="tab is-hover">Open <span class="count">8</span></span>
+              <span class="tab">Scheduled <span class="count">2</span></span>
+              <span class="tab">Completed <span class="count">346</span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    </div>
+  </main>
+  <script src="js/gallery.js"></script>
+</body>
+</html>

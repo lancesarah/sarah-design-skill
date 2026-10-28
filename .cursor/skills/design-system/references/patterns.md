@@ -10,7 +10,7 @@
 
 ## Window resize
 
-The left nav and the right Lance chat are fixed-width panels.
+The left nav is the sidebar component in [components.md](components.md). Copy it from `notes.html`. Do not redesign it per screen. The left nav and the right Lance chat are fixed-width panels.
 
 - Keep each panel at its designed width. Do not set them to a percentage, `flex-grow`, or `min()` that tracks the viewport.
 - When the window is too narrow for a panel, hide that panel entirely. Do not squeeze it.
@@ -21,10 +21,11 @@ The left nav and the right Lance chat are fixed-width panels.
 Every product page uses this header in the center column. `notes.html` is the reference.
 
 1. Title row, 60px tall. A 30px page icon, the title at 14px regular, and the count in 50% black. Search is the grey search field, 281px, on the right. A 1px `--grey` line closes the row.
-2. Department bar. A full-width `--sidebar-grey` strip directly under that line. The selected tab uses `--grey`. Its count is `--black-50`. Unselected counts are `--black-25`.
-3. Filter row. Active filter chips on the left, with the field name in medium weight. On the right: the Filters control at its component width, Print, then the blue New button.
+2. Department bar. A full-width `--sidebar-grey` strip directly under that line. The selected tab uses `--grey`. Its name is `--black` and its count is `--black-50`. An unselected name is `--black-50`. Its count is `--black-25`.
+3. Action row. Directly under the tabs, and above the filter chips. Filters, secondary actions such as Print, and the main action sit in the right corner. The main action is the primary button, with an icon. One main action per page.
+4. Filter chips. Below the action row, on the left, with the field name in medium weight.
 
-Do not put search, the switcher, and New on a single crowded row. Do not move the primary action off the right side of this header.
+Do not put search, the switcher, and the main action on a single crowded row. Do not move the primary action off the right corner below the tabs.
 
 ## Filter dropdowns
 

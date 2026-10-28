@@ -9,6 +9,15 @@ When adding a component:
 3. Put icons in the page's SVG sprite and reference them with `<use>`.
 4. Add the new section to the gallery index if it is a shared component.
 
+## Sidebar
+
+The sidebar is one component. `notes.html` (`aside.side`) is the markup. `css/gallery.css` (`.side` and its children) is the styling. Every product page uses that pair.
+
+- Do not restyle the sidebar in a page stylesheet. Width, padding, search, icons, hover, selected row, tooltips, scroll fade, scrollbar, collapse, and the account row are part of the component.
+- A page may change link labels, `href`s, and which row has `aria-current="page"`. It may not change structure, spacing, or color.
+- Keybind tooltips use the tool tip component: Messages is Opt M, Notifications is Opt N.
+- Collapsed and expanded are the only two layouts. Both stay a fixed width.
+
 ## Known pieces
 
 Confirm class names in `index.html` and `css/gallery.css` before using them. Expected groups:

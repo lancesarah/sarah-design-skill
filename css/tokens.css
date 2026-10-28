@@ -39,6 +39,8 @@
 
   --shadow-menu: 0 4px 20px rgb(0 0 0 / 10%);
   --stroke: 0 0 0 1px var(--grey);
+  /* Hairline. Matches --grey in light. Dark mode sets its own. */
+  --line: var(--grey);
 
   --space-2: 2px;
   --space-4: 4px;
@@ -72,4 +74,23 @@
   --outline-image: 1px solid rgb(0 0 0 / 10%);
   --hit: 40px;
   --hit-touch: 44px;
+}
+
+/* Dark mode. Layout, type, and sizes stay on the light tokens.
+   These are the cheatsheet neutrals only. */
+html[data-theme="dark"] {
+  --sidebar-grey: #1A1A1A;
+  --white: #212121;
+  --grey: #292929;
+  --black: #EEEEEE;
+  --black-50: #B5B5B5;
+  /* Quieter than --black-50. Halfway from that grey toward the sidebar. */
+  --black-25: color-mix(in srgb, var(--black-50) 50%, var(--sidebar-grey));
+  --black-12: #292929;
+  --line: rgb(255 255 255 / 5%);
+  --stroke: 0 0 0 1px rgb(255 255 255 / 5%);
+  --shadow-menu: 0 4px 20px rgb(0 0 0 / 45%);
+  --button-fill: #FFFFFF;
+  --button-text: #202020;
+  --button-hover: #EEEEEE;
 }

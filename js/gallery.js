@@ -127,17 +127,54 @@ for (const group of document.querySelectorAll("[data-side-group]")) {
   });
 }
 
+for (const host of document.querySelectorAll(".tip-host")) {
+  const settle = () => host.classList.add("is-quiet", "is-settled");
+  host.addEventListener("pointerdown", () => host.classList.add("is-quiet"));
+  host.addEventListener("click", () => {
+    settle();
+    host.blur();
+  });
+  host.addEventListener("pointerleave", () => host.classList.remove("is-quiet", "is-settled"));
+  host.addEventListener("blur", () => {
+    if (!host.matches(":hover")) host.classList.remove("is-quiet", "is-settled");
+  });
+}
+
 for (const host of document.querySelectorAll(".side .tip-host")) {
   const tip = host.querySelector(".tip");
   if (!tip) continue;
+  let placeFrame = 0;
   const place = () => {
+    placeFrame = 0;
+    if (host.classList.contains("is-quiet")) return;
     const rect = host.getBoundingClientRect();
-    tip.style.left = `${rect.right + 6}px`;
+    const gap = parseFloat(getComputedStyle(host).getPropertyValue("--tip-gap")) || 8;
+    tip.style.left = `${rect.right + gap}px`;
     tip.style.top = `${rect.top + rect.height / 2}px`;
   };
-  const placeNext = () => requestAnimationFrame(place);
-  host.addEventListener("mouseenter", placeNext);
+  let followUntil = 0;
+  const follow = (until) => {
+    const tick = (now) => {
+      if (followUntil !== until) return;
+      place();
+      if (now < until) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  };
+  const placeNext = () => {
+    if (host.classList.contains("is-quiet")) return;
+    cancelAnimationFrame(placeFrame);
+    placeFrame = requestAnimationFrame(place);
+  };
+  host.addEventListener("mouseenter", () => {
+    followUntil = performance.now() + 200;
+    follow(followUntil);
+  });
   host.addEventListener("focus", placeNext);
+  host.addEventListener("pointerdown", () => {
+    followUntil = 0;
+    cancelAnimationFrame(placeFrame);
+  });
 }
 
 for (const form of document.querySelectorAll("[data-composer]")) {
@@ -146,4 +183,16 @@ for (const form of document.querySelectorAll("[data-composer]")) {
   form.addEventListener("submit", (event) => event.preventDefault());
   input.addEventListener("input", sync);
 }
+
+const themeSwitch = document.querySelector("[data-theme-toggle]");
+const themeOn = () => document.documentElement.dataset.theme === "dark";
+const applyTheme = (dark) => {
+  if (dark) document.documentElement.dataset.theme = "dark";
+  else delete document.documentElement.dataset.theme;
+  themeSwitch?.setAttribute("aria-pressed", dark ? "true" : "false");
+  try { localStorage.setItem("theme", dark ? "dark" : "light"); }
+  catch { /* storage can be blocked; the attribute still switches the page */ }
+};
+applyTheme(themeOn());
+themeSwitch?.addEventListener("click", () => applyTheme(!themeOn()));
 

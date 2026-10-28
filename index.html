@@ -3,6 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>
+    try {
+      if (localStorage.getItem("theme") === "dark") document.documentElement.dataset.theme = "dark";
+    } catch (error) {}
+  </script>
   <title>Design system components</title>
   <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=switzer@400,500,600&display=swap">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital@0;1&display=swap">
@@ -96,7 +101,7 @@
           <div class="swatch"><i style="background: var(--sidebar-grey)"></i><b>--sidebar-grey</b><code>#f6f6f6</code><span>Page background, hovers, table header, search bar, Lance bot, standard urgency</span></div>
           <div class="swatch"><i style="background: var(--grey)"></i><b>--grey</b><code>#eaeaea</code><span>Dividers, strokes, messaging composer</span></div>
           <div class="swatch"><i style="background: var(--black-50)"></i><b>--black-50</b><code>#808080</code><span>Secondary text, placeholders, meta labels</span></div>
-          <div class="swatch"><i style="background: var(--black-25)"></i><b>--black-25</b><code>#bfbfbf</code><span>Tab counts, focus ring</span></div>
+          <div class="swatch"><i style="background: var(--black-25)"></i><b>--black-25</b><code>#bfbfbf</code><span>Quieter than secondary text. Tab counts, focus ring, scrollbar, tooltip emphasis. In dark mode, halfway from --black-50 toward --sidebar-grey.</span></div>
           <div class="swatch"><i style="background: var(--black-12)"></i><b>--black-12</b><code>#dbdbdb</code><span>Hover outlines, icon-button hover</span></div>
           <div class="swatch"><i style="background: var(--white)"></i><b>--white</b><code>#ffffff</code><span>Surfaces, text on filled buttons</span></div>
           <div class="swatch"><i style="background: var(--black)"></i><b>--black</b><code>#000000</code><span>Primary text, toast, tooltip</span></div>
@@ -384,7 +389,7 @@
               <button class="side-icon" type="button" aria-label="History"><svg class="i" width="18" height="18"><use href="#i-clock"/></svg></button>
               <button class="side-icon" type="button" aria-label="New chat"><svg class="i" width="18" height="18"><use href="#i-edit"/></svg></button>
               <button class="side-icon" type="button" aria-label="Expand"><svg class="i" width="18" height="18"><use href="#i-share"/></svg></button>
-              <button class="side-icon" type="button" aria-label="Panel"><svg class="i" width="18" height="18"><use href="#i-list"/></svg></button>
+              <button class="side-icon" type="button" aria-label="Collapse chat"><svg class="i" width="18" height="18"><use href="#i-sidebar"/></svg></button>
             </span>
           </header>
           <div class="lance-home">
@@ -575,11 +580,11 @@
       <div class="side-frame">
         <aside class="side" aria-label="Workspace">
           <div class="side-top">
-            <div class="side-brand">
+            <button class="side-brand" type="button">
               <span class="side-mark">M</span>
               <span class="side-title">Mobile Test</span>
               <svg class="i" width="16" height="16"><use href="#i-chevron"/></svg>
-            </div>
+            </button>
             <button class="side-icon" type="button" aria-label="Toggle panel"><svg class="i" width="18" height="18"><use href="#i-sidebar"/></svg></button>
           </div>
           <div class="side-fixed">
@@ -595,6 +600,7 @@
               <a href="notes.html" aria-current="page"><svg class="i" width="18" height="18"><use href="#i-list"/></svg>Internal notes</a>
             </div>
           </div>
+          <div class="side-scroll-frame">
           <div class="side-scroll">
             <div class="side-group" data-side-group>
               <button class="side-fold" type="button" data-side-toggle aria-expanded="true">Pinned <svg class="i" width="14" height="14"><use href="#i-chevron"/></svg></button>
@@ -644,9 +650,13 @@
               </div>
             </div>
           </div>
+          </div>
           <div class="side-user">
             <span class="person"><img class="avatar" src="assets/avatar-sarah.png" alt=""><span class="person-copy"><span>Sarah</span><span class="sub">Mobile Test</span></span></span>
-            <button class="side-icon" type="button" aria-label="Settings"><svg class="i" width="18" height="18"><use href="#i-dots"/></svg></button>
+            <div class="side-settings">
+              <button class="side-icon" type="button" aria-label="Settings"><svg class="i" width="18" height="18"><use href="#i-dots"/></svg></button>
+              <button class="theme-switch" type="button" data-theme-toggle aria-pressed="false" aria-label="Dark mode"><span class="theme-switch-label">Dark mode</span><span class="theme-switch-track" aria-hidden="true"><span class="theme-switch-knob"></span></span></button>
+            </div>
           </div>
         </aside>
       </div>

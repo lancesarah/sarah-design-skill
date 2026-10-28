@@ -28,6 +28,36 @@ A tab on white hovers with `--sidebar-grey`. The same tab on a `--sidebar-grey` 
 
 `--destructive` is the one red for confirmation. Do not introduce a second red.
 
+## Dark mode
+
+`html[data-theme="dark"]` in `css/tokens.css` recolors the same tokens. Type, sizes, spacing, and radii do not change.
+
+| Role | Token | Dark |
+|------|--------|------|
+| Page and sidebar | `--sidebar-grey` | `#1A1A1A` |
+| Cards and raised surfaces | `--white` | `#212121` |
+| Selected row | `--grey` | `#292929` |
+| Sidebar hover | `--white` | `#212121`, between the page and the selected row |
+| Names | `--black` | `#EEEEEE` |
+| Subtext | `--black-50` | `#B5B5B5` |
+| Quiet grey | `--black-25` | halfway from `--black-50` toward `--sidebar-grey` |
+| Quiet fill | `--black-12` | `#292929` |
+| Card and panel stroke | `--line`, `--stroke` | white at 5% |
+
+`--line` is `--grey` in light mode, so light borders stay the same. Accent colors stay. Type, sizes, spacing, and radii do not change.
+
+Hover lightens. A card or table row steps from `--white` (`#212121`) to `--grey` (`#292929`). It does not fall back to the page.
+
+The primary button stays `--action`, with white text. Its hover lightens that blue.
+
+The secondary button stays a neutral surface: `--white` fill, `--black` text, and a `--stroke` hairline. Its hover is `--grey`, lighter than the card. It is not a white button.
+
+The search stroke, including the shortcut key border, uses `--line`.
+
+`--black-25` is the quieter grey. Light mode keeps `#bfbfbf`. In dark mode it is halfway from `--black-50` toward `--sidebar-grey`, and it is not a copy of `--black-50`. Use it for unselected tab counts, focus rings, scrollbars, and tooltip emphasis. Search strokes stay on `--line`.
+
+Sidebar icon buttons stay unfilled. The switch under Settings uses `--action` and `--switch-knob` in both themes.
+
 ## Type
 
 - `--font`: Switzer, weights 400 and 500.

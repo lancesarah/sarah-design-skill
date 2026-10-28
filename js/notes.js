@@ -66,6 +66,17 @@ for (const chip of document.querySelectorAll("[data-suggest]")) {
   });
 }
 
+const sideLinks = [...document.querySelectorAll(".side .side-links a")];
+for (const link of sideLinks) {
+  link.addEventListener("click", (event) => {
+    event.preventDefault();
+    for (const other of sideLinks) {
+      if (other === link) other.setAttribute("aria-current", "page");
+      else other.removeAttribute("aria-current");
+    }
+  });
+}
+
 const collapseButton = document.querySelector(".side-top [data-side-collapse]");
 
 function setSideCollapsed(collapsed) {
@@ -79,12 +90,25 @@ collapseButton?.addEventListener("click", () => {
   setSideCollapsed(!document.body.classList.contains("is-side-collapsed"));
 });
 
+const lanceCollapse = document.querySelector("#lance [data-lance-collapse]");
+
+function setLanceCollapsed(collapsed) {
+  document.body.classList.toggle("is-lance-collapsed", collapsed);
+  lanceCollapse?.setAttribute("aria-expanded", collapsed ? "false" : "true");
+  lanceCollapse?.setAttribute("aria-label", collapsed ? "Open chat" : "Collapse chat");
+}
+
+lanceCollapse?.addEventListener("click", () => {
+  setLanceCollapsed(!document.body.classList.contains("is-lance-collapsed"));
+});
+
 function edgeFade(el, axis) {
   const update = () => {
     const max = axis === "x" ? el.scrollWidth - el.clientWidth : el.scrollHeight - el.clientHeight;
     const pos = axis === "x" ? el.scrollLeft : el.scrollTop;
-    el.classList.toggle("is-fade-start", max > 1 && pos > 1);
-    el.classList.toggle("is-fade-end", max > 1 && pos < max - 1);
+    const fade = el.closest(".side-scroll-frame") || el;
+    fade.classList.toggle("is-fade-start", max > 1 && pos > 1);
+    fade.classList.toggle("is-fade-end", max > 1 && pos < max - 1);
   };
   update();
   el.addEventListener("scroll", update, { passive: true });
@@ -124,15 +148,52 @@ document.querySelector("[data-new]")?.addEventListener("click", () => {
   applyFilters();
 });
 
+for (const host of document.querySelectorAll(".tip-host")) {
+  const settle = () => host.classList.add("is-quiet", "is-settled");
+  host.addEventListener("pointerdown", () => host.classList.add("is-quiet"));
+  host.addEventListener("click", () => {
+    settle();
+    host.blur();
+  });
+  host.addEventListener("pointerleave", () => host.classList.remove("is-quiet", "is-settled"));
+  host.addEventListener("blur", () => {
+    if (!host.matches(":hover")) host.classList.remove("is-quiet", "is-settled");
+  });
+}
+
 for (const host of document.querySelectorAll(".side .tip-host")) {
   const tip = host.querySelector(".tip");
   if (!tip) continue;
+  let placeFrame = 0;
   const place = () => {
+    placeFrame = 0;
+    if (host.classList.contains("is-quiet")) return;
     const rect = host.getBoundingClientRect();
-    tip.style.left = `${rect.right + 6}px`;
+    const gap = parseFloat(getComputedStyle(host).getPropertyValue("--tip-gap")) || 8;
+    tip.style.left = `${rect.right + gap}px`;
     tip.style.top = `${rect.top + rect.height / 2}px`;
   };
-  const placeNext = () => requestAnimationFrame(place);
-  host.addEventListener("mouseenter", placeNext);
+  let followUntil = 0;
+  const follow = (until) => {
+    const tick = (now) => {
+      if (followUntil !== until) return;
+      place();
+      if (now < until) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  };
+  const placeNext = () => {
+    if (host.classList.contains("is-quiet")) return;
+    cancelAnimationFrame(placeFrame);
+    placeFrame = requestAnimationFrame(place);
+  };
+  host.addEventListener("mouseenter", () => {
+    followUntil = performance.now() + 200;
+    follow(followUntil);
+  });
   host.addEventListener("focus", placeNext);
+  host.addEventListener("pointerdown", () => {
+    followUntil = 0;
+    cancelAnimationFrame(placeFrame);
+  });
 }

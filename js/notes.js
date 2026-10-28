@@ -78,29 +78,54 @@ for (const link of sideLinks) {
 }
 
 const collapseButton = document.querySelector(".side-top [data-side-collapse]");
+const lanceCollapse = document.querySelector("#lance [data-lance-collapse]");
+
+// Open widths are 277 and 392. Rails are 54 and 62. The notes table needs 590.
+// Left nav closes first, then the chat. See patterns.md, Window resize.
+const SIDE_OPEN_AT = 1259;
+const LANCE_OPEN_AT = 1036;
+let sideChosen = false;
+let sideHeldOpen = false;
+let lanceChosen = false;
 
 function setSideCollapsed(collapsed) {
+  if (document.body.classList.contains("is-side-collapsed") === collapsed) return;
   document.body.classList.toggle("is-side-collapsed", collapsed);
   document.body.classList.remove("is-side-settling");
   collapseButton?.setAttribute("aria-expanded", collapsed ? "false" : "true");
   collapseButton?.setAttribute("aria-label", collapsed ? "Expand sidebar" : "Collapse sidebar");
 }
 
-collapseButton?.addEventListener("click", () => {
-  setSideCollapsed(!document.body.classList.contains("is-side-collapsed"));
-});
-
-const lanceCollapse = document.querySelector("#lance [data-lance-collapse]");
-
 function setLanceCollapsed(collapsed) {
+  if (document.body.classList.contains("is-lance-collapsed") === collapsed) return;
   document.body.classList.toggle("is-lance-collapsed", collapsed);
   lanceCollapse?.setAttribute("aria-expanded", collapsed ? "false" : "true");
   lanceCollapse?.setAttribute("aria-label", collapsed ? "Open chat" : "Collapse chat");
 }
 
-lanceCollapse?.addEventListener("click", () => {
-  setLanceCollapsed(!document.body.classList.contains("is-lance-collapsed"));
+function applyPanelLimits() {
+  const width = window.innerWidth;
+  if (width >= SIDE_OPEN_AT) sideHeldOpen = false;
+  setSideCollapsed((width < SIDE_OPEN_AT && !sideHeldOpen) || sideChosen);
+  setLanceCollapsed(width < LANCE_OPEN_AT || lanceChosen);
+}
+
+collapseButton?.addEventListener("click", () => {
+  const next = !document.body.classList.contains("is-side-collapsed");
+  sideChosen = next;
+  sideHeldOpen = !next && window.innerWidth < SIDE_OPEN_AT;
+  setSideCollapsed(next);
 });
+
+lanceCollapse?.addEventListener("click", () => {
+  const next = !document.body.classList.contains("is-lance-collapsed");
+  if (!next && window.innerWidth < LANCE_OPEN_AT) return;
+  lanceChosen = next;
+  setLanceCollapsed(next);
+});
+
+applyPanelLimits();
+window.addEventListener("resize", applyPanelLimits);
 
 function edgeFade(el, axis) {
   const update = () => {
@@ -123,9 +148,10 @@ const deptStrip = document.querySelector(".page-filters .tabs");
 if (deptStrip) edgeFade(deptStrip, "x");
 
 document.querySelector("[data-new]")?.addEventListener("click", () => {
+  const grid = document.querySelector(".notes-grid");
+  if (!grid) return;
   const title = prompt("Note title");
   if (!title) return;
-  const grid = document.querySelector(".notes-grid");
   const button = document.createElement("button");
   button.className = "row cell-task";
   button.type = "button";

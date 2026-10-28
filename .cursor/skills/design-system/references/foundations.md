@@ -32,12 +32,13 @@ A tab on white hovers with `--sidebar-grey`. The same tab on a `--sidebar-grey` 
 
 `html[data-theme="dark"]` in `css/tokens.css` recolors the same tokens. Type, sizes, spacing, and radii do not change.
 
+A surface that is darker than the page in light mode is lighter than the page in dark mode. The page stays the darkest surface.
+
 | Role | Token | Dark |
 |------|--------|------|
-| Page and sidebar | `--sidebar-grey` | `#1A1A1A` |
-| Cards and raised surfaces | `--white` | `#212121` |
-| Selected row | `--grey` | `#292929` |
-| Sidebar hover | `--white` | `#212121`, between the page and the selected row |
+| Page | `--white` | `#1A1A1A` |
+| Sidebar, department bar, and other chrome darker than the page in light mode | `--sidebar-grey` | `#212121` |
+| Selected row and hover on that chrome | `--grey` | `#292929` |
 | Names | `--black` | `#EEEEEE` |
 | Subtext | `--black-50` | `#B5B5B5` |
 | Quiet grey | `--black-25` | halfway from `--black-50` toward `--sidebar-grey` |
@@ -46,9 +47,9 @@ A tab on white hovers with `--sidebar-grey`. The same tab on a `--sidebar-grey` 
 
 `--line` is `--grey` in light mode, so light borders stay the same. Accent colors stay. Type, sizes, spacing, and radii do not change.
 
-Hover lightens. A card or table row steps from `--white` (`#212121`) to `--grey` (`#292929`). It does not fall back to the page.
+Hover lightens. A card or table row steps from `--white` (`#1A1A1A`) to `--grey` (`#292929`). It does not fall back onto a darker surface.
 
-The primary button stays `--action`, with white text. Its hover lightens that blue.
+The primary button stays `--action`, with white text. Its hover is `--action-hover`, the darker blue, in both themes.
 
 The secondary button stays a neutral surface: `--white` fill, `--black` text, and a `--stroke` hairline. Its hover is `--grey`, lighter than the card. It is not a white button.
 
@@ -85,5 +86,5 @@ Sidebar icon buttons stay unfilled. The switch under Settings uses `--action` an
 - `--shadow-menu`: menus and popovers.
 - `--stroke`: 1px `--grey` ring.
 - `--outline-image`: 1px pure black at 10% opacity, inset on photographs.
-- `--icon-stroke`: `1`. Stroke icons use this width in the 14 viewBox. Filled sidebar icons match the Internal notes weight instead. See [polish.md](polish.md).
+- `--icon-stroke`: `calc(1 / 0.95)`. Icons with class `i` are scaled to 0.95, and this keeps the painted stroke at `1`. Sidebar icons use the outlined Material glyph, fitted to Internal notes. See [polish.md](polish.md).
 - `--hit` / `--hit-touch`: 40px and 44px hit areas. The visible control stays its gallery size.

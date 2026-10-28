@@ -228,7 +228,7 @@ h2 {
 
 .ref { pointer-events: none; }
 
-.i { display: block; flex: none; }
+.i { display: block; flex: none; scale: 0.95; }
 
 :focus-visible {
   outline: 1px solid var(--black);
@@ -485,6 +485,7 @@ section { scroll-margin-top: 24px; }
 .lance.is-typed .lead,
 .msg.is-typed .lead { color: var(--black); }
 .lead, .tools { display: inline-flex; align-items: center; gap: 8px; }
+.tools { gap: 0; }
 .msg > .lead { flex: 1; min-width: 0; }
 .lance input, .msg input { width: 180px; background: transparent; color: inherit; }
 .msg input { width: auto; flex: 1; min-width: 0; }
@@ -507,13 +508,19 @@ section { scroll-margin-top: 24px; }
 }
 .lead > .well,
 button[aria-label="Add"] { color: var(--black-50); background: transparent; }
-button[aria-label="Add"]:hover { background: var(--black-12); color: var(--black-50); }
+button[aria-label="Add"]:hover { background: var(--grey); color: var(--black-50); }
 button[aria-label="Microphone"] { color: var(--black-50); background: transparent; }
-button[aria-label="Microphone"]:hover:not(.is-on) { background: var(--black-12); color: var(--black-50); }
-.well.is-on,
-button[aria-label="Send"]:hover,
-.lance.has-value [aria-label="Send"],
-.msg.has-value [aria-label="Send"] { background: var(--action); color: var(--white); }
+button[aria-label="Microphone"]:hover:not(.is-on) { background: var(--grey); color: var(--black-50); }
+.well.is-on { background: var(--action); color: var(--white); }
+button[aria-label="Send"] { color: var(--black-50); background: transparent; }
+button[aria-label="Send"]:hover { background: var(--grey); color: var(--black-50); }
+.lance.has-value button[aria-label="Send"],
+.msg.has-value button[aria-label="Send"],
+.lance.has-value button[aria-label="Send"]:hover,
+.msg.has-value button[aria-label="Send"]:hover {
+  background-color: var(--action);
+  color: var(--white);
+}
 .mode {
   display: inline-flex;
   align-items: center;
@@ -523,7 +530,11 @@ button[aria-label="Send"]:hover,
   border-radius: 6px;
   color: var(--black-50);
 }
-.mode:hover { background: var(--black-12); color: var(--black-50); }
+.lance .mode,
+.lance .well,
+.msg .mode,
+.msg .well { transition: none; }
+.mode:hover { background: var(--grey); color: var(--black-50); }
 
 /* Fields */
 .field { display: flex; flex-direction: column; gap: 5px; width: 268px; }
@@ -707,12 +718,12 @@ button[aria-label="Send"]:hover,
 }
 
 /* Sidebar. Type is Switzer. Icons are the library set, drawn at 18px. */
-.side-frame { width: 307px; height: 920px; }
+.side-frame { width: 277px; height: 920px; }
 .side {
   display: flex;
   flex-direction: column;
   gap: 14px;
-  width: 307px;
+  width: 277px;
   height: 100%;
   padding: 16px 0 12px;
   overflow: hidden;
@@ -848,14 +859,14 @@ button[aria-label="Send"]:hover,
   font-size: 12px;
   font-weight: 400;
 }
-.side-links { display: flex; flex-direction: column; }
+.side-links { position: relative; display: flex; flex-direction: column; gap: 0.5px; }
 .side-links[hidden] { display: none; }
 .side-links a {
   gap: 4px;
-  min-height: 32px;
-  padding: 1px 0;
+  min-height: 30px;
+  padding: 4px 0;
   border: 1px solid transparent;
-  border-radius: 5px;
+  border-radius: var(--radius-control);
   color: var(--black-50);
   font-family: var(--font);
   font-size: 14px;
@@ -863,34 +874,126 @@ button[aria-label="Send"]:hover,
   text-decoration: none;
 }
 .side-links a .i { margin: 0 6px 0 0; }
-.side-links a[aria-current="page"] {
-  margin-inline: -8px;
+.side-item { position: relative; }
+.side-actions {
+  position: absolute;
+  top: 0;
+  right: 2px;
+  bottom: 0;
+  display: none;
+  align-items: center;
+  gap: var(--space-2);
+}
+.side-item:hover .side-actions,
+.side-item:focus-within .side-actions { display: flex; }
+.side-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  padding: 2px;
+  border: 0;
+  border-radius: var(--radius-control);
+  background: transparent;
+  color: var(--black-50);
+}
+.side-action .i { margin: 0; }
+.side-action[data-side-drag] { cursor: grab; }
+.side-action:hover,
+.side-action.is-hover { background: var(--black-12); color: var(--black); }
+.side-item.is-dragging .side-actions { display: flex; visibility: hidden; }
+.side-item.is-dragging > a,
+.side-item.is-dragging > a:hover {
+  color: color-mix(in srgb, var(--black-50) 50%, var(--black-25));
+}
+.side-item.is-dragging > a[aria-current="page"],
+.side-item.is-dragging > a[aria-current="page"]:hover {
+  color: var(--black-50);
+}
+.side-drop {
+  position: absolute;
+  right: 0;
+  left: 0;
+  z-index: 2;
+  height: var(--space-2);
+  margin-top: calc(var(--space-2) / -2);
+  border-radius: var(--radius-well);
+  background: var(--action);
+  pointer-events: none;
+}
+.side-drag {
+  position: fixed;
+  z-index: 30;
+  opacity: 0.5;
+  pointer-events: none;
+}
+.side-drag > a,
+.side-drag > a[aria-current="page"] {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  min-height: 32px;
+  margin-inline: 0;
   padding: 1px 8px;
+  border: 1px solid transparent;
+  border-radius: 5px;
   background: var(--white);
-  border-color: var(--line);
+  box-shadow: var(--stroke), var(--shadow-menu);
+  color: var(--black);
+  font-family: var(--font);
+  font-size: 14px;
+  font-weight: 400;
+  text-decoration: none;
+}
+.side-drag > a .i { margin: 0 6px 0 0; }
+.side-drag .side-actions { display: flex; }
+body.is-side-reordering,
+body.is-side-reordering * { cursor: grabbing; }
+body.is-side-reordering { user-select: none; }
+.side-item[hidden] { display: none; }
+body.is-side-collapsed .side-item,
+body.is-side-settling .side-item { display: contents; }
+body.is-side-collapsed .side-item[hidden],
+body.is-side-settling .side-item[hidden] { display: none; }
+body.is-side-collapsed .side-actions,
+body.is-side-settling .side-actions,
+body.is-side-collapsed .side-item:hover .side-actions,
+body.is-side-collapsed .side-item:focus-within .side-actions,
+body.is-side-settling .side-item:hover .side-actions,
+body.is-side-settling .side-item:focus-within .side-actions {
+  display: none;
+}
+.side-links a[aria-current="page"] {
+  margin-inline: calc(var(--space-8) * -1);
+  padding: 4px var(--space-8);
+  background: var(--grey);
+  border-color: transparent;
   color: var(--black);
 }
 .side-links a:hover {
-  margin-inline: -8px;
-  padding: 1px 8px;
+  margin-inline: calc(var(--space-8) * -1);
+  padding: 4px var(--space-8);
   background: var(--grey);
   background-clip: padding-box;
+  color: var(--black-50);
 }
 .side-links a[aria-current="page"]:hover {
-  background: var(--white);
+  background: var(--grey);
   color: var(--black);
 }
 .side-links a.is-settled:hover {
   margin-inline: 0;
-  padding: 1px 0;
+  padding: 4px 0;
   background: transparent;
   color: var(--black-50);
 }
 .side-links a[aria-current="page"].is-settled:hover {
-  margin-inline: -8px;
-  padding: 1px 8px;
-  background: var(--white);
-  border-color: var(--line);
+  margin-inline: calc(var(--space-8) * -1);
+  padding: 4px var(--space-8);
+  background: var(--grey);
+  border-color: transparent;
   color: var(--black);
 }
 .side-links a.is-dim { opacity: 0.5; }
@@ -908,7 +1011,7 @@ button[aria-label="Send"]:hover,
   color: var(--black-50);
   font-family: var(--font);
   font-size: var(--text-12);
-  font-weight: 400;
+  font-weight: 500;
   line-height: 12px;
   padding-block: 3px;
 }
@@ -1019,11 +1122,9 @@ body.is-side-settling .side-scroll > .side-group ~ .side-group {
 body.is-side-collapsed .side-top,
 body.is-side-settling .side-top {
   position: relative;
-  justify-content: space-between;
+  justify-content: center;
   width: 100%;
-  /* The rail border leaves this 30px control at 29px, so 12px padding
-     puts its glyph left of the nav icons. 15.5px lines them up. */
-  padding: 0 8.5px 14px 15.5px;
+  padding: 0 0 14px;
   border-bottom: 0;
 }
 body.is-side-collapsed .side-top::before,
@@ -1041,16 +1142,17 @@ body.is-side-settling .side-fixed,
 body.is-side-collapsed .side-scroll,
 body.is-side-settling .side-scroll {
   align-self: stretch;
-  align-items: stretch;
+  align-items: center;
   gap: var(--space-8);
   width: 100%;
-  padding: 0 var(--space-12) 0 var(--space-20);
+  padding: 0;
   overflow: hidden;
 }
 body.is-side-collapsed .side-fixed,
 body.is-side-settling .side-fixed {
   position: relative;
-  padding: var(--space-16) var(--space-12) var(--space-16) var(--space-20);
+  gap: 0;
+  padding: var(--space-16) 0;
 }
 body.is-side-collapsed .side-fixed::after,
 body.is-side-settling .side-fixed::after {
@@ -1068,7 +1170,7 @@ body.is-side-collapsed .side-links,
 body.is-side-settling .side-links,
 body.is-side-collapsed .side-group,
 body.is-side-settling .side-group {
-  align-items: stretch;
+  align-items: center;
   margin: 0;
   padding: 0;
   border: 0;
@@ -1078,7 +1180,7 @@ body.is-side-settling .side-links { gap: 0; }
 body.is-side-collapsed .side-group,
 body.is-side-settling .side-group {
   position: relative;
-  gap: var(--space-8);
+  gap: 0;
   width: 100%;
   padding-top: var(--space-16);
 }
@@ -1094,7 +1196,7 @@ body.is-side-settling .side-group::before {
 }
 body.is-side-collapsed .side-links a,
 body.is-side-settling .side-links a {
-  justify-content: flex-start;
+  justify-content: center;
   width: auto;
   height: 32px;
   min-height: 32px;
@@ -1158,8 +1260,8 @@ body.is-side-settling .side-links a[aria-current="page"] {
 }
 body.is-side-collapsed .side-links a[aria-current="page"]::before,
 body.is-side-settling .side-links a[aria-current="page"]::before {
-  background: var(--white);
-  border-color: var(--line);
+  background: var(--grey);
+  border-color: transparent;
 }
 body.is-side-collapsed .side-links a.is-settled:hover,
 body.is-side-settling .side-links a.is-settled:hover {
@@ -1179,8 +1281,8 @@ body.is-side-settling .side-links a[aria-current="page"].is-settled:hover {
 body.is-side-collapsed .side-links a[aria-current="page"].is-settled:hover::before,
 body.is-side-settling .side-links a[aria-current="page"].is-settled:hover::before {
   content: "";
-  background: var(--white);
-  border-color: var(--line);
+  background: var(--grey);
+  border-color: transparent;
 }
 body.is-side-collapsed .side-user,
 body.is-side-settling .side-user {
@@ -1279,12 +1381,12 @@ body.is-side-settling .side-user .avatar {
   right: 0;
   bottom: calc(100% + 8px);
   z-index: 3;
-  width: 228px;
+  width: max-content;
+  color: var(--black);
 }
-.lance-side .menu-item { align-items: flex-start; }
-.mode-copy { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; }
-.mode-copy b { font-weight: 500; font-size: 14px; }
-.mode-copy span { color: var(--black-50); font-size: 12px; font-weight: 400; }
+.mode-copy { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-2); }
+.mode-copy b { font-weight: 400; font-size: var(--text-14); }
+.mode-copy span { color: var(--black-50); font-size: var(--text-12); font-weight: 400; }
 
 /* Dark mode. Colors only. Light-mode rules above stay put. */
 html[data-theme="dark"] .text-icon:hover,
@@ -1311,16 +1413,9 @@ html[data-theme="dark"] .chip-filter:hover,
 html[data-theme="dark"] .chip-filter.is-hover {
   background: var(--filter-chip-bg);
 }
-html[data-theme="dark"] .side-links a:hover:not(.is-settled) {
-  background: var(--white);
-}
 html[data-theme="dark"] body.is-side-collapsed .side-links a:hover:not(.is-settled),
 html[data-theme="dark"] body.is-side-settling .side-links a:hover:not(.is-settled) {
   background: transparent;
-}
-html[data-theme="dark"] body.is-side-collapsed .side-links a:hover:not(.is-settled)::before,
-html[data-theme="dark"] body.is-side-settling .side-links a:hover:not(.is-settled)::before {
-  background: var(--white);
 }
 html[data-theme="dark"] .side-links a[aria-current="page"],
 html[data-theme="dark"] .side-links a[aria-current="page"]:hover,
@@ -1350,13 +1445,21 @@ html[data-theme="dark"] .btn:not(.btn-secondary):not(.btn-danger) {
   background: var(--action);
   color: var(--button-fill);
 }
+html[data-theme="dark"] .lance.has-value button[aria-label="Send"],
+html[data-theme="dark"] .msg.has-value button[aria-label="Send"],
+html[data-theme="dark"] .lance.has-value button[aria-label="Send"]:hover,
+html[data-theme="dark"] .msg.has-value button[aria-label="Send"]:hover,
+html[data-theme="dark"] .well.is-on {
+  background-color: var(--action);
+  color: var(--button-fill);
+}
 html[data-theme="dark"] .btn:not(.btn-secondary):not(.btn-danger):hover,
 html[data-theme="dark"] .btn:not(.btn-secondary):not(.btn-danger).is-hover {
-  background: color-mix(in srgb, var(--action) 78%, white);
+  background: var(--action-hover);
   color: var(--button-fill);
 }
 html[data-theme="dark"] .btn:not(.btn-secondary):not(.btn-danger):active {
-  background: color-mix(in srgb, var(--action) 65%, white);
+  background: color-mix(in srgb, var(--action-hover) 85%, black);
   color: var(--button-fill);
 }
 html[data-theme="dark"] .btn-secondary {

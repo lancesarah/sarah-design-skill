@@ -70,7 +70,8 @@
   --text-wrap-title: balance;
   --text-wrap-copy: pretty;
   --numeric: tabular-nums;
-  --icon-stroke: 1;
+  /* 1 / 0.95. .i is scaled to 0.95, so the painted stroke stays 1. */
+  --icon-stroke: calc(1 / 0.95);
   --outline-image: 1px solid rgb(0 0 0 / 10%);
   --hit: 40px;
   --hit-touch: 44px;
@@ -79,8 +80,10 @@
 /* Dark mode. Layout, type, and sizes stay on the light tokens.
    These are the cheatsheet neutrals only. */
 html[data-theme="dark"] {
-  --sidebar-grey: #1A1A1A;
-  --white: #212121;
+  /* The page is the darkest surface. Chrome that is darker than the page
+     in light mode is lighter than the page here. */
+  --white: #1A1A1A;
+  --sidebar-grey: #212121;
   --grey: #292929;
   --black: #EEEEEE;
   --black-50: #B5B5B5;

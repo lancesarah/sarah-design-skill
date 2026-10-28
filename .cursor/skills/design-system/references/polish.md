@@ -38,7 +38,7 @@ Visible control sizes stay on the gallery component. Where a control is smaller 
 
 Every sidebar icon follows the internal notes icon. They share its line weight, rounded corners, and size, and each one keeps its own shape.
 
-Pull sidebar glyphs from [Material Symbols](https://fonts.google.com/icons). Use the SVG on the 960 grid (`viewBox="0 -960 960 960"`). Keep the path. Do not redraw the silhouette, and do not stretch it into another icon's box. The sidebar toggle (`#i-sidebar`) is a wide 11×10 frame; other glyphs do not inherit that frame.
+Pull sidebar glyphs from [Material Symbols](https://fonts.google.com/icons). Use the outlined glyph, the stroke look, not the filled one. Use the SVG on the 960 grid (`viewBox="0 -960 960 960"`). Keep the path. Do not redraw the silhouette, and do not stretch it into another icon's box. The sidebar toggle (`#i-sidebar`) is a wide 11×10 frame; other glyphs do not inherit that frame.
 
 `#i-doc` (Internal notes) is the reference, including the page-title mark. Fit every sidebar icon the same way:
 
@@ -48,10 +48,8 @@ Pull sidebar glyphs from [Material Symbols](https://fonts.google.com/icons). Use
 - Wrap the path in `<g transform="translate(tx ty) scale(s)">`. Scale applies first.
 - Color is `currentColor`. Do not set a hex on the path.
 
-Weight and corners match `#i-doc`. Its bars are 60 units on the Material grid. At its scale (`0.016176`) that is about 0.97 in the 14 viewBox.
+Weight and corners match `#i-doc`. The outlined path is a ring, so it stays `fill="currentColor"`. Drop a trailing subpath that has no area. Do not switch it to the filled glyph, and do not add a second stroke on top of the ring.
 
-- A filled Material glyph uses `fill="currentColor"`. Drop a trailing subpath that has no area. Do not add a thick stroke.
-- If the fitted bars are thinner than the notes icon, add `stroke="currentColor" stroke-linejoin="round"` with `stroke-width="7"` in source units (the messages and guest-messages bubbles). Glyphs that already match, such as the square alert, stay fill-only.
-- A stroke drawing that is not a Material fill uses `fill="none"`, `stroke="currentColor"`, `stroke-linecap="round"`, `stroke-linejoin="round"`, and `stroke-width: calc(var(--icon-stroke) * (1 / s))` so the final stroke in the 14 viewBox stays `1`.
+- A stroke drawing that is not a Material outline uses `fill="none"`, `stroke="currentColor"`, `stroke-linecap="round"`, `stroke-linejoin="round"`, and `stroke-width: calc(var(--icon-stroke) * (1 / s))` so the final stroke in the 14 viewBox stays `1`.
 
 Other icons still join the page sprite. Stroke stays `currentColor` at `var(--icon-stroke)`. Outline is the resting state except where the gallery already fills, such as the in-progress status. Color and opacity carry hover, selected, and disabled. If a control swaps glyphs, keep both in the DOM and cross-fade opacity in 150ms or less. Decorative icons are `aria-hidden`. Icon-only buttons keep an accessible name.

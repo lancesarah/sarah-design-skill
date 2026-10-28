@@ -34,15 +34,23 @@ Forced by: "compensate for the smaller font size with padding so it still has th
 
 Collapsed is a thin icon rail. Hide the labels. Keep the rail. The row stays wide enough for the 18px icon, so the glyph is not clipped.
 
-Icons stay on the left for the whole animation. The panel moves. The glyphs do not jump to the center.
+Collapsed icons are centered in the rail. The panel still moves. The 18px glyph is not clipped.
 
 Opening and closing do not flash a horizontal scrollbar.
 
 The collapsed selection box is a 32px square on the icon. Hover uses that same square. The square does not slide or resize. The glyph stays put inside it. Keep that box when you adjust spacing.
 
+A collapsed section label takes no space, including the gap under it. The icon above a divider and the icon below it sit the same distance from the line.
+
+The reorder grip and the pin control belong to the expanded row. A row in Pinned uses the unpin glyph. Every other row uses the pin glyph. It is not the hidden eye. Collapse hides both. Hovering the rail does not bring them back. The hover around that icon is the icon chip: an 18px box, 2px padding, and a 6px radius.
+
+Sidebar hover does not animate. The grey fill appears at once.
+
 The account control is the settings gear. Do not put a three-dot menu there.
 
-Forced by: "it should still have a thin bar," "icons start on the left and then the side bar moves right," "the horizontal scroll bar flashes," and "this should be the settings icon."
+On resize, collapse the left nav before the Lance chat. The left nav collapses under 1259px. The chat collapses under 1036px. Those limits keep a 590px center. Do not stack the nav on top of the page. A click to expand the left nav overrides the width limit and stays open.
+
+Forced by: "it should still have a thin bar," "make them center," "the horizontal scroll bar flashes," and "this should be the settings icon."
 
 ## Inputs and menus
 
@@ -50,11 +58,11 @@ Hover on a text field, search field, or composer darkens the outer stroke by one
 
 Search text stays `--black` while the field has a value. The clear control stays visible for that whole time.
 
-The composer add control stays grey. Its hover is a darker grey. It does not turn blue.
+The composer add control stays grey. Its hover is `--grey`, the same fill as a left nav row. It does not turn blue.
 
-The microphone turns `--action` only while it is on. Hover darkens the grey.
+The microphone turns `--action` only while it is on. Otherwise its hover is `--grey`, the same fill as a left nav row. The mode control uses that same hover.
 
-The send control turns `--action` when the field has text, not only on hover.
+The send arrow stays grey when the field is empty, including on hover. It turns `--action` only when the field has text.
 
 A closed menu shows the selected option's icon.
 
@@ -70,14 +78,16 @@ Forced by: the search and Lance state notes, "the entire row should highlight," 
 
 Dark mode recolors the tokens in `css/tokens.css`. It does not change type, size, spacing, or radius.
 
-Hover lightens. A card or table row steps to `--grey`. It does not use the page color.
+A surface that is darker than the page in light mode is lighter than the page in dark mode. The page is `--white`. The sidebar and the department bar are `--sidebar-grey`.
 
-The primary button stays `--action`, with white text. Its hover lightens that blue.
+Hover lightens. A card or table row steps to `--grey`. It does not use a darker surface.
+
+The primary button stays `--action`, with white text. Its hover is `--action-hover`, the darker blue, in both themes.
 
 The secondary button is a `--white` surface with `--black` text and a `--stroke` hairline. Its hover is `--grey`. It is not a white fill with dark text.
 
 The search stroke, including the shortcut key, uses `--line`.
 
-`--black-25` is the quieter grey. In dark mode it sits halfway from `--black-50` toward `--sidebar-grey`. Unselected tab counts, focus rings, scrollbars, and tooltip emphasis use it. An unselected department name stays `--black-50`. Filter chips sit below the Filters, Print, and New row in both themes.
+`--black-25` is the quieter grey. In dark mode it sits halfway from `--black-50` toward `--sidebar-grey`. Unselected tab counts, focus rings, scrollbars, and tooltip emphasis use it. An unselected department name stays `--black-50`. Filter chips share the row with Filters, Print, and New. They are vertically centered with those buttons and start at the left edge. Extra chips wrap to that edge. When the row cannot hold the buttons and two chips, the chips move to the next line. A single chip does not sit beside the buttons.
 
 Forced by: "in dark mode, the hover should lighten the selection" and "it's wrong in the table," "the primary button is wrong," "the secondary button is also wrong in dark mode," "the stroke around search bar is too harsh," "the name and the count should be different colors. use the new step made from the side bar color," and "the filter chips should go BELOW the buttons on the right, not above."

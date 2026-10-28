@@ -179,9 +179,111 @@ for (const host of document.querySelectorAll(".side .tip-host")) {
 
 for (const form of document.querySelectorAll("[data-composer]")) {
   const input = form.querySelector("input");
-  const sync = () => form.classList.toggle("has-value", input.value.length > 0);
+  const sync = () => form.classList.toggle("has-value", input.value.trim().length > 0);
   form.addEventListener("submit", (event) => event.preventDefault());
   input.addEventListener("input", sync);
+}
+
+for (const link of document.querySelectorAll(".side .side-links a")) {
+  if (link.closest(".side-item")) continue;
+  const item = document.createElement("div");
+  item.className = "side-item";
+  link.before(item);
+  item.append(link);
+  const actions = document.createElement("span");
+  actions.className = "side-actions";
+  const inPinned = link.closest(".side-group")?.querySelector(".side-fold")?.textContent.includes("Pinned");
+  const pinIcon = inPinned ? "i-unpin" : "i-pin";
+  const pinLabel = inPinned ? "Unpin" : "Pin";
+  actions.innerHTML = `<button class="side-action" type="button" data-side-drag aria-label="Reorder"><svg class="i" width="14" height="14"><use href="#i-grip"/></svg></button><button class="side-action" type="button" data-side-unpin aria-label="${pinLabel}"><svg class="i" width="14" height="14"><use href="#${pinIcon}"/></svg></button>`;
+  item.append(actions);
+
+  actions.querySelector("[data-side-unpin]").addEventListener("click", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    item.hidden = true;
+  });
+
+  const grip = actions.querySelector("[data-side-drag]");
+  grip.addEventListener("pointerdown", (event) => {
+    if (event.button !== 0) return;
+    if (document.body.classList.contains("is-side-collapsed")) return;
+    event.preventDefault();
+    const originX = event.clientX;
+    const originY = event.clientY;
+    const list = item.parentElement;
+    let active = null;
+
+    const placeLine = (clientY) => {
+      const rows = [...list.querySelectorAll(":scope > .side-item")];
+      const from = rows.indexOf(item);
+      let to = 0;
+      let before = null;
+      for (const row of rows) {
+        if (row === item) continue;
+        const box = row.getBoundingClientRect();
+        if (clientY < box.top + box.height / 2) {
+          before = row;
+          break;
+        }
+        to += 1;
+      }
+      if (to === from) {
+        active.line.hidden = true;
+        active.to = from;
+        return;
+      }
+      const listBox = list.getBoundingClientRect();
+      const edge = before ? before.getBoundingClientRect().top : rows.at(-1).getBoundingClientRect().bottom;
+      active.line.hidden = false;
+      active.line.style.top = `${edge - listBox.top}px`;
+      active.to = to;
+      active.before = before;
+    };
+
+    const onMove = (ev) => {
+      if (!active) {
+        if (Math.hypot(ev.clientX - originX, ev.clientY - originY) < 4) return;
+        const box = link.getBoundingClientRect();
+        const ghost = item.cloneNode(true);
+        ghost.className = "side-drag";
+        ghost.setAttribute("aria-hidden", "true");
+        ghost.style.width = `${box.width}px`;
+        ghost.style.left = `${box.left}px`;
+        ghost.style.top = `${box.top}px`;
+        const line = document.createElement("div");
+        line.className = "side-drop";
+        line.hidden = true;
+        list.append(line);
+        document.body.append(ghost);
+        document.body.classList.add("is-side-reordering");
+        item.classList.add("is-dragging");
+        active = { ghost, line, originLeft: box.left, originTop: box.top, to: -1, before: null };
+      }
+      active.ghost.style.left = `${active.originLeft + ev.clientX - originX}px`;
+      active.ghost.style.top = `${active.originTop + ev.clientY - originY}px`;
+      placeLine(ev.clientY);
+    };
+
+    const finish = () => {
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerup", finish);
+      window.removeEventListener("pointercancel", finish);
+      if (!active) return;
+      const { ghost, line, before } = active;
+      active = null;
+      if (!line.hidden) list.insertBefore(item, before);
+      ghost.remove();
+      line.remove();
+      item.classList.remove("is-dragging");
+      document.body.classList.remove("is-side-reordering");
+    };
+
+    try { grip.setPointerCapture(event.pointerId); } catch { /* the window listeners still receive the release */ }
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerup", finish);
+    window.addEventListener("pointercancel", finish);
+  });
 }
 
 const themeSwitch = document.querySelector("[data-theme-toggle]");

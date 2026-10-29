@@ -92,6 +92,7 @@ html[data-theme="dark"] {
   --black-12: #292929;
   --line: rgb(255 255 255 / 5%);
   --stroke: 0 0 0 1px rgb(255 255 255 / 5%);
+  --outline-image: 1px solid var(--line);
   --shadow-menu: 0 4px 20px rgb(0 0 0 / 45%);
   --button-fill: #FFFFFF;
   --button-text: #202020;

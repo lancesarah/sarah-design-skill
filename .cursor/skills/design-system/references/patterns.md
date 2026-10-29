@@ -16,7 +16,7 @@ The left nav is the sidebar component in [components.md](components.md). Copy it
 - The center keeps 590px, the notes table minimum (220 + 140 + 90 + 140). Only the center changes width between the limits below.
 - On resize, collapse the left nav first. It collapses when the viewport is under 1259px (277 + 590 + 392).
 - Collapse the Lance chat second. It collapses when the viewport is under 1036px (54 + 590 + 392).
-- Do not squeeze either panel, and do not hide it. Each one is open, or it is its rail. A manual collapse stays collapsed when the window grows. A panel below its limit starts collapsed. Clicking expand on the left nav opens it anyway and keeps it open until the user collapses it or the window is wide enough.
+- Do not squeeze either panel, and do not hide it. Each one is open, or it is its rail. A manual collapse stays collapsed when the window grows. A panel below its limit starts collapsed. Clicking expand on either panel opens it anyway and keeps it open until the user collapses it or the window is wide enough.
 
 ## Standard header
 
@@ -29,6 +29,23 @@ Every product page uses this header in the center column. `notes.html` is the re
 
 Do not put search, the switcher, and the main action on a single crowded row. Do not move the primary action off the right corner below the tabs.
 
+## Creating a new item
+
+Internal notes is the reference. The main action creates the new record on the page. Do not ask for the name in a prompt. When the list has no records, that blank record is created and opened. Comments stay closed until the note has a title or a body.
+
+- The new card is inserted at the top of the list, and the cards under it move down. Until the user types, the card reads "Title" and then "New note", both in `--black-50`.
+- The photo is a grey placeholder until the title or the note has text. The picture then fades in.
+- The open record uses the same layout as an existing one.
+- The title shows "Title" in `--black-50` until the user types. A new note opens with that field focused.
+- The body shows "New note" in `--black-50`. That placeholder disappears when the field is clicked, and it comes back if the field is left empty.
+- Timestamp, author, and viewed are filled from what the product already knows. The department starts as Front desk. The four fields keep one equal gap. Timestamp, author, and viewed stay wide enough for their longest value. The department tag hugs its label.
+- The department chip shows its down chevron and hugs its label. The chevron is inline with that label, so it moves with the chip. Author and Viewed are the next fields, so they stay put when the label changes. The chevron turns when the menu is open. Clicking it opens every department. Choosing one files the record there, and the list card follows.
+- The viewed count is a chip with an eye, because the number has no word beside it. Hovering it shows a down chevron. Clicking it opens who viewed the note and who did not. Each person uses the gallery person row: a mini avatar and a name. The chip count is those people. A new note starts with no one in Viewed, and that empty group is left out, heading included.
+
+## Removing an item
+
+Deleting an item from a list moves the items below it up to close the space. Delete requires that motion. Do not leave the gap, and do not snap the list shut. A comment uses the same delete: its more menu, and a right-click on the comment, offer Delete. The gallery confirmation opens first. Cancel leaves the comment. The comments under it move up.
+
 ## Filter dropdowns
 
 The closed control and the open menu share one width: the longest option, including its icon and padding. Size the label with every option stacked in the same grid cell, and let the menu fill that width. Do not give the menu a fixed width that is independent of the options, and do not let the closed label shrink to the selected value.
@@ -38,7 +55,7 @@ The closed control and the open menu share one width: the longest option, includ
 1. Read `foundations.md` for the tokens you will touch.
 2. Pull component markup from the gallery.
 3. Compose the screen in the product stylesheet, not by forking token values.
-4. Keep one primary action per view, using `--action`. Destructive confirmation uses `--destructive` and only on the confirming control.
+4. Keep one primary action per view, using `--action`. Pressing Delete opens the gallery confirmation first. Destructive confirmation uses `--destructive` and only on the confirming control.
 5. Urgency and status use the urgency and status tokens. Do not recolor them per screen.
 
 ## Empty, loading, and error

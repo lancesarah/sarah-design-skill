@@ -12,7 +12,23 @@ Forced by: a selected node, then "fix this," aimed at one control.
 
 Equal padding is not alignment. If an icon, label, or divider still looks off, move it until it looks even. Check the rendered pixels, not only the computed box.
 
-Forced by: "optically it doesnt look aligned."
+Alignment comes first. A pill, chip, or tag on a text row still puts its text on that line. The box can be taller. The glyphs line up with the text beside them. Align the content inside the chip to the title, not the outer chip. Padding and a hover fill can sit outside that line. A chip or chevron that only appears on hover does not move that content, and it is not the box you align.
+
+An icon control beside a title is centered on the title. Do not top-align the control to the line box.
+
+Forced by: "optically it doesnt look aligned" and "even though 2/8 is a pill, it should still be aligned. alignment is the most important thing."
+
+## One icon construction
+
+A new icon is an outlined Material Symbol fitted like Internal notes. That includes menu icons. Copy a symbol that already exists in the sprite. Icons in one menu share that construction. Do not trace one glyph from a screenshot and hand-draw the next with different caps, joins, or a different box.
+
+Forced by: "why are the share and delete icons so different? they should follow the style guide."
+
+## The more menu on right-click
+
+A thing that has a more menu opens that same menu on right-click. The items, order, and actions match the more button. The menu opens at the pointer. Do not build a second menu. The open note is not that target. Right-clicking the note itself does not offer Share or Delete. The note card does.
+
+Forced by: "right clicking the note card on the left should open the same options as the more button, share and delete."
 
 ## Two kinds of space
 
@@ -48,7 +64,7 @@ Sidebar hover does not animate. The grey fill appears at once.
 
 The account control is the settings gear. Do not put a three-dot menu there.
 
-On resize, collapse the left nav before the Lance chat. The left nav collapses under 1259px. The chat collapses under 1036px. Those limits keep a 590px center. Do not stack the nav on top of the page. A click to expand the left nav overrides the width limit and stays open.
+On resize, collapse the left nav before the Lance chat. The left nav collapses under 1259px. The chat collapses under 1036px. Those limits keep a 590px center. Do not stack the nav on top of the page. A click to expand either panel overrides its width limit and stays open.
 
 Forced by: "it should still have a thin bar," "make them center," "the horizontal scroll bar flashes," and "this should be the settings icon."
 
@@ -88,6 +104,6 @@ The secondary button is a `--white` surface with `--black` text and a `--stroke`
 
 The search stroke, including the shortcut key, uses `--line`.
 
-`--black-25` is the quieter grey. In dark mode it sits halfway from `--black-50` toward `--sidebar-grey`. Unselected tab counts, focus rings, scrollbars, and tooltip emphasis use it. An unselected department name stays `--black-50`. Filter chips share the row with Filters, Print, and New. They are vertically centered with those buttons and start at the left edge. Extra chips wrap to that edge. When the row cannot hold the buttons and two chips, the chips move to the next line. A single chip does not sit beside the buttons.
+`--black-25` is the quieter grey. In dark mode it sits halfway from `--black-50` toward `--sidebar-grey`. Unselected tab counts, focus rings, scrollbars, and tooltip emphasis use it. The scrollbar is the thin sidebar scrollbar: width `thin`, thumb `--black-25`, and the track matches the surface behind it. An unselected department name stays `--black-50`. Filter chips share the row with Filters, Print, and New. They are vertically centered with those buttons and start at the left edge. Extra chips wrap to that edge. When the row cannot hold the buttons and two chips, the chips move to the next line. A single chip does not sit beside the buttons.
 
 Forced by: "in dark mode, the hover should lighten the selection" and "it's wrong in the table," "the primary button is wrong," "the secondary button is also wrong in dark mode," "the stroke around search bar is too harsh," "the name and the count should be different colors. use the new step made from the side bar color," and "the filter chips should go BELOW the buttons on the right, not above."

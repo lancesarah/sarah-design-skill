@@ -1,23 +1,48 @@
-const rows = [...document.querySelectorAll("[data-note]")];
-const search = document.querySelector(".page-head .search input");
+const rows = [...document.querySelectorAll(".brief-list [data-note]")];
+const searches = [...document.querySelectorAll("[data-note-search] input")];
 const count = document.querySelector("[data-count]");
 const deptTabs = [...document.querySelectorAll(".page-filters [data-dept]")];
+const emptyNote = document.querySelector(".brief-empty");
+const page = document.querySelector(".notes-page");
+const viewButtons = [...document.querySelectorAll(".dev-switch [data-view]")];
+let view = "top";
 
 function selectedDept() {
   return deptTabs.find((tab) => tab.getAttribute("aria-selected") === "true")?.dataset.dept || "All";
 }
 
+function notePanel(title) {
+  return document.querySelector(`[data-detail="${CSS.escape(title.dataset.note)}"]`);
+}
+
+function searchQuery() {
+  const visible = searches.find((input) => input.offsetParent);
+  return (visible?.value || searches[0]?.value || "").trim().toLowerCase();
+}
+
 function applyFilters() {
-  const query = (search?.value || "").trim().toLowerCase();
+  if (rows.length === 0) {
+    createNote();
+    return;
+  }
+  const query = searchQuery();
   const dept = selectedDept();
   const totals = {};
+  const visible = [];
   for (const title of rows) {
-    const cells = [title, title.nextElementSibling, title.nextElementSibling?.nextElementSibling, title.nextElementSibling?.nextElementSibling?.nextElementSibling];
-    const text = cells.map((cell) => cell?.textContent || "").join(" ").toLowerCase();
-    const rowDept = (title.nextElementSibling?.textContent || "").trim();
+    const rowDept = title.dataset.dept || "";
     totals[rowDept] = (totals[rowDept] || 0) + 1;
+    const text = `${title.textContent} ${notePanel(title)?.textContent || ""}`.toLowerCase();
     const match = (!query || text.includes(query)) && (dept === "All" || rowDept === dept);
-    for (const cell of cells) if (cell) cell.hidden = !match;
+    title.hidden = !match;
+    if (match) visible.push(title);
+  }
+  const selected = rows.find((title) => title.getAttribute("aria-selected") === "true" && !title.hidden);
+  if (selected) selectNote(selected);
+  else if (visible[0]) selectNote(visible[0]);
+  else {
+    for (const panel of document.querySelectorAll("[data-detail]")) panel.hidden = true;
+    if (emptyNote) emptyNote.hidden = false;
   }
   if (count) count.textContent = String(rows.length);
   for (const tab of deptTabs) {
@@ -27,7 +52,12 @@ function applyFilters() {
   }
 }
 
-search?.addEventListener("input", applyFilters);
+for (const input of searches) {
+  input.addEventListener("input", () => {
+    for (const other of searches) if (other !== input) other.value = input.value;
+    applyFilters();
+  });
+}
 for (const tab of deptTabs) {
   tab.addEventListener("click", () => {
     for (const other of deptTabs) other.setAttribute("aria-selected", other === tab ? "true" : "false");
@@ -36,22 +66,399 @@ for (const tab of deptTabs) {
 }
 
 function selectNote(title) {
-  for (const other of rows) other.setAttribute("aria-pressed", other === title ? "true" : "false");
+  for (const other of rows) other.setAttribute("aria-selected", other === title ? "true" : "false");
   const id = title.dataset.note;
-  let matched = false;
   for (const panel of document.querySelectorAll("[data-detail]")) {
-    const on = panel.dataset.detail === id;
-    panel.hidden = !on;
-    if (on) matched = true;
+    panel.hidden = panel.dataset.detail !== id;
   }
-  if (!matched) {
-    const fresh = document.querySelector("[data-detail]");
-    fresh.hidden = false;
-    fresh.querySelector(".meta-v").textContent = title.childNodes[0].textContent.trim();
-    fresh.querySelector("p").textContent = "New note. Write the first reply below.";
-    const comment = fresh.querySelector(".comment");
-    if (comment) comment.hidden = true;
+  if (emptyNote) emptyNote.hidden = true;
+  syncCommentLock(notePanel(title));
+  layoutOpenNote();
+}
+
+function mountScrolls(article) {
+  const main = article.querySelector(".brief-main");
+  const replies = article.querySelector(".brief-replies");
+  if (!main || !replies) return;
+  if (!main.querySelector(".note-scroll")) {
+    const content = main.querySelector(".note-draft, .brief-body");
+    if (content) {
+      const frame = document.createElement("div");
+      const body = document.createElement("div");
+      frame.className = "scroll-fade note-scroll";
+      body.className = "note-scroll-body";
+      content.before(frame);
+      body.append(content);
+      frame.append(body);
+      edgeFade(body, "y");
+    }
   }
+  if (!replies.querySelector(".comment-scroll")) {
+    const frame = document.createElement("div");
+    const body = document.createElement("div");
+    const form = replies.querySelector(".msg");
+    frame.className = "scroll-fade comment-scroll";
+    body.className = "comment-scroll-body";
+    for (const comment of [...replies.querySelectorAll(":scope > .comment")]) body.append(comment);
+    if (form) form.before(frame);
+    else replies.append(frame);
+    frame.append(body);
+    edgeFade(body, "y");
+  }
+}
+
+function layoutOpenNote() {
+  const read = document.querySelector(".brief-read");
+  const article = read?.querySelector(".detail:not([hidden])");
+  if (!read || !article) return;
+  mountScrolls(article);
+  const replies = article.querySelector(".brief-replies");
+  const field = article.querySelector(".note-draft");
+  read.classList.remove("is-docked");
+  article.style.removeProperty("--replies-h");
+  replies?.classList.remove("is-pinned");
+  if (field) {
+    field.style.height = "auto";
+    field.style.height = `${field.scrollHeight}px`;
+  }
+  if (!replies) return;
+  const pad = parseFloat(getComputedStyle(read).paddingBottom) || 0;
+  const limit = read.getBoundingClientRect().bottom - pad;
+  if (replies.getBoundingClientRect().bottom > limit + 1) {
+    read.classList.add("is-docked");
+    if (field && field.selectionStart === field.value.length) {
+      const body = field.closest(".note-scroll-body");
+      if (body) body.scrollTop = body.scrollHeight;
+    }
+  }
+}
+
+function setView(next) {
+  view = next;
+  page?.setAttribute("data-view", next);
+  try { sessionStorage.setItem("notes-view", next); } catch (error) {}
+  for (const button of viewButtons) {
+    button.setAttribute("aria-pressed", button.dataset.view === next ? "true" : "false");
+  }
+}
+
+for (const button of viewButtons) {
+  button.addEventListener("click", () => setView(button.dataset.view));
+}
+
+document.querySelector(".filter-chips")?.addEventListener("click", (event) => {
+  const chip = event.target.closest(".chip-filter");
+  if (chip) chip.remove();
+});
+
+function closeNoteMenus() {
+  for (const menu of document.querySelectorAll(".note-menu")) {
+    menu.querySelector(".note-more")?.setAttribute("aria-expanded", "false");
+    const panel = menu.querySelector(".menu");
+    if (!panel) continue;
+    panel.hidden = true;
+    panel.classList.remove("is-context");
+    panel.style.left = "";
+    panel.style.top = "";
+  }
+}
+
+function openNoteMenu(wrap, point) {
+  const more = wrap.querySelector(".note-more");
+  const panel = wrap.querySelector(".menu");
+  closeNoteMenus();
+  if (!panel) return;
+  more?.setAttribute("aria-expanded", "true");
+  panel.hidden = false;
+  if (!point) return;
+  panel.classList.add("is-context");
+  const box = panel.getBoundingClientRect();
+  const left = Math.max(8, Math.min(point.x, window.innerWidth - box.width - 8));
+  const top = Math.max(8, Math.min(point.y, window.innerHeight - box.height - 8));
+  panel.style.left = `${left}px`;
+  panel.style.top = `${top}px`;
+}
+
+function closeCommentMenus() {
+  for (const menu of document.querySelectorAll(".comment-menu")) {
+    menu.querySelector(".comment-more")?.setAttribute("aria-expanded", "false");
+    const panel = menu.querySelector(".menu");
+    if (!panel) continue;
+    panel.hidden = true;
+    panel.classList.remove("is-context");
+    panel.style.left = "";
+    panel.style.top = "";
+  }
+}
+
+function openCommentMenu(wrap, point) {
+  const more = wrap.querySelector(".comment-more");
+  const panel = wrap.querySelector(".menu");
+  closeCommentMenus();
+  closeNoteMenus();
+  closeViewMenus();
+  if (!panel) return;
+  more?.setAttribute("aria-expanded", "true");
+  panel.hidden = false;
+  panel.classList.add("is-context");
+  const box = panel.getBoundingClientRect();
+  const anchor = more.getBoundingClientRect();
+  const x = point ? point.x : anchor.right - box.width;
+  const y = point ? point.y : anchor.bottom + 4;
+  panel.style.left = `${Math.max(8, Math.min(x, window.innerWidth - box.width - 8))}px`;
+  panel.style.top = `${Math.max(8, Math.min(y, window.innerHeight - box.height - 8))}px`;
+}
+
+document.addEventListener("click", (event) => {
+  const viewPick = event.target.closest(".view-pick");
+  if (viewPick) {
+    const wrap = viewPick.closest(".view-edit");
+    const panel = wrap?.querySelector(".menu");
+    const open = viewPick.getAttribute("aria-expanded") === "true";
+    closeNoteMenus();
+    closeDeptMenus();
+    closeViewMenus();
+    closeCommentMenus();
+    if (!open && panel) {
+      viewPick.setAttribute("aria-expanded", "true");
+      panel.hidden = false;
+      if (viewPick.closest(".comment")) placeCommentViewMenu(panel, viewPick);
+    }
+    return;
+  }
+  const deptPick = event.target.closest(".dept-pick");
+  if (deptPick) {
+    const wrap = deptPick.closest(".dept-edit");
+    const panel = wrap?.querySelector(".menu");
+    const open = deptPick.getAttribute("aria-expanded") === "true";
+    closeNoteMenus();
+    closeDeptMenus();
+    closeViewMenus();
+    if (!open && panel) {
+      deptPick.setAttribute("aria-expanded", "true");
+      panel.hidden = false;
+    }
+    return;
+  }
+  const choice = event.target.closest("[data-dept-choice]");
+  if (choice) {
+    const article = choice.closest(".detail");
+    const card = rows.find((row) => row.dataset.note === article?.dataset.detail);
+    const label = choice.textContent.trim();
+    article?.querySelector(".dept-name") && (article.querySelector(".dept-name").textContent = label);
+    const meta = article?.querySelector(".brief-meta");
+    if (meta) meta.textContent = label;
+    if (card) {
+      card.dataset.dept = choice.dataset.deptChoice;
+      const tag = card.querySelector(".note-line .dept");
+      if (tag) tag.textContent = label;
+    }
+    closeDeptMenus();
+    applyFilters();
+    return;
+  }
+  if (!event.target.closest(".dept-edit")) closeDeptMenus();
+  if (!event.target.closest(".view-edit")) closeViewMenus();
+  const commentMore = event.target.closest(".comment-more");
+  if (commentMore) {
+    const wrap = commentMore.closest(".comment-menu");
+    const open = commentMore.getAttribute("aria-expanded") === "true";
+    closeNoteMenus();
+    closeViewMenus();
+    if (open) closeCommentMenus();
+    else if (wrap) openCommentMenu(wrap);
+    return;
+  }
+  const commentAction = event.target.closest("[data-comment-action]");
+  if (commentAction?.dataset.commentAction === "delete") {
+    const comment = commentAction.closest(".comment");
+    closeCommentMenus();
+    if (comment) askDelete(comment);
+    return;
+  }
+  if (!event.target.closest(".comment-menu")) closeCommentMenus();
+  const more = event.target.closest(".note-more");
+  if (more) {
+    closeViewMenus();
+    closeCommentMenus();
+    const wrap = more.closest(".note-menu");
+    const open = more.getAttribute("aria-expanded") === "true";
+    if (open) closeNoteMenus();
+    else if (wrap) openNoteMenu(wrap);
+    return;
+  }
+  const action = event.target.closest("[data-note-action]");
+  if (action) {
+    const article = action.closest(".detail");
+    closeNoteMenus();
+    if (action.dataset.noteAction === "delete" && article) askDelete(article);
+    return;
+  }
+  if (!event.target.closest(".note-menu")) closeNoteMenus();
+});
+
+function noteLabel(article) {
+  const input = article.querySelector(".note-title");
+  if (input) return input.value.trim() || "New note";
+  return article.querySelector("h2")?.textContent.trim() || "this note";
+}
+
+function removeNote(article) {
+  const id = article.dataset.detail;
+  const index = rows.findIndex((row) => row.dataset.note === id);
+  if (index >= 0) rows.splice(index, 1);
+  document.querySelector(`.brief-list [data-note="${CSS.escape(id)}"]`)?.remove();
+  article.remove();
+  applyFilters();
+}
+
+function removeComment(comment) {
+  const list = comment.parentElement;
+  const form = comment.closest(".brief-replies")?.querySelector(".msg");
+  const following = [];
+  let seen = false;
+  for (const row of list?.querySelectorAll(":scope > .comment") || []) {
+    if (row === comment) {
+      seen = true;
+      continue;
+    }
+    if (seen) following.push(row);
+  }
+  const movers = form ? [...following, form] : following;
+  const before = new Map(movers.map((row) => [row, row.getBoundingClientRect().top]));
+  comment.remove();
+  layoutOpenNote();
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  for (const row of movers) {
+    const delta = before.get(row) - row.getBoundingClientRect().top;
+    if (!delta) continue;
+    row.style.transition = "none";
+    row.style.transform = `translateY(${delta}px)`;
+  }
+  list?.getBoundingClientRect();
+  requestAnimationFrame(() => {
+    for (const row of movers) {
+      row.style.transition = "transform 180ms ease";
+      row.style.transform = "translateY(0)";
+    }
+  });
+  window.setTimeout(() => {
+    for (const row of movers) {
+      row.style.transition = "";
+      row.style.transform = "";
+    }
+  }, 220);
+}
+
+const confirmDialog = document.querySelector(".confirm-dialog");
+let pendingDelete = null;
+
+function askDelete(target) {
+  pendingDelete = target;
+  const title = confirmDialog?.querySelector("#confirm-title");
+  const copy = confirmDialog?.querySelector("p");
+  const comment = target.classList?.contains("comment");
+  if (title) title.textContent = comment ? "Delete this comment?" : "Delete this note?";
+  if (copy) {
+    const name = comment
+      ? (target.querySelector("p")?.textContent.trim() || "this comment")
+      : noteLabel(target);
+    copy.textContent = `“${name}” will be permanently removed for the whole team.`;
+  }
+  confirmDialog?.classList.remove("is-closing");
+  confirmDialog?.showModal();
+}
+
+function closeConfirm() {
+  if (!confirmDialog?.open || confirmDialog.classList.contains("is-closing")) return;
+  pendingDelete = null;
+  const card = confirmDialog.querySelector(".confirm");
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduce || !card) {
+    confirmDialog.close();
+    return;
+  }
+  confirmDialog.classList.add("is-closing");
+  let finished = false;
+  const finish = () => {
+    if (finished) return;
+    finished = true;
+    confirmDialog.classList.remove("is-closing");
+    confirmDialog.close();
+  };
+  card.addEventListener("animationend", finish, { once: true });
+  window.setTimeout(finish, 240);
+}
+
+confirmDialog?.addEventListener("click", (event) => {
+  const choice = event.target.closest("[data-confirm]");
+  if (choice?.dataset.confirm === "delete" && pendingDelete) {
+    if (pendingDelete.classList.contains("comment")) removeComment(pendingDelete);
+    else removeNote(pendingDelete);
+  }
+  if (choice || event.target === confirmDialog) closeConfirm();
+});
+
+confirmDialog?.addEventListener("cancel", (event) => {
+  event.preventDefault();
+  closeConfirm();
+});
+
+function openNoteMenuFrom(event, card) {
+  const article = notePanel(card);
+  const wrap = article?.querySelector(".note-menu");
+  if (!wrap) return;
+  event.preventDefault();
+  selectNote(card);
+  openNoteMenu(wrap, { x: event.clientX, y: event.clientY });
+}
+
+document.querySelector(".brief-list")?.addEventListener("contextmenu", (event) => {
+  const card = event.target.closest("[data-note]");
+  if (card) openNoteMenuFrom(event, card);
+});
+
+document.querySelector(".brief-read")?.addEventListener("contextmenu", (event) => {
+  const comment = event.target.closest(".comment");
+  if (!comment || event.target.closest(".view-edit")) return;
+  event.preventDefault();
+  const wrap = comment.querySelector(".comment-menu");
+  if (wrap) openCommentMenu(wrap, { x: event.clientX, y: event.clientY });
+});
+
+document.addEventListener("input", (event) => {
+  if (event.target.classList?.contains("note-draft")) layoutOpenNote();
+  const input = event.target.closest(".brief-replies .msg input");
+  if (!input) return;
+  input.closest(".msg")?.classList.toggle("has-value", input.value.trim().length > 0);
+});
+
+document.addEventListener("submit", (event) => {
+  const form = event.target.closest?.(".brief-replies .msg");
+  if (!form || form.classList.contains("is-locked")) return;
+  event.preventDefault();
+  const input = form.querySelector("input");
+  const text = input?.value.trim();
+  if (!text) return;
+  const row = document.createElement("div");
+  row.className = "comment";
+  row.innerHTML = `<img class="note-avatar" src="assets/avatar-sarah.png?v=20261029a" alt=""><span class="person-copy"><span class="mini-line">Sarah <span class="meta-k">now</span></span><p></p></span>`;
+  row.querySelector("p").textContent = text;
+  attachCommentView(row, ["Sarah Mou"]);
+  const list = form.parentElement?.querySelector(".comment-scroll-body");
+  if (list) list.append(row);
+  else form.before(row);
+  input.value = "";
+  form.classList.remove("has-value");
+  layoutOpenNote();
+});
+
+try {
+  const saved = sessionStorage.getItem("notes-view");
+  if (saved === "top") setView(saved);
+  else page?.setAttribute("data-view", "top");
+} catch (error) {
+  page?.setAttribute("data-view", "top");
 }
 
 for (const title of rows) title.addEventListener("click", () => selectNote(title));
@@ -87,6 +494,7 @@ const LANCE_OPEN_AT = 1036;
 let sideChosen = false;
 let sideHeldOpen = false;
 let lanceChosen = false;
+let lanceHeldOpen = false;
 
 function setSideCollapsed(collapsed) {
   if (document.body.classList.contains("is-side-collapsed") === collapsed) return;
@@ -106,8 +514,9 @@ function setLanceCollapsed(collapsed) {
 function applyPanelLimits() {
   const width = window.innerWidth;
   if (width >= SIDE_OPEN_AT) sideHeldOpen = false;
+  if (width >= LANCE_OPEN_AT) lanceHeldOpen = false;
   setSideCollapsed((width < SIDE_OPEN_AT && !sideHeldOpen) || sideChosen);
-  setLanceCollapsed(width < LANCE_OPEN_AT || lanceChosen);
+  setLanceCollapsed((width < LANCE_OPEN_AT && !lanceHeldOpen) || lanceChosen);
 }
 
 collapseButton?.addEventListener("click", () => {
@@ -119,8 +528,8 @@ collapseButton?.addEventListener("click", () => {
 
 lanceCollapse?.addEventListener("click", () => {
   const next = !document.body.classList.contains("is-lance-collapsed");
-  if (!next && window.innerWidth < LANCE_OPEN_AT) return;
   lanceChosen = next;
+  lanceHeldOpen = !next && window.innerWidth < LANCE_OPEN_AT;
   setLanceCollapsed(next);
 });
 
@@ -131,7 +540,7 @@ function edgeFade(el, axis) {
   const update = () => {
     const max = axis === "x" ? el.scrollWidth - el.clientWidth : el.scrollHeight - el.clientHeight;
     const pos = axis === "x" ? el.scrollLeft : el.scrollTop;
-    const fade = el.closest(".side-scroll-frame") || el;
+    const fade = el.closest(".scroll-fade") || el.closest(".side-scroll-frame") || el;
     fade.classList.toggle("is-fade-start", max > 1 && pos > 1);
     fade.classList.toggle("is-fade-end", max > 1 && pos < max - 1);
   };
@@ -145,34 +554,346 @@ function edgeFade(el, axis) {
 const sideScroll = document.querySelector(".side-scroll");
 if (sideScroll) edgeFade(sideScroll, "y");
 const deptStrip = document.querySelector(".page-filters .tabs");
-if (deptStrip) edgeFade(deptStrip, "x");
+if (deptStrip) {
+  edgeFade(deptStrip, "x");
+  const fade = deptStrip.parentElement;
+  const thumb = document.createElement("div");
+  thumb.className = "tabs-bar-thumb";
+  thumb.setAttribute("aria-hidden", "true");
+  thumb.hidden = true;
+  fade.appendChild(thumb);
+  const placeThumb = () => {
+    const max = deptStrip.scrollWidth - deptStrip.clientWidth;
+    if (max <= 1) {
+      thumb.hidden = true;
+      return;
+    }
+    thumb.hidden = false;
+    const inset = 2;
+    const track = deptStrip.clientWidth - inset * 2;
+    // Cap the thumb so a few pixels of overflow don't paint a full-width system bar.
+    const size = Math.max(32, Math.min(track * (deptStrip.clientWidth / deptStrip.scrollWidth), track * 0.35));
+    const x = inset + (deptStrip.scrollLeft / max) * (track - size);
+    thumb.style.width = `${size}px`;
+    thumb.style.transform = `translateX(${x}px)`;
+  };
+  placeThumb();
+  deptStrip.addEventListener("scroll", placeThumb, { passive: true });
+  const thumbObserver = new ResizeObserver(placeThumb);
+  thumbObserver.observe(deptStrip);
+  for (const child of deptStrip.children) thumbObserver.observe(child);
+  let drag = null;
+  thumb.addEventListener("pointerdown", (event) => {
+    drag = { x: event.clientX, left: deptStrip.scrollLeft };
+    thumb.setPointerCapture(event.pointerId);
+    thumb.style.cursor = "grabbing";
+  });
+  thumb.addEventListener("pointermove", (event) => {
+    if (!drag) return;
+    const max = deptStrip.scrollWidth - deptStrip.clientWidth;
+    const room = Math.max(1, deptStrip.clientWidth - thumb.getBoundingClientRect().width);
+    deptStrip.scrollLeft = drag.left + ((event.clientX - drag.x) / room) * max;
+  });
+  const endDrag = () => {
+    drag = null;
+    thumb.style.cursor = "";
+  };
+  thumb.addEventListener("pointerup", endDrag);
+  thumb.addEventListener("pointercancel", endDrag);
+}
+const noteList = document.querySelector(".brief-list");
+if (noteList) edgeFade(noteList, "y");
 
-document.querySelector("[data-new]")?.addEventListener("click", () => {
-  const grid = document.querySelector(".notes-grid");
-  if (!grid) return;
-  const title = prompt("Note title");
-  if (!title) return;
-  const button = document.createElement("button");
-  button.className = "row cell-task";
-  button.type = "button";
-  button.setAttribute("role", "row");
-  button.dataset.note = "new-" + Date.now();
-  button.innerHTML = title + ' <svg class="i chev" width="14" height="14"><use href="#i-chevron"/></svg>';
-  const dept = document.createElement("div");
-  dept.className = "row";
-  dept.innerHTML = '<span class="dept">Front Desk</span>';
-  const replies = document.createElement("div");
-  replies.className = "row";
-  replies.textContent = "0";
-  const opened = document.createElement("div");
-  opened.className = "row cell-open";
-  opened.textContent = "now";
-  grid.append(button, dept, replies, opened);
-  rows.push(button);
-  button.addEventListener("click", () => selectNote(button));
-  selectNote(button);
+function closeDeptMenus() {
+  for (const menu of document.querySelectorAll(".dept-edit")) {
+    menu.querySelector(".dept-pick")?.setAttribute("aria-expanded", "false");
+    const panel = menu.querySelector(".menu");
+    if (panel) panel.hidden = true;
+  }
+}
+
+function closeViewMenus() {
+  for (const menu of document.querySelectorAll(".view-edit")) {
+    menu.querySelector(".view-pick")?.setAttribute("aria-expanded", "false");
+    const panel = menu.querySelector(".menu");
+    if (!panel) continue;
+    panel.hidden = true;
+    panel.classList.remove("is-context");
+    panel.style.left = "";
+    panel.style.top = "";
+  }
+}
+
+function placeCommentViewMenu(panel, button) {
+  panel.classList.add("is-context");
+  panel.hidden = false;
+  const anchor = button.getBoundingClientRect();
+  const menu = panel.getBoundingClientRect();
+  const left = Math.max(8, Math.min(anchor.left, window.innerWidth - menu.width - 8));
+  const top = Math.max(8, Math.min(anchor.bottom + 4, window.innerHeight - menu.height - 8));
+  panel.style.left = `${left}px`;
+  panel.style.top = `${top}px`;
+}
+
+const readers = [
+  { name: "Sarah Mou", seen: ["gss", "enroll"] },
+  { name: "Jordan Hale", seen: ["gss", "enroll"] },
+  { name: "Priya Shah", seen: [] },
+  { name: "Luis Ortega", seen: [] },
+  { name: "Mina Park", seen: [] },
+  { name: "Owen Brooks", seen: [] },
+  { name: "Elena Voss", seen: [] },
+  { name: "Chris Adeyemi", seen: [] },
+];
+
+function viewRow(name) {
+  const safe = name.replace(/&/g, "&amp;").replace(/</g, "&lt;");
+  return `<div class="view-row"><img class="avatar mini" src="assets/avatar-sarah.png?v=20261029a" alt="">${safe}</div>`;
+}
+
+function writeViewMenu(panel, seen, missed) {
+  const seenRows = seen.length ? `<p class="menu-k">Viewed</p>${seen.map((person) => viewRow(person.name)).join("")}` : "";
+  panel.innerHTML = `${seenRows}<p class="menu-k">Not viewed</p>${missed.map((person) => viewRow(person.name)).join("")}`;
+}
+
+function fillViewMenu(article) {
+  const panel = article.querySelector(".note-meta .view-menu");
+  const count = article.querySelector(".note-meta .view-count");
+  if (!panel || !count) return;
+  const id = article.dataset.detail;
+  const seen = readers.filter((person) => person.seen.includes(id));
+  const missed = readers.filter((person) => !person.seen.includes(id));
+  writeViewMenu(panel, seen, missed);
+  count.textContent = `${seen.length}/${readers.length}`;
+  mountCommentViews(article);
+}
+
+function commentViewChip() {
+  return `<span class="drop view-edit comment-views"><button class="chip view-pick" type="button" aria-expanded="false" aria-haspopup="menu" aria-label="Views"><svg class="i view-eye" width="18" height="18" aria-hidden="true"><use href="#i-eye"/></svg><span class="view-count"></span><svg class="i meta-chevron" width="10" height="10"><use href="#i-chevron"/></svg></button><div class="menu view-menu" role="menu" hidden></div></span>`;
+}
+
+function commentMenu() {
+  return `<div class="drop comment-menu"><button class="comment-more" type="button" aria-expanded="false" aria-haspopup="menu" aria-label="More"><svg class="i" width="14" height="14"><use href="#i-dots"/></svg></button><div class="menu" role="menu" hidden><button class="menu-item danger" type="button" role="menuitem" data-comment-action="delete"><svg class="i" width="14" height="14"><use href="#i-trash"/></svg>Delete</button></div></div>`;
+}
+
+function mountCommentMenu(comment) {
+  const menu = comment.querySelector(".comment-menu");
+  if (menu) {
+    comment.append(menu);
+    return;
+  }
+  comment.insertAdjacentHTML("beforeend", commentMenu());
+}
+
+function attachCommentView(comment, seenNames) {
+  if (!comment.querySelector(".comment-views")) {
+    comment.insertAdjacentHTML("beforeend", commentViewChip());
+    const seen = readers.filter((person) => seenNames.includes(person.name));
+    const missed = readers.filter((person) => !seenNames.includes(person.name));
+    const panel = comment.querySelector(".view-menu");
+    const count = comment.querySelector(".view-count");
+    if (panel) writeViewMenu(panel, seen, missed);
+    if (count) count.textContent = `${seen.length}/${readers.length}`;
+  }
+  mountCommentMenu(comment);
+}
+
+function mountCommentViews(article) {
+  const names = readers.filter((person) => person.seen.includes(article.dataset.detail)).map((person) => person.name);
+  for (const comment of article.querySelectorAll(".comment")) attachCommentView(comment, names);
+}
+
+for (const article of document.querySelectorAll(".detail")) fillViewMenu(article);
+
+function departments() {
+  return deptTabs
+    .filter((tab) => tab.dataset.dept && tab.dataset.dept !== "All")
+    .map((tab) => ({
+      value: tab.dataset.dept,
+      label: tab.dataset.dept === "Front Desk" ? "Front desk" : tab.dataset.dept,
+    }));
+}
+
+function addSizer(host, text) {
+  if (!host || host.querySelector(":scope > [aria-hidden='true']")) return;
+  const sizer = document.createElement("span");
+  sizer.setAttribute("aria-hidden", "true");
+  sizer.textContent = text;
+  host.classList.add("meta-fit");
+  host.append(sizer);
+}
+
+function fitPlain(dd, longest) {
+  if (!dd || dd.dataset.fit === "1") return;
+  const visible = document.createElement("span");
+  visible.textContent = dd.textContent.trim();
+  dd.textContent = "";
+  dd.append(visible);
+  addSizer(dd, longest);
+  dd.dataset.fit = "1";
+}
+
+function fitMeta(article) {
+  const cells = article.querySelectorAll(".note-meta > div");
+  const longestAuthor = readers.reduce((longest, person) => person.name.length > longest.length ? person.name : longest, "");
+  fitPlain(cells[0]?.querySelector("dd"), "Yesterday · 12:59 PM");
+  fitPlain(cells[2]?.querySelector("dd"), longestAuthor);
+  const count = cells[3]?.querySelector(".view-count");
+  if (count && !count.parentElement.classList.contains("meta-fit")) {
+    const wrap = document.createElement("span");
+    count.before(wrap);
+    wrap.append(count);
+    addSizer(wrap, `${readers.length}/${readers.length}`);
+  }
+}
+
+function departmentChoices() {
+  return departments().map((dept) => {
+    const value = dept.value.replace(/&/g, "&amp;").replace(/"/g, "&quot;");
+    const label = dept.label.replace(/&/g, "&amp;");
+    return `<button class="menu-item" type="button" role="menuitem" data-dept-choice="${value}">${label}</button>`;
+  }).join("");
+}
+
+function upgradeDept(article) {
+  const chip = article.querySelector(".note-meta .dept");
+  if (!chip || chip.classList.contains("dept-pick")) return;
+  const label = chip.textContent.trim().replace(/&/g, "&amp;").replace(/</g, "&lt;");
+  chip.parentElement.innerHTML = `<div class="drop dept-edit"><button class="dept dept-pick" type="button" aria-expanded="false" aria-haspopup="menu"><span class="dept-name">${label}</span><svg class="i meta-chevron" width="10" height="10"><use href="#i-chevron"/></svg></button><div class="menu" role="menu" hidden>${departmentChoices()}</div></div>`;
+}
+
+function reserveDept(article) {
+  const edit = article.querySelector(".dept-edit");
+  const button = edit?.querySelector(".dept-pick");
+  if (!edit || !button || edit.querySelector(".dept-slot")) return;
+  const longest = departments().reduce((best, dept) => dept.label.length > best.length ? dept.label : best, "");
+  const slot = document.createElement("span");
+  slot.className = "dept-slot";
+  button.before(slot);
+  slot.append(button);
+  const sizer = document.createElement("span");
+  sizer.className = "dept dept-sizer";
+  sizer.setAttribute("aria-hidden", "true");
+  sizer.innerHTML = `${longest.replace(/&/g, "&amp;").replace(/</g, "&lt;")}<svg class="i meta-chevron" width="10" height="10"><use href="#i-chevron"/></svg>`;
+  slot.append(sizer);
+}
+
+for (const article of document.querySelectorAll(".detail")) {
+  upgradeDept(article);
+  reserveDept(article);
+  fitMeta(article);
+}
+
+function noteHasText(article) {
+  const title = article.querySelector(".note-title");
+  const draft = article.querySelector(".note-draft");
+  const titleText = title ? title.value.trim() : (article.querySelector("h2")?.textContent || "").trim();
+  const bodyText = draft ? draft.value.trim() : (article.querySelector(".brief-body")?.textContent || "").trim();
+  return titleText.length > 0 || bodyText.length > 0;
+}
+
+function syncCommentLock(article) {
+  const form = article?.querySelector(".brief-replies .msg");
+  if (!form) return;
+  const locked = !noteHasText(article);
+  form.classList.toggle("is-locked", locked);
+  for (const control of form.querySelectorAll("input, button")) control.disabled = locked;
+  if (!locked) return;
+  const input = form.querySelector("input");
+  if (input) input.value = "";
+  form.classList.remove("has-value");
+}
+
+function noteStamp() {
+  const time = new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+  return `Today · ${time}`;
+}
+
+function revealNewCard(list, card) {
+  const visible = [...list.querySelectorAll(":scope > button:not([hidden])")];
+  const before = new Map(visible.map((row) => [row, row.getBoundingClientRect().top]));
+  list.prepend(card);
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const movers = [card, ...visible];
+  for (const row of movers) {
+    const delta = row === card ? -row.getBoundingClientRect().height : before.get(row) - row.getBoundingClientRect().top;
+    row.style.transition = "none";
+    row.style.transform = `translateY(${delta}px)`;
+  }
+  list.getBoundingClientRect();
+  requestAnimationFrame(() => {
+    for (const row of movers) {
+      row.style.transition = "transform 180ms ease";
+      row.style.transform = "translateY(0)";
+    }
+  });
+  window.setTimeout(() => {
+    for (const row of movers) {
+      row.style.transition = "";
+      row.style.transform = "";
+    }
+  }, 220);
+}
+
+function createNote() {
+  const list = document.querySelector(".brief-list");
+  const read = document.querySelector(".brief-read");
+  if (!list || !read) return;
+  const id = "new-" + Date.now();
+  const stamp = noteStamp();
+  const deptChoices = departmentChoices();
+  const card = document.createElement("button");
+  card.type = "button";
+  card.setAttribute("role", "option");
+  card.dataset.note = id;
+  card.dataset.dept = "Front Desk";
+  card.classList.add("is-untitled");
+  card.innerHTML = `<span class="note-avatar-slot"><img src="assets/avatar-sarah.png?v=20261029a" alt=""></span><span class="note-copy"><span class="note-line"><span class="note-time">${stamp}</span><span class="dept">Front desk</span></span><span class="brief-title">Title</span><span class="brief-preview">New note</span></span>`;
+  revealNewCard(list, card);
+  const article = document.createElement("article");
+  article.className = "detail";
+  article.dataset.detail = id;
+  article.hidden = true;
+  article.innerHTML = `<div class="brief-top"><textarea class="note-title" aria-label="Title" placeholder="Title" rows="1"></textarea><div class="drop note-menu"><button class="note-more" type="button" aria-expanded="false" aria-haspopup="menu" aria-label="More"><svg class="i" width="14" height="14"><use href="#i-dots"/></svg></button><div class="menu" role="menu" hidden><button class="menu-item" type="button" role="menuitem" data-note-action="share"><svg class="i" width="14" height="14"><use href="#i-share"/></svg>Share</button><button class="menu-item danger" type="button" role="menuitem" data-note-action="delete"><svg class="i" width="14" height="14"><use href="#i-trash"/></svg>Delete</button></div></div></div><dl class="note-meta"><div><dt>Timestamp</dt><dd>${stamp}</dd></div><div><dt>Department</dt><dd><div class="drop dept-edit"><button class="dept dept-pick" type="button" aria-expanded="false" aria-haspopup="menu"><span class="dept-name">Front desk</span><svg class="i meta-chevron" width="10" height="10"><use href="#i-chevron"/></svg></button><div class="menu" role="menu" hidden>${deptChoices}</div></div></dd></div><div><dt>Author</dt><dd>Sarah Mou</dd></div><div><dt>Viewed</dt><dd><div class="drop view-edit"><button class="chip view-pick" type="button" aria-expanded="false" aria-haspopup="menu"><svg class="i view-eye" width="18" height="18" aria-hidden="true"><use href="#i-eye"/></svg><span class="view-count">0/8</span><svg class="i meta-chevron" width="10" height="10"><use href="#i-chevron"/></svg></button><div class="menu view-menu" role="menu" hidden></div></div></dd></div></dl><div class="brief-main"><p class="brief-meta">Front desk</p><textarea class="note-draft" aria-label="Note" placeholder="New note"></textarea><section class="brief-replies" aria-label="Comments"><h3>Comments</h3><form class="msg" data-composer><span class="lead"><button class="well" type="button" aria-label="Add"><svg class="i" width="16" height="16"><use href="#i-plus"/></svg></button><input aria-label="Write a comment" placeholder="Write a comment..."></span><button class="well" type="submit" aria-label="Send"><svg class="i" width="16" height="16"><use href="#i-up"/></svg></button></form></section></div>`;
+  read.append(article);
+  const titleInput = article.querySelector(".note-title");
+  const draft = article.querySelector(".note-draft");
+  const fitTitle = () => {
+    titleInput.style.height = "auto";
+    titleInput.style.height = `${titleInput.scrollHeight}px`;
+  };
+  const syncDraft = () => {
+    const title = titleInput.value.trim();
+    card.classList.toggle("is-untitled", title.length === 0);
+    card.classList.toggle("is-ready", title.length > 0 || draft.value.trim().length > 0);
+    card.querySelector(".brief-title").textContent = title || "Title";
+    const line = draft.value.trim().split("\n").find(Boolean);
+    card.querySelector(".brief-preview").textContent = line || "New note";
+    fitTitle();
+    syncCommentLock(article);
+    layoutOpenNote();
+  };
+  titleInput.addEventListener("input", syncDraft);
+  draft.addEventListener("input", syncDraft);
+  rows.unshift(card);
+  card.addEventListener("click", () => selectNote(card));
+  if (selectedDept() !== "All" && selectedDept() !== "Front Desk") {
+    for (const tab of deptTabs) tab.setAttribute("aria-selected", tab.dataset.dept === "All" ? "true" : "false");
+  }
+  selectNote(card);
   applyFilters();
-});
+  fillViewMenu(article);
+  reserveDept(article);
+  fitMeta(article);
+  const focusTitle = () => titleInput.focus();
+  if (confirmDialog?.open) confirmDialog.addEventListener("close", focusTitle, { once: true });
+  else focusTitle();
+}
+
+for (const button of document.querySelectorAll("[data-new]")) button.addEventListener("click", createNote);
+
+if (rows.length === 0) createNote();
+for (const article of document.querySelectorAll(".detail")) syncCommentLock(article);
 
 for (const host of document.querySelectorAll(".tip-host")) {
   const settle = () => host.classList.add("is-quiet", "is-settled");
@@ -222,4 +943,9 @@ for (const host of document.querySelectorAll(".side .tip-host")) {
     followUntil = 0;
     cancelAnimationFrame(placeFrame);
   });
+}
+
+const noteColumn = document.querySelector(".brief-read");
+if (noteColumn && "ResizeObserver" in window) {
+  new ResizeObserver(() => layoutOpenNote()).observe(noteColumn);
 }

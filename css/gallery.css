@@ -25,7 +25,28 @@
   --serif: "Libre Baskerville", "Times New Roman", serif;
 }
 
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+  scrollbar-width: thin;
+  scrollbar-color: var(--black-25) transparent;
+}
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+  background: transparent;
+  border: 0;
+}
+*::-webkit-scrollbar-track,
+*::-webkit-scrollbar-corner {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+*::-webkit-scrollbar-thumb {
+  background: var(--black-25);
+  border: 0;
+  box-shadow: none;
+}
 
 body {
   margin: 0;
@@ -423,6 +444,11 @@ section { scroll-margin-top: 24px; }
   color: var(--black-50);
   font-size: 14px;
 }
+html[data-theme="dark"] img.avatar,
+html[data-theme="dark"] img.note-avatar,
+html[data-theme="dark"] .note-avatar-slot img {
+  background: transparent;
+}
 .avatar.lg { width: 46px; height: 47px; }
 .avatar.mini {
   width: 16px;
@@ -478,7 +504,7 @@ section { scroll-margin-top: 24px; }
   color: var(--black-50);
 }
 .lance { width: min(430px, 100%); height: 50px; padding: 10px; background: var(--sidebar-grey); }
-.msg { width: min(251px, 100%); height: 38px; padding: 4px 4px 4px 8px; background: var(--grey); }
+.msg { width: min(251px, 100%); height: 38px; padding: 4px 4px 4px 8px; background: var(--sidebar-grey); }
 .lance:hover, .lance.is-hover, .msg:hover, .msg.is-hover { box-shadow: 0 0 0 1px var(--black-12); }
 .lance.has-value input,
 .msg.has-value input,
@@ -827,14 +853,73 @@ button[aria-label="Send"]:hover { background: var(--grey); color: var(--black-50
   height: var(--space-16);
   pointer-events: none;
   z-index: 1;
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
 }
 .side-scroll-frame.is-fade-start::before {
   top: 0;
   background: linear-gradient(to bottom, var(--sidebar-grey), transparent);
+  -webkit-mask-image: linear-gradient(to bottom, #000, transparent);
+  mask-image: linear-gradient(to bottom, #000, transparent);
 }
 .side-scroll-frame.is-fade-end::after {
   bottom: 0;
   background: linear-gradient(to top, var(--sidebar-grey), transparent);
+  -webkit-mask-image: linear-gradient(to top, #000, transparent);
+  mask-image: linear-gradient(to top, #000, transparent);
+}
+
+.scroll-fade {
+  position: relative;
+  --scroll-fade: var(--white);
+}
+.scroll-fade.is-fade-start::before,
+.scroll-fade.is-fade-end::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  z-index: 1;
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+}
+.scroll-fade.is-fade-start::before {
+  top: 0;
+  right: 0;
+  left: 0;
+  height: var(--space-16);
+  background: linear-gradient(to bottom, var(--scroll-fade), transparent);
+  -webkit-mask-image: linear-gradient(to bottom, #000, transparent);
+  mask-image: linear-gradient(to bottom, #000, transparent);
+}
+.scroll-fade.is-fade-end::after {
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: var(--space-16);
+  background: linear-gradient(to top, var(--scroll-fade), transparent);
+  -webkit-mask-image: linear-gradient(to top, #000, transparent);
+  mask-image: linear-gradient(to top, #000, transparent);
+}
+.scroll-fade-x.is-fade-start::before,
+.scroll-fade-x.is-fade-end::after {
+  top: 0;
+  bottom: 0;
+  width: var(--space-16);
+  height: auto;
+}
+.scroll-fade-x.is-fade-start::before {
+  right: auto;
+  left: 0;
+  background: linear-gradient(to right, var(--scroll-fade), transparent);
+  -webkit-mask-image: linear-gradient(to right, #000, transparent);
+  mask-image: linear-gradient(to right, #000, transparent);
+}
+.scroll-fade-x.is-fade-end::after {
+  right: 0;
+  left: auto;
+  background: linear-gradient(to left, var(--scroll-fade), transparent);
+  -webkit-mask-image: linear-gradient(to left, #000, transparent);
+  mask-image: linear-gradient(to left, #000, transparent);
 }
 .side-search {
   width: calc(100% + 16px);
@@ -859,7 +944,7 @@ button[aria-label="Send"]:hover { background: var(--grey); color: var(--black-50
   font-size: 12px;
   font-weight: 400;
 }
-.side-links { position: relative; display: flex; flex-direction: column; gap: 0.5px; }
+.side-links { position: relative; display: flex; flex-direction: column; gap: 1px; }
 .side-links[hidden] { display: none; }
 .side-links a {
   gap: 4px;

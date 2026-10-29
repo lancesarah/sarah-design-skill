@@ -24,7 +24,9 @@ Hover and selected fills step one darker than the surface they sit on. Never use
 
 `--white` → `--sidebar-grey` → `--grey` → `--black-12` → `--black-25`
 
-A tab on white hovers with `--sidebar-grey`. The same tab on a `--sidebar-grey` bar hovers with `--grey`. If that next step is still invisible, keep moving down the list. Do not invent a new grey.
+A tab on white hovers with `--sidebar-grey`. The same tab on a `--sidebar-grey` bar hovers with `--grey`. A selected note on the white page uses `--sidebar-grey`. The same note on a `--sidebar-grey` surface would use `--grey`. Hover and selected share that fill. A selected note stays `--sidebar-grey` while the pointer is on it. If that next step is still invisible against the surface, keep moving down the list. Do not invent a new grey.
+
+A resting fill uses that same step. On white, the fill is `--sidebar-grey`. On `--sidebar-grey`, the fill is `--grey`. The comment field is the reference: it sits on the white page, so its fill is `--sidebar-grey`.
 
 `--destructive` is the one red for confirmation. Do not introduce a second red.
 
@@ -57,6 +59,8 @@ The search stroke, including the shortcut key border, uses `--line`.
 
 `--black-25` is the quieter grey. Light mode keeps `#bfbfbf`. In dark mode it is halfway from `--black-50` toward `--sidebar-grey`, and it is not a copy of `--black-50`. Use it for unselected tab counts, focus rings, scrollbars, and tooltip emphasis. Search strokes stay on `--line`.
 
+The scrollbar is the thin sidebar scrollbar. `scrollbar-width` is `thin`, and the thumb is `--black-25`. The track matches the surface behind it.
+
 Sidebar icon buttons stay unfilled. The switch under Settings uses `--action` and `--switch-knob` in both themes.
 
 ## Type
@@ -85,6 +89,6 @@ Sidebar icon buttons stay unfilled. The switch under Settings uses `--action` an
 
 - `--shadow-menu`: menus and popovers.
 - `--stroke`: 1px `--grey` ring.
-- `--outline-image`: 1px pure black at 10% opacity, inset on photographs.
-- `--icon-stroke`: `calc(1 / 0.95)`. Icons with class `i` are scaled to 0.95, and this keeps the painted stroke at `1`. Sidebar icons use the outlined Material glyph, fitted to Internal notes. See [polish.md](polish.md).
+- `--outline-image`: 1px pure black at 10% opacity, inset on photographs. In dark mode it is the hairline, white at 5%.
+- `--icon-stroke`: `calc(1 / 0.95)`. Icons with class `i` are scaled to 0.95, and this keeps the painted stroke at `1`. New icons use the outlined Material glyph, fitted to Internal notes, including menu icons. See [polish.md](polish.md).
 - `--hit` / `--hit-touch`: 40px and 44px hit areas. The visible control stays its gallery size.

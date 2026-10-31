@@ -10,9 +10,9 @@
   </script>
   <title>Internal notes</title>
   <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=switzer@400,500,600&display=swap">
-  <link rel="stylesheet" href="css/tokens.css?v=20261028a">
-  <link rel="stylesheet" href="css/gallery.css?v=20261029a">
-  <link rel="stylesheet" href="css/notes.css?v=20261028zzl">
+  <link rel="stylesheet" href="css/tokens.css?v=20261030ab">
+  <link rel="stylesheet" href="css/gallery.css?v=20261030ap">
+  <link rel="stylesheet" href="css/notes.css?v=20261030s">
 </head>
 <body>
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -89,7 +89,7 @@
         <button class="side-fold" type="button" data-side-toggle aria-expanded="true">Pinned <svg class="i" width="14" height="14"><use href="#i-chevron"/></svg></button>
         <div class="side-links" data-side-list>
           <a href="notes.html"><svg class="i" width="18" height="18"><use href="#i-grid"/></svg>Boards</a>
-          <a href="notes.html"><svg class="i" width="18" height="18"><use href="#i-clipboard"/></svg>To-Dos</a>
+          <a href="todos.html"><svg class="i" width="18" height="18"><use href="#i-clipboard"/></svg>To-Dos</a>
           <a href="notes.html"><svg class="i" width="18" height="18"><use href="#i-alert"/></svg>Complaints</a>
           <a href="notes.html"><svg class="i" width="18" height="18"><use href="#i-calendar"/></svg>Schedule</a>
         </div>
@@ -106,7 +106,7 @@
         <button class="side-fold" type="button" data-side-toggle aria-expanded="false">Operations <svg class="i" width="14" height="14"><use href="#i-chevron"/></svg></button>
         <div class="side-links" data-side-list hidden>
           <a href="notes.html"><svg class="i" width="18" height="18"><use href="#i-grid"/></svg>Boards</a>
-          <a href="notes.html"><svg class="i" width="18" height="18"><use href="#i-clipboard"/></svg>To-Dos</a>
+          <a href="todos.html"><svg class="i" width="18" height="18"><use href="#i-clipboard"/></svg>To-Dos</a>
           <a href="notes.html"><svg class="i" width="18" height="18"><use href="#i-alert"/></svg>Complaints</a>
           <a href="notes.html"><svg class="i" width="18" height="18"><use href="#i-calendar"/></svg>Schedule</a>
           <a href="notes.html"><svg class="i" width="18" height="18"><use href="#i-card"/></svg>Cash &amp; bank</a>
@@ -204,10 +204,10 @@
     <div class="stage brief">
       <div class="scroll-fade list-fade">
       <div class="brief-list" role="listbox" aria-label="Notes">
-        <button type="button" role="option" data-note="gss" data-dept="Front Desk" aria-selected="true"><img class="note-avatar" src="assets/avatar-sarah.png?v=20261029a" alt=""><span class="note-copy"><span class="note-line"><span class="note-time">Today · 10:38 AM</span><span class="dept">Front desk</span></span><span class="brief-title">GSS scores</span><span class="brief-preview">Total/Benchmark</span></span></button>
-        <button type="button" role="option" data-note="enroll" data-dept="Front Desk" aria-selected="false"><img class="note-avatar" src="assets/avatar-sarah.png?v=20261029a" alt=""><span class="note-copy"><span class="note-line"><span class="note-time">Today · 10:38 AM</span><span class="dept">Front desk</span></span><span class="brief-title">Eligible enrollments 10/19/26</span><span class="brief-preview">31 Eligible enrollments</span></span></button>
-        <button type="button" role="option" data-note="qviana" data-dept="Front Desk" aria-selected="false"><img class="note-avatar" src="assets/avatar-sarah.png?v=20261029a" alt=""><span class="note-copy"><span class="note-line"><span class="note-time">Today · 9:14 AM</span><span class="dept">Front desk</span></span><span class="brief-title">Qviana called out today 10/19/26</span><span class="brief-preview">No body yet.</span></span></button>
-        <button type="button" role="option" data-note="elite" data-dept="Front Desk" aria-selected="false"><img class="note-avatar" src="assets/avatar-sarah.png?v=20261029a" alt=""><span class="note-copy"><span class="note-line"><span class="note-time">Yesterday · 8:20 AM</span><span class="dept">Front desk</span></span><span class="brief-title">Elite Arrivals 10/19/26</span><span class="brief-preview">63 Elite Arrivals Ambassador – 1 Titanium – 11 Platinum – 14</span></span></button>
+        <button type="button" role="option" data-note="gss" data-dept="Front Desk" aria-selected="true"><span class="tip-host note-author"><img class="note-avatar" src="assets/avatar-sarah.png?v=20261029a" alt=""><span class="tip">Sarah Mou</span></span><span class="note-copy"><span class="note-line"><span class="note-time">Today · 10:38 AM</span><span class="dept" data-dept="Front Desk">Front desk</span></span><span class="brief-title">GSS scores</span><span class="brief-preview">Total/Benchmark</span></span></button>
+        <button type="button" role="option" data-note="enroll" data-dept="Front Desk" aria-selected="false"><span class="tip-host note-author"><img class="note-avatar" src="assets/avatar-sarah.png?v=20261029a" alt=""><span class="tip">Sarah Mou</span></span><span class="note-copy"><span class="note-line"><span class="note-time">Today · 10:38 AM</span><span class="dept" data-dept="Front Desk">Front desk</span></span><span class="brief-title">Eligible enrollments 10/19/26</span><span class="brief-preview">31 Eligible enrollments</span></span></button>
+        <button type="button" role="option" data-note="qviana" data-dept="Front Desk" aria-selected="false"><span class="tip-host note-author"><img class="note-avatar" src="assets/avatar-sarah.png?v=20261029a" alt=""><span class="tip">Sarah Mou</span></span><span class="note-copy"><span class="note-line"><span class="note-time">Today · 9:14 AM</span><span class="dept" data-dept="Front Desk">Front desk</span></span><span class="brief-title">Qviana called out today 10/19/26</span><span class="brief-preview">No body yet.</span></span></button>
+        <button type="button" role="option" data-note="elite" data-dept="Front Desk" aria-selected="false"><span class="tip-host note-author"><img class="note-avatar" src="assets/avatar-sarah.png?v=20261029a" alt=""><span class="tip">Sarah Mou</span></span><span class="note-copy"><span class="note-line"><span class="note-time">Yesterday · 8:20 AM</span><span class="dept" data-dept="Front Desk">Front desk</span></span><span class="brief-title">Elite Arrivals 10/19/26</span><span class="brief-preview">63 Elite Arrivals Ambassador – 1 Titanium – 11 Platinum – 14</span></span></button>
       </div>
       </div>
       <div class="brief-read">
@@ -225,7 +225,7 @@
           </div>
           <dl class="note-meta">
             <div><dt>Timestamp</dt><dd>Today · 10:38 AM</dd></div>
-            <div><dt>Department</dt><dd><span class="dept">Front desk</span></dd></div>
+            <div><dt>Department</dt><dd><span class="dept" data-dept="Front Desk">Front desk</span></dd></div>
             <div><dt>Author</dt><dd>Sarah Mou</dd></div>
             <div><dt>Viewed</dt><dd><div class="drop view-edit"><button class="chip view-pick" type="button" aria-expanded="false" aria-haspopup="menu"><svg class="i view-eye" width="18" height="18" aria-hidden="true"><use href="#i-eye"/></svg><span class="view-count">0/8</span><svg class="i meta-chevron" width="10" height="10"><use href="#i-chevron"/></svg></button><div class="menu view-menu" role="menu" hidden></div></div></dd></div>
           </dl>
@@ -261,7 +261,7 @@
           </div>
           <dl class="note-meta">
             <div><dt>Timestamp</dt><dd>Today · 9:14 AM</dd></div>
-            <div><dt>Department</dt><dd><span class="dept">Front desk</span></dd></div>
+            <div><dt>Department</dt><dd><span class="dept" data-dept="Front Desk">Front desk</span></dd></div>
             <div><dt>Author</dt><dd>Sarah Mou</dd></div>
             <div><dt>Viewed</dt><dd><div class="drop view-edit"><button class="chip view-pick" type="button" aria-expanded="false" aria-haspopup="menu"><svg class="i view-eye" width="18" height="18" aria-hidden="true"><use href="#i-eye"/></svg><span class="view-count">0/8</span><svg class="i meta-chevron" width="10" height="10"><use href="#i-chevron"/></svg></button><div class="menu view-menu" role="menu" hidden></div></div></dd></div>
           </dl>
@@ -290,7 +290,7 @@
           </div>
           <dl class="note-meta">
             <div><dt>Timestamp</dt><dd>Today · 10:38 AM</dd></div>
-            <div><dt>Department</dt><dd><span class="dept">Front desk</span></dd></div>
+            <div><dt>Department</dt><dd><span class="dept" data-dept="Front Desk">Front desk</span></dd></div>
             <div><dt>Author</dt><dd>Sarah Mou</dd></div>
             <div><dt>Viewed</dt><dd><div class="drop view-edit"><button class="chip view-pick" type="button" aria-expanded="false" aria-haspopup="menu"><svg class="i view-eye" width="18" height="18" aria-hidden="true"><use href="#i-eye"/></svg><span class="view-count">0/8</span><svg class="i meta-chevron" width="10" height="10"><use href="#i-chevron"/></svg></button><div class="menu view-menu" role="menu" hidden></div></div></dd></div>
           </dl>
@@ -333,7 +333,7 @@ Food and Bev 52.7/57.9</p>
           </div>
           <dl class="note-meta">
             <div><dt>Timestamp</dt><dd>Yesterday · 8:20 AM</dd></div>
-            <div><dt>Department</dt><dd><span class="dept">Front desk</span></dd></div>
+            <div><dt>Department</dt><dd><span class="dept" data-dept="Front Desk">Front desk</span></dd></div>
             <div><dt>Author</dt><dd>Sarah Mou</dd></div>
             <div><dt>Viewed</dt><dd><div class="drop view-edit"><button class="chip view-pick" type="button" aria-expanded="false" aria-haspopup="menu"><svg class="i view-eye" width="18" height="18" aria-hidden="true"><use href="#i-eye"/></svg><span class="view-count">0/8</span><svg class="i meta-chevron" width="10" height="10"><use href="#i-chevron"/></svg></button><div class="menu view-menu" role="menu" hidden></div></div></dd></div>
           </dl>
@@ -401,7 +401,7 @@ Food and Bev 52.7/57.9</p>
       </div>
     </div>
   </dialog>
-  <script src="js/gallery.js"></script>
-  <script src="js/notes.js?v=20261029b"></script>
+  <script src="js/gallery.js?v=20261030ae"></script>
+  <script src="js/notes.js?v=20261030l"></script>
 </body>
 </html>

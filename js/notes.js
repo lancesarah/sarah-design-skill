@@ -104,6 +104,7 @@ function mountScrolls(article) {
     else replies.append(frame);
     frame.append(body);
     edgeFade(body, "y");
+    new MutationObserver(() => layoutOpenNote()).observe(body, { childList: true });
   }
 }
 
@@ -114,22 +115,47 @@ function layoutOpenNote() {
   mountScrolls(article);
   const replies = article.querySelector(".brief-replies");
   const field = article.querySelector(".note-draft");
-  read.classList.remove("is-docked");
+  const noteBody = article.querySelector(".note-scroll-body");
+  const commentBody = article.querySelector(".comment-scroll-body");
   article.style.removeProperty("--replies-h");
   replies?.classList.remove("is-pinned");
   if (field) {
     field.style.height = "auto";
     field.style.height = `${field.scrollHeight}px`;
   }
-  if (!replies) return;
-  const pad = parseFloat(getComputedStyle(read).paddingBottom) || 0;
-  const limit = read.getBoundingClientRect().bottom - pad;
-  if (replies.getBoundingClientRect().bottom > limit + 1) {
+  if (!replies || !noteBody) return;
+  const noteFrame = noteBody.parentElement;
+  const main = article.querySelector(".brief-main");
+  noteBody.style.maxHeight = "";
+  noteFrame.style.maxHeight = "";
+  if (commentBody) commentBody.style.maxHeight = "";
+  read.classList.remove("is-docked");
+  const repliesStyle = getComputedStyle(replies);
+  const margin = parseFloat(repliesStyle.marginTop) + parseFloat(repliesStyle.marginBottom);
+  const gap = parseFloat(repliesStyle.rowGap || repliesStyle.gap) || 0;
+  const heading = replies.querySelector("h3")?.getBoundingClientRect().height || 0;
+  const form = replies.querySelector(".msg")?.getBoundingClientRect().height || 0;
+  const commentFrame = replies.querySelector(".comment-scroll");
+  const commentsOpen = commentFrame && getComputedStyle(commentFrame).display !== "none";
+  const chrome = margin + heading + form + gap * (commentsOpen ? 2 : 1);
+  const lane = commentsOpen ? 49 : 0;
+  const available = main.clientHeight;
+  const noteContent = noteBody.scrollHeight;
+  const noteCap = Math.max(0, available - chrome - lane);
+  if (noteContent > noteCap + 1) {
+    const cap = `${Math.round(noteCap)}px`;
+    noteBody.style.maxHeight = cap;
+    noteFrame.style.maxHeight = cap;
     read.classList.add("is-docked");
-    if (field && field.selectionStart === field.value.length) {
-      const body = field.closest(".note-scroll-body");
-      if (body) body.scrollTop = body.scrollHeight;
-    }
+  }
+  const noteUsed = Math.min(noteContent, noteCap);
+  const commentRoom = Math.max(lane, available - chrome - noteUsed);
+  const commentContent = commentBody ? commentBody.scrollHeight : 0;
+  if (commentBody && commentContent > commentRoom + 1) {
+    commentBody.style.maxHeight = `${Math.round(commentRoom)}px`;
+  }
+  if (field && document.activeElement === field && field.selectionStart === field.value.length) {
+    noteBody.scrollTop = noteBody.scrollHeight;
   }
 }
 
@@ -246,12 +272,14 @@ document.addEventListener("click", (event) => {
     const card = rows.find((row) => row.dataset.note === article?.dataset.detail);
     const label = choice.textContent.trim();
     article?.querySelector(".dept-name") && (article.querySelector(".dept-name").textContent = label);
+    paintDept(article?.querySelector(".dept-pick"), choice.dataset.deptChoice);
     const meta = article?.querySelector(".brief-meta");
     if (meta) meta.textContent = label;
     if (card) {
       card.dataset.dept = choice.dataset.deptChoice;
       const tag = card.querySelector(".note-line .dept");
       if (tag) tag.textContent = label;
+      paintDept(tag, choice.dataset.deptChoice);
     }
     closeDeptMenus();
     applyFilters();
@@ -487,10 +515,11 @@ for (const link of sideLinks) {
 const collapseButton = document.querySelector(".side-top [data-side-collapse]");
 const lanceCollapse = document.querySelector("#lance [data-lance-collapse]");
 
-// Open widths are 277 and 392. Rails are 54 and 62. The notes table needs 590.
+// Open widths are 277 and 392. Rails are 54 and 62.
+// The center keeps the 375px list and a 520px note (895).
 // Left nav closes first, then the chat. See patterns.md, Window resize.
-const SIDE_OPEN_AT = 1259;
-const LANCE_OPEN_AT = 1036;
+const SIDE_OPEN_AT = 1564;
+const LANCE_OPEN_AT = 1341;
 let sideChosen = false;
 let sideHeldOpen = false;
 let lanceChosen = false;
@@ -571,13 +600,22 @@ if (deptStrip) {
     thumb.hidden = false;
     const inset = 2;
     const track = deptStrip.clientWidth - inset * 2;
-    // Cap the thumb so a few pixels of overflow don't paint a full-width system bar.
-    const size = Math.max(32, Math.min(track * (deptStrip.clientWidth / deptStrip.scrollWidth), track * 0.35));
+    const size = Math.max(32, track * (deptStrip.clientWidth / deptStrip.scrollWidth));
     const x = inset + (deptStrip.scrollLeft / max) * (track - size);
     thumb.style.width = `${size}px`;
     thumb.style.transform = `translateX(${x}px)`;
   };
   placeThumb();
+  fade.addEventListener("wheel", (event) => {
+    const max = deptStrip.scrollWidth - deptStrip.clientWidth;
+    if (max <= 1) return;
+    const delta = Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY;
+    if (!delta) return;
+    const next = Math.max(0, Math.min(max, deptStrip.scrollLeft + delta));
+    if (next === deptStrip.scrollLeft) return;
+    event.preventDefault();
+    deptStrip.scrollLeft = next;
+  }, { passive: false });
   deptStrip.addEventListener("scroll", placeThumb, { passive: true });
   const thumbObserver = new ResizeObserver(placeThumb);
   thumbObserver.observe(deptStrip);
@@ -747,6 +785,15 @@ function fitMeta(article) {
   }
 }
 
+function deptValueFromLabel(label) {
+  const match = departments().find((dept) => dept.label === label || dept.value === label);
+  return match ? match.value : label;
+}
+
+function paintDept(node, value) {
+  if (node && value) node.dataset.dept = value;
+}
+
 function departmentChoices() {
   return departments().map((dept) => {
     const value = dept.value.replace(/&/g, "&amp;").replace(/"/g, "&quot;");
@@ -758,8 +805,10 @@ function departmentChoices() {
 function upgradeDept(article) {
   const chip = article.querySelector(".note-meta .dept");
   if (!chip || chip.classList.contains("dept-pick")) return;
-  const label = chip.textContent.trim().replace(/&/g, "&amp;").replace(/</g, "&lt;");
-  chip.parentElement.innerHTML = `<div class="drop dept-edit"><button class="dept dept-pick" type="button" aria-expanded="false" aria-haspopup="menu"><span class="dept-name">${label}</span><svg class="i meta-chevron" width="10" height="10"><use href="#i-chevron"/></svg></button><div class="menu" role="menu" hidden>${departmentChoices()}</div></div>`;
+  const raw = chip.textContent.trim();
+  const label = raw.replace(/&/g, "&amp;").replace(/</g, "&lt;");
+  const value = deptValueFromLabel(raw).replace(/&/g, "&amp;").replace(/"/g, "&quot;");
+  chip.parentElement.innerHTML = `<div class="drop dept-edit"><button class="dept dept-pick" type="button" data-dept="${value}" aria-expanded="false" aria-haspopup="menu"><span class="dept-name">${label}</span><svg class="i meta-chevron" width="10" height="10"><use href="#i-chevron"/></svg></button><div class="menu" role="menu" hidden>${departmentChoices()}</div></div>`;
 }
 
 function reserveDept(article) {
@@ -848,13 +897,13 @@ function createNote() {
   card.dataset.note = id;
   card.dataset.dept = "Front Desk";
   card.classList.add("is-untitled");
-  card.innerHTML = `<span class="note-avatar-slot"><img src="assets/avatar-sarah.png?v=20261029a" alt=""></span><span class="note-copy"><span class="note-line"><span class="note-time">${stamp}</span><span class="dept">Front desk</span></span><span class="brief-title">Title</span><span class="brief-preview">New note</span></span>`;
+  card.innerHTML = `<span class="note-avatar-slot tip-host note-author"><img src="assets/avatar-sarah.png?v=20261029a" alt=""><span class="tip">Sarah Mou</span></span><span class="note-copy"><span class="note-line"><span class="note-time">${stamp}</span><span class="dept" data-dept="Front Desk">Front desk</span></span><span class="brief-title">Title</span><span class="brief-preview">New note</span></span>`;
   revealNewCard(list, card);
   const article = document.createElement("article");
   article.className = "detail";
   article.dataset.detail = id;
   article.hidden = true;
-  article.innerHTML = `<div class="brief-top"><textarea class="note-title" aria-label="Title" placeholder="Title" rows="1"></textarea><div class="drop note-menu"><button class="note-more" type="button" aria-expanded="false" aria-haspopup="menu" aria-label="More"><svg class="i" width="14" height="14"><use href="#i-dots"/></svg></button><div class="menu" role="menu" hidden><button class="menu-item" type="button" role="menuitem" data-note-action="share"><svg class="i" width="14" height="14"><use href="#i-share"/></svg>Share</button><button class="menu-item danger" type="button" role="menuitem" data-note-action="delete"><svg class="i" width="14" height="14"><use href="#i-trash"/></svg>Delete</button></div></div></div><dl class="note-meta"><div><dt>Timestamp</dt><dd>${stamp}</dd></div><div><dt>Department</dt><dd><div class="drop dept-edit"><button class="dept dept-pick" type="button" aria-expanded="false" aria-haspopup="menu"><span class="dept-name">Front desk</span><svg class="i meta-chevron" width="10" height="10"><use href="#i-chevron"/></svg></button><div class="menu" role="menu" hidden>${deptChoices}</div></div></dd></div><div><dt>Author</dt><dd>Sarah Mou</dd></div><div><dt>Viewed</dt><dd><div class="drop view-edit"><button class="chip view-pick" type="button" aria-expanded="false" aria-haspopup="menu"><svg class="i view-eye" width="18" height="18" aria-hidden="true"><use href="#i-eye"/></svg><span class="view-count">0/8</span><svg class="i meta-chevron" width="10" height="10"><use href="#i-chevron"/></svg></button><div class="menu view-menu" role="menu" hidden></div></div></dd></div></dl><div class="brief-main"><p class="brief-meta">Front desk</p><textarea class="note-draft" aria-label="Note" placeholder="New note"></textarea><section class="brief-replies" aria-label="Comments"><h3>Comments</h3><form class="msg" data-composer><span class="lead"><button class="well" type="button" aria-label="Add"><svg class="i" width="16" height="16"><use href="#i-plus"/></svg></button><input aria-label="Write a comment" placeholder="Write a comment..."></span><button class="well" type="submit" aria-label="Send"><svg class="i" width="16" height="16"><use href="#i-up"/></svg></button></form></section></div>`;
+  article.innerHTML = `<div class="brief-top"><textarea class="note-title" aria-label="Title" placeholder="Title" rows="1"></textarea><div class="drop note-menu"><button class="note-more" type="button" aria-expanded="false" aria-haspopup="menu" aria-label="More"><svg class="i" width="14" height="14"><use href="#i-dots"/></svg></button><div class="menu" role="menu" hidden><button class="menu-item" type="button" role="menuitem" data-note-action="share"><svg class="i" width="14" height="14"><use href="#i-share"/></svg>Share</button><button class="menu-item danger" type="button" role="menuitem" data-note-action="delete"><svg class="i" width="14" height="14"><use href="#i-trash"/></svg>Delete</button></div></div></div><dl class="note-meta"><div><dt>Timestamp</dt><dd>${stamp}</dd></div><div><dt>Department</dt><dd><div class="drop dept-edit"><button class="dept dept-pick" type="button" data-dept="Front Desk" aria-expanded="false" aria-haspopup="menu"><span class="dept-name">Front desk</span><svg class="i meta-chevron" width="10" height="10"><use href="#i-chevron"/></svg></button><div class="menu" role="menu" hidden>${deptChoices}</div></div></dd></div><div><dt>Author</dt><dd>Sarah Mou</dd></div><div><dt>Viewed</dt><dd><div class="drop view-edit"><button class="chip view-pick" type="button" aria-expanded="false" aria-haspopup="menu"><svg class="i view-eye" width="18" height="18" aria-hidden="true"><use href="#i-eye"/></svg><span class="view-count">0/8</span><svg class="i meta-chevron" width="10" height="10"><use href="#i-chevron"/></svg></button><div class="menu view-menu" role="menu" hidden></div></div></dd></div></dl><div class="brief-main"><p class="brief-meta">Front desk</p><textarea class="note-draft" aria-label="Note" placeholder="New note"></textarea><section class="brief-replies" aria-label="Comments"><h3>Comments</h3><form class="msg" data-composer><span class="lead"><button class="well" type="button" aria-label="Add"><svg class="i" width="16" height="16"><use href="#i-plus"/></svg></button><input aria-label="Write a comment" placeholder="Write a comment..."></span><button class="well" type="submit" aria-label="Send"><svg class="i" width="16" height="16"><use href="#i-up"/></svg></button></form></section></div>`;
   read.append(article);
   const titleInput = article.querySelector(".note-title");
   const draft = article.querySelector(".note-draft");
@@ -896,12 +945,7 @@ if (rows.length === 0) createNote();
 for (const article of document.querySelectorAll(".detail")) syncCommentLock(article);
 
 for (const host of document.querySelectorAll(".tip-host")) {
-  const settle = () => host.classList.add("is-quiet", "is-settled");
-  host.addEventListener("pointerdown", () => host.classList.add("is-quiet"));
-  host.addEventListener("click", () => {
-    settle();
-    host.blur();
-  });
+  host.addEventListener("click", () => host.classList.add("is-settled"));
   host.addEventListener("pointerleave", () => host.classList.remove("is-quiet", "is-settled"));
   host.addEventListener("blur", () => {
     if (!host.matches(":hover")) host.classList.remove("is-quiet", "is-settled");

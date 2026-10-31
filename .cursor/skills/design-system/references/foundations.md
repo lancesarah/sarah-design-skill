@@ -10,7 +10,7 @@ Values live in `css/tokens.css` on `:root`. Use the variable, not the raw value.
 | Chrome | `--sidebar-grey`, `--grey`, `--black-50`, `--black-25`, `--black-12` |
 | Action (primary button, send, filter chip, switch track, in-progress) | `--action`, `--action-hover` |
 | Destructive | `--destructive` |
-| Department tag | `--tag-text`, `--tag-bg` |
+| Department tag | `--tag-text`, `--tag-bg` for Front desk. Housekeeping, Maintenance, Food & Beverage, Sales, and Management use `--dept-*` and `--dept-*-bg` |
 | Urgency | `--urgency-urgent`, `--urgency-high`, `--urgency-low` and each `*-bg` |
 | Complete | `--status-complete` |
 | Filter chip fill | `--filter-chip-bg` |
@@ -26,7 +26,7 @@ Hover and selected fills step one darker than the surface they sit on. Never use
 
 A tab on white hovers with `--sidebar-grey`. The same tab on a `--sidebar-grey` bar hovers with `--grey`. A selected note on the white page uses `--sidebar-grey`. The same note on a `--sidebar-grey` surface would use `--grey`. Hover and selected share that fill. A selected note stays `--sidebar-grey` while the pointer is on it. If that next step is still invisible against the surface, keep moving down the list. Do not invent a new grey.
 
-A resting fill uses that same step. On white, the fill is `--sidebar-grey`. On `--sidebar-grey`, the fill is `--grey`. The comment field is the reference: it sits on the white page, so its fill is `--sidebar-grey`.
+A resting fill uses that same step. On white, the fill is `--sidebar-grey`. On `--sidebar-grey`, the fill is `--grey`. The comment field is the reference: it sits on the white page, so its fill is `--sidebar-grey`. An urgency chip does not take that step. Standard stays `--sidebar-grey` on a white note, on a selected note, and in the menu. Do not recolor it because the note is selected or the menu row is hovered.
 
 `--destructive` is the one red for confirmation. Do not introduce a second red.
 
@@ -49,7 +49,7 @@ A surface that is darker than the page in light mode is lighter than the page in
 
 `--line` is `--grey` in light mode, so light borders stay the same. Accent colors stay. Type, sizes, spacing, and radii do not change.
 
-Hover lightens. A card or table row steps from `--white` (`#1A1A1A`) to `--grey` (`#292929`). It does not fall back onto a darker surface.
+Hover lightens. A card or table row whose resting fill is the page steps from `--white` (`#1A1A1A`) to `--grey` (`#292929`). It does not fall back onto a darker surface. A selected note already on the shared fill stays there. On the notes page that fill is `--sidebar-grey` in both themes, so the selected card does not continue to `--grey` while the pointer is on it.
 
 The primary button stays `--action`, with white text. Its hover is `--action-hover`, the darker blue, in both themes.
 
@@ -59,14 +59,14 @@ The search stroke, including the shortcut key border, uses `--line`.
 
 `--black-25` is the quieter grey. Light mode keeps `#bfbfbf`. In dark mode it is halfway from `--black-50` toward `--sidebar-grey`, and it is not a copy of `--black-50`. Use it for unselected tab counts, focus rings, scrollbars, and tooltip emphasis. Search strokes stay on `--line`.
 
-The scrollbar is the thin sidebar scrollbar. `scrollbar-width` is `thin`, and the thumb is `--black-25`. The track matches the surface behind it.
+The scrollbar is the thin sidebar scrollbar. `scrollbar-width` is `thin`, and the thumb is `--black-25`. The track matches the surface behind it. The department tabs do not use that system bar. Their thumb is the one in [patterns.md](patterns.md).
 
-Sidebar icon buttons stay unfilled. The switch under Settings uses `--action` and `--switch-knob` in both themes.
+Sidebar icon buttons stay unfilled. The switch under Settings uses `--action` and `--switch-knob` in both themes. Its thumb travel is `--switch-dur`, `--switch-ease`, and `--switch-travel`. The track uses `--switch-track-dur`.
 
 ## Type
 
-- `--font`: Switzer, weights 400 and 500.
-- Sizes: `--text-10`, `--text-12`, `--text-14`, `--text-16`.
+- `--font`: Switzer, weights 400 and 500. Switzer is the UI face. Libre Baskerville is for editorial moments only, where the gallery already uses it.
+- Sizes: `--text-10`, `--text-12`, `--text-13`, `--text-14`, `--text-16`. `--text-13` is the urgency chip, the department chip, the status label, and the name chip. The gallery Typography section is the set used on notes and to-dos: record title 16/500, page title, body, and button 14/400, count 14/400 in `--black-50`, place 14/500, chip 13/500, label 12/500 in `--black-50`, note 12/400, meta 12/400 in `--black-50`, filter 10/500.
 - `--font-smoothing`: `antialiased` on product pages.
 - `--text-wrap-title`: `balance` for headings. `--text-wrap-copy`: `pretty` for short copy.
 - `--numeric`: `tabular-nums` for counts and other figures that update.

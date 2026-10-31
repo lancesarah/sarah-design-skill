@@ -40,6 +40,21 @@ body .side-links a {
   transition: max-width 150ms ease, max-height 150ms ease, opacity 150ms ease, gap 150ms ease;
 }
 
+/* Resize hide. display waits until the fade finishes, then leaves the layout. */
+body .side-user .person-copy {
+  max-height: 48px;
+  overflow: hidden;
+  opacity: 1;
+  transition: opacity 150ms ease, max-height 150ms ease, display 150ms allow-discrete;
+}
+body .side .theme-switch-label {
+  max-width: 96px;
+  overflow: hidden;
+  white-space: nowrap;
+  opacity: 1;
+  transition: opacity 150ms ease, max-width 150ms ease, display 150ms allow-discrete;
+}
+
 body .side-brand { max-width: 240px; }
 body .side-search,
 body .side-fold { max-height: 48px; }
@@ -70,18 +85,23 @@ body .side-scroll > .side-group { max-height: 640px; }
   box-shadow: none;
 }
 
-/* The system horizontal bar is the wrong scrollbar. Hide it and draw the sidebar thumb. */
+/* The system horizontal bar is the wrong scrollbar. Hide it and draw the thin thumb. */
 .page-filters .tabs {
   scrollbar-width: none;
+  overscroll-behavior-x: contain;
+}
+.page-filters .tabs::-webkit-scrollbar {
+  display: none;
+  height: 0;
 }
 
 .tabs-bar-thumb {
   position: absolute;
   z-index: 2;
-  bottom: 2px;
+  bottom: var(--space-2);
   left: 0;
-  height: 6px;
-  border-radius: 3px;
+  height: var(--space-4);
+  border-radius: var(--radius-circle);
   background: var(--black-25);
   cursor: grab;
 }
@@ -112,7 +132,9 @@ body .side-scroll > .side-group { max-height: 640px; }
   body .side-search,
   body .side-fold,
   body .side-links a,
-  body .side-user { transition: none; }
+  body .side-user,
+  body .side-user .person-copy,
+  body .side .theme-switch-label { transition: none; }
 }
 
 /* Wide enough for “Ask Lance anything…” plus the composer tools. */
@@ -134,10 +156,47 @@ body.is-lance-collapsed .lance-side {
 
 body.is-lance-collapsed .lance-bar { justify-content: flex-end; }
 
+body .lance-name,
+body .lance-home,
+body .lance-dock,
+body .lance-tools .side-icon:not([data-lance-collapse]) {
+  opacity: 1;
+  transition: opacity 150ms ease, display 150ms allow-discrete;
+}
+
 body.is-lance-collapsed .lance-name,
 body.is-lance-collapsed .lance-home,
 body.is-lance-collapsed .lance-dock,
-body.is-lance-collapsed .lance-tools .side-icon:not([data-lance-collapse]) { display: none; }
+body.is-lance-collapsed .lance-tools .side-icon:not([data-lance-collapse]) {
+  display: none;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Entry only, after first paint, so a wide window does not fade in on load. */
+@starting-style {
+  html.is-motion body .side-user .person-copy {
+    opacity: 0;
+    max-height: 0;
+  }
+  html.is-motion body .side .theme-switch-label {
+    opacity: 0;
+    max-width: 0;
+  }
+  html.is-motion body .lance-name,
+  html.is-motion body .lance-home,
+  html.is-motion body .lance-dock,
+  html.is-motion body .lance-tools .side-icon:not([data-lance-collapse]) {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body .lance-name,
+  body .lance-home,
+  body .lance-dock,
+  body .lance-tools .side-icon:not([data-lance-collapse]) { transition: none; }
+}
 
 body.is-lance-collapsed .lance-side [data-lance-collapse] { position: relative; }
 
@@ -278,6 +337,19 @@ body.is-lance-collapsed .lance-side [data-lance-collapse]::after {
   object-fit: cover;
 }
 
+.brief-list .note-author {
+  display: block;
+  width: 39px;
+  height: 39px;
+}
+
+.brief-list .note-author .tip,
+.brief-list .note-author .tip:popover-open {
+  position: fixed;
+  z-index: 80;
+  transform: translate(-50%, -100%);
+}
+
 .note-time,
 .brief-title,
 .brief-preview {
@@ -388,15 +460,21 @@ body.is-lance-collapsed .lance-side [data-lance-collapse]::after {
   justify-content: space-between;
   gap: var(--space-8);
   width: 100%;
+  height: 16px;
   min-width: 0;
 }
 
 .note-line .note-time {
   width: auto;
   flex: 1 1 auto;
+  height: 16px;
+  line-height: 16px;
 }
 
-.note-line .dept { flex: none; }
+.note-line .dept {
+  flex: none;
+  margin-block: -2px;
+}
 
 .notes-page[data-view="top"] {
   display: grid;
@@ -489,6 +567,8 @@ body.is-lance-collapsed .lance-side [data-lance-collapse]::after {
   align-items: start;
   height: 100%;
   min-height: 0;
+  margin-top: -6px;
+  padding-top: 6px;
   overflow: hidden;
   column-gap: 16px;
 }
@@ -552,6 +632,7 @@ body.is-lance-collapsed .lance-side [data-lance-collapse]::after {
   z-index: 4;
   height: max-content;
   margin-right: 20px;
+  transform: translateY(-6px);
   background: var(--white);
 }
 
@@ -832,7 +913,7 @@ body.is-lance-collapsed .lance-side [data-lance-collapse]::after {
   overflow: hidden;
 }
 
-.note-scroll { flex: 0 1 auto; }
+.note-scroll { flex: 0 0 auto; }
 
 .note-scroll-body,
 .comment-scroll-body {
@@ -848,23 +929,27 @@ body.is-lance-collapsed .lance-side [data-lance-collapse]::after {
 .notes-page[data-view="top"] .brief-replies {
   flex: 0 1 auto;
   min-height: 0;
-  overflow: visible;
+  overflow: hidden;
 }
 
-.comment-scroll { flex: 1 1 auto; min-height: 49px; }
+.notes-page[data-view="top"] .brief-replies > h3,
+.notes-page[data-view="top"] .brief-replies > .msg { flex: none; }
+
+.notes-page[data-view="top"] .brief-replies > .msg {
+  width: calc(100% - 2px);
+  margin: 1px;
+}
+
+.comment-scroll { flex: 1 1 auto; min-height: 0; }
 .comment-scroll:not(:has(.comment)) { display: none; }
 .notes-page[data-view="top"] .brief-replies .comment-scroll { align-self: stretch; width: 100%; }
 
-.notes-page[data-view="top"] .brief-read.is-docked .note-scroll-body,
-.notes-page[data-view="top"] .brief-read.is-docked .comment-scroll-body {
-  max-height: 100%;
-}
 
 .notes-page[data-view="top"] .rail-search {
   display: flex;
-  flex: 0 1 290px;
-  width: 290px;
-  max-width: 290px;
+  flex: 0 1 281px;
+  width: 281px;
+  max-width: 281px;
   height: 38px;
   margin: 0;
   padding: 10px;
@@ -901,11 +986,11 @@ body.is-lance-collapsed .lance-side [data-lance-collapse]::after {
 }
 .confirm-dialog::backdrop {
   background: color-mix(in srgb, var(--black) 40%, transparent);
-  animation: confirm-scrim 180ms ease;
+  animation: confirm-scrim 240ms var(--ease-out);
 }
-.confirm-dialog[open] .confirm { animation: confirm-in 180ms ease; }
-.confirm-dialog.is-closing::backdrop { animation: confirm-scrim-out 180ms ease forwards; }
-.confirm-dialog.is-closing .confirm { animation: confirm-out 180ms ease forwards; }
+.confirm-dialog[open] .confirm { animation: confirm-in 240ms var(--ease-out); }
+.confirm-dialog.is-closing::backdrop { animation: confirm-scrim-out 192ms var(--ease-out) forwards; }
+.confirm-dialog.is-closing .confirm { animation: confirm-out 192ms var(--ease-out) forwards; }
 @keyframes confirm-scrim {
   from { opacity: 0; }
   to { opacity: 1; }
@@ -964,7 +1049,7 @@ body.is-lance-collapsed .lance-side [data-lance-collapse]::after {
   gap: 8px;
   width: 100%;
   margin: 0;
-  padding: 7px 16px;
+  padding: 7px 16px var(--space-8);
   background: var(--sidebar-grey);
   overflow-x: auto;
   overflow-y: hidden;
@@ -1058,13 +1143,36 @@ html[data-theme="dark"] .notes-grid .cell-task[aria-pressed="true"] { background
 .dept {
   display: inline-flex;
   align-items: center;
-  height: 18px;
-  padding: 0 var(--space-8);
-  border-radius: var(--radius-tag);
+  gap: 4px;
+  height: 20px;
+  padding: var(--space-2) var(--space-4);
+  border-radius: 4px;
   background: var(--tag-bg);
   color: var(--tag-text);
-  font-size: var(--text-10);
+  font-size: var(--text-13);
   font-weight: 500;
+  line-height: 16px;
+}
+
+.dept[data-dept="Housekeeping"] {
+  background: var(--dept-housekeeping-bg);
+  color: var(--dept-housekeeping);
+}
+.dept[data-dept="Maintenance"] {
+  background: var(--dept-maintenance-bg);
+  color: var(--dept-maintenance);
+}
+.dept[data-dept="Food & Beverage"] {
+  background: var(--dept-food-bg);
+  color: var(--dept-food);
+}
+.dept[data-dept="Sales"] {
+  background: var(--dept-sales-bg);
+  color: var(--dept-sales);
+}
+.dept[data-dept="Management"] {
+  background: var(--dept-management-bg);
+  color: var(--dept-management);
 }
 
 .dept.meta-fit { display: inline-grid; }

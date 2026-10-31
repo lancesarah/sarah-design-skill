@@ -16,9 +16,20 @@
      4.11:1 on white. See the color note in the gallery. */
   --destructive: #e34144;
 
-  /* Department tag on a note. */
+  /* Department tags. Front desk keeps the original gold.
+     Each other department is its own text color on a 15% fill. */
   --tag-text: #c09d00;
   --tag-bg: rgb(248 204 6 / 15%);
+  --dept-housekeeping: #2f8f4e;
+  --dept-housekeeping-bg: rgb(47 143 78 / 15%);
+  --dept-maintenance: #c46a2a;
+  --dept-maintenance-bg: rgb(196 106 42 / 15%);
+  --dept-food: #c4476a;
+  --dept-food-bg: rgb(196 71 106 / 15%);
+  --dept-sales: #1d7a94;
+  --dept-sales-bg: rgb(29 122 148 / 15%);
+  --dept-management: #7a4ea3;
+  --dept-management-bg: rgb(122 78 163 / 15%);
 
   /* Urgency. Urgent also covers unread counts.
      High also covers the open status.
@@ -36,6 +47,17 @@
   /* Filter chip fill is 5% of --action. Switch knob stays separate. */
   --filter-chip-bg: rgb(53 147 221 / 5%);
   --switch-knob: #f5f5f5;
+  /* Strong curves. Built-in CSS easings are too weak for UI motion. */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+  /* Thumb travel. 160ms on --ease-out. It stops at the end. The track color snaps. */
+  --switch-dur: 160ms;
+  --switch-track-dur: 0ms;
+  --switch-ease: var(--ease-out);
+  --switch-travel: 12px;
+  --switch-ov1: 1px;
+  --switch-ov2: 0px;
 
   --shadow-menu: 0 4px 20px rgb(0 0 0 / 10%);
   --stroke: 0 0 0 1px var(--grey);
@@ -62,6 +84,7 @@
   --font: "Switzer", sans-serif;
   --text-10: 10px;
   --text-12: 12px;
+  --text-13: 13px;
   --text-14: 14px;
   --text-16: 16px;
 

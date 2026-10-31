@@ -83,6 +83,24 @@ document.addEventListener("keydown", (event) => {
   event.preventDefault();
 });
 
+let keysTimer = 0;
+const keysChangeState = (event) => {
+  const field = event.target.closest("input, textarea, [contenteditable='true']");
+  if (event.metaKey || event.ctrlKey || event.altKey) return true;
+  if (!field) return true;
+  return event.key === "Enter" || event.key === "Escape" || event.key === "Tab" || event.key.startsWith("Arrow") || event.key === "Home" || event.key === "End";
+};
+document.addEventListener("keydown", (event) => {
+  if (!keysChangeState(event)) return;
+  document.documentElement.classList.add("is-keys");
+  window.clearTimeout(keysTimer);
+  keysTimer = window.setTimeout(() => document.documentElement.classList.remove("is-keys"), 200);
+});
+document.addEventListener("pointerdown", () => {
+  window.clearTimeout(keysTimer);
+  document.documentElement.classList.remove("is-keys");
+}, true);
+
 for (const group of document.querySelectorAll("[data-tabs]")) {
   group.addEventListener("click", (event) => {
     const tab = event.target.closest("[role=tab]");
@@ -128,17 +146,81 @@ for (const group of document.querySelectorAll("[data-side-group]")) {
 }
 
 for (const host of document.querySelectorAll(".tip-host")) {
-  const settle = () => host.classList.add("is-quiet", "is-settled");
-  host.addEventListener("pointerdown", () => host.classList.add("is-quiet"));
-  host.addEventListener("click", () => {
-    settle();
-    host.blur();
-  });
+  host.addEventListener("click", () => host.classList.add("is-settled"));
   host.addEventListener("pointerleave", () => host.classList.remove("is-quiet", "is-settled"));
   host.addEventListener("blur", () => {
     if (!host.matches(":hover")) host.classList.remove("is-quiet", "is-settled");
   });
 }
+
+let tipWarmTimer = 0;
+const tipHostFrom = (event) => event.target.closest?.(".tip-host") || null;
+const closeTipWarm = () => {
+  window.clearTimeout(tipWarmTimer);
+  document.documentElement.classList.remove("is-tip-open");
+  document.querySelectorAll(".is-tip-source").forEach((host) => host.classList.remove("is-tip-source"));
+};
+const revealTip = (host) => {
+  const tip = host.querySelector(".tip");
+  if (!tip || host.classList.contains("is-quiet") || host.classList.contains("is-painting")) return;
+  if (!tip.hasAttribute("popover")) tip.popover = "manual";
+  const rect = host.getBoundingClientRect();
+  const gap = parseFloat(getComputedStyle(host).getPropertyValue("--tip-gap")) || 8;
+  const anchor = host.classList.contains("sheet-who") ? (host.querySelector(".avatar") || host) : host;
+  const box = anchor.getBoundingClientRect();
+  if (host.classList.contains("sheet-status") || host.classList.contains("sheet-who") || host.classList.contains("note-author")) {
+    tip.style.left = `${box.left + box.width / 2}px`;
+    tip.style.top = `${box.top - gap}px`;
+  } else {
+    tip.style.left = `${rect.right + gap}px`;
+    tip.style.top = `${rect.top + rect.height / 2}px`;
+  }
+  if (!tip.matches(":popover-open")) tip.showPopover();
+};
+const hideTip = (host) => {
+  const tip = host?.querySelector?.(".tip");
+  if (tip?.matches(":popover-open")) tip.hidePopover();
+};
+document.addEventListener("pointerover", (event) => {
+  const host = tipHostFrom(event);
+  if (!host || host.contains(event.relatedTarget) || host.classList.contains("is-quiet")) return;
+  revealTip(host);
+  if (document.documentElement.classList.contains("is-tip-open")) return;
+  window.clearTimeout(tipWarmTimer);
+  const tip = host.querySelector(".tip");
+  const raw = tip ? getComputedStyle(tip).transitionDelay : "0.1s";
+  const delay = raw.endsWith("ms") ? parseFloat(raw) : (parseFloat(raw) || 0) * 1000;
+  tipWarmTimer = window.setTimeout(() => {
+    if (!host.matches(":hover") || host.classList.contains("is-quiet")) return;
+    host.classList.add("is-tip-source");
+    document.documentElement.classList.add("is-tip-open");
+  }, delay);
+});
+document.addEventListener("pointerout", (event) => {
+  const host = tipHostFrom(event);
+  if (!host || host.contains(event.relatedTarget) || host.classList.contains("is-painting")) return;
+  if (host.matches(":hover") || host.matches(":focus-visible")) return;
+  const next = event.relatedTarget?.closest?.(".tip-host");
+  if (next && next !== host && !next.classList.contains("is-quiet")) {
+    host.classList.remove("is-tip-source");
+    if (!host.classList.contains("is-painting")) host.classList.remove("is-quiet", "is-settled");
+    revealTip(next);
+    hideTip(host);
+    return;
+  }
+  hideTip(host);
+  if (!host.classList.contains("is-painting")) host.classList.remove("is-quiet", "is-settled");
+  closeTipWarm();
+});
+document.addEventListener("focusin", (event) => {
+  const host = tipHostFrom(event);
+  if (host) revealTip(host);
+});
+document.addEventListener("focusout", (event) => {
+  const host = tipHostFrom(event);
+  if (!host || host.contains(event.relatedTarget)) return;
+  hideTip(host);
+});
 
 for (const host of document.querySelectorAll(".side .tip-host")) {
   const tip = host.querySelector(".tip");
@@ -286,6 +368,12 @@ for (const link of document.querySelectorAll(".side .side-links a")) {
   });
 }
 
+/* Arm the thumb bounce on the click, before the pressed state flips. */
+document.addEventListener("click", (event) => {
+  const toggle = event.target.closest(".theme-switch");
+  if (toggle) toggle.classList.add("is-init");
+}, true);
+
 const themeSwitch = document.querySelector("[data-theme-toggle]");
 const themeOn = () => document.documentElement.dataset.theme === "dark";
 const applyTheme = (dark) => {
@@ -297,4 +385,11 @@ const applyTheme = (dark) => {
 };
 applyTheme(themeOn());
 themeSwitch?.addEventListener("click", () => applyTheme(!themeOn()));
+
+/* After first paint, so @starting-style does not fade the open panels on load. */
+requestAnimationFrame(() => {
+  requestAnimationFrame(() => {
+    document.documentElement.classList.add("is-motion");
+  });
+});
 

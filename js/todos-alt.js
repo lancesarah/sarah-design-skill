@@ -9,8 +9,6 @@ const PEOPLE = {
 const URGENCY = ["urgent", "high", "standard", "low"];
 const URGENCY_LABEL = { urgent: "Urgent", high: "High", standard: "Standard", low: "Low" };
 const URGENCY_RANK = { urgent: 0, high: 1, standard: 2, low: 3 };
-const NEXT_STATUS = { open: "progress", progress: "complete", complete: "open" };
-const ADVANCE_LABEL = { open: "Mark in progress", progress: "Mark completed", complete: "Reopen" };
 const COMPLETE_HOLD = 700;
 const WEEKDAYS = 7;
 
@@ -21,7 +19,7 @@ const STATUS = {
   },
   progress: {
     label: "In progress",
-    icon: '<svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M17 9a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z" fill="none" stroke="var(--action)" stroke-width="2"/><path d="M9 14.4a5.4 5.4 0 0 0 0-10.8V9l0 5.4Z" fill="var(--action)"/></svg>',
+    icon: '<svg class="status-progress" width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M17 9a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z" fill="none" stroke="var(--action)" stroke-width="2"/><path d="M9 14.4a5.4 5.4 0 0 0 0-10.8V9l0 5.4Z" fill="var(--action)"/></svg>',
   },
   complete: {
     label: "Completed",
@@ -31,6 +29,7 @@ const STATUS = {
 
 const LOCATIONS = ["Guestroom", "Lobby", "Common area"];
 const ITEMS = ["Bedding", "Towels", "Dryer"];
+const ROOMS = ["101", "103", "244", "426", "436"];
 const TYPES = [
   { value: "Front Desk", label: "Front desk" },
   { value: "Housekeeping", label: "Housekeeping" },
@@ -45,7 +44,7 @@ function displayType(value) {
 }
 
 const SEED = [
-  { id: "pillows", room: "426", title: "Guestroom · Pillows/Bedding", type: "Housekeeping", urgency: "urgent", status: "open", assignee: "mark", opened: "now", description: "Requested Feathered Pillows.", activity: [{ who: "manual", text: "Manual created this to-do", when: "Oct 29, 4:22 PM" }, { who: "sarah", text: "Sarah assigned this to Mark", when: "Oct 29, 4:24 PM" }], comments: [{ who: "mark", text: "I'll bring feather pillows up to 426.", when: "Oct 29, 5:05 PM" }] },
+  { id: "pillows", room: "426", title: "Guestroom · Pillows/Bedding", type: "Housekeeping", urgency: "urgent", status: "open", assignee: "mark", opened: "now", description: "Requested Feathered Pillows.", activity: [{ who: "manual", text: "created this to-do", when: "Oct 29, 4:22 PM" }, { who: "sarah", text: "assigned this to Mark", when: "Oct 29, 4:24 PM" }], comments: [{ who: "mark", text: "I'll bring feather pillows up to 426.", when: "Oct 29, 5:05 PM" }] },
   { id: "other-244", room: "244", title: "Guestroom · Other", type: "Housekeeping", urgency: "urgent", status: "open", assignee: "mark", opened: "now", description: "" },
   { id: "other-103", room: "103", title: "Guestroom · Other", type: "Housekeeping", urgency: "urgent", status: "open", assignee: "paul", opened: "2h", description: "" },
   { id: "other-244b", room: "244", title: "Guestroom · Other", type: "Housekeeping", urgency: "high", status: "open", assignee: "mark", opened: "now", description: "" },
@@ -116,14 +115,15 @@ function buildTodo(data) {
   todo.dataset.date = data.date || "";
   todo.dataset.opened = data.opened || "now";
   todo.dataset.order = data.order != null ? String(data.order) : String(order);
+  todo.dataset.room = !data.room || data.room === "—" ? "" : data.room;
   if (data.pin) todo.dataset.pin = "1";
   if (data.order == null) order += 1;
   const noteHolder = "Add a note";
   todo.innerHTML = `
     <div class="sheet-clip"><div class="sheet-inner">
       <div class="sheet-line">
-        <button class="sheet-status" type="button" data-advance></button>
-        <input class="sheet-room${data.room === "—" || !data.room ? " cell-quiet" : ""}" value="${esc(!data.room || data.room === "—" ? "—" : data.room)}" aria-label="Room">
+        <button class="sheet-status tip-host" type="button" data-menu-kind="status" aria-haspopup="menu" aria-expanded="false" aria-label="Change status"><span class="sheet-status-icon"></span><span class="tip" aria-hidden="true">Change status</span></button>
+        <button class="sheet-room" type="button" data-menu-kind="room" aria-haspopup="menu" aria-expanded="false"><span data-room-label></span><svg class="i sheet-edit" width="10" height="10"><use href="#i-chevron"/></svg></button>
         <div class="sheet-copy">
           <div class="sheet-facts">
             <button class="side-field" type="button" data-menu-kind="location" aria-haspopup="menu" aria-expanded="false"><span data-location></span></button>
@@ -135,7 +135,7 @@ function buildTodo(data) {
         </div>
         <span class="col-reserve">
           <button class="urgency" type="button" data-menu-kind="urgency" aria-haspopup="menu" aria-expanded="false"></button>
-          <span class="fit-label sizer-chip" aria-hidden="true"><span><svg class="i" width="14" height="14" aria-hidden="true"><use href="#i-warn"/></svg>Urgent</span>${URGENCY.filter((key) => key !== "urgent").map((key) => `<span>${esc(URGENCY_LABEL[key])}</span>`).join("")}</span>
+          <span class="fit-label sizer-chip sizer-urgency" aria-hidden="true"><span><svg class="i" width="14" height="14" aria-hidden="true"><use href="#i-warn"/></svg>Urgent</span>${URGENCY.filter((key) => key !== "urgent").map((key) => `<span>${esc(URGENCY_LABEL[key])}</span>`).join("")}</span>
         </span>
         <span class="col-reserve sheet-type-slot">
           <button class="sheet-type" type="button" data-menu-kind="type" aria-haspopup="menu" aria-expanded="false"><span data-type-label></span>${editMark}</button>
@@ -152,6 +152,7 @@ function buildTodo(data) {
   todo._comments = data.comments || [];
   todo._photos = [];
   paintStatus(todo);
+  paintRoom(todo);
   paintFacts(todo);
   paintUrgency(todo);
   paintType(todo);
@@ -173,22 +174,17 @@ function syncBucket(todo) {
 function paintStatus(todo) {
   const key = todo.dataset.status || "open";
   const status = STATUS[key] || STATUS.open;
-  const button = todo.querySelector("[data-advance]");
+  const button = todo.querySelector(".sheet-status");
   button.classList.add("tip-host");
-  let icon = button.querySelector(".sheet-status-icon");
-  let tip = button.querySelector(".tip");
-  if (!icon || !tip) {
-    button.innerHTML = `<span class="sheet-status-icon"></span><span class="tip" aria-hidden="true"></span>`;
-    icon = button.querySelector(".sheet-status-icon");
-    tip = button.querySelector(".tip");
-  }
+  const icon = button.querySelector(".sheet-status-icon");
+  const tip = button.querySelector(".tip");
   paintingStatus = true;
   button.classList.add("is-painting");
   icon.innerHTML = status.icon;
-  tip.textContent = status.label;
+  tip.textContent = "Change status";
   paintingStatus = false;
   button.classList.remove("is-painting");
-  button.setAttribute("aria-label", `${status.label}. ${ADVANCE_LABEL[key] || "Mark in progress"}`);
+  button.setAttribute("aria-label", "Change status");
   if (button.classList.contains("is-tip") || button.matches(":hover")) {
     button.classList.add("is-tip");
     placeStatusTip(button);
@@ -304,6 +300,12 @@ function paintSidePhotos(todo) {
   list.innerHTML = `${photos}<button class="side-photo-add" type="button" data-side-photo aria-label="Add photo"><svg class="i" width="24" height="24"><use href="#i-camera"/></svg></button>`;
 }
 
+function pill(id) {
+  if (!id || !PEOPLE[id]) return `<span class="mini-pill is-empty"><span class="avatar mini is-empty" aria-hidden="true"></span>Unassigned</span>`;
+  const person = PEOPLE[id];
+  return `<span class="mini-pill"><span class="avatar mini">${esc(person.initials)}</span>${esc(person.name)}</span>`;
+}
+
 function paintSideActivity(todo) {
   const list = side.querySelector("[data-side-activity]");
   list.replaceChildren();
@@ -314,10 +316,9 @@ function paintSideActivity(todo) {
   rows.forEach((row, index) => {
     const dim = index > 0;
     if (row.kind === "log") {
-      const person = PEOPLE[row.item.who] || PEOPLE.manual;
       const node = document.createElement("div");
       node.className = `side-log${dim ? " is-dim" : ""}`;
-      node.innerHTML = `<span class="avatar mini">${esc(person.initials)}</span><span class="side-log-text">${esc(row.item.text)}</span><time>${esc(row.item.when)}</time>`;
+      node.innerHTML = `${pill(row.item.who)}<span class="side-log-text">${esc(row.item.text)}</span><time>${esc(row.item.when)}</time>`;
       list.append(node);
       return;
     }
@@ -330,15 +331,27 @@ function paintSideActivity(todo) {
   });
 }
 
+function paintRoom(todo) {
+  const value = todo.dataset.room || "";
+  const label = value || "—";
+  const button = todo.querySelector(".sheet-room");
+  const roomLabel = button.querySelector("[data-room-label]");
+  if (roomLabel) roomLabel.textContent = label;
+  else button.textContent = label;
+  button.classList.toggle("cell-quiet", !value);
+  button.setAttribute("aria-label", value ? `Room, ${label}` : "Room");
+  if (todo !== sideTodo) return;
+  const sideRoom = side?.querySelector("[data-side-room]");
+  if (!sideRoom) return;
+  sideRoom.textContent = label;
+  sideRoom.classList.toggle("is-quiet", !value);
+  sideRoom.setAttribute("aria-label", value ? `Room, ${label}` : "Room");
+}
+
 function paintSide(todo) {
   if (!side || !todo) return;
   sideTodo = todo;
-  const sideRoom = side.querySelector("[data-side-room]");
-  if (document.activeElement !== sideRoom) {
-    const roomValue = todo.querySelector(".sheet-room").value || "—";
-    sideRoom.value = roomValue;
-    sideRoom.classList.toggle("is-quiet", roomValue === "—" || roomValue === "");
-  }
+  paintRoom(todo);
   const title = todo.querySelector(".sheet-title").value;
   const emptyTitle = !title.trim();
   const titleEl = side.querySelector("[data-side-title]");
@@ -420,7 +433,7 @@ function setOpen(todo, open) {
 function haystack(todo) {
   const who = PEOPLE[todo.dataset.assignee]?.name || "";
   return [
-    todo.querySelector(".sheet-room").value,
+    todo.dataset.room || "",
     todo.querySelector(".sheet-title").value,
     todo.querySelector(".sheet-note").value,
     todo.dataset.type,
@@ -474,11 +487,11 @@ function selectedFilters() {
 function todoField(todo, key) {
   const title = todo.querySelector(".sheet-title")?.value || "";
   const note = todo.querySelector(".sheet-note")?.value || "";
-  const room = todo.querySelector(".sheet-room")?.value || "";
+  const room = todo.dataset.room || "";
   if (key === "type") return todo.dataset.type || "";
   if (key === "status") return STATUS[todo.dataset.status]?.label || "";
   if (key === "urgency") return URGENCY_LABEL[todo.dataset.urgency] || "";
-  if (key === "assigned") return PEOPLE[todo.dataset.assignee]?.name || "";
+  if (key === "assigned") return PEOPLE[todo.dataset.assignee]?.name || "Unassigned";
   if (key === "room") return room === "—" ? "" : room;
   if (key === "area") {
     const head = title.split("·")[0].trim().toLowerCase();
@@ -739,7 +752,7 @@ function placePanel(panel, x, y) {
 }
 
 function radio(kind, value, label, selected, icon) {
-  return `<button class="menu-item" type="button" role="menuitemradio" data-kind="${kind}" data-value="${esc(value)}" aria-checked="${value === selected ? "true" : "false"}">${icon || ""}${esc(label)}<svg class="i check" width="14" height="14"><use href="#i-check"/></svg></button>`;
+  return `<button class="menu-item" type="button" role="menuitemradio" data-kind="${kind}" data-value="${esc(value)}" aria-checked="${value === selected ? "true" : "false"}">${icon || ""}<span class="menu-name">${esc(label)}</span><svg class="i check" width="14" height="14"><use href="#i-check"/></svg></button>`;
 }
 
 function openFieldMenu(button) {
@@ -754,18 +767,28 @@ function openFieldMenu(button) {
   button.setAttribute("aria-expanded", "true");
   fieldMenu.classList.toggle("is-status", kind === "status");
   if (kind === "urgency") {
-    fieldMenu.innerHTML = URGENCY.map((key) => radio("urgency", key, URGENCY_LABEL[key], todo.dataset.urgency)).join("");
+    const warn = '<svg class="i" width="14" height="14" aria-hidden="true"><use href="#i-warn"/></svg>';
+    fieldMenu.innerHTML = URGENCY.map((key) => {
+      const chip = `<span class="urgency urgency-${key}">${key === "urgent" ? warn : ""}${esc(URGENCY_LABEL[key])}</span>`;
+      return `<button class="menu-item" type="button" role="menuitemradio" data-kind="urgency" data-value="${esc(key)}" aria-checked="${key === todo.dataset.urgency ? "true" : "false"}">${chip}<svg class="i check" width="14" height="14"><use href="#i-check"/></svg></button>`;
+    }).join("");
   } else if (kind === "type") {
     fieldMenu.innerHTML = TYPES.map((type) => radio("type", type.value, "", todo.dataset.type, `<span class="dept" data-dept="${esc(type.value)}">${esc(type.label)}</span>`)).join("");
   } else if (kind === "assignee") {
     fieldMenu.innerHTML = Object.entries(PEOPLE)
       .filter(([id]) => id !== "manual")
-      .map(([id, person]) => radio("assignee", id, person.name, todo.dataset.assignee, `<span class="avatar mini">${esc(person.initials)}</span>`))
+      .map(([id, person]) => {
+        const selected = todo.dataset.assignee || "";
+        return `<button class="menu-item" type="button" role="menuitemradio" data-kind="assignee" data-value="${esc(id)}" aria-checked="${id === selected ? "true" : "false"}"><span class="mini-pill"><span class="avatar mini">${esc(person.initials)}</span>${esc(person.name)}</span><svg class="i check" width="14" height="14"><use href="#i-check"/></svg></button>`;
+      })
       .join("");
   } else if (kind === "status") {
     fieldMenu.innerHTML = Object.entries(STATUS)
       .map(([key, status]) => radio("status", key, status.label, todo.dataset.status, status.icon))
       .join("");
+  } else if (kind === "room") {
+    const current = todo.dataset.room || "";
+    fieldMenu.innerHTML = ROOMS.map((room) => radio("room", room, room, current)).join("");
   } else if (kind === "location" || kind === "item") {
     const parts = splitTitle(todo.querySelector(".sheet-title").value);
     const current = kind === "location" ? parts.location : parts.item;
@@ -802,6 +825,13 @@ function choose(todo, kind, value) {
     return;
   }
   if (kind === "status") setStatus(todo, value);
+  if (kind === "room") {
+    todo.dataset.room = value;
+    paintRoom(todo);
+    applyFilters();
+    if (todo === sideTodo) paintSide(todo);
+    return;
+  }
   if (kind === "location" || kind === "item") {
     const title = todo.querySelector(".sheet-title");
     const parts = splitTitle(title.value);
@@ -840,10 +870,6 @@ function setStatus(todo, next) {
   }
   syncBucket(todo);
   leaveView(todo);
-}
-
-function advance(todo) {
-  setStatus(todo, NEXT_STATUS[todo.dataset.status] || "progress");
 }
 
 function openRowMenu(x, y, target, more, mode) {
@@ -1047,34 +1073,14 @@ filterMenu?.addEventListener("click", (event) => {
 sheet.addEventListener("input", (event) => {
   const todo = event.target.closest(".sheet");
   if (!todo) return;
-  if (event.target.classList.contains("sheet-room")) {
-    event.target.classList.toggle("cell-quiet", event.target.value === "—" || event.target.value === "");
-  }
-  if (event.target.classList.contains("sheet-title") || event.target.classList.contains("sheet-note") || event.target.classList.contains("sheet-room")) {
+  if (event.target.classList.contains("sheet-title") || event.target.classList.contains("sheet-note")) {
     if (todo === sideTodo) paintSide(todo);
   }
   const form = event.target.closest("[data-composer]");
   if (form) form.classList.toggle("has-value", event.target.value.trim().length > 0);
 });
 
-function clearRoomDash(input) {
-  if (!input.classList.contains("sheet-room") || input.value !== "—") return;
-  input.value = "";
-  input.classList.remove("cell-quiet");
-  const todo = input.closest(".sheet");
-  const sideRoom = todo === sideTodo ? side?.querySelector("[data-side-room]") : null;
-  if (sideRoom) {
-    sideRoom.value = "";
-    sideRoom.classList.remove("is-quiet");
-  }
-}
-
-sheet.addEventListener("pointerdown", (event) => {
-  if (event.target.classList.contains("sheet-room")) clearRoomDash(event.target);
-});
-
 sheet.addEventListener("focusin", (event) => {
-  if (event.target.classList.contains("sheet-room")) clearRoomDash(event.target);
   if (!event.target.matches(".sheet-title")) return;
   setOpen(event.target.closest(".sheet"), true);
 });
@@ -1099,19 +1105,6 @@ sheet.addEventListener("submit", (event) => {
 });
 
 sheet.addEventListener("focusout", (event) => {
-  if (event.target.classList.contains("sheet-room")) {
-    const input = event.target;
-    const value = input.value.trim();
-    const empty = !value || value === "—";
-    input.value = empty ? "—" : value;
-    input.classList.toggle("cell-quiet", empty);
-    const todo = input.closest(".sheet");
-    const sideRoom = todo === sideTodo ? side?.querySelector("[data-side-room]") : null;
-    if (sideRoom && document.activeElement !== sideRoom) {
-      sideRoom.value = input.value;
-      sideRoom.classList.toggle("is-quiet", empty);
-    }
-  }
   const todo = event.target.closest(".sheet");
   if (!todo || todo.dataset.pin !== "1") return;
   if (todo.contains(event.relatedTarget)) return;
@@ -1175,35 +1168,8 @@ function openSideSchedule(button) {
   pop.style.top = `${box.bottom + 4}px`;
 }
 
-side?.addEventListener("focusin", (event) => {
-  const room = event.target.closest("[data-side-room]");
-  if (!room || room.value !== "—") return;
-  room.value = "";
-  room.classList.remove("is-quiet");
-});
-
-side?.addEventListener("focusout", (event) => {
-  const roomField = event.target.closest("[data-side-room]");
-  if (!roomField || !sideTodo) return;
-  const room = sideTodo.querySelector(".sheet-room");
-  const value = roomField.value.trim();
-  const empty = !value || value === "—";
-  room.value = empty ? "—" : value;
-  room.classList.toggle("cell-quiet", empty);
-  roomField.value = room.value;
-  roomField.classList.toggle("is-quiet", empty);
-});
-
 side?.addEventListener("input", (event) => {
   if (!sideTodo) return;
-  if (event.target.matches("[data-side-room]")) {
-    const room = sideTodo.querySelector(".sheet-room");
-    const value = event.target.value;
-    room.value = value;
-    const quiet = value === "—" || value === "";
-    room.classList.toggle("cell-quiet", quiet);
-    event.target.classList.toggle("is-quiet", quiet);
-  }
   if (event.target.matches("[data-side-desc]")) {
     sideTodo.querySelector(".sheet-note").value = event.target.value;
     fitField(event.target);
@@ -1235,6 +1201,10 @@ side?.addEventListener("change", (event) => {
 });
 
 document.addEventListener("click", (event) => {
+  if (event.target.closest("[data-side-back]")) {
+    if (sideTodo) setOpen(sideTodo, false);
+    return;
+  }
   const schedule = event.target.closest("[data-side-schedule]");
   if (schedule) {
     openSideSchedule(schedule);
@@ -1274,12 +1244,6 @@ document.addEventListener("click", (event) => {
   const attach = event.target.closest("[data-attach]");
   if (attach) {
     attach.closest(".sheet").querySelector(".file").click();
-    return;
-  }
-  const advanceButton = event.target.closest("[data-advance]");
-  if (advanceButton) {
-    advance(advanceButton.closest(".sheet"));
-    closePanels();
     return;
   }
   const field = event.target.closest("[data-menu-kind]");
@@ -1398,11 +1362,23 @@ let sideChosen = false;
 let sideHeldOpen = false;
 let lanceChosen = false;
 let lanceHeldOpen = false;
+try {
+  sideChosen = sessionStorage.getItem("side-chosen") === "1";
+  sideHeldOpen = sessionStorage.getItem("side-held-open") === "1";
+} catch (error) {}
+
+function rememberSide() {
+  try {
+    sessionStorage.setItem("side-chosen", sideChosen ? "1" : "0");
+    sessionStorage.setItem("side-held-open", sideHeldOpen ? "1" : "0");
+  } catch (error) {}
+}
 
 function setSideCollapsed(collapsed) {
-  if (document.body.classList.contains("is-side-collapsed") === collapsed) return;
-  document.body.classList.toggle("is-side-collapsed", collapsed);
-  document.body.classList.remove("is-side-settling");
+  if (document.body.classList.contains("is-side-collapsed") !== collapsed) {
+    document.body.classList.toggle("is-side-collapsed", collapsed);
+    document.body.classList.remove("is-side-settling");
+  }
   collapseButton?.setAttribute("aria-expanded", collapsed ? "false" : "true");
   collapseButton?.setAttribute("aria-label", collapsed ? "Expand sidebar" : "Collapse sidebar");
 }
@@ -1416,7 +1392,10 @@ function setLanceCollapsed(collapsed) {
 
 function applyPanelLimits() {
   const width = window.innerWidth;
-  if (width >= SIDE_OPEN_AT) sideHeldOpen = false;
+  if (width >= SIDE_OPEN_AT && sideHeldOpen) {
+    sideHeldOpen = false;
+    rememberSide();
+  }
   if (width >= LANCE_OPEN_AT) lanceHeldOpen = false;
   setSideCollapsed((width < SIDE_OPEN_AT && !sideHeldOpen) || sideChosen);
   setLanceCollapsed((width < LANCE_OPEN_AT && !lanceHeldOpen) || lanceChosen);
@@ -1426,6 +1405,7 @@ collapseButton?.addEventListener("click", () => {
   const next = !document.body.classList.contains("is-side-collapsed");
   sideChosen = next;
   sideHeldOpen = !next && window.innerWidth < SIDE_OPEN_AT;
+  rememberSide();
   setSideCollapsed(next);
 });
 

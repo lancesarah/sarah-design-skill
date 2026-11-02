@@ -1,7 +1,7 @@
 ---
 name: make-interfaces-feel-better
 description: >-
-  Design engineering principles for making interfaces feel polished. Use when building UI components, reviewing frontend code, implementing animations, hover states, shadows, borders, typography, icons, micro-interactions, enter/exit animations, or any visual detail work. Supports quick and full review modes. Triggers on UI polish, design details, "make it feel better", "feels off", stagger animations, border radius, optical alignment, font smoothing, tabular numbers, image outlines, box shadows, icons, icon stroke weight, icon states, motion restraint.
+  Design engineering principles for making interfaces feel polished. Use when building UI components, reviewing frontend code, implementing animations, hover states, shadows, borders, typography, icons, micro-interactions, enter/exit animations, or any visual detail work. A review uses a Before / After / Why table. Triggers on UI polish, design details, "make it feel better", "feels off", stagger animations, border radius, optical alignment, font smoothing, tabular numbers, image outlines, box shadows, icons, icon stroke weight, icon states, motion restraint.
 ---
 
 # Details that make interfaces feel better
@@ -17,7 +17,7 @@ When reviewing, slow the interface down: replay motion at 10% speed in the brows
 | [Typography](typography.md) | Text wrapping, font smoothing, tabular numbers |
 | [Surfaces](surfaces.md) | Border radius, optical alignment, shadows, image outlines, hit areas |
 | [Animations](animations.md) | Interruptible animations, enter/exit transitions, icon animations, scale on press, motion restraint |
-| [Icons](icons.md) | Icon stroke weight, states via `currentColor`, outline vs fill, sizing, RTL flipping |
+| [Icons](icons.md) | The project's icon construction, states via `currentColor`, sizing, RTL flipping |
 | [Performance](performance.md) | Transition specificity, `will-change` usage |
 
 ## Core Principles
@@ -32,7 +32,7 @@ When geometric centering looks off, align optically. Buttons with icons, play tr
 
 ### 3. Shadows for Elevation, Borders for Structure
 
-For buttons, cards, and containers whose border exists only to create depth, prefer layered transparent `box-shadow` values. Keep borders that communicate structure or state: dividers, layout separators, and selected or focus states.
+Keep the hairline and the menu shadow the project already has. Do not invent a second shadow recipe, and do not replace a button or card border with a layered shadow. Dividers stay a 1px border. A padding frame, a border, and a stroke do not stack on the same edge.
 
 ### 4. Interruptible Animations
 
@@ -40,11 +40,11 @@ Use CSS transitions for interactive state changes — they can be interrupted mi
 
 ### 5. Split and Stagger Enter Animations
 
-For an infrequent staged entrance where sequence helps communicate hierarchy, break content into semantic chunks and stagger them by ~100ms instead of animating one container. Do not stagger routine, high-frequency interactions.
+For an infrequent staged entrance where sequence helps communicate hierarchy, break content into semantic chunks and stagger them by 30–80ms. Do not block interaction while that stagger plays. Do not stagger routine, high-frequency interactions. An entrance starts at `scale(0.95)` with opacity `0`. `scale(0.9)` or higher is acceptable. Nothing starts at `scale(0)`.
 
 ### 6. Subtle Exit Animations
 
-Use a small fixed `translateY` instead of full height. Exits should be softer than enters. Use `ease-out` for both enter and exit transitions.
+Something leaving a list closes the gap. The rows below move up. Do not leave the hole, and do not snap the list shut. The exit is about 20% faster than the entrance, on the strong `--ease-out` curve (`cubic-bezier(0.23, 1, 0.32, 1)`), not the built-in `ease-out`. Completing an item shows the completed status, holds 700ms, then uses that same close-the-gap motion. Reduced motion keeps the status and the hold, and skips the movement.
 
 ### 7. Contextual Icon Animations
 
@@ -60,7 +60,7 @@ Use `font-variant-numeric: tabular-nums` for any dynamically updating numbers to
 
 ### 10. Text Wrapping
 
-Use `text-wrap: balance` on headings. Use `text-wrap: pretty` for body text to avoid orphans.
+Headings and titles of six lines or fewer use `text-wrap: balance`. Short UI copy uses `text-wrap: pretty`. Long text and code stay on the browser default.
 
 ### 11. Image Outlines
 
@@ -68,7 +68,7 @@ Add a subtle `1px` outline with low opacity to images for consistent depth. The 
 
 ### 12. Scale on Press
 
-A subtle `scale(0.96)` on click gives buttons tactile feedback. Always use `0.96`. Never use a value smaller than `0.95` — anything below feels exaggerated. Add a `static` prop to disable it when motion would be distracting.
+A press scales the whole control to `0.97`. `0.95`–`0.98` still reads as a press. Anything below `0.95` feels exaggerated. Duration is 100–160ms on the strong `--ease-out` curve. 160ms is the usual choice. Any pressable does this, including icon buttons, menu items, chips, and tabs. The hover fill stays. Press does not darken that fill. Reduced motion skips the scale.
 
 ### 13. Skip Animation on Page Load
 
@@ -88,15 +88,15 @@ Interactive elements should prefer a 44×44px hit area for touch or mobile conte
 
 ### 17. Match Icon Stroke to Text Weight
 
-An icon next to text carries the text's optical weight: `1.5px` stroke beside regular (400) text, `2px` beside semibold (600). One stroke weight per icon set; never mix libraries on one surface.
+Match the icon construction the project already uses. One stroke weight for the set. In this system the painted stroke is `1`, and new icons are outlined glyphs fitted the same way. Do not assign `1.5px`, `2px`, or `2.5px` unless the project already draws icons that way.
 
 ### 18. One SVG, Recolored per State
 
-Icons use `currentColor` and get their states (hover, selected, disabled) from CSS color and opacity, never from separate assets. Outline variant is the default; fill variant marks the active state.
+Icons use `currentColor`. Color and opacity carry hover, selected, and disabled. Outline is the resting state. Do not swap in a filled glyph for the active state, except where the project already fills that icon.
 
 ### 19. Motion Restraint
 
-No custom animation on high-frequency interactions: the attention cost repeats on every trigger. Motion is never the only feedback channel; every animated state change also needs a static cue such as color, icon, or label.
+Something used 100 or more times a day, including a keyboard action, does not animate. Something used tens of times a day, including a table row, gets no hover animation or a drastically reduced one. Motion is never the only feedback channel; every animated state change also needs a static cue such as color, icon, or label. Use the strong curves: `--ease-out` `cubic-bezier(0.23, 1, 0.32, 1)`, `--ease-in-out` `cubic-bezier(0.77, 0, 0.175, 1)`, `--ease-drawer` `cubic-bezier(0.32, 0.72, 0, 1)`. A hover color uses plain `ease`. The built-in `ease-out` is too weak. A drag, a gesture, or a decorative follow uses a spring at `0.5s` with bounce `0.1`–`0.3`. Icon swaps are the exception in principle 7. A modal or drawer may run 200–500ms. Everyday UI stays under 300ms. Do not add Tailwind or a motion library the project does not already have.
 
 ## Common Mistakes
 
@@ -104,84 +104,25 @@ No custom animation on high-frequency interactions: the attention cost repeats o
 | --- | --- |
 | Same border radius on parent and child | Calculate `outerRadius = innerRadius + padding` |
 | Icons look off-center | Adjust optically with padding or fix SVG directly |
-| Border used only to fake elevation | Use layered `box-shadow` with transparency; keep structural and state borders |
-| Jarring staged entrance or contextual exit | Stagger infrequent entrances and keep context-preserving exits subtle |
+| A new shadow recipe on a button or card | Keep the project's hairline and menu shadow. Dividers stay 1px borders |
+| Jarring staged entrance or a list that snaps shut | Stagger infrequent entrances by 30–80ms from `scale(0.95)`. A list exit closes the gap and is faster than the entrance |
 | Numbers cause layout shift | Apply `tabular-nums` |
 | Heavy text on macOS | Apply `antialiased` to root |
 | Animation plays on page load | Add `initial={false}` to `AnimatePresence` |
 | `transition: all` on elements | Specify exact properties |
 | First-frame animation stutter | Add `will-change: transform` (sparingly) |
 | Tiny hit areas on small controls | Extend with a pseudo-element to 44×44px for touch/mobile, or at least 40×40px in dense desktop UI |
-| Hairline icon beside bold text | Match the stroke width to the text weight |
-| Separate icon assets per state | One `currentColor` SVG, states via CSS |
-| Filled icons everywhere | Outline as default, fill only for the active state |
-| Entrance animation on every hover or keystroke | Instant feedback or ≤150ms opacity/color transition |
+| A thicker stroke than the project's icons | Match the existing construction. Here the painted stroke is `1` |
+| Separate icon assets per state | One `currentColor` SVG. Color and opacity carry the state |
+| Filled glyph swapped in for active | Outline stays the resting state, except where the project already fills |
+| A fade on a table row or a keyboard action | No animation, or a drastically reduced one. Keyboard actions snap |
 
-## Review Output Format
+## Review
 
-Use `full` when no review mode is supplied.
+When reviewing UI, use one markdown table. One row per issue. Never use separate "Before:" / "After:" lines.
 
-| Mode | Coverage | Finding cap |
+| Before | After | Why |
 | --- | --- | --- |
-| `quick` | Primary user path and highest-traffic states; report only `HIGH` and `MEDIUM` issues | 5 |
-| `full` | Entire requested scope across typography, surfaces, animations, icons, and performance | 15 |
+| `scale(0.9)` on press in `src/button.css` | `scale(0.97)` over 160ms on `--ease-out` | A press stays in the `0.95`–`0.98` range |
 
-### Scope and Coverage
-
-State the mode, exact scope, framework, styling conventions, and any review boundary. Show what was actually inspected:
-
-| Category | Evidence inspected | Result |
-| --- | --- | --- |
-| Typography | Files, components, states, or checks | Findings count, `Clear`, or `Not reviewed` with a reason |
-
-Include all five Quick Reference categories. Never imply an uninspected surface was reviewed.
-
-### Findings
-
-Group findings by principle. Use a markdown table with **Severity**, **Location**, **Before**, **After**, and **Why** columns. Include every change made or proposed, not a subset. Never use separate "Before:" / "After:" lines.
-
-- **Severity**: `HIGH` makes an interaction inaccessible, misleading, unreadable, or repeatedly disruptive; `MEDIUM` creates a noticeable usability or consistency problem; `LOW` is isolated polish and appears only in `full` mode.
-- **Location**: cite `path/to/file:line`. If the artifact has no source files, cite the exact screen and component instead.
-- **Before / After**: show the current implementation and an actionable replacement.
-- **Why**: name the violated principle and explain its user impact.
-
-Consolidate a repeated systemic issue into one row and list every affected location. Omit principles with no findings and never pad the report to reach the cap.
-
-### Example
-
-#### Concentric border radius
-| Severity | Location | Before | After | Why |
-| --- | --- | --- | --- | --- |
-| LOW | `src/Card.tsx:28` | `rounded-xl` on card + `rounded-xl` on inner button (`p-2`) | `rounded-2xl` on card (`8 + 8 = 16`), `rounded-lg` on inner button | Nested corners should be concentric |
-| LOW | `src/card.css:11` | `border-radius: 16px` on both nested surfaces | Outer `24px`, inner `16px` with `8px` padding | Equal nested radii make the inner surface look pinched |
-
-#### Tabular numbers
-| Severity | Location | Before | After | Why |
-| --- | --- | --- | --- | --- |
-| MEDIUM | `src/Counter.tsx:17` | `<span>{count}</span>` | `<span className="tabular-nums">{count}</span>` | Proportional digits cause changing values to shift |
-| LOW | `src/timer.css:8` | Default numerals on a timer | Add `font-variant-numeric: tabular-nums` to the timer | Equal-width digits keep the timer stable |
-
-#### Scale on press
-| Severity | Location | Before | After | Why |
-| --- | --- | --- | --- | --- |
-| LOW | `src/Button.tsx:19` | `<button className="...">` | Add `active:scale-[0.96] transition-transform` | Press feedback makes the control feel responsive |
-| MEDIUM | `src/button.css:24` | `scale(0.9)` on press | Raise to `scale(0.96)` | Anything below `0.95` feels exaggerated |
-
-### Considered but Rejected
-
-Include 1–3 real candidates in `quick` mode and 2–5 in `full` mode:
-
-| Location | Candidate | Rejected because |
-| --- | --- | --- |
-| `src/Card.tsx:28` | Increase the shadow | Existing depth matches the shared surface token; changing one card would reduce consistency |
-
-Do not invent filler. If the scope contains fewer borderline candidates, include the ones that exist and say so.
-
-### Verification and Verdict
-
-After the findings:
-
-1. **Verification**: list the exact commands or interactions run and their observed results. Walk every relevant state and inspect motion at 10% speed when animation is involved. If a check was not run, label it **Not verified** and state what remains.
-2. **Verdict**: `Block` if any `HIGH` finding remains, `Needs changes` if only `MEDIUM` or `LOW` findings remain, and `Approve` only when no actionable findings remain. List every unverified check beside the verdict.
-
-When there are no findings, omit the findings table, state "No actionable interface-polish findings", report verification and rejected candidates, and end with `Approve`.
+Put the file and line in the Before cell when there is source to point at. Consolidate a repeated issue into one row. When there are no findings, say so in a sentence.

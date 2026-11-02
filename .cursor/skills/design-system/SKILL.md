@@ -1,16 +1,18 @@
 ---
 name: design-system
-description: "Apply this repo's design system for any UI work: tokens, color, type, spacing, radius, components, screens, notes, todos, icons, motion, dark mode, and polish. Use it whenever the user designs, restyles, adds a screen, implements or matches a component, edits HTML or CSS, or asks to fix spacing, alignment, hover, or a selected control — including a small follow-up like \"fix this.\""
+description: "Match this product's existing interface for any UI work in this repo. Use it whenever the user builds, restyles, reviews, or fixes a screen, component, or style — notes, todos, the gallery, a new page, HTML, CSS, spacing, alignment, hover, motion, dark mode, icons, or a selected control — including a small follow-up like \"fix this,\" even when they do not name the design system."
 ---
 
 # Design system
 
-The gallery (`index.html`, `css/gallery.css`) is the component catalog. `css/tokens.css` is the only source of color, type, space, radius, and shadow. Product pages compose those pieces. A new screen should look like it was already in the gallery: the same person, the same urgency, the same button, the same header.
+The gallery (`index.html`, `css/gallery.css`) is the component catalog. `css/tokens.css` is the only source of color, type, space, radius, and shadow. Product pages compose those pieces.
+
+A new screen uses the same person, the same urgency, the same button, and the same header. A control that is not named yet still uses this system: copy the closest gallery component and apply the invariants below. Do not invent a second version of a measurement that already lives in a reference.
 
 ## Workflow
 
-1. Read the one reference that matches the task. Read a second only when the task crosses it.
-2. Copy the closest gallery component and style it with tokens. When a shared rule and a component both set padding, the component wins. Check the rendered box.
+1. Read the one reference that matches the task. If the task is not named in the table, read foundations and the closest row. Read a second file only when the task crosses it. A follow-up reads guard rails for scope, then the file for the thing being fixed.
+2. For a new screen, read The job in [references/patterns.md](references/patterns.md). The screen is that sentence plus the blocks named there: header, filter row, note card, comment thread, task row, and detail panel. Existing pages show how the pieces look, not the only layouts. Then style with roles and aliases from `css/tokens.css`. When a shared rule and a component both set padding, the component wins. Check the rendered box.
 3. Change only what the task needs. A follow-up on a selected control stays on that control.
 4. Before finishing, walk [references/quality-checklist.md](references/quality-checklist.md) for the rows this change could break.
 
@@ -18,25 +20,38 @@ The gallery (`index.html`, `css/gallery.css`) is the component catalog. `css/tok
 
 | Task | Read |
 | --- | --- |
-| Tokens: color, type, space, radius, shadow, dark mode, scrollbar | [references/foundations.md](references/foundations.md) |
-| A named component, the sidebar, delete confirmation, the switch | [references/components.md](references/components.md) |
-| A screen, the header, panels, creating, completing, or removing a record, a person or an urgency | [references/patterns.md](references/patterns.md) |
+| Tokens, color, type, space, radius, shadow, dark mode, scrollbar, buttons, hover, what stays, or layering | [references/foundations.md](references/foundations.md) |
+| A named component, the sidebar, a table, delete confirmation, the switch | [references/components.md](references/components.md) |
+| A screen, the job sentence, a block (header, filter row, note card, comment thread, task row, detail panel), creating, completing, or removing a record, a person, an urgency, or a type | [references/patterns.md](references/patterns.md) |
 | Motion, wrapping, hit area, overflow, icons, containers | [references/polish.md](references/polish.md) |
-| A follow-up fix, a selected node, spacing, a hairline, collapse, or an input state | [references/guard-rails.md](references/guard-rails.md) |
+| A follow-up, a selected node, spacing, a hairline, collapse, or an input state | [references/guard-rails.md](references/guard-rails.md) |
 | Before calling UI work done | [references/quality-checklist.md](references/quality-checklist.md) |
 
-Notes UI is `notes.html`, `css/notes.css`, and `js/notes.js`. The measurements in each reference are the spec. Do not invent a second version of them here.
+Notes UI is `notes.html`, `css/notes.css`, and `js/notes.js`. Screen-only layout stays in that page's stylesheet. The measurements in each reference are the spec.
 
-## Always
+## Invariants
 
-These hold on every screen. The file named on each line has the measurements.
+These hold on every screen, including one that does not exist yet. The linked file has the measurements.
 
-- Use a token, not a new hex, font size, or spacing step. A second value sits beside a system that is already measured. See [references/foundations.md](references/foundations.md).
-- Hover and selected share one step darker than the surface they sit on: `--white`, then `--sidebar-grey`, then `--grey`, then `--black-12`, then `--black-25`. A second step on an already-selected control makes the selection jump under the pointer. A resting fill uses that same step. Dark mode lightens those steps, and the page stays the darkest surface, so chrome that was darker than the page in light mode is lighter than the page in dark mode. See [references/foundations.md](references/foundations.md).
-- A button press scales the whole control to `0.97`, label and icon included, and eases back over 160ms on `--ease-out`. The hover fill stays. Reduced motion skips the scale. Every `button` does this, including icon buttons, menu items, chips, and tabs. See [references/polish.md](references/polish.md).
-- A person's name is the gallery person treatment, an urgency is the gallery urgency chip, and a type is the department chip for that type, wherever that fact appears. A second drawing in a menu, filter, or table reads as a different kind of thing. See [references/patterns.md](references/patterns.md).
-- A table is the gallery table, filter row included. Copy that section for a new table. A column that shows one of a fixed set of options is already as wide as its longest option, including that option’s icon and padding. The control still hugs the value it is showing. Choosing another option does not move that column or the columns beside it. See [references/components.md](references/components.md) and [references/patterns.md](references/patterns.md).
-- The sidebar, the standard header, and the fixed side panels are each one component. Restyling them on a single page makes the product feel like separate apps. See [references/components.md](references/components.md) and [references/patterns.md](references/patterns.md).
-- Motion explains the change. Something that leaves a list closes the gap. Something completed stays long enough to read, then leaves. A keyboard action snaps, because those actions repeat all day and a fade makes them feel late. New motion uses the strong curves in [references/polish.md](references/polish.md): `--ease-out`, `--ease-in-out`, and `--ease-drawer`. A drag or a gesture uses a spring. A modal or a drawer may run 200–500ms. Elements that enter together stagger by 30–80ms. An entrance starts at `scale(0.95)`, not `scale(0)`. A popover grows from its trigger. A crossfade that still looks wrong takes a blur under 20px. See [references/polish.md](references/polish.md) and [references/patterns.md](references/patterns.md).
-- A tooltip is always in front. It paints above the page, the table, and the sidebar. See [references/guard-rails.md](references/guard-rails.md).
-- Spacing, hairlines, collapse, tooltips, icons, and input states already have a settled answer. A follow-up should match that answer. See [references/guard-rails.md](references/guard-rails.md).
+- Use a token. A second hex, font size, or spacing step sits beside a system that is already measured. See [references/foundations.md](references/foundations.md).
+- Hover and selected share one step from the surface they sit on. A second step on an already-selected control makes the selection jump. A button changes its fill only. A fact, a photo, and the neighbors stay, except where [references/foundations.md](references/foundations.md) names an exception.
+- A press scales the whole control, label and icon included, to `0.98`. It does not darken the fill. See [references/polish.md](references/polish.md).
+- A tooltip is the top layer. Menus, the filter row, and the detail panel use the stack in [references/foundations.md](references/foundations.md).
+- A fact has one drawing. A person, an urgency, and a type keep the gallery treatment wherever they appear, including a menu, a filter, or a table. Picking a person is a dropdown of people who already exist. A new person is added in Settings. Picking a room is a dropdown of rooms that already exist. See [references/patterns.md](references/patterns.md).
+- Shared chrome is one component. The sidebar, the header, a table, and a side panel are not restyled per page. See [references/components.md](references/components.md).
+- Motion explains the change. A frequent control snaps. Something that leaves closes the gap. See [references/polish.md](references/polish.md).
+- A follow-up matches the settled answer for spacing, hairlines, collapse, tooltips, icons, and inputs. See [references/guard-rails.md](references/guard-rails.md).
+
+## Examples
+
+**Fix one control.** The user selects a chip and says "fix this." Read guard rails, then the file for that chip. Change the chip. Leave the row, the fields beside it, and the header alone.
+
+**A screen with no section yet.** The user asks for a new page. Read The job in patterns. Decide the arrangement from the job. Notes and to-dos show how a person, a department, and an urgency look. They are not the only layouts.
+
+## Review
+
+When reviewing UI, use one markdown table. One row per issue. Name the current value, the value this system uses, and the reason.
+
+| Before | After | Why |
+| --- | --- | --- |
+| `scale(0.9)` on press | `scale(0.98)` | A press stays in the range in polish. This gallery uses `0.98` |

@@ -1,5 +1,5 @@
 :root {
-  /* Neutrals, retained. */
+  /* Primitives. Neutrals, the blue, and the red. Roles point at these. */
   --sidebar-grey: #f6f6f6;
   --grey: #eaeaea;
   --black-50: #808080;
@@ -7,14 +7,17 @@
   --black-12: #dbdbdb;
   --white: #ffffff;
   --black: #000000;
+  --blue: #3593dd;
+  --blue-hover: #1f6ca9;
+  /* One red, from the confirmation button. 4.11:1 on white. */
+  --red: #e34144;
 
-  /* Action. Primary button, send, filter chip, switch track, and in-progress status. */
-  --action: #3593dd;
-  --action-hover: #1f6ca9;
-
-  /* One destructive red, from the confirmation button.
-     4.11:1 on white. See the color note in the gallery. */
-  --destructive: #e34144;
+  /* Roles. Components use these, not the raw hues. */
+  --action: var(--blue);
+  --action-hover: var(--blue-hover);
+  --destructive: var(--red);
+  --text-muted: var(--black-50);
+  --bg-surface: var(--white);
 
   /* Department tags. Front desk keeps the original gold.
      Each other department is its own text color on a 15% fill. */
@@ -41,10 +44,10 @@
   --urgency-low: #8ccd1a;
   --urgency-low-bg: rgb(140 205 26 / 5%);
 
-  /* Completed status. Low urgency uses the same hex. */
-  --status-complete: #8ccd1a;
+  /* Completed status points at the low-urgency hue. */
+  --status-complete: var(--urgency-low);
 
-  /* Filter chip fill is 5% of --action. Switch knob stays separate. */
+  /* Filter chip fill is 5% of --blue. Switch knob stays separate. */
   --filter-chip-bg: rgb(53 147 221 / 5%);
   --switch-knob: #f5f5f5;
   /* Strong curves. Built-in CSS easings are too weak for UI motion. */
@@ -81,12 +84,13 @@
   /* Nested shell: inner control radius plus 16px of padding. */
   --radius-shell: calc(var(--radius-control) + var(--space-16));
 
-  --font: "Switzer", sans-serif;
+  --font: "Plus Jakarta Sans", sans-serif;
   --text-10: 10px;
   --text-12: 12px;
   --text-13: 13px;
   --text-14: 14px;
   --text-16: 16px;
+  --text-20: 20px;
 
   /* Polish. Product pages apply these. Gallery specimens keep their measured boxes. */
   --font-smoothing: antialiased;
@@ -98,24 +102,44 @@
   --outline-image: 1px solid rgb(0 0 0 / 10%);
   --hit: 40px;
   --hit-touch: 44px;
+
+  /* Aliases. Layout, elevation, and motion already in use.
+     Note list cards stay square. Press stays 160ms, not --motion-hover. */
+  --padding-page: var(--space-16);
+  --gap-inline: var(--space-8);
+  --radius-card: var(--radius-control);
+  --elevation-menu: var(--shadow-menu);
+  --motion-hover: 120ms;
+  --motion-panel: 400ms;
+  --motion-panel-out: 320ms;
+}
+
+html[data-font="switzer"] {
+  --font: "Switzer", sans-serif;
 }
 
 /* Dark mode. Layout, type, and sizes stay on the light tokens.
    These are the cheatsheet neutrals only. */
 html[data-theme="dark"] {
-  /* The page is the darkest surface. Chrome that is darker than the page
-     in light mode is lighter than the page here. */
-  --white: #1A1A1A;
-  --sidebar-grey: #212121;
+  /* The page is lighter than the nav and chat. Chrome stays the darker surface. */
+  --white: #212121;
+  --sidebar-grey: #1A1A1A;
   --grey: #292929;
   --black: #EEEEEE;
   --black-50: #B5B5B5;
   /* Quieter than --black-50. Halfway from that grey toward the sidebar. */
   --black-25: color-mix(in srgb, var(--black-50) 50%, var(--sidebar-grey));
-  --black-12: #292929;
-  --line: rgb(255 255 255 / 5%);
-  --stroke: 0 0 0 1px rgb(255 255 255 / 5%);
-  --outline-image: 1px solid var(--line);
+  /* One step lighter than --grey, halfway to --black-25. */
+  --grey-up: color-mix(in srgb, var(--grey) 50%, var(--black-25));
+  /* One step lighter than --grey. Light --black-12 is 1.39 on white and 1.28 on the hover fill.
+     #292929 matched --grey, so outlines vanished on a hovered or selected row. */
+  --black-12: #3a3a3a;
+  /* Solid hairline, lighter than the page and still lighter than a hovered row.
+     Light --grey is 1.20 on white and 1.11 on the hover fill. 5% white composited
+     into --grey and disappeared. */
+  --line: #313131;
+  --stroke: 0 0 0 1px var(--line);
+  --outline-image: 1px solid rgb(255 255 255 / 10%);
   --shadow-menu: 0 4px 20px rgb(0 0 0 / 45%);
   --button-fill: #FFFFFF;
   --button-text: #202020;

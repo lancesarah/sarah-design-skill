@@ -1,51 +1,43 @@
 # Quality checklist
 
-Run this before finishing UI work.
+Run the rows this change could break. A row that does not match sends you back to that file. The measurements live there.
 
-- [ ] Colors, type sizes, spacing, and radii are tokens from `css/tokens.css`.
-- [ ] No second red, and no new hex that duplicates an existing token.
-- [ ] Padding matches the component in the gallery. A shared rule, such as a chip that contains an icon, must not override that component's padding.
-- [ ] A person’s name is the gallery person treatment wherever it appears, including a menu, a filter, a chip, a table cell, and a sentence. A compact name is `.mini-pill` with `.avatar.mini`. A name with a role is `.person`. An unassigned person is that avatar with no initials, a clear fill, and a 1px dashed `--black-50` stroke. A named person keeps the solid `--black-12` stroke.
-- [ ] Urgency is the gallery chip, `.urgency`, wherever the level is named, including a menu, a filter, a chip, and a table cell. Urgent includes the warning icon. High, Standard, and Low are that same chip with the label only. The chip keeps its padding, height, and radius when it is also a button.
-- [ ] A type is the department chip for that type, wherever it is named, including a table cell, the side panel, a filter, and a menu. The menu lists Front desk, Housekeeping, Maintenance, Food & Beverage, Sales, and Management, each in that department’s colors. The fill stays on hover and while the menu is open.
-- [ ] A table column that shows one of a fixed set of options is already as wide as its longest option, including that option’s icon and padding. The control hugs the value it is showing. Choosing another option does not move that column or the columns beside it.
-- [ ] A new table copies the gallery table, including the filter row. Search, the icon filter, its menu, filter chips, row hover, the open row, and each column match that section.
-- [ ] The table frame ends at the last row, with rounded corners. It scrolls only when the rows pass the space above the count. Under the frame, at the left, `--text-12` `--black-50` reads Showing N of M.
-- [ ] Urgency, type, status, and the name chip are 13px, weight 500, line-height 16px. Urgency and type also share `2px 4px` padding and a 20px height. A table cell, a menu, a filter, the side panel, and the department tag use that same box.
-- [ ] Hover changes the control under the pointer and does not move the items around it. A label, an icon, or a chevron that appears on hover uses the padding and the gap that are already there.
-- [ ] A control someone crosses often snaps, especially a table row. The hover fill and chevron change in the same frame. They do not fade while someone scans the table.
-- [ ] In the to-do side panel, status has no fill until hover or an open menu, which shows the `--sidebar-grey` pill. Location and Item do the same and show a down chevron after the value. The panel sections are 24px apart. The room, title, and date use `--space-16`.
-- [ ] A chip that opens a menu shows a down chevron on hover, beside the label and inside the chip. Urgency, type, the assignee, and the department tag use it. The chip hugs its label and does not keep a gap for a hidden chevron. On hover and when the menu is open, the chevron follows the label and the chip widens to fit it, without covering the word or moving the items beside it. Leave enough space after the chip that the chevron stays clear of the next design item. It turns when the menu is open. The department tag uses the urgency chip’s box and the color for that department. Front desk stays gold. The name chip hugs the name the same way, and it uses the same padding as the other chips: `2px 4px` and a 20px height.
-- [ ] Switzer for UI. Libre Baskerville only where the gallery already uses it.
-- [ ] Icons come from the sprite and inherit color through `currentColor`. A new icon, including one in a menu, is an outlined Material Symbol fitted to Internal notes: same line weight, rounded corners, and size, each glyph keeping its own shape. Icons in one menu share that construction. An existing gallery stroke (`#i-plus`, `#i-check`, `#i-chevron`, `#i-close`, search) stays width `1`.
-- [ ] Hover and selected fills are darker than the surface they sit on, and they share that fill. Do not step down again because the pointer is on a selected control. Same token as the background is a miss; step from `--white` to `--sidebar-grey` to `--grey` to `--black-12` to `--black-25`. A resting fill uses that same step. A comment field on white is `--sidebar-grey`. In dark mode those steps lighten, and a surface that is darker than the page in light mode is lighter than the page. The sidebar and department bar are `--sidebar-grey`. A card or table row goes to `--grey`, not onto a darker surface.
-- [ ] In dark mode the primary button stays `--action` with white text, and its hover is `--action-hover`, the darker blue. The secondary button is a `--white` surface with `--black` text and a `--stroke` hairline, and its hover is `--grey`. Search strokes use `--line`. `--black-25` is halfway from `--black-50` toward `--sidebar-grey`, and it is the quieter grey for tab counts, focus rings, scrollbars, and tooltip emphasis.
-- [ ] Scrollbars use the thin sidebar scrollbar. The width is `thin`, the thumb is `--black-25`, and the track matches the surface behind it. The department tabs hide the system horizontal bar. Their thumb is `--space-4` tall, rounded, `--black-25`, and as wide as the visible portion of the row. It sits under the tabs.
-- [ ] Primary action uses `--action`. Destructive uses `--destructive` only on the confirm control.
-- [ ] Pressing Delete opens the gallery confirmation before anything is removed. Cancel leaves the record. Only the confirming Delete control removes it.
-- [ ] Text meets the contrast already accepted for `--destructive` (4.11:1 on white) and does not go lighter than existing secondary text (`--black-50`).
-- [ ] The page header matches the standard header: title and count, search above the filter switcher. Filters, Print, and the primary action sit in the right corner below the tabs, vertically centered with the filter chips. Extra chips wrap to the left edge, and a row too narrow for two chips drops the chips to the next line. An unselected department count uses `--black-25`.
-- [ ] The Filters trigger is as wide as its longest option, so changing the selection does not shift nearby controls. The label sits next to its leading icon, and the extra width is after the label, before the chevron. A filter chip hugs the value it is showing and widens when that value is longer.
-- [ ] The left nav and the right Lance chat stay at their open width or their rail. The left nav collapses under 1564px, and the chat collapses under 1341px, unless the user has expanded that panel. Neither width tracks the window.
-- [ ] The changed page still works at the viewport the gallery and notes pages already support.
-- [ ] A switch thumb travels for 160ms on `--ease-out` and stops at the end of the track. The track color snaps. Reduced motion keeps the on and off colors and skips the travel.
-- [ ] New motion, wrapping, tabular numbers, hit areas, and icons follow `references/polish.md`. A button press scales the whole control to `0.97`, including the label and icon, and eases back over 160ms on `--ease-out`. Press does not darken the hover fill. Reduced motion skips the scale. Curves are `--ease-out`, `--ease-in-out`, and `--ease-drawer`. A drag or a gesture uses a spring. A modal or a drawer may run 200–500ms. Elements that enter together stagger by 30–80ms. Nothing enters from `scale(0)`. A popover grows from its trigger. A modal stays centered. A crossfade that still looks like two objects swapping gets a blur under 20px. Existing gallery sizes and radii are unchanged. New icons match the Internal notes icon and are not stretched. Existing stroke icons stay at width `1`.
-- [ ] Body copy stays near 65 characters. A price or an updating number uses tabular figures. An ellipsis in markup is `…`. An uppercase label has looser letter-spacing. An underline is a link. Bold is interface emphasis. Italic is a citation or linguistic stress.
-- [ ] The edit stayed on the control the user pointed at. Neighbors are unchanged.
-- [ ] A hairline stays 1px, and the edges of that box match. A padding frame, a border, and a stroke do not stack on the same edge. A top rule that looks heavier than the bottom or the sides is a miss. The sheet title bar does not add a top border. The frame is that edge.
-- [ ] Alignment still looks even on screen. It comes first. An icon beside a title is centered on that title, not top-aligned to the line box. A pill, chip, or tag on a text row puts its text on that line. The content inside the chip lines up with the title, not the outer chip, including a chip that only appears on hover. Item spacing and section spacing were not swapped. Dividers still run the full width and line up across the page.
-- [ ] A section after a changing value stays put. Something inline with that control can move with it. The department tag uses the urgency chip’s box, on the list card and on the open note. Author and Viewed stay put when the department changes.
-- [ ] A crossfade that still looks like two objects swapping uses a blur under 20px, usually `2px`, for the duration of the fade.
-- [ ] The page is the surface. A list or a toolbar is not wrapped in an extra card. A box belongs to a control that needs one. Color pulls the key item forward, and the same kind of quiet item stays `--black-50` with no extra box.
-- [ ] The title, the tabs, and the content below have room between them, on `--space-20` or `--space-25`. A section gap is not tightened down to the gap inside a control.
-- [ ] A smaller label kept its old outer size. One-line titles, search, and tooltips stay one line through any motion.
-- [ ] A tooltip is always in front. It paints above the page, the table, and the sidebar.
-- [ ] A click does not hide a tooltip. The tip stays while the pointer is on the control.
-- [ ] Once a tooltip is open, hovering another tooltip opens it in the same frame, with no delay and no animation. Leaving the tooltips starts the wait over.
-- [ ] A keyboard action snaps. A shortcut, a move between controls, Enter, Space, and Escape do not fade, travel, or wait. A tooltip opened from the keyboard appears in the same frame.
-- [ ] Right-clicking a list card that has a more menu opens that same menu at the pointer. The items and actions match the more button. Right-clicking the open note does not offer Share or Delete.
-- [ ] New creates a card at the top of the list that reads "Title" and then "New note", both in `--black-50`. With no notes, that blank note is created and opened. Comments stay closed until the note has a title or a body. The detail uses the existing layout. "Title" and the "New note" body placeholder are `--black-50`, and the body placeholder disappears on click. The department chip shows its down chevron, hugs its label, and opens every department. The viewed count is a chip with an eye, because the number has no word beside it. Hover shows a down chevron, and clicking it lists who viewed the note and who did not.
-- [ ] Delete moves the list items below the removed one up to close the space. The gap does not stay, and the list does not snap shut. A comment’s more menu and a right-click both offer Delete, the confirmation opens first, and the comments under it move up.
-- [ ] Completing an item on the list you are working shows the completed status, waits 700ms, then removes it and closes the gap. The count updates when it leaves. An item already on the Completed list stays. A status change during the wait cancels the removal. Reduced motion keeps the status and the wait, and skips the motion.
-- [ ] Sidebar collapse stays a thin icon rail. The reorder grip and the pin control stay hidden, including on hover. A row in Pinned uses the unpin glyph. Every other row uses the pin glyph, not the hidden eye, and its hover is the 18px icon chip with 2px padding. No horizontal scrollbar flashes. The account control is the settings gear.
-- [ ] Search text stays `--black` while it has a value, and the clear control stays. Add stays grey. The mic is `--action` only while on. Send stays grey when the field is empty, including on hover, and turns `--action` only when the field has text. Add, the mode control, the microphone, and an empty send arrow hover with `--grey`, the same fill as a left nav row. A closed menu shows the selected icon. A table hover paints the row under the pointer grey. An open to-do is the selection: a 1px `--action` box and a `--filter-chip-bg` fill. Hovering that row stays blue.
+## Any change
+
+- [ ] Colors, type sizes, spacing, radii, shadows, and durations are tokens from `css/tokens.css`. A component uses a role or an alias. No second red, and no new hex. See [foundations.md](foundations.md).
+- [ ] Every new section has the empty state this product already uses for that kind of thing, or a note that the empty state is undecided. See [patterns.md](patterns.md).
+- [ ] Status copy matches the record. Open, In progress, and Completed say what the record is now.
+- [ ] Hover and selected share one step from the surface they sit on. A selected control does not take a second step under the pointer. Dark mode lightens that step. See [foundations.md](foundations.md).
+- [ ] A button changes its fill only. Primary goes to `--action-hover`. Secondary takes one step. Danger uses the 88% mix. A filter chip, an urgency, and a department fill stay. See [foundations.md](foundations.md).
+- [ ] A tooltip is the top layer. It paints above the page, the table, and the sidebar. A click does not hide it. A menu, the filter row, and the detail panel use the stack in [foundations.md](foundations.md). A new overlay does not invent a z-index.
+- [ ] The edit stayed on the control the user pointed at. Neighbors are unchanged. See [guard-rails.md](guard-rails.md).
+- [ ] Item spacing and section spacing were not swapped. A hairline stays 1px, and the edges of that box match. See [guard-rails.md](guard-rails.md).
+- [ ] The page still works at the viewport the gallery and notes pages already support.
+
+## Alignment
+
+Check this on every change, on the rendered screen. Equal padding is not alignment. See [guard-rails.md](guard-rails.md).
+
+- [ ] Text that shares a line shares that line. A chip, pill, or tag can be taller than the text. The glyphs inside it sit on the line, not on the outer box.
+- [ ] An icon beside a title is centered on that title.
+- [ ] A header label sits over its column. The header and every row share one set of columns. A label that lands on the next column is a miss.
+- [ ] What lines up across the page still lines up: rows, dividers, and the edge of a group. A new arrangement does not leave one piece high, low, or shifted.
+
+## If you drew a person, an urgency, a type, or a table
+
+- [ ] A person, an urgency, and a type are the gallery treatment, including in a menu, a filter, and a table cell. See [patterns.md](patterns.md).
+- [ ] Picking a person is a dropdown of people who already exist. A new person is added in Settings. See [patterns.md](patterns.md).
+- [ ] A chip that opens a menu hugs its label and shows the chevron on hover without moving the items beside it. See [patterns.md](patterns.md).
+- [ ] A new table is the gallery table, filter row included. A column of fixed options is already as wide as its longest option. The control still hugs the value it is showing. See [components.md](components.md).
+
+## If you added motion, an icon, or a container
+
+- [ ] A press scales the whole control. A frequent control, especially a table row, does not fade its hover. A keyboard action snaps. Something removed closes the gap. Completing an item holds, then leaves. See [polish.md](polish.md) and [patterns.md](patterns.md).
+- [ ] A new icon matches the Internal notes construction. Icons in one menu share it. See [polish.md](polish.md).
+- [ ] The page is the surface. A list or a toolbar is not wrapped in an extra card. A long record does not put every section in a matching fill. See [polish.md](polish.md) and [guard-rails.md](guard-rails.md).
+
+## If you touched chrome or a record
+
+- [ ] The sidebar, the header, and a side panel match the shared component. A horizontal line follows the title and the summary, and it marks a layout change. See [components.md](components.md), [patterns.md](patterns.md), and [guard-rails.md](guard-rails.md).
+- [ ] Delete opens the gallery confirmation before anything is removed. A new record is created on the page, not in a prompt. See [components.md](components.md) and [patterns.md](patterns.md).
+- [ ] A dropdown trigger keeps its hover fill while the menu is open. See [foundations.md](foundations.md).

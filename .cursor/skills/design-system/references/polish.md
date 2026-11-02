@@ -2,31 +2,29 @@
 
 Product pages read these values from `css/tokens.css`. Notes is the reference. The gallery keeps the measured sizes in `css/gallery.css`.
 
-Express every change with those tokens and the classes in `css/gallery.css`. This project is plain CSS. Do not add Tailwind, a motion library, or a second shadow recipe.
+Express every change in the styling system the project already uses. This repo is plain CSS, `css/tokens.css`, and `css/gallery.css`. Do not add Tailwind, a motion library, or a second shadow recipe here. A project that already has Tailwind or a motion library keeps that system.
 
 ## Motion
 
-Interactive state uses a CSS transition on the properties that change. The shared control transition is `background-color`, `color`, and `box-shadow` at 120ms. A chevron that rotates uses `transform` only.
+Interactive state uses a CSS transition on the properties that change. The shared control transition is `background-color`, `color`, and `box-shadow` at `--motion-hover` (120ms). A chevron that rotates uses `transform` only.
 
 Keyframes are for a one-shot sequence. Product pages paint in their final state. When several elements enter together, stagger them by 30–80ms. Do not block interaction while that stagger plays.
 
-A button press scales the whole control to `0.97`, label and icon included, and eases back with `scale` over 160ms on `--ease-out`. Hover keeps its fill. Press does not darken that fill. `prefers-reduced-motion: reduce` skips the scale. Every `button` does this, including icon buttons, menu items, chips, and tabs.
+A press scales the whole control to `0.98`, label and icon included. `0.95`–`0.98` still reads as a press. It eases back with `scale` over 100–160ms on `--ease-out`. This gallery uses `0.98` and 160ms. Hover keeps its fill. Press does not darken that fill. `prefers-reduced-motion: reduce` skips the scale. Any pressable does this, including icon buttons, menu items, chips, and tabs.
 
 A switch thumb uses one travel. Duration is `--switch-dur` (160ms) on `--switch-ease`, which is `--ease-out`. The knob stops on `--switch-travel`. It does not pass the end. The track color changes in `--switch-track-dur` (0ms), so it snaps while the knob moves. The first paint does not play the travel. `prefers-reduced-motion: reduce` sets the animation to none and leaves the knob on the on or off color.
 
 A state change keeps a static cue: color, icon, or label. If motion is added, also honor `prefers-reduced-motion: reduce` by keeping that cue and dropping the movement.
 
-Hover changes the control under the pointer. It does not move the items around it. A label, an icon, or a chevron that appears on hover uses the padding and the gap that are already there. Do not grow the control into the next column, the next row, or the next field. A menu chip is the exception only for its own box: it hugs the label at rest and does not reserve width for a hidden chevron. On hover it widens to fit the chevron after the label. The items beside it stay put. Leave enough space after the chip that the chevron stays clear of the next design item.
+Hover changes the control under the pointer. It does not move the items around it. A label, an icon, or a chevron that appears on hover uses the padding and the gap that are already there. Do not grow the control into the next column, the next row, or the next field. A menu chip follows the department tag in [patterns.md](patterns.md): it hugs the label, then widens for the chevron, and the items beside it stay put.
 
-A control someone crosses often snaps. A table row, and a chip or chevron in that row, does not fade its hover. The fill changes in the same frame. If a hover motion cannot be removed, keep it very subtle. Do not ease a row wash while someone scans a table.
+A control someone crosses tens of times a day gets no hover animation, or a drastically reduced one. A table row is that case. Do not ease a row wash while someone scans the table. If a hover motion cannot be removed, keep it very subtle.
 
 A tooltip is always in front. It paints above the page, the table, and the sidebar. The first tooltip can wait and fade in. Once a tooltip is open, hovering another tooltip opens it in the same frame, with no delay and no animation. Leaving the tooltips starts that wait over. A keyboard action snaps. A shortcut, a move between controls, Enter, Space, and Escape do not fade, travel, or wait. These actions are repeated all day, and an animation makes them feel slow and disconnected from the key. A tooltip opened from the keyboard appears in the same frame.
 
-Changing a value does not move a section that follows it. Something set inline with the control, such as an icon on that label, can move with it. Internal notes is the reference: the department tag uses the urgency chip’s box and hugs its label. It does not reserve width for a hidden chevron. On hover the chevron follows the label and the chip widens to fit it, without covering the word or moving the fields beside it. Author and Viewed stay put when the chip changes from Sales to Maintenance.
+Changing a value does not move a section that follows it. Something set inline with the control, such as the department tag in [patterns.md](patterns.md), can move with the label. The fields beside it stay put.
 
-Removing an item from a list moves the items below it up to close the space. Delete requires that motion. Do not leave the gap, and do not snap the list shut.
-
-Completing an item on the list you are working shows the completed status immediately, holds for 700ms, then uses that same close-the-gap motion. The count updates when the item leaves. Reduced motion keeps the status and the hold, and skips the motion.
+Removing an item from a list closes the gap. The product rule, including the 700ms hold on complete, is in [patterns.md](patterns.md). The exit is about 20% faster than the entrance.
 
 `will-change` is only for `transform`, `opacity`, or `filter`, and only after a first-frame stutter shows up. One property, not `all`. A shaky transform gets `will-change: transform`. It does not get `will-change: all`.
 
@@ -34,7 +32,7 @@ Completing an item on the list you are working shows the completed status immedi
 
 Answer these before adding motion the gallery does not already define. A settled motion stays as written above. The press scale, the switch, a table hover, a keyboard action, and the close-the-gap removal do not get a new curve or a new duration.
 
-Should it animate? Something used all day does not. A keyboard shortcut, Enter, Space, and Escape snap. A control someone crosses often, especially a table row, snaps. An occasional modal, drawer, or toast can move. A rare first-time moment can take longer.
+Should it animate? Something used 100 or more times a day does not. A keyboard shortcut, Enter, Space, and Escape snap. Something used tens of times a day, including a table row and list navigation, loses its animation or keeps only a drastically reduced one. An occasional modal, drawer, or toast can move. A rare first-time moment can take longer.
 
 What is it for? Spatial consistency, a state change, an explanation, press feedback, or covering a jump. Motion that is only decoration on a frequent control comes out.
 
@@ -51,29 +49,27 @@ Which curve:
 
 Do not use `ease-in` on UI. It starts slow, so the control feels late. Do not use the built-in `ease-out` or `ease-in-out`. They are too weak. Use the curves above.
 
-A drag, a gesture, or something that should keep its speed when interrupted uses a spring. Duration is `0.5s`. Bounce stays between `0.1` and `0.3`, and most UI uses none. The switch thumb uses the short travel above.
+A drag, a gesture, something that should feel alive, or a decorative follow of the pointer uses a spring. Duration is `0.5s`. Bounce stays between `0.1` and `0.3`. The usual example is `0.2`. Most UI uses no bounce. The switch thumb uses the short travel above. An icon that swaps for another icon is not this spring. That swap uses scale `0.25`, blur `4px`, 300ms, and bounce `0`.
 
-How long. A larger element takes longer than a smaller one. An exit is about 20% faster than the entrance. A longer travel gets a longer duration. Everyday UI stays under 300ms. A modal or a drawer may run longer.
+How long. A larger element takes longer than a smaller one. An exit is about 20% faster than the entrance. A longer travel gets a longer duration. Everyday UI stays under 300ms. A small control, such as a select, does not sit on a 400ms animation. A modal or a drawer may run 200–500ms on `--ease-drawer`. A drawer this gallery already measured stays on that measurement when it lands inside the range. The to-do panel is `--motion-panel` (400ms) in and `--motion-panel-out` (320ms) out.
 
 | What moves | Duration |
 | --- | --- |
-| A button press | 160ms on `--ease-out`. The whole control scales to `0.97`, including the label and the icon. |
-| A micro-interaction, including the shared control fade | 100–150ms. The shared fade is 120ms. |
+| A button press | 100–160ms on `--ease-out`. This gallery uses 160ms. The whole control scales to `0.98`, including the label and the icon. `0.95`–`0.98` is the range. |
+| A micro-interaction, including the shared control fade | 100–150ms. The shared fade is `--motion-hover` (120ms). |
 | A tooltip or a small popover | 125–200ms. A tooltip that is already open skips this and snaps. |
 | A dropdown or a select | 150–250ms |
 | A modal or a drawer | 200–500ms |
 
-Something that appears does not start at `scale(0)`. Start at `scale(0.95)` with opacity `0`. Nothing shows up from a point.
+Something that appears does not start at `scale(0)`. Start at `scale(0.95)` with opacity `0`. `scale(0.9)` or higher is acceptable. Nothing shows up from a point.
 
-A hover that flickers is animating the parent. Animate the child. That does not put a fade on a table row. A row someone scans still snaps.
+A hover that flickers is animating the parent. Animate the child. That does not put a fade on a table row. A row someone scans gets no animation, or a drastically reduced one.
 
 A popover scales from the control that opened it. Set `transform-origin` to that trigger. A modal stays centered. It is not anchored to a trigger.
 
 Blur covers a crossfade that still looks like two objects swapping. Add `filter: blur(2px)` for the duration of the fade, and keep it under 20px. Heavy blur is expensive.
 
-A new entrance uses a CSS transition, so it can be interrupted. Keyframes are for a one-shot sequence. When several elements enter together, stagger them by 30–80ms. `transition: all` is not used. Name the properties.
-
-`prefers-reduced-motion: reduce` keeps the static cue and drops the movement.
+A new entrance uses a CSS transition, so it can be interrupted. `transition: all` is not used. Name the properties.
 
 ## Type
 
@@ -87,13 +83,13 @@ Truncation in markup is the `…` character. Three periods are not an ellipsis.
 
 An uppercase label loosens its letter-spacing. Tight capitals read as a block.
 
-The UI face stays Switzer. The fallback is a face with a similar x-height and weight, so a missing font does not reflow the line. Product pages set `-webkit-font-smoothing: var(--font-smoothing)` on `body`. Libre Baskerville is for editorial moments only.
+The UI face is Plus Jakarta Sans. The dev switch can put Switzer back for a comparison. The fallback is a face with a similar x-height and weight, so a missing font does not reflow the line. Product pages set `-webkit-font-smoothing: var(--font-smoothing)` on `body`. Libre Baskerville is for editorial moments only.
 
 An underline is a link. Emphasis in the interface is weight or color. Bold is for that emphasis. Italic is for a citation or a linguistic stress, and it stays in the editorial face.
 
 ## Fewer containers
 
-Fewer boxes mean more room. The page is the surface. Do not wrap a screen, a list, or a toolbar in another card when that page is already the background. A box belongs to a control that needs one, such as a field, a menu, a button, or a chip that is itself the control. Do not add a shell around a group that can sit on the page.
+Fewer boxes mean more room. The page is the surface. Do not wrap a screen, a list, or a toolbar in another card when that page is already the background. A box belongs to a control that needs one, such as a field, a menu, a button, or a chip that is itself the control. Do not add a shell around a group that can sit on the page. A long record can give one different kind of block a fill. It does not put every section in a matching card. See [guard-rails.md](guard-rails.md).
 
 Color pulls the key item forward and lets the rest recede. A selected or starred row uses an accent the system already has. The same kind of row, when it is not selected, stays `--black-50` with no fill. Do not give both a box and expect the border to say which one matters.
 
@@ -113,7 +109,7 @@ Nested rounded surfaces that sit within 24px of padding use `outer radius = inne
 
 Depth stays on `--stroke` and `--shadow-menu`. Dividers stay `1px solid var(--grey)`. Inputs keep their focus ring.
 
-Photographs use `outline: var(--outline-image)` and `outline-offset: -1px`. In dark mode that outline is the hairline. A light ring baked into the photo is clipped off (`clip-path: inset(1px round 50%)`) so the circle sits on the surface.
+Photographs use `outline: var(--outline-image)` and `outline-offset: -1px`. Light mode is pure black at 10% opacity. Dark mode is pure white at 10% opacity, not the hairline and not a tinted grey. A light ring baked into the photo is clipped off (`clip-path: inset(1px round 50%)`) so the circle sits on the surface.
 
 Visible control sizes stay on the gallery component. Where a control is smaller than `--hit` and the layout has room, extend the hit target with a pseudo-element to `--hit`. Two targets must not overlap. On a touch layout, extend to `--hit-touch`.
 
@@ -137,7 +133,7 @@ Icons added together use that one construction. Copy a symbol that already exist
 
 A stroke the gallery already draws (`#i-plus`, `#i-check`, `#i-chevron`, `#i-close`, the search mark) stays that stroke: `fill="none"`, `stroke="currentColor"`, `stroke-linecap="round"`, `stroke-linejoin="round"`, and `stroke-width: var(--icon-stroke)`. Copy it. Do not add a new action icon to that stroke list.
 
-Outline is the resting state except where the gallery already fills, such as the in-progress status. Color and opacity carry hover, selected, and disabled. If a control swaps glyphs, keep both in the DOM and cross-fade opacity in 150ms or less. Decorative icons are `aria-hidden`. Icon-only buttons keep an accessible name.
+Outline is the resting state except where the gallery already fills, such as the in-progress status. Color and opacity carry hover, selected, and disabled. Do not swap in a filled glyph for the active state. If a control swaps glyphs, keep both in the DOM. The entering icon goes from opacity `0`, scale `0.25`, and blur `4px` to opacity `1`, scale `1`, and blur `0`. The leaving icon reverses that. Duration is 300ms and bounce is `0`. With no motion library, use a CSS transition on those three properties and `cubic-bezier(0.2, 0, 0, 1)`. Do not add a library for the swap. Decorative icons are `aria-hidden`. Icon-only buttons keep an accessible name.
 
 An icon that shares a row with a title is centered on that title. Center the icon on the text, not on the top of the line box. A taller hit target stays centered on the title and does not drop or lift the glyph.
 

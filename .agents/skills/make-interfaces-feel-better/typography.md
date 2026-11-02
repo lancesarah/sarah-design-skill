@@ -36,7 +36,7 @@ h1 {
 
 Prevents orphaned words (a single word dangling on the last line) by adjusting line breaks throughout the paragraph. Unlike `balance`, it doesn't try to equalize line lengths — it just ensures the last line isn't embarrassingly short. Works on text of any length with no line-count limit.
 
-This should be your **default for short-to-medium text** — paragraphs, descriptions, captions, list items, card text. For very long text (10+ lines), skip both `pretty` and `balance` — the browser's default wrapping is fine and you avoid unnecessary layout cost.
+Use it for short UI copy. Headings and titles of six lines or fewer use `balance` instead. Long text and code stay on the browser default.
 
 ```css
 /* Good — descriptions, captions, short paragraphs */
@@ -58,9 +58,9 @@ p, li, figcaption, blockquote {
 
 | Scenario | Use |
 | --- | --- |
-| Headings, titles where even distribution matters | `text-wrap: balance` |
-| Short-to-medium text — paragraphs, descriptions, captions, UI text | `text-wrap: pretty` |
-| Long text (10+ lines), code blocks, pre-formatted text | Neither — leave default |
+| Headings and titles of six lines or fewer | `text-wrap: balance` |
+| Short UI copy | `text-wrap: pretty` |
+| Long text and code | Neither — leave the browser default |
 
 ## Font Smoothing (macOS)
 

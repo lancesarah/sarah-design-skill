@@ -16,10 +16,12 @@ Users change intent mid-interaction. If animations aren't interruptible, the int
 | **Duration** | Fixed; retargets the value mid-flight, not the timeline | Fixed timeline, restarts from the beginning |
 
 ```css
-/* Good — interruptible transition for a toggle */
+/* Good — interruptible transition for a drawer.
+   200–500ms on the drawer curve. Exit is about 20% faster than the entrance.
+   Everyday UI stays under 300ms. Built-in ease-out is too weak. */
 .drawer {
   transform: translateX(-100%);
-  transition: transform 200ms ease-out;
+  transition: transform 400ms cubic-bezier(0.32, 0.72, 0, 1);
 }
 .drawer.open {
   transform: translateX(0);
@@ -31,7 +33,7 @@ Users change intent mid-interaction. If animations aren't interruptible, the int
 ```css
 /* Bad — keyframe animation for interactive element */
 .drawer.open {
-  animation: slideIn 200ms ease-out forwards;
+  animation: slideIn 400ms cubic-bezier(0.32, 0.72, 0, 1) forwards;
 }
 
 /* Closing mid-animation snaps or restarts — feels broken */
@@ -41,14 +43,13 @@ Users change intent mid-interaction. If animations aren't interruptible, the int
 
 ## Enter Animations: Split and Stagger
 
-Use this pattern for infrequent staged entrances where sequence helps communicate hierarchy, such as the first load of a page hero, success state, or empty state. Break a large container into semantic chunks and animate each individually. Do not stagger routine interactions such as row hovers, keystrokes, or repeated tab changes.
+Use this pattern for infrequent staged entrances where sequence helps communicate hierarchy, such as a rare first-time moment. Break a large container into semantic chunks and animate each individually. Do not stagger routine interactions such as row hovers, keystrokes, or repeated tab changes. Do not block interaction while the stagger plays.
 
 ### Step by Step
 
 1. **Split** into logical groups (title, description, buttons)
-2. **Stagger** with ~100ms delay between groups
-3. **For titles**, consider splitting into individual words with ~80ms stagger
-4. **Combine** `opacity`, `blur`, and `translateY` for the enter effect
+2. **Stagger** by 30–80ms between groups
+3. **Start** at `scale(0.95)` with opacity `0`. `scale(0.9)` or higher is acceptable. Do not start at `scale(0)`
 
 ### Code Example
 
@@ -60,13 +61,13 @@ function PageHeader() {
       initial="hidden"
       animate="visible"
       variants={{
-        visible: { transition: { staggerChildren: 0.1 } },
+        visible: { transition: { staggerChildren: 0.05 } },
       }}
     >
       <motion.h1
         variants={{
-          hidden: { opacity: 0, y: 12, filter: "blur(4px)" },
-          visible: { opacity: 1, y: 0, filter: "blur(0px)" },
+          hidden: { opacity: 0, scale: 0.95 },
+          visible: { opacity: 1, scale: 1 },
         }}
       >
         Welcome
@@ -74,8 +75,8 @@ function PageHeader() {
 
       <motion.p
         variants={{
-          hidden: { opacity: 0, y: 12, filter: "blur(4px)" },
-          visible: { opacity: 1, y: 0, filter: "blur(0px)" },
+          hidden: { opacity: 0, scale: 0.95 },
+          visible: { opacity: 1, scale: 1 },
         }}
       >
         A description of the page.
@@ -83,8 +84,8 @@ function PageHeader() {
 
       <motion.div
         variants={{
-          hidden: { opacity: 0, y: 12, filter: "blur(4px)" },
-          visible: { opacity: 1, y: 0, filter: "blur(0px)" },
+          hidden: { opacity: 0, scale: 0.95 },
+          visible: { opacity: 1, scale: 1 },
         }}
       >
         <Button>Get started</Button>
@@ -99,88 +100,27 @@ function PageHeader() {
 ```css
 .stagger-item {
   opacity: 0;
-  transform: translateY(12px);
-  filter: blur(4px);
-  animation: fadeInUp 400ms ease-out forwards;
+  transform: scale(0.95);
+  animation: fadeIn 200ms cubic-bezier(0.23, 1, 0.32, 1) forwards;
 }
 
 .stagger-item:nth-child(1) { animation-delay: 0ms; }
-.stagger-item:nth-child(2) { animation-delay: 100ms; }
-.stagger-item:nth-child(3) { animation-delay: 200ms; }
+.stagger-item:nth-child(2) { animation-delay: 50ms; }
+.stagger-item:nth-child(3) { animation-delay: 100ms; }
 
-@keyframes fadeInUp {
+@keyframes fadeIn {
   to {
     opacity: 1;
-    transform: translateY(0);
-    filter: blur(0);
+    transform: scale(1);
   }
 }
 ```
 
 ## Exit Animations
 
-Exit animations should be softer and less attention-grabbing than enter animations. The user's focus is moving to the next thing — don't fight for attention.
+The exit is about 20% faster than the entrance. Something leaving a list closes the gap: the rows below move up. Do not leave the hole, and do not snap the list shut. Completing an item shows the completed status immediately, holds for 700ms, then uses that same close-the-gap motion. Reduced motion keeps the status and the hold, and skips the movement.
 
-### Subtle Exit (Recommended)
-
-```tsx
-// Small fixed translateY — indicates direction without drama
-<motion.div
-  exit={{
-    opacity: 0,
-    y: -12,
-    filter: "blur(4px)",
-    transition: { duration: 0.15, ease: "easeOut" },
-  }}
->
-  {content}
-</motion.div>
-```
-
-### Full Exit (When Context Matters)
-
-```tsx
-// Slide fully out — use when spatial context is important
-// (e.g., a card returning to a list, a drawer closing)
-<motion.div
-  exit={{
-    opacity: 0,
-    x: "-100%",
-    transition: { duration: 0.2, ease: "easeOut" },
-  }}
->
-  {content}
-</motion.div>
-```
-
-### Good vs. Bad
-
-```css
-/* Good — subtle exit */
-.item-exit {
-  opacity: 0;
-  transform: translateY(-12px);
-  transition: opacity 150ms ease-out, transform 150ms ease-out;
-}
-
-/* Bad — dramatic exit that steals focus */
-.item-exit {
-  opacity: 0;
-  transform: translateY(-100%) scale(0.5);
-  transition: all 400ms ease-out;
-}
-
-/* Sometimes correct — remove immediately when motion adds no context */
-.item-exit {
-  display: none;
-}
-```
-
-**Key points:**
-- Use a small fixed `translateY` (e.g., `-12px`) instead of the full container height
-- Keep some directional movement to indicate where the element went
-- Exit duration should be shorter than enter duration (150ms vs 300ms)
-- Use a subtle exit when it preserves spatial context. Remove immediately when motion adds no information, the interaction repeats frequently, or reduced motion is requested.
+The rows below take the freed space. Do not leave the gap. Do not snap the list shut. A drawer that entered over 400ms leaves over about 320ms on the drawer curve. Keyboard actions and other all-day controls do not animate on the way out.
 
 ## Contextual Icon Animations
 
@@ -282,65 +222,46 @@ The non-absolute icon (InactiveIcon) defines the layout size. The absolute icon 
 
 ## Scale on Press
 
-A subtle scale-down on click gives buttons tactile feedback. Always use `scale(0.96)`. Never use a value smaller than `0.95` — anything below feels exaggerated. Use CSS transitions for interruptibility — if the user releases mid-press, it should smoothly return.
-
-Not every button needs this. Add a `static` prop to your button component that disables the scale effect when the motion would be distracting.
+A press scales the whole control to `0.97`, label and icon included. `0.95`–`0.98` still reads as a press. Anything below `0.95` feels exaggerated. Duration is 100–160ms on the strong ease-out curve. 160ms is the usual choice. Any pressable does this, including icon buttons, menu items, chips, and tabs. The hover fill stays. Press does not darken that fill. Reduced motion skips the scale. Use a CSS transition so a release mid-press can retarget.
 
 ### CSS Example
 
 ```css
 .button {
   transition-property: scale;
-  transition-duration: 150ms;
-  transition-timing-function: ease-out;
+  transition-duration: 160ms;
+  transition-timing-function: cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 .button:active {
-  scale: 0.96;
+  scale: 0.97;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button {
+    transition: none;
+  }
 }
 ```
 
 ### Tailwind Example
 
+Use Tailwind only when the project already uses it.
+
 ```tsx
-<button className="transition-transform duration-150 ease-out active:scale-[0.96]">
+<button className="transition-transform duration-150 ease-[cubic-bezier(0.23,1,0.32,1)] active:scale-[0.97]">
   Click me
 </button>
 ```
 
 ### Motion Example
 
+Use a motion library only when the project already has one.
+
 ```tsx
-<motion.button whileTap={{ scale: 0.96 }}>
+<motion.button whileTap={{ scale: 0.97 }}>
   Click me
 </motion.button>
-```
-
-### Static Prop Pattern
-
-Extract the scale class into a variable and conditionally apply it based on a `static` prop:
-
-```tsx
-const tapScale = "active:not-disabled:scale-[0.96]";
-
-function Button({ static: isStatic, className, children, ...props }) {
-  return (
-    <button
-      className={cn(
-        "transition-transform duration-150 ease-out",
-        !isStatic && tapScale,
-        className,
-      )}
-      {...props}
-    >
-      {children}
-    </button>
-  );
-}
-
-// Usage
-<Button>Click me</Button>           {/* scales on press */}
-<Button static>Submit</Button>       {/* no scale */}
 ```
 
 ## Skip Animation on Page Load
@@ -384,16 +305,15 @@ Verify the component still looks right on a full page refresh before applying th
 
 Motion is a budget, not a garnish:
 
-- **No custom animation on high-frequency interactions.** Repeated interactions get instant feedback or a minimal `opacity` or `background-color` transition at ≤150ms.
+- **No custom animation on high-frequency interactions.** Something used tens of times a day, including a table row, gets no hover animation or a drastically reduced one. A keyboard action snaps.
 - **Motion is never the only feedback channel.** Every animated state change also needs a static cue such as color, icon, or label.
 - **Brief and precise beats prominent.** If a shorter, smaller animation communicates the same thing, use it.
 - **Honor reduced-motion preferences.** Preserve the static cue and remove unnecessary movement.
 
 ```css
-/* Good: high-frequency hover gets a minimal transition */
+/* Good: a row someone scans does not fade */
 .row:hover {
   background-color: var(--surface-hover);
-  transition: background-color 100ms ease-out;
 }
 
 /* Bad: every hover replays a full entrance */

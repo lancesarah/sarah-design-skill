@@ -243,6 +243,7 @@ document.addEventListener("click", (event) => {
     const open = viewPick.getAttribute("aria-expanded") === "true";
     closeNoteMenus();
     closeDeptMenus();
+    closeAuthorMenus();
     closeViewMenus();
     closeCommentMenus();
     if (!open && panel) {
@@ -259,8 +260,13 @@ document.addEventListener("click", (event) => {
     const open = deptPick.getAttribute("aria-expanded") === "true";
     closeNoteMenus();
     closeDeptMenus();
+    closeAuthorMenus();
     closeViewMenus();
     if (!open && panel) {
+      const current = deptPick.dataset.dept;
+      for (const item of panel.querySelectorAll("[data-dept-choice]")) {
+        item.setAttribute("aria-checked", item.dataset.deptChoice === current ? "true" : "false");
+      }
       deptPick.setAttribute("aria-expanded", "true");
       panel.hidden = false;
     }
@@ -282,10 +288,42 @@ document.addEventListener("click", (event) => {
       paintDept(tag, choice.dataset.deptChoice);
     }
     closeDeptMenus();
+    closeAuthorMenus();
     applyFilters();
     return;
   }
+  const authorPick = event.target.closest(".author-pick");
+  if (authorPick) {
+    const wrap = authorPick.closest(".author-edit");
+    const panel = wrap?.querySelector(".menu");
+    const open = authorPick.getAttribute("aria-expanded") === "true";
+    closeNoteMenus();
+    closeDeptMenus();
+    closeAuthorMenus();
+    closeViewMenus();
+    if (!open && panel) {
+      const current = authorPick.dataset.author;
+      for (const item of panel.querySelectorAll("[data-author-choice]")) {
+        item.setAttribute("aria-checked", item.dataset.authorChoice === current ? "true" : "false");
+      }
+      authorPick.setAttribute("aria-expanded", "true");
+      panel.hidden = false;
+    }
+    return;
+  }
+  const authorChoice = event.target.closest("[data-author-choice]");
+  if (authorChoice) {
+    const article = authorChoice.closest(".detail");
+    const name = authorChoice.dataset.authorChoice;
+    paintAuthor(article?.querySelector(".author-pick"), name);
+    const card = rows.find((row) => row.dataset.note === article?.dataset.detail);
+    const tip = card?.querySelector(".note-author .tip");
+    if (tip) tip.textContent = name;
+    closeAuthorMenus();
+    return;
+  }
   if (!event.target.closest(".dept-edit")) closeDeptMenus();
+  if (!event.target.closest(".author-edit")) closeAuthorMenus();
   if (!event.target.closest(".view-edit")) closeViewMenus();
   const commentMore = event.target.closest(".comment-more");
   if (commentMore) {
@@ -320,10 +358,36 @@ document.addEventListener("click", (event) => {
     const article = action.closest(".detail");
     closeNoteMenus();
     if (action.dataset.noteAction === "delete" && article) askDelete(article);
+    if (action.dataset.noteAction === "copy-link" && article) copyNoteLink(article);
     return;
   }
   if (!event.target.closest(".note-menu")) closeNoteMenus();
 });
+
+function copyNoteLink(article) {
+  const id = article.dataset.detail || "";
+  const url = new URL(location.href);
+  url.hash = id;
+  const text = url.toString();
+  const write = navigator.clipboard?.writeText?.bind(navigator.clipboard);
+  if (write) {
+    write(text).catch(() => copyWithField(text));
+    return;
+  }
+  copyWithField(text);
+}
+
+function copyWithField(text) {
+  const field = document.createElement("textarea");
+  field.value = text;
+  field.setAttribute("readonly", "");
+  field.style.position = "fixed";
+  field.style.left = "-9999px";
+  document.body.append(field);
+  field.select();
+  document.execCommand("copy");
+  field.remove();
+}
 
 function noteLabel(article) {
   const input = article.querySelector(".note-title");
@@ -501,17 +565,6 @@ for (const chip of document.querySelectorAll("[data-suggest]")) {
   });
 }
 
-const sideLinks = [...document.querySelectorAll(".side .side-links a")];
-for (const link of sideLinks) {
-  link.addEventListener("click", (event) => {
-    event.preventDefault();
-    for (const other of sideLinks) {
-      if (other === link) other.setAttribute("aria-current", "page");
-      else other.removeAttribute("aria-current");
-    }
-  });
-}
-
 const collapseButton = document.querySelector(".side-top [data-side-collapse]");
 const lanceCollapse = document.querySelector("#lance [data-lance-collapse]");
 
@@ -524,11 +577,23 @@ let sideChosen = false;
 let sideHeldOpen = false;
 let lanceChosen = false;
 let lanceHeldOpen = false;
+try {
+  sideChosen = sessionStorage.getItem("side-chosen") === "1";
+  sideHeldOpen = sessionStorage.getItem("side-held-open") === "1";
+} catch (error) {}
+
+function rememberSide() {
+  try {
+    sessionStorage.setItem("side-chosen", sideChosen ? "1" : "0");
+    sessionStorage.setItem("side-held-open", sideHeldOpen ? "1" : "0");
+  } catch (error) {}
+}
 
 function setSideCollapsed(collapsed) {
-  if (document.body.classList.contains("is-side-collapsed") === collapsed) return;
-  document.body.classList.toggle("is-side-collapsed", collapsed);
-  document.body.classList.remove("is-side-settling");
+  if (document.body.classList.contains("is-side-collapsed") !== collapsed) {
+    document.body.classList.toggle("is-side-collapsed", collapsed);
+    document.body.classList.remove("is-side-settling");
+  }
   collapseButton?.setAttribute("aria-expanded", collapsed ? "false" : "true");
   collapseButton?.setAttribute("aria-label", collapsed ? "Expand sidebar" : "Collapse sidebar");
 }
@@ -542,7 +607,10 @@ function setLanceCollapsed(collapsed) {
 
 function applyPanelLimits() {
   const width = window.innerWidth;
-  if (width >= SIDE_OPEN_AT) sideHeldOpen = false;
+  if (width >= SIDE_OPEN_AT && sideHeldOpen) {
+    sideHeldOpen = false;
+    rememberSide();
+  }
   if (width >= LANCE_OPEN_AT) lanceHeldOpen = false;
   setSideCollapsed((width < SIDE_OPEN_AT && !sideHeldOpen) || sideChosen);
   setLanceCollapsed((width < LANCE_OPEN_AT && !lanceHeldOpen) || lanceChosen);
@@ -552,6 +620,7 @@ collapseButton?.addEventListener("click", () => {
   const next = !document.body.classList.contains("is-side-collapsed");
   sideChosen = next;
   sideHeldOpen = !next && window.innerWidth < SIDE_OPEN_AT;
+  rememberSide();
   setSideCollapsed(next);
 });
 
@@ -645,6 +714,14 @@ if (noteList) edgeFade(noteList, "y");
 function closeDeptMenus() {
   for (const menu of document.querySelectorAll(".dept-edit")) {
     menu.querySelector(".dept-pick")?.setAttribute("aria-expanded", "false");
+    const panel = menu.querySelector(".menu");
+    if (panel) panel.hidden = true;
+  }
+}
+
+function closeAuthorMenus() {
+  for (const menu of document.querySelectorAll(".author-edit")) {
+    menu.querySelector(".author-pick")?.setAttribute("aria-expanded", "false");
     const panel = menu.querySelector(".menu");
     if (panel) panel.hidden = true;
   }
@@ -773,9 +850,7 @@ function fitPlain(dd, longest) {
 
 function fitMeta(article) {
   const cells = article.querySelectorAll(".note-meta > div");
-  const longestAuthor = readers.reduce((longest, person) => person.name.length > longest.length ? person.name : longest, "");
   fitPlain(cells[0]?.querySelector("dd"), "Yesterday · 12:59 PM");
-  fitPlain(cells[2]?.querySelector("dd"), longestAuthor);
   const count = cells[3]?.querySelector(".view-count");
   if (count && !count.parentElement.classList.contains("meta-fit")) {
     const wrap = document.createElement("span");
@@ -794,11 +869,12 @@ function paintDept(node, value) {
   if (node && value) node.dataset.dept = value;
 }
 
-function departmentChoices() {
+function departmentChoices(selected) {
   return departments().map((dept) => {
     const value = dept.value.replace(/&/g, "&amp;").replace(/"/g, "&quot;");
     const label = dept.label.replace(/&/g, "&amp;");
-    return `<button class="menu-item" type="button" role="menuitem" data-dept-choice="${value}">${label}</button>`;
+    const checked = dept.value === selected ? "true" : "false";
+    return `<button class="menu-item" type="button" role="menuitemradio" data-dept-choice="${value}" aria-checked="${checked}"><span class="dept" data-dept="${value}">${label}</span><svg class="i check" width="14" height="14"><use href="#i-check"/></svg></button>`;
   }).join("");
 }
 
@@ -808,7 +884,39 @@ function upgradeDept(article) {
   const raw = chip.textContent.trim();
   const label = raw.replace(/&/g, "&amp;").replace(/</g, "&lt;");
   const value = deptValueFromLabel(raw).replace(/&/g, "&amp;").replace(/"/g, "&quot;");
-  chip.parentElement.innerHTML = `<div class="drop dept-edit"><button class="dept dept-pick" type="button" data-dept="${value}" aria-expanded="false" aria-haspopup="menu"><span class="dept-name">${label}</span><svg class="i meta-chevron" width="10" height="10"><use href="#i-chevron"/></svg></button><div class="menu" role="menu" hidden>${departmentChoices()}</div></div>`;
+  chip.parentElement.innerHTML = `<div class="drop dept-edit"><button class="dept dept-pick" type="button" data-dept="${value}" aria-expanded="false" aria-haspopup="menu"><span class="dept-name">${label}</span><svg class="i meta-chevron" width="10" height="10"><use href="#i-chevron"/></svg></button><div class="menu" role="menu" hidden>${departmentChoices(deptValueFromLabel(raw))}</div></div>`;
+}
+
+function authorFace(name) {
+  if (name === "Sarah Mou") return `<img class="avatar mini" src="assets/avatar-sarah.png?v=20261029a" alt="">`;
+  const initials = name.split(" ").map((part) => part[0] || "").join("").slice(0, 2);
+  return `<span class="avatar mini">${esc(initials)}</span>`;
+}
+
+function authorChoices(selected) {
+  return readers.map((person) => {
+    const checked = person.name === selected ? "true" : "false";
+    return `<button class="menu-item" type="button" role="menuitemradio" data-author-choice="${esc(person.name)}" aria-checked="${checked}"><span class="mini-pill">${authorFace(person.name)}${esc(person.name)}</span><svg class="i check" width="14" height="14"><use href="#i-check"/></svg></button>`;
+  }).join("");
+}
+
+function paintAuthor(button, name) {
+  if (!button) return;
+  button.dataset.author = name;
+  button.setAttribute("aria-label", `Author, ${name}`);
+  button.innerHTML = `${authorFace(name)}<span class="author-name">${esc(name)}</span><svg class="i meta-chevron" width="10" height="10"><use href="#i-chevron"/></svg>`;
+}
+
+function upgradeAuthor(article) {
+  const dd = article.querySelectorAll(".note-meta > div")[2]?.querySelector("dd");
+  if (!dd || dd.querySelector(".author-pick")) return;
+  const name = dd.textContent.trim() || "Sarah Mou";
+  const longest = readers.reduce((best, person) => person.name.length > best.name.length ? person : best);
+  dd.innerHTML = `<div class="drop author-edit"><span class="author-slot"><button class="mini-pill author-pick" type="button" data-author="${esc(name)}" aria-expanded="false" aria-haspopup="menu" aria-label="Author, ${esc(name)}">${authorFace(name)}<span class="author-name">${esc(name)}</span><svg class="i meta-chevron" width="10" height="10"><use href="#i-chevron"/></svg></button><span class="mini-pill author-sizer" aria-hidden="true">${authorFace(longest.name)}${esc(longest.name)}<svg class="i meta-chevron" width="10" height="10"><use href="#i-chevron"/></svg></span></span><div class="menu" role="menu" hidden>${authorChoices(name)}</div></div>`;
+}
+
+function esc(value) {
+  return String(value ?? "").replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[char]));
 }
 
 function reserveDept(article) {
@@ -829,6 +937,7 @@ function reserveDept(article) {
 
 for (const article of document.querySelectorAll(".detail")) {
   upgradeDept(article);
+  upgradeAuthor(article);
   reserveDept(article);
   fitMeta(article);
 }
@@ -890,7 +999,7 @@ function createNote() {
   if (!list || !read) return;
   const id = "new-" + Date.now();
   const stamp = noteStamp();
-  const deptChoices = departmentChoices();
+  const deptChoices = departmentChoices("Front Desk");
   const card = document.createElement("button");
   card.type = "button";
   card.setAttribute("role", "option");
@@ -903,7 +1012,7 @@ function createNote() {
   article.className = "detail";
   article.dataset.detail = id;
   article.hidden = true;
-  article.innerHTML = `<div class="brief-top"><textarea class="note-title" aria-label="Title" placeholder="Title" rows="1"></textarea><div class="drop note-menu"><button class="note-more" type="button" aria-expanded="false" aria-haspopup="menu" aria-label="More"><svg class="i" width="14" height="14"><use href="#i-dots"/></svg></button><div class="menu" role="menu" hidden><button class="menu-item" type="button" role="menuitem" data-note-action="share"><svg class="i" width="14" height="14"><use href="#i-share"/></svg>Share</button><button class="menu-item danger" type="button" role="menuitem" data-note-action="delete"><svg class="i" width="14" height="14"><use href="#i-trash"/></svg>Delete</button></div></div></div><dl class="note-meta"><div><dt>Timestamp</dt><dd>${stamp}</dd></div><div><dt>Department</dt><dd><div class="drop dept-edit"><button class="dept dept-pick" type="button" data-dept="Front Desk" aria-expanded="false" aria-haspopup="menu"><span class="dept-name">Front desk</span><svg class="i meta-chevron" width="10" height="10"><use href="#i-chevron"/></svg></button><div class="menu" role="menu" hidden>${deptChoices}</div></div></dd></div><div><dt>Author</dt><dd>Sarah Mou</dd></div><div><dt>Viewed</dt><dd><div class="drop view-edit"><button class="chip view-pick" type="button" aria-expanded="false" aria-haspopup="menu"><svg class="i view-eye" width="18" height="18" aria-hidden="true"><use href="#i-eye"/></svg><span class="view-count">0/8</span><svg class="i meta-chevron" width="10" height="10"><use href="#i-chevron"/></svg></button><div class="menu view-menu" role="menu" hidden></div></div></dd></div></dl><div class="brief-main"><p class="brief-meta">Front desk</p><textarea class="note-draft" aria-label="Note" placeholder="New note"></textarea><section class="brief-replies" aria-label="Comments"><h3>Comments</h3><form class="msg" data-composer><span class="lead"><button class="well" type="button" aria-label="Add"><svg class="i" width="16" height="16"><use href="#i-plus"/></svg></button><input aria-label="Write a comment" placeholder="Write a comment..."></span><button class="well" type="submit" aria-label="Send"><svg class="i" width="16" height="16"><use href="#i-up"/></svg></button></form></section></div>`;
+  article.innerHTML = `<div class="brief-top"><textarea class="note-title" aria-label="Title" placeholder="Title" rows="1"></textarea><div class="drop note-menu"><button class="note-more" type="button" aria-expanded="false" aria-haspopup="menu" aria-label="More"><svg class="i" width="14" height="14"><use href="#i-dots"/></svg></button><div class="menu" role="menu" hidden><button class="menu-item" type="button" role="menuitem" data-note-action="share"><svg class="i" width="14" height="14"><use href="#i-share"/></svg>Share</button><button class="menu-item" type="button" role="menuitem" data-note-action="copy-link"><svg class="i" width="14" height="14"><use href="#i-link"/></svg>Copy link</button><button class="menu-item danger" type="button" role="menuitem" data-note-action="delete"><svg class="i" width="14" height="14"><use href="#i-trash"/></svg>Delete</button></div></div></div><dl class="note-meta"><div><dt>Timestamp</dt><dd>${stamp}</dd></div><div><dt>Department</dt><dd><div class="drop dept-edit"><button class="dept dept-pick" type="button" data-dept="Front Desk" aria-expanded="false" aria-haspopup="menu"><span class="dept-name">Front desk</span><svg class="i meta-chevron" width="10" height="10"><use href="#i-chevron"/></svg></button><div class="menu" role="menu" hidden>${deptChoices}</div></div></dd></div><div><dt>Author</dt><dd>Sarah Mou</dd></div><div><dt>Viewed</dt><dd><div class="drop view-edit"><button class="chip view-pick" type="button" aria-expanded="false" aria-haspopup="menu"><svg class="i view-eye" width="18" height="18" aria-hidden="true"><use href="#i-eye"/></svg><span class="view-count">0/8</span><svg class="i meta-chevron" width="10" height="10"><use href="#i-chevron"/></svg></button><div class="menu view-menu" role="menu" hidden></div></div></dd></div></dl><div class="brief-main"><p class="brief-meta">Front desk</p><textarea class="note-draft" aria-label="Note" placeholder="New note"></textarea><section class="brief-replies" aria-label="Comments"><h3>Comments</h3><form class="msg" data-composer><span class="lead"><button class="well" type="button" aria-label="Add"><svg class="i" width="16" height="16"><use href="#i-plus"/></svg></button><input aria-label="Write a comment" placeholder="Write a comment..."></span><button class="well" type="submit" aria-label="Send"><svg class="i" width="16" height="16"><use href="#i-up"/></svg></button></form></section></div>`;
   read.append(article);
   const titleInput = article.querySelector(".note-title");
   const draft = article.querySelector(".note-draft");
@@ -933,6 +1042,7 @@ function createNote() {
   applyFilters();
   fillViewMenu(article);
   reserveDept(article);
+  upgradeAuthor(article);
   fitMeta(article);
   const focusTitle = () => titleInput.focus();
   if (confirmDialog?.open) confirmDialog.addEventListener("close", focusTitle, { once: true });

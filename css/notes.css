@@ -20,7 +20,9 @@ body .side {
   width: 277px;
   min-width: 277px;
   max-width: 277px;
+  padding-bottom: var(--space-8);
   overflow-x: hidden;
+  border-right: 0;
   transition: flex-basis 150ms ease, width 150ms ease, min-width 150ms ease, max-width 150ms ease, padding 150ms ease, gap 150ms ease;
 }
 
@@ -143,9 +145,15 @@ body .lance-side {
   width: 392px;
   min-width: 392px;
   max-width: 392px;
+  padding-bottom: var(--space-8);
   overflow: hidden;
+  background: var(--sidebar-grey);
+  border-left: 0;
   transition: flex-basis 150ms ease, width 150ms ease, min-width 150ms ease, max-width 150ms ease;
 }
+
+body .lance-side .lance { background: var(--white); }
+body .lance-side .side-icon:hover { background: var(--grey); }
 
 body.is-lance-collapsed .lance-side {
   flex-basis: calc(30px + var(--space-16) * 2);
@@ -222,12 +230,14 @@ body.is-lance-collapsed .lance-side [data-lance-collapse]::after {
   min-width: 0;
   min-height: 0;
   width: auto;
-  margin: 0;
+  margin: var(--space-8);
   padding: 0;
   display: flex;
   flex-direction: column;
   overflow: hidden;
   background: var(--white);
+  border-radius: calc(var(--radius-control) + var(--space-8));
+  box-shadow: var(--stroke);
 }
 
 .notes-page .page-head {
@@ -243,8 +253,15 @@ body.is-lance-collapsed .lance-side [data-lance-collapse]::after {
 .notes-page .page-title {
   display: flex;
   align-items: center;
+  justify-content: flex-start;
   gap: 8px;
   min-width: 0;
+  position: static;
+  z-index: auto;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
 }
 
 .page-mark {
@@ -392,6 +409,8 @@ body.is-lance-collapsed .lance-side [data-lance-collapse]::after {
 
 .brief-list button:hover,
 .brief-list button[aria-selected="true"] { background: var(--sidebar-grey); }
+html[data-theme="dark"] .brief-list button:hover,
+html[data-theme="dark"] .brief-list button[aria-selected="true"] { background: var(--grey); }
 .brief-list button[hidden] { display: none; }
 
 .brief-read {
@@ -450,7 +469,7 @@ body.is-lance-collapsed .lance-side [data-lance-collapse]::after {
   align-items: stretch;
   width: 100%;
   min-width: 0;
-  overflow: hidden;
+  overflow: visible;
   gap: 2px;
 }
 
@@ -610,6 +629,8 @@ body.is-lance-collapsed .lance-side [data-lance-collapse]::after {
 
 .note-more:hover,
 .note-more[aria-expanded="true"] { background: var(--sidebar-grey); }
+html[data-theme="dark"] .note-more:hover,
+html[data-theme="dark"] .note-more[aria-expanded="true"] { background: var(--grey); }
 
 .note-menu { align-self: center; }
 
@@ -662,7 +683,7 @@ body.is-lance-collapsed .lance-side [data-lance-collapse]::after {
 
 .note-menu .menu.is-context {
   position: fixed;
-  z-index: 6;
+  z-index: 80;
 }
 
 .note-meta {
@@ -698,12 +719,15 @@ body.is-lance-collapsed .lance-side [data-lance-collapse]::after {
 }
 
 .notes-page[data-view="top"] .note-meta {
-  display: grid;
-  grid-template-columns: repeat(4, max-content);
+  display: flex;
+  flex-wrap: wrap;
   align-items: start;
   justify-content: start;
   column-gap: calc(var(--space-20) * 2);
+  row-gap: var(--space-12);
   width: auto;
+  min-width: 0;
+  max-width: 100%;
   margin: var(--space-16) var(--space-20) 0;
   padding: 0 0 var(--space-16);
   border-top: 0;
@@ -713,24 +737,17 @@ body.is-lance-collapsed .lance-side [data-lance-collapse]::after {
 .notes-page[data-view="top"] .note-meta > div,
 .notes-page[data-view="top"] .note-meta > div:first-child,
 .notes-page[data-view="top"] .note-meta > div:last-child {
+  flex: none;
   width: auto;
   padding: 0;
   border-right: 0;
 }
 
-.notes-page[data-view="top"] .note-meta dd { white-space: nowrap; }
-
-@container note-read (max-width: 520px) {
-  .notes-page[data-view="top"] .note-meta {
-    grid-template-columns: repeat(2, max-content);
-    row-gap: var(--space-12);
-  }
-}
-
-@container note-read (max-width: 360px) {
-  .notes-page[data-view="top"] .note-meta {
-    grid-template-columns: max-content;
-  }
+.notes-page[data-view="top"] .note-meta dd {
+  margin-top: var(--space-2);
+  font-size: var(--text-14);
+  line-height: 16px;
+  white-space: nowrap;
 }
 
 .meta-fit { display: inline-grid; }
@@ -740,14 +757,18 @@ body.is-lance-collapsed .lance-side [data-lance-collapse]::after {
 .notes-page[data-view="top"] .note-meta .view-pick {
   height: auto;
   padding: 1px var(--space-4);
-  font-size: 12px;
+  font-size: var(--text-14);
   font-weight: 400;
-  line-height: normal;
+  line-height: 16px;
+}
+
+.notes-page[data-view="top"] .note-meta .dept,
+.notes-page[data-view="top"] .note-meta .view-pick {
+  vertical-align: top;
 }
 
 .notes-page[data-view="top"] .note-meta .view-pick {
   position: relative;
-  top: 1px;
   margin-left: calc(var(--space-4) * -1);
 }
 
@@ -790,12 +811,37 @@ body.is-lance-collapsed .lance-side [data-lance-collapse]::after {
   line-height: 20px;
 }
 
+.author-edit,
 .dept-edit { position: relative; }
+.author-slot { display: inline-grid; }
+.author-slot > * { grid-area: 1 / 1; justify-self: start; }
+.author-pick {
+  border: 0;
+  cursor: pointer;
+  color: var(--black);
+}
+.author-sizer { visibility: hidden; pointer-events: none; }
+.author-pick .meta-chevron {
+  max-width: 0;
+  margin-inline-start: 0;
+  opacity: 0;
+  overflow: hidden;
+}
+.author-pick:hover .meta-chevron,
+.author-pick[aria-expanded="true"] .meta-chevron,
+.author-sizer .meta-chevron {
+  max-width: 10px;
+  margin-inline-start: var(--space-4);
+  opacity: 1;
+}
+.author-sizer .meta-chevron { opacity: 0; }
+.author-pick[aria-expanded="true"] .meta-chevron { transform: rotate(180deg); }
+.author-edit .menu-item .mini-pill { pointer-events: none; }
 .dept-slot { display: inline-grid; }
 .dept-slot > * { grid-area: 1 / 1; justify-self: start; }
 .dept-sizer { visibility: hidden; pointer-events: none; gap: 2px; }
 .dept-pick {
-  gap: var(--space-2);
+  gap: 0;
   cursor: pointer;
 }
 .meta-chevron {
@@ -807,7 +853,21 @@ body.is-lance-collapsed .lance-side [data-lance-collapse]::after {
   transition: opacity 120ms, transform 120ms;
 }
 .view-eye { display: block; width: 18px; height: 18px; flex: none; margin-block: -1px; }
-.dept-pick .meta-chevron { opacity: 1; }
+.dept-pick .meta-chevron,
+html[data-dept-chip="dot"] .dept-pick .meta-chevron {
+  max-width: 0;
+  margin-inline-start: 0;
+  opacity: 0;
+  overflow: hidden;
+}
+.dept-pick:hover .meta-chevron,
+.dept-pick[aria-expanded="true"] .meta-chevron,
+html[data-dept-chip="dot"] .dept-pick:hover .meta-chevron,
+html[data-dept-chip="dot"] .dept-pick[aria-expanded="true"] .meta-chevron {
+  max-width: 10px;
+  margin-inline-start: var(--space-4);
+  opacity: 1;
+}
 .view-pick:hover .meta-chevron,
 .view-pick[aria-expanded="true"] .meta-chevron { opacity: 1; }
 .dept-pick[aria-expanded="true"] .meta-chevron,
@@ -974,7 +1034,7 @@ body.is-lance-collapsed .lance-side [data-lance-collapse]::after {
 }
 
 .notes-page[data-view="top"] .brief-meta { display: none; }
-.notes-page[data-view="top"] .brief-read h2 { font-size: var(--text-16); }
+.notes-page[data-view="top"] .brief-read h2 { font-size: var(--text-20); }
 
 .confirm-dialog {
   width: max-content;
@@ -1040,6 +1100,13 @@ body.is-lance-collapsed .lance-side [data-lance-collapse]::after {
 .dev-switch button[aria-pressed="true"] {
   background: var(--white);
   color: var(--black);
+}
+
+.dev-rule {
+  width: 1px;
+  align-self: stretch;
+  margin-block: 4px;
+  background: var(--black-25);
 }
 
 .page-filters { display: flex; flex-direction: column; }
@@ -1199,18 +1266,18 @@ html[data-theme="dark"] .notes-grid .cell-task[aria-pressed="true"] { background
 .notes-page .msg.is-locked button { color: var(--black-25); }
 .notes-page .msg.is-locked input::placeholder { color: var(--black-25); }
 .side .avatar,
-.notes-page .avatar {
+.notes-page img.avatar {
   outline: var(--outline-image);
   outline-offset: -1px;
 }
 html[data-theme="dark"] .note-avatar,
 html[data-theme="dark"] .note-avatar-slot img,
 html[data-theme="dark"] .side .avatar,
-html[data-theme="dark"] .notes-page .avatar {
+html[data-theme="dark"] .notes-page img.avatar {
   clip-path: inset(1px round 50%);
 }
 
-.notes-page .avatar.mini {
+.notes-page img.avatar.mini {
   object-fit: cover;
   padding: 0;
   border-color: transparent;
@@ -1233,29 +1300,30 @@ html[data-theme="dark"] .notes-page .avatar {
   flex: none;
   align-self: flex-start;
   align-items: center;
-  height: 16px;
+  height: 18px;
   margin-left: auto;
   opacity: 0;
   pointer-events: none;
   transition: opacity 120ms;
 }
 .comment:hover .comment-views,
+.comment.is-hover .comment-views,
 .comment:has(.view-pick[aria-expanded="true"]) .comment-views {
   opacity: 1;
   pointer-events: auto;
 }
 .notes-page .comment-views .view-pick {
-  height: auto;
-  padding: 1px var(--space-4);
+  height: 18px;
+  padding: 0 var(--space-4);
   color: var(--black);
   font-size: 12px;
   font-weight: 400;
-  line-height: normal;
+  line-height: 16px;
 }
-.comment-views .meta-chevron { opacity: 1; }
-.comment-views .menu.is-context {
+.comment-views .menu.is-context,
+.view-edit .menu.is-context {
   position: fixed;
-  z-index: 6;
+  z-index: 80;
 }
 .comment-menu {
   position: relative;
@@ -1267,6 +1335,7 @@ html[data-theme="dark"] .notes-page .avatar {
   transition: opacity 120ms;
 }
 .comment:hover .comment-menu,
+.comment.is-hover .comment-menu,
 .comment:has(.comment-more[aria-expanded="true"]) .comment-menu {
   opacity: 1;
   pointer-events: auto;
@@ -1284,11 +1353,17 @@ html[data-theme="dark"] .notes-page .avatar {
   background: transparent;
   color: var(--black);
 }
+.comment:hover .comment-more,
+.comment.is-hover .comment-more,
 .comment-more:hover,
 .comment-more[aria-expanded="true"] { background: var(--sidebar-grey); }
+html[data-theme="dark"] .comment:hover .comment-more,
+html[data-theme="dark"] .comment.is-hover .comment-more,
+html[data-theme="dark"] .comment-more:hover,
+html[data-theme="dark"] .comment-more[aria-expanded="true"] { background: var(--grey); }
 .comment-menu .menu.is-context {
   position: fixed;
-  z-index: 6;
+  z-index: 80;
   width: max-content;
   min-width: 132px;
 }

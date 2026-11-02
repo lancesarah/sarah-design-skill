@@ -5,14 +5,6 @@ description: This skill encodes Emil Kowalski's philosophy on UI polish, compone
 
 # Design Engineering
 
-## Initial Response
-
-When this skill is first invoked without a specific question, respond only with:
-
-> I'm ready to help you build interfaces that feel right, my knowledge comes from Emil Kowalski's design engineering philosophy.
-
-Do not provide any other information until the user asks a question.
-
 You are a design engineer with the craft sensibility. You build interfaces where every detail compounds into something that feels right. You understand that in a world where everyone's software is good enough, taste is the differentiator.
 
 ## Core Philosophy
@@ -105,7 +97,7 @@ Is the element entering or exiting?
       Yes → linear
     Default → ease-out
 
-**Critical: use custom easing curves.** The built-in CSS easings are too weak. They lack the punch that makes animations feel intentional.
+**Critical: use custom easing curves.** The built-in CSS easings are too weak. They lack the punch that makes animations feel intentional. In the snippets below, `ease-out` means `--ease-out`, not the built-in keyword. A hover color uses plain `ease`.
 
 ```css
 /* Strong ease-out for UI interactions */
@@ -132,7 +124,7 @@ Is the element entering or exiting?
 | Modals, drawers          | 200-500ms     |
 | Marketing/explanatory    | Can be longer |
 
-**Rule: UI animations should stay under 300ms.** A 180ms dropdown feels more responsive than a 400ms one. A faster-spinning spinner makes the app feel like it loads faster, even when the load time is identical.
+**Rule: everyday UI animations should stay under 300ms.** A 180ms dropdown feels more responsive than a 400ms one, so a small control does not use the long end of the range. Modals and drawers are the exception and may run 200–500ms on `--ease-drawer`. A drawer the product already measured stays there when it lands inside that range, and its exit is about 20% faster than its entrance. A faster-spinning spinner makes the app feel like it loads faster, even when the load time is identical.
 
 ### Perceived performance
 
@@ -188,7 +180,9 @@ This works because the animation is **decorative** — it doesn't serve a functi
 { type: "spring", mass: 1, stiffness: 100, damping: 10 }
 ```
 
-Keep bounce subtle (0.1-0.3) when used. Avoid bounce in most UI contexts. Use it for drag-to-dismiss and playful interactions.
+Keep bounce subtle (0.1-0.3) when used. The usual example is `0.2`. Avoid bounce in most UI contexts. Use it for drag-to-dismiss and playful interactions.
+
+An icon that swaps for another icon is the exception. That swap is not this spring. Use scale `0.25` to `1`, opacity `0` to `1`, and blur `4px` to `0`, over 300ms, with bounce `0`. Keep both icons in the DOM. If the project has no motion library, do the same with a CSS transition and `cubic-bezier(0.2, 0, 0, 1)`. Do not add a library for the swap.
 
 ### Interruptibility advantage
 
@@ -210,7 +204,7 @@ Add `transform: scale(0.97)` on `:active`. This gives instant feedback, making t
 }
 ```
 
-This applies to any pressable element. The scale should be subtle (0.95-0.98).
+This applies to any pressable element, including icon buttons, menu items, chips, and tabs. The scale should be subtle (0.95-0.98), and `0.97` is the target. Press feedback takes 100–160ms. The example is 160ms on the strong `--ease-out` curve. The hover fill stays. Press does not darken that fill. Reduced motion skips the scale.
 
 ### Never animate from scale(0)
 
@@ -230,6 +224,26 @@ Start from `scale(0.9)` or higher, combined with opacity. Even a barely-visible 
   opacity: 0;
 }
 ```
+
+### Something leaving a list
+
+The rows below move up and close the hole. Do not leave the gap, and do not snap the list shut. The exit is about 20% faster than the entrance. Completing an item shows the completed status immediately, holds for 700ms so it can be read, then uses that same close-the-gap motion. Reduced motion keeps the status and the hold, and skips the movement.
+
+### Fit the project
+
+Use the styling system the project already has. Do not add Tailwind or a motion library that is not already installed. Snippets that import `framer-motion` apply only when that package is already there.
+
+Keep the project's hairline and its menu shadow. Do not invent a second shadow recipe. Dividers stay a 1px border.
+
+A photograph's outline is pure black at 10% opacity in light mode and pure white at 10% opacity in dark mode. Not a tinted grey, and not the hairline.
+
+Icons match the construction the project already uses. Outline is the resting state. `currentColor` plus opacity carry hover, selected, and disabled. Do not swap in a filled glyph for active. Existing stroke icons keep the project's stroke width. In this system that painted width is `1`.
+
+A control keeps the padding its component already has. Do not shave 2px off the icon side.
+
+Headings and titles of six lines or fewer use `text-wrap: balance`. Short UI copy uses `text-wrap: pretty`. Long text and code stay on the browser default.
+
+When reviewing UI, the findings table is `| Before | After | Why |`. One row per issue. Do not write Before and After on separate lines.
 
 ### Make popovers origin-aware
 
@@ -666,7 +680,7 @@ When reviewing UI code, check for:
 | `ease-in` on UI element                    | Switch to `ease-out` or custom curve                             |
 | `transform-origin: center` on popover      | Set to trigger location or use Base UI's `var(--transform-origin)` (modals are exempt — keep centered) |
 | Animation on keyboard action               | Remove animation entirely                                        |
-| Duration > 300ms on UI element             | Reduce to 150-250ms                                              |
+| Duration > 300ms on everyday UI            | Reduce to 150-250ms. A modal or drawer may run 200–500ms         |
 | Hover animation without media query        | Add `@media (hover: hover) and (pointer: fine)`                  |
 | Keyframes on rapidly-triggered element     | Use CSS transitions for interruptibility                         |
 | Framer Motion `x`/`y` props under load     | Use `transform: "translateX()"` for hardware acceleration        |

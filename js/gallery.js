@@ -69,6 +69,28 @@ document.addEventListener("click", (event) => {
 });
 
 document.addEventListener("keydown", (event) => {
+  if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k" && !event.altKey) {
+    const input = document.querySelector(".side-search input");
+    if (input) {
+      event.preventDefault();
+      if (document.body.classList.contains("is-side-collapsed")) {
+        document.querySelector(".side-top [data-side-collapse]")?.click();
+      }
+      input.focus();
+      input.select();
+    }
+  }
+  const typing = event.target.closest("input, textarea, [contenteditable='true']");
+  if (event.altKey && !event.metaKey && !event.ctrlKey && !event.shiftKey && !typing) {
+    if (event.code === "KeyM") {
+      event.preventDefault();
+      goNav("Messages");
+    }
+    if (event.code === "KeyN") {
+      event.preventDefault();
+      goNav("Notifications");
+    }
+  }
   if (event.key === "Escape") closeMenus();
   const tab = event.target.closest("[role=tab]");
   if (!tab || !event.key.startsWith("Arrow") && event.key !== "Home" && event.key !== "End") return;
@@ -111,6 +133,129 @@ for (const group of document.querySelectorAll("[data-tabs]")) {
   });
 }
 
+const NAV_SECTIONS = {
+  home: "Home",
+  messages: "Messages",
+  notifications: "Notifications",
+  boards: "Boards",
+  schedule: "Schedule",
+  "guest-messages": "Guest messages",
+  "wake-up-calls": "Wake-up calls",
+  cash: "Cash & bank",
+  pm: "PM",
+  readings: "Readings",
+  knowledge: "Knowledge base",
+  sales: "Sales",
+};
+
+function linkName(link) {
+  return [...link.childNodes]
+    .filter((node) => node.nodeType === Node.TEXT_NODE)
+    .map((node) => node.textContent)
+    .join("")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function navKeyFrom(href) {
+  const url = new URL(href, location.href);
+  const file = url.pathname.split("/").pop() || "";
+  if (file === "todos-alt.html") return "todos.html";
+  if (file === "section.html") return `section:${url.searchParams.get("page") || "home"}`;
+  return file;
+}
+
+function markNav() {
+  const here = navKeyFrom(location.href);
+  const links = [...document.querySelectorAll(".side .side-links a")];
+  for (const link of links) {
+    const on = navKeyFrom(link.getAttribute("href") || "") === here;
+    if (on) link.setAttribute("aria-current", "page");
+    else link.removeAttribute("aria-current");
+  }
+  const current = links.filter((link) => link.getAttribute("aria-current") === "page");
+  const visible = current.some((link) => {
+    const list = link.closest("[data-side-list]");
+    return !list || !list.hidden;
+  });
+  if (!visible && current[0]) {
+    const list = current[0].closest("[data-side-list]");
+    const button = list?.closest("[data-side-group]")?.querySelector("[data-side-toggle]");
+    if (list && button) {
+      list.hidden = false;
+      button.setAttribute("aria-expanded", "true");
+    }
+  }
+  const page = document.querySelector("[data-section-page]");
+  if (!page) return;
+  const slug = new URLSearchParams(location.search).get("page") || "home";
+  const label = NAV_SECTIONS[slug] || "Home";
+  document.title = label;
+  const heading = page.querySelector("h1");
+  if (heading) heading.textContent = label;
+  const mark = page.querySelector(".page-mark");
+  const source = [...document.querySelectorAll(".side .side-links a")].find((link) => linkName(link) === label);
+  const icon = source?.querySelector("svg");
+  if (mark && icon) mark.replaceChildren(icon.cloneNode(true));
+}
+
+let navFilterMemory = null;
+
+function filterNav(query) {
+  const q = query.trim().toLowerCase();
+  const groups = [...document.querySelectorAll(".side [data-side-group]")];
+  if (!q) {
+    for (const item of document.querySelectorAll(".side .side-item, .side .side-group")) {
+      item.classList.remove("is-nav-miss");
+    }
+    if (navFilterMemory) {
+      for (const saved of navFilterMemory) {
+        saved.button.setAttribute("aria-expanded", saved.open);
+        saved.list.hidden = saved.hidden;
+      }
+      navFilterMemory = null;
+    }
+    return;
+  }
+  if (!navFilterMemory) {
+    navFilterMemory = groups.map((group) => {
+      const button = group.querySelector("[data-side-toggle]");
+      const list = group.querySelector("[data-side-list]");
+      return {
+        button,
+        list,
+        open: button?.getAttribute("aria-expanded") || "true",
+        hidden: !!list?.hidden,
+      };
+    });
+  }
+  for (const group of groups) {
+    const button = group.querySelector("[data-side-toggle]");
+    const list = group.querySelector("[data-side-list]");
+    let shown = 0;
+    for (const item of list?.querySelectorAll(":scope > .side-item") || []) {
+      const link = item.querySelector("a");
+      const match = !!link && linkName(link).toLowerCase().includes(q);
+      item.classList.toggle("is-nav-miss", !match);
+      if (match) shown += 1;
+    }
+    group.classList.toggle("is-nav-miss", shown === 0);
+    if (shown && button && list) {
+      list.hidden = false;
+      button.setAttribute("aria-expanded", "true");
+    }
+  }
+  for (const item of document.querySelectorAll(".side-fixed .side-item")) {
+    const link = item.querySelector("a");
+    item.classList.toggle("is-nav-miss", !link || !linkName(link).toLowerCase().includes(q));
+  }
+}
+
+function goNav(name) {
+  const link = [...document.querySelectorAll(".side .side-links a")].find((item) => linkName(item) === name);
+  if (link) location.href = link.href;
+}
+
 for (const form of document.querySelectorAll("form.search")) {
   const input = form.querySelector("input");
   const clear = form.querySelector(".clear");
@@ -118,6 +263,7 @@ for (const form of document.querySelectorAll("form.search")) {
     const filled = input.value.length > 0;
     form.classList.toggle("has-value", filled);
     if (clear) clear.hidden = !filled;
+    if (form.classList.contains("side-search")) filterNav(input.value);
   };
   form.addEventListener("submit", (event) => event.preventDefault());
   input.addEventListener("input", sync);
@@ -374,17 +520,76 @@ document.addEventListener("click", (event) => {
   if (toggle) toggle.classList.add("is-init");
 }, true);
 
-const themeSwitch = document.querySelector("[data-theme-toggle]");
+const themeSwitches = [...document.querySelectorAll("[data-theme-toggle]")];
 const themeOn = () => document.documentElement.dataset.theme === "dark";
 const applyTheme = (dark) => {
   if (dark) document.documentElement.dataset.theme = "dark";
   else delete document.documentElement.dataset.theme;
-  themeSwitch?.setAttribute("aria-pressed", dark ? "true" : "false");
+  for (const toggle of themeSwitches) toggle.setAttribute("aria-pressed", dark ? "true" : "false");
   try { localStorage.setItem("theme", dark ? "dark" : "light"); }
   catch { /* storage can be blocked; the attribute still switches the page */ }
 };
 applyTheme(themeOn());
-themeSwitch?.addEventListener("click", () => applyTheme(!themeOn()));
+for (const toggle of themeSwitches) {
+  toggle.addEventListener("click", () => applyTheme(!themeOn()));
+}
+
+const chipButtons = [...document.querySelectorAll(".dev-switch [data-dept-chip]")];
+const applyDeptChip = (mode) => {
+  const dot = mode === "dot";
+  if (dot) document.documentElement.dataset.deptChip = "dot";
+  else delete document.documentElement.dataset.deptChip;
+  for (const button of chipButtons) {
+    button.setAttribute("aria-pressed", button.dataset.deptChip === (dot ? "dot" : "fill") ? "true" : "false");
+  }
+  try { localStorage.setItem("dept-chip", dot ? "dot" : "fill"); }
+  catch { /* storage can be blocked; the attribute still switches the page */ }
+};
+let savedChip = "fill";
+try { savedChip = localStorage.getItem("dept-chip") === "dot" ? "dot" : "fill"; }
+catch { /* keep the fill chip */ }
+applyDeptChip(savedChip);
+for (const button of chipButtons) {
+  button.addEventListener("click", () => applyDeptChip(button.dataset.deptChip));
+}
+
+const sheetLayoutButtons = [...document.querySelectorAll(".dev-switch [data-sheet-layout]")];
+const applySheetLayout = (mode) => {
+  const chips = mode === "chips";
+  if (chips) document.documentElement.dataset.sheetLayout = "chips";
+  else delete document.documentElement.dataset.sheetLayout;
+  for (const button of sheetLayoutButtons) {
+    button.setAttribute("aria-pressed", button.dataset.sheetLayout === (chips ? "chips" : "lines") ? "true" : "false");
+  }
+  try { localStorage.setItem("sheet-layout", chips ? "chips" : "lines"); }
+  catch { /* storage can be blocked; the attribute still switches the page */ }
+};
+let savedSheetLayout = "lines";
+try { savedSheetLayout = localStorage.getItem("sheet-layout") === "chips" ? "chips" : "lines"; }
+catch { /* keep the ruled table */ }
+if (sheetLayoutButtons.length) applySheetLayout(savedSheetLayout);
+for (const button of sheetLayoutButtons) {
+  button.addEventListener("click", () => applySheetLayout(button.dataset.sheetLayout));
+}
+
+const fontButtons = [...document.querySelectorAll(".dev-switch [data-font]")];
+const applyFont = (face) => {
+  const switzer = face === "switzer";
+  if (switzer) document.documentElement.dataset.font = "switzer";
+  else delete document.documentElement.dataset.font;
+  for (const button of fontButtons) {
+    button.setAttribute("aria-pressed", button.dataset.font === (switzer ? "switzer" : "jakarta") ? "true" : "false");
+  }
+  try { localStorage.setItem("font", switzer ? "switzer" : "jakarta"); }
+  catch { /* storage can be blocked; the attribute still switches the page */ }
+};
+let savedFont = "jakarta";
+try { savedFont = localStorage.getItem("font") === "switzer" ? "switzer" : "jakarta"; }
+catch { /* keep Plus Jakarta Sans */ }
+if (fontButtons.length) applyFont(savedFont);
+for (const button of fontButtons) {
+  button.addEventListener("click", () => applyFont(button.dataset.font));
+}
 
 /* After first paint, so @starting-style does not fade the open panels on load. */
 requestAnimationFrame(() => {
@@ -392,4 +597,138 @@ requestAnimationFrame(() => {
     document.documentElement.classList.add("is-motion");
   });
 });
+
+/* Menus sit in the page, and the page clips overflow, so they paint under the rails.
+   Pin an open menu to the viewport at the layer that clears a panel. */
+function liftMenu(panel) {
+  if (panel.hidden || panel.dataset.lifted === "1") return;
+  if (panel.closest(".side, .lance-side")) return;
+  if (getComputedStyle(panel).position === "fixed") return;
+  const rect = panel.getBoundingClientRect();
+  if (rect.width < 1 || rect.height < 1) return;
+  panel.dataset.lifted = "1";
+  panel.style.position = "fixed";
+  panel.style.left = `${rect.left}px`;
+  panel.style.top = `${rect.top}px`;
+  panel.style.right = "auto";
+  panel.style.bottom = "auto";
+  panel.style.width = `${rect.width}px`;
+  panel.style.zIndex = "80";
+}
+
+function dropMenu(panel) {
+  if (panel.dataset.lifted !== "1") return;
+  delete panel.dataset.lifted;
+  panel.style.position = "";
+  panel.style.left = "";
+  panel.style.top = "";
+  panel.style.right = "";
+  panel.style.bottom = "";
+  panel.style.width = "";
+  panel.style.zIndex = "";
+}
+
+if (document.querySelector("main.notes-page")) {
+  const menuLift = new MutationObserver((records) => {
+    for (const record of records) {
+      const panel = record.target;
+      if (!(panel instanceof HTMLElement)) continue;
+      if (panel.hidden) dropMenu(panel);
+      else liftMenu(panel);
+    }
+  });
+
+  const watchMenu = (panel) => {
+    if (!(panel instanceof HTMLElement) || panel.dataset.menuWatch === "1") return;
+    panel.dataset.menuWatch = "1";
+    menuLift.observe(panel, { attributes: true, attributeFilter: ["hidden"] });
+    if (!panel.hidden) liftMenu(panel);
+  };
+
+  document.querySelectorAll(".menu").forEach(watchMenu);
+  new MutationObserver((records) => {
+    for (const record of records) {
+      for (const node of record.addedNodes) {
+        if (!(node instanceof HTMLElement)) continue;
+        if (node.classList.contains("menu")) watchMenu(node);
+        node.querySelectorAll?.(".menu").forEach(watchMenu);
+      }
+    }
+  }).observe(document.body, { childList: true, subtree: true });
+
+  document.addEventListener("scroll", (event) => {
+    const target = event.target;
+    if (target instanceof Element && target.closest(".menu")) return;
+    for (const panel of document.querySelectorAll(".menu[data-lifted='1']")) panel.hidden = true;
+  }, true);
+}
+
+markNav();
+
+if (document.body.hasAttribute("data-nav-shell")) {
+  const collapseButton = document.querySelector(".side-top [data-side-collapse]");
+  const lanceCollapse = document.querySelector("#lance [data-lance-collapse]");
+  const SIDE_OPEN_AT = 1564;
+  const LANCE_OPEN_AT = 1341;
+  let sideChosen = false;
+  let sideHeldOpen = false;
+  let lanceChosen = false;
+  let lanceHeldOpen = false;
+  try {
+    sideChosen = sessionStorage.getItem("side-chosen") === "1";
+    sideHeldOpen = sessionStorage.getItem("side-held-open") === "1";
+  } catch (error) {}
+
+  function rememberSide() {
+    try {
+      sessionStorage.setItem("side-chosen", sideChosen ? "1" : "0");
+      sessionStorage.setItem("side-held-open", sideHeldOpen ? "1" : "0");
+    } catch (error) {}
+  }
+
+  function setSideCollapsed(collapsed) {
+    if (document.body.classList.contains("is-side-collapsed") !== collapsed) {
+      document.body.classList.toggle("is-side-collapsed", collapsed);
+      document.body.classList.remove("is-side-settling");
+    }
+    collapseButton?.setAttribute("aria-expanded", collapsed ? "false" : "true");
+    collapseButton?.setAttribute("aria-label", collapsed ? "Expand sidebar" : "Collapse sidebar");
+  }
+
+  function setLanceCollapsed(collapsed) {
+    if (document.body.classList.contains("is-lance-collapsed") === collapsed) return;
+    document.body.classList.toggle("is-lance-collapsed", collapsed);
+    lanceCollapse?.setAttribute("aria-expanded", collapsed ? "false" : "true");
+    lanceCollapse?.setAttribute("aria-label", collapsed ? "Open chat" : "Collapse chat");
+  }
+
+  function applyPanelLimits() {
+    const width = window.innerWidth;
+    if (width >= SIDE_OPEN_AT && sideHeldOpen) {
+      sideHeldOpen = false;
+      rememberSide();
+    }
+    if (width >= LANCE_OPEN_AT) lanceHeldOpen = false;
+    setSideCollapsed((width < SIDE_OPEN_AT && !sideHeldOpen) || sideChosen);
+    setLanceCollapsed((width < LANCE_OPEN_AT && !lanceHeldOpen) || lanceChosen);
+  }
+
+  collapseButton?.addEventListener("click", () => {
+    const next = !document.body.classList.contains("is-side-collapsed");
+    sideChosen = next;
+    sideHeldOpen = !next && window.innerWidth < SIDE_OPEN_AT;
+    rememberSide();
+    setSideCollapsed(next);
+  });
+
+  lanceCollapse?.addEventListener("click", () => {
+    const next = !document.body.classList.contains("is-lance-collapsed");
+    lanceChosen = next;
+    lanceHeldOpen = !next && window.innerWidth < LANCE_OPEN_AT;
+    setLanceCollapsed(next);
+  });
+
+  applyPanelLimits();
+  window.addEventListener("resize", applyPanelLimits);
+}
 

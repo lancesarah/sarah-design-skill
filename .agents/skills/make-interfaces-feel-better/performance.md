@@ -18,8 +18,8 @@ Never use `transition: all` or Tailwind's `transition-all`. Always specify the e
 /* Good — only transition what changes */
 .button {
   transition-property: scale, background-color;
-  transition-duration: 150ms;
-  transition-timing-function: ease-out;
+  transition-duration: 160ms;
+  transition-timing-function: cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 /* Bad — transition everything */

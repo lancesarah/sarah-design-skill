@@ -1,6 +1,6 @@
 # Foundations
 
-Values live in `css/tokens.css` on `:root`. Use the variable, not the raw value. Components use the roles. The raw hues stay in that file.
+Values live in `catalog/tokens.css` on `:root`. Use the variable, not the raw value. Components use the roles. The raw hues stay in that file.
 
 ## Primitives
 
@@ -58,7 +58,7 @@ Hover and selected fills step one darker than the surface they sit on. Never use
 
 A tab on white hovers with `--sidebar-grey`. The same tab on a `--sidebar-grey` bar hovers with `--grey`. A selected note on the white page uses `--sidebar-grey`. The same note on a `--sidebar-grey` surface would use `--grey`. Hover and selected share that fill. A selected note stays `--sidebar-grey` while the pointer is on it. If that next step is still invisible against the surface, keep moving down the list. Do not invent a new grey.
 
-A resting fill uses that same step. On white, the fill is `--sidebar-grey`. On `--sidebar-grey`, the fill is `--grey`. The comment field is the reference: it sits on the white page, so its fill is `--sidebar-grey`. An urgency chip does not take that step. Standard stays `--sidebar-grey` on a white note, on a selected note, and in the menu. Do not recolor it because the note is selected or the menu row is hovered.
+A resting fill uses that same step. On white, the fill is `--sidebar-grey`. On `--sidebar-grey`, the fill is `--grey`. The comment field is the reference: it sits on the white page, so its fill is `--sidebar-grey`. An urgency in a table or a menu has no fill. Standard’s word stays `--black-50`. Do not recolor the word because the row is selected or the menu row is hovered.
 
 `--destructive` is the one red for confirmation. Do not introduce a second red.
 
@@ -91,7 +91,7 @@ These change:
 
 These stay:
 
-- An urgency chip keeps its color. Standard stays `--sidebar-grey` on a note, a selected note, and in a menu. On a hovered table row that fill matches the row, so Standard steps once: `--grey` in light mode, `--black-12` in dark mode. It stays put on the open blue row. A department or type chip keeps its department fill on hover and while the menu is open. A filter chip keeps `--filter-chip-bg`.
+- An urgency in a table or a menu keeps its text color and has no fill. Standard’s word is `--black-50`. A department or type chip keeps its department fill on hover and while the menu is open. A filter chip keeps `--filter-chip-bg`.
 - Button text. An unselected nav label stays `--black-50` while the row fills. A selected segment does not pick up the unselected hover.
 - The open to-do. Its line stays `--filter-chip-bg` with a 1px `--action` box. Blue wins over the grey row hover.
 - A photo on row hover in light mode. In dark mode a named photo is `--grey`, then `--grey-up` when the row or the chip is hovered, so it stays lighter than the surface. An empty avatar stays clear, with the dashed `--black-50` stroke.
@@ -117,7 +117,7 @@ Everything else uses this stack. A new overlay takes the row it belongs to. It d
 
 ## Dark mode
 
-`html[data-theme="dark"]` in `css/tokens.css` recolors the same tokens. Type, sizes, spacing, and radii do not change.
+`html[data-theme="dark"]` in `catalog/tokens.css` recolors the same tokens. Type, sizes, spacing, and radii do not change.
 
 The nav and the chat stay darker than the page. The page is the lighter surface.
 
@@ -158,7 +158,7 @@ Sidebar icon buttons stay unfilled. The switch under Settings uses `--action` an
 ## Type
 
 - `--font`: Plus Jakarta Sans, weights 400 and 500. Plus Jakarta Sans is the UI face. Switzer stays on the dev switch so the two can be compared. Libre Baskerville is for editorial moments only, where the gallery already uses it.
-- Sizes: `--text-10`, `--text-12`, `--text-13`, `--text-14`, `--text-16`. `--text-13` is the urgency chip, the department chip, the status label, and the name chip. The gallery Typography section is the set used on notes and to-dos: record title 16/500, page title, body, and button 14/400, count 14/400 in `--text-muted`, place 14/500, chip 13/500, label 12/500 in `--text-muted`, note 12/400, meta 12/400 in `--text-muted`, filter 10/500.
+- Sizes: `--text-10`, `--text-12`, `--text-13`, `--text-14`, `--text-16`, `--text-20`, `--text-24`. `--text-13` is the urgency chip, the department chip, the status label, and the name chip. The gallery Typography section is the set used on notes and to-dos: record title 16/500, page title, body, and button 14/400, count 14/400 in `--text-muted`, place 14/500, chip 13/400, label 12/500 in `--text-muted`, note 12/400, meta 12/400 in `--text-muted`, filter 10/400. `--text-20` is a side title. `--text-24` is a lesson card title, weight 500, line-height 28px.
 - `--font-smoothing`: `antialiased` on product pages.
 - `--text-wrap-title`: `balance` for headings. `--text-wrap-copy`: `pretty` for short copy.
 - `--numeric`: `tabular-nums` for counts and other figures that update.

@@ -44,23 +44,15 @@ function displayType(value) {
 }
 
 const SEED = [
-  {
-    id: "clean-101",
-    room: "101",
-    guest: "test",
-    title: "Other",
-    phone: "17274747474747",
-    email: "test@test.com",
-    loyalty: "test",
-    mood: "Extremely upset",
-    type: "Housekeeping",
-    urgency: "urgent",
-    status: "open",
-    assignee: "",
-    opened: "now",
-    description: "ftestestsetaet",
-    activity: [{ who: "manual", text: "logged this complaint", when: "Oct 30, 6:22 PM" }],
-  },
+  { id: "sheets-426", room: "426", guest: "Elena Vasquez", title: "Cleanliness", phone: "+1 (415) 555-0142", email: "elena.vasquez@email.com", loyalty: "Gold", mood: "Extremely upset", type: "Housekeeping", urgency: "urgent", status: "open", assignee: "mark", opened: "now", description: "Sheets were stained on arrival. Asked for the room to be remade.", activity: [{ who: "manual", text: "logged this complaint", when: "Nov 2, 3:10 PM" }] },
+  { id: "hall-244", room: "244", guest: "James Okonkwo", title: "Noise", phone: "+1 (917) 555-0168", email: "j.okonkwo@email.com", loyalty: "Member", mood: "Upset", type: "Front Desk", urgency: "high", status: "progress", assignee: "paul", opened: "1h", description: "Hall noise past midnight. Asked to move to a quieter room.", activity: [{ who: "sarah", text: "logged this complaint", when: "Nov 2, 2:05 PM" }, { who: "paul", text: "offered room 436", when: "Nov 2, 2:40 PM" }] },
+  { id: "ac-103", room: "103", guest: "Priya Shah", title: "Temperature", phone: "+1 (650) 555-0194", email: "priya.shah@email.com", loyalty: "", mood: "Upset", type: "Maintenance", urgency: "urgent", status: "open", assignee: "boris", opened: "2h", description: "Air conditioning is blowing warm air. Room is still hot.", activity: [{ who: "manual", text: "logged this complaint", when: "Nov 2, 1:20 PM" }] },
+  { id: "faucet-436", room: "436", guest: "Noah Berg", title: "Maintenance", phone: "+1 (510) 555-0117", email: "noah.berg@email.com", loyalty: "Silver", mood: "Neutral", type: "Maintenance", urgency: "high", status: "open", assignee: "", opened: "3h", description: "Bathroom faucet will not shut off all the way.", activity: [{ who: "sarah", text: "logged this complaint", when: "Nov 2, 12:15 PM" }] },
+  { id: "coffee-101", room: "101", guest: "Helen Cho", title: "Amenities", phone: "+1 (408) 555-0133", email: "helen.cho@email.com", loyalty: "Member", mood: "Neutral", type: "Housekeeping", urgency: "standard", status: "open", assignee: "mark", opened: "4h", description: "In-room coffee maker had no pods. Requested a restock.", activity: [{ who: "manual", text: "logged this complaint", when: "Nov 2, 11:40 AM" }] },
+  { id: "service-426b", room: "426", guest: "Elena Vasquez", title: "Service", phone: "+1 (415) 555-0142", email: "elena.vasquez@email.com", loyalty: "Gold", mood: "Upset", type: "Food & Beverage", urgency: "high", status: "progress", assignee: "sarah", opened: "5h", description: "Room service breakfast arrived cold, forty minutes late.", activity: [{ who: "sarah", text: "logged this complaint", when: "Nov 2, 10:05 AM" }] },
+  { id: "minibar-244", room: "244", guest: "James Okonkwo", title: "Billing", phone: "+1 (917) 555-0168", email: "j.okonkwo@email.com", loyalty: "Member", mood: "Extremely upset", type: "Front Desk", urgency: "high", status: "open", assignee: "paul", opened: "6h", description: "Minibar charge for items the guest says were already open.", activity: [{ who: "paul", text: "logged this complaint", when: "Nov 2, 9:30 AM" }] },
+  { id: "towels-103", room: "103", guest: "Priya Shah", title: "Cleanliness", phone: "+1 (650) 555-0194", email: "priya.shah@email.com", loyalty: "", mood: "Happy", type: "Housekeeping", urgency: "low", status: "complete", assignee: "mark", opened: "1d", description: "Asked for extra towels. Delivered and the guest was satisfied.", activity: [{ who: "mark", text: "logged this complaint", when: "Nov 1, 8:15 PM" }, { who: "mark", text: "marked this completed", when: "Nov 1, 8:40 PM" }] },
+  { id: "followup-436", room: "436", guest: "Noah Berg", title: "Service", phone: "+1 (510) 555-0117", email: "noah.berg@email.com", loyalty: "Silver", mood: "Neutral", type: "Management", urgency: "standard", status: "open", assignee: "sarah", bucket: "scheduled", date: "2026-11-04", opened: "now", description: "Follow-up call about the faucet, scheduled with the manager.", activity: [{ who: "sarah", text: "scheduled a follow-up", when: "Nov 2, 12:20 PM" }] },
 ];
 
 const page = document.querySelector(".complaints-page");

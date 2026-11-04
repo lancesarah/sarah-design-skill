@@ -380,11 +380,11 @@ section { scroll-margin-top: 24px; }
   background: var(--filter-chip-bg);
   color: var(--action);
   font-size: 10px;
-  font-weight: 500;
+  font-weight: 400;
 }
 .chip.chip-filter:has(svg) { padding: 2px 5px; }
 .chip-filter:hover, .chip-filter.is-hover { background: var(--filter-chip-bg); }
-.chip-filter .chip-k { font-weight: 500; }
+.chip-filter .chip-k { font-weight: 400; }
 .chip-filter .x { transform: rotate(45deg); }
 
 .fit-label { display: inline-grid; justify-items: start; text-align: start; }
@@ -526,7 +526,7 @@ html[data-theme="dark"] .note-avatar-slot img {
   border-radius: 6px;
   background: var(--sidebar-grey);
   font-size: var(--text-13);
-  font-weight: 500;
+  font-weight: 400;
 }
 .mini-stack {
   display: flex;
@@ -762,7 +762,7 @@ html.is-tip-open .tip-host:not(.is-tip-source):is(:hover, :focus-visible, .is-ti
   font-size: var(--text-13);
   line-height: 16px;
 }
-.status { gap: 8px; font-weight: 500; }
+.status { gap: 8px; font-weight: 400; }
 /* The in-progress mark is filled on the side next to the label, so the same gap reads tighter than the open ring and the completed check. */
 .menu-item > svg.status-progress,
 .status > svg.status-progress,
@@ -772,13 +772,22 @@ html.is-tip-open .tip-host:not(.is-tip-source):is(:hover, :focus-visible, .is-ti
   padding: var(--space-2) var(--space-4);
   border-radius: 4px;
   font-size: var(--text-13);
-  font-weight: 500;
+  font-weight: 400;
   line-height: 16px;
 }
 .urgency-urgent { background: var(--urgency-urgent-bg); color: var(--urgency-urgent); }
 .urgency-high { background: var(--urgency-high-bg); color: var(--urgency-high); }
 .urgency-standard { background: var(--sidebar-grey); color: var(--black-50); }
 .urgency-low { background: var(--urgency-low-bg); color: var(--urgency-low); }
+
+/* A menu names the level. The word keeps its color. The pill fill stays off, in both themes. */
+.menu .urgency,
+.menu .call-resolution,
+html[data-theme="dark"] .menu .urgency,
+html[data-theme="dark"] .menu .call-resolution {
+  background: transparent;
+  padding-inline: 0;
+}
 
 /* Table */
 .table-wrap { display: flex; flex-direction: column; gap: 8px; max-width: 100%; overflow-x: auto; }
@@ -1753,7 +1762,7 @@ html[data-theme="dark"] .side-search kbd {
   background: var(--tag-bg);
   color: var(--tag-text);
   font-size: var(--text-13);
-  font-weight: 500;
+  font-weight: 400;
   line-height: 16px;
 }
 .dept[data-dept="Housekeeping"] { background: var(--dept-housekeeping-bg); color: var(--dept-housekeeping); }
@@ -1918,10 +1927,10 @@ html[data-theme="dark"] #table .sheet.is-open .sheet-line.is-hover .urgency-stan
 #type .t-record { font-size: var(--text-16); font-weight: 500; }
 #type .t-page { font-size: var(--text-14); font-weight: 400; }
 #type .t-place { font-size: var(--text-14); font-weight: 500; }
-#type .t-chip { font-size: var(--text-13); font-weight: 500; }
+#type .t-chip { font-size: var(--text-13); font-weight: 400; }
 #type .t-label { font-size: var(--text-12); font-weight: 500; color: var(--black-50); }
 #type .t-note { font-size: var(--text-12); font-weight: 400; }
-#type .t-filter { font-size: var(--text-10); font-weight: 500; color: var(--action); }
+#type .t-filter { font-size: var(--text-10); font-weight: 400; color: var(--action); }
 #type .t-quiet { color: var(--black-50); }
 #type .t-num { font-variant-numeric: var(--numeric); }
 

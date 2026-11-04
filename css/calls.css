@@ -1,16 +1,6 @@
 /* Call history. The sheet, sidebar, and Lance panel stay the shared components.
    This file only places the facts a call log is scanned for. */
 
-.calls-page.sheet-page .filter-row {
-  grid-template-columns: 281px auto minmax(0, 1fr) auto;
-}
-
-.calls-page .range {
-  grid-column: 4;
-  grid-row: 1;
-  width: max-content;
-}
-
 .calls-page .tab[data-bucket="missed"] .count.is-live {
   color: var(--urgency-urgent);
 }
@@ -23,6 +13,7 @@
 
 .calls-page .sheet-line {
   align-items: center;
+  padding: 11px var(--space-16) 11px calc(var(--space-20) / 2);
 }
 
 .calls-page .call-phone,
@@ -60,7 +51,7 @@
   padding: var(--space-2) var(--space-4);
   border-radius: 4px;
   font-size: var(--text-13);
-  font-weight: 500;
+  font-weight: 400;
   line-height: 16px;
   white-space: nowrap;
 }
@@ -83,6 +74,11 @@
 .call-resolution[data-resolution="resolved"] {
   background: var(--urgency-low-bg);
   color: var(--urgency-low);
+}
+
+.calls-page .sheet-line .call-resolution {
+  background: transparent;
+  padding-inline: 0;
 }
 
 /* The value hugs. Six pixels keeps the right inset at 16px, the same as the left. */
@@ -276,33 +272,6 @@ html[data-theme="dark"] .calls-page .call-play[aria-pressed="true"] {
 }
 
 .calls-page .todo-side .call-resolution[aria-expanded="true"] .sheet-edit { transform: rotate(180deg); }
-
-@container sheet-filters (max-width: 760px) {
-  .calls-page.sheet-page .filter-row {
-    grid-template-columns: minmax(0, 1fr) auto;
-  }
-
-  .calls-page.sheet-page .filter-row .search {
-    grid-column: 1;
-    width: 100%;
-  }
-
-  .calls-page.sheet-page .filter-row > .drop { grid-column: 2; grid-row: 1; }
-
-  .calls-page.sheet-page .filter-chips {
-    grid-column: 1 / -1;
-    grid-row: 2;
-    margin-top: 0;
-  }
-
-  .calls-page.sheet-page .range {
-    grid-column: 1 / -1;
-    grid-row: 3;
-    justify-self: start;
-  }
-
-  .calls-page.sheet-page .filter-row:not(:has(.filter-chips .chip)) .range { grid-row: 2; }
-}
 
 @container sheet-lines (max-width: 640px) {
   .calls-page .sheet-grid {

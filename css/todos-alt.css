@@ -28,7 +28,7 @@
 .sheet-page .page-head .btn:not(.auto-assign) { margin-left: auto; }
 
 .sheet-page .filter-row {
-  grid-template-columns: 281px auto minmax(0, 1fr);
+  grid-template-columns: 281px auto minmax(0, 1fr) auto;
   align-items: center;
 }
 
@@ -45,6 +45,12 @@
 }
 
 .sheet-page .filter-row > .drop { grid-column: 2; grid-row: 1; }
+
+.sheet-page .filter-row > .range {
+  grid-column: 4;
+  grid-row: 1;
+  width: max-content;
+}
 
 .sheet-page .filter-row .trigger {
   width: 44px;
@@ -180,6 +186,8 @@ html[data-theme="dark"] .sheet-page .auto-assign:not([aria-pressed="true"]):is(:
   grid-template-columns: subgrid;
 }
 
+.sheet[hidden] { display: none; }
+
 .sheet-head { display: none; }
 
 .sheet-page[data-view="head"] .sheet-head {
@@ -193,7 +201,7 @@ html[data-theme="dark"] .sheet-page .auto-assign:not([aria-pressed="true"]):is(:
   padding: 0 var(--space-16) 0 calc(var(--space-20) / 2);
   background: var(--sidebar-grey);
   border-bottom: 1px solid var(--line);
-  color: var(--black-50);
+  color: var(--black);
   font-size: var(--text-12);
   font-weight: 500;
 }
@@ -368,6 +376,7 @@ html[data-theme="dark"] .sheet-fade { background: var(--black-12); }
 [data-sheet] > .sheet:not([hidden]):not(:has(~ .sheet:not([hidden]))).is-open .sheet-line:hover {
   border-bottom-left-radius: calc(var(--radius-control) - 1px);
   border-bottom-right-radius: calc(var(--radius-control) - 1px);
+  box-shadow: inset 0 1px 0 var(--action), inset 1px 0 0 var(--action), inset -1px 0 0 var(--action);
 }
 
 .sheet-status {
@@ -502,8 +511,9 @@ html[data-theme="dark"] .sheet-fade { background: var(--black-12); }
 }
 
 .sheet-facts .side-field {
-  padding: var(--space-2) var(--space-4);
-  font-weight: 500;
+  padding: 0 var(--space-4);
+  font-weight: 400;
+  line-height: 20px;
 }
 
 .sheet-facts .side-field[data-menu-kind="location"] {
@@ -548,6 +558,7 @@ html[data-theme="dark"] .sheet-fade { background: var(--black-12); }
   max-width: 100%;
   field-sizing: content;
   height: 16px;
+  color: var(--text-muted);
   font-size: var(--text-12);
   font-weight: 400;
   line-height: 16px;
@@ -577,10 +588,11 @@ html[data-theme="dark"] .sheet-fade { background: var(--black-12); }
   justify-self: start;
   width: max-content;
   height: 20px;
-  padding: var(--space-2) var(--space-4);
+  padding-block: var(--space-2);
+  padding-inline: 0;
   cursor: pointer;
   font-size: var(--text-13);
-  font-weight: 500;
+  font-weight: 400;
   line-height: 16px;
 }
 
@@ -609,6 +621,15 @@ html[data-theme="dark"] .sheet-fade { background: var(--black-12); }
 .sheet.is-open .urgency-standard[aria-expanded="true"],
 .sheet.is-open .sheet-line:hover .urgency-standard { background: var(--sidebar-grey); }
 
+.sheet-line .urgency,
+.sheet-line:hover .urgency,
+.sheet:focus-within .urgency,
+.sheet.is-open .urgency,
+.sheet.is-open .sheet-line:hover .urgency,
+.sheet-line .urgency[aria-expanded="true"] {
+  background: transparent;
+}
+
 .col-reserve {
   display: inline-grid;
   justify-items: start;
@@ -632,7 +653,7 @@ html[data-theme="dark"] .sheet-fade { background: var(--black-12); }
   height: 20px;
   padding: var(--space-2) var(--space-4);
   font-size: var(--text-13);
-  font-weight: 500;
+  font-weight: 400;
   line-height: 16px;
 }
 
@@ -664,7 +685,7 @@ html[data-theme="dark"] .sheet-fade { background: var(--black-12); }
   height: 20px;
   border-radius: 4px;
   font-size: var(--text-13);
-  font-weight: 500;
+  font-weight: 400;
   line-height: 16px;
   white-space: nowrap;
 }
@@ -820,8 +841,10 @@ html[data-theme="dark"] .sheet-fade { background: var(--black-12); }
   height: auto;
   padding: 0;
   background: transparent;
-  color: var(--black);
+  color: var(--text-muted);
 }
+
+.sheet-who .avatar.mini { color: var(--text-muted); }
 
 .sheet-who .mini-pill { color: inherit; }
 .sheet-who:hover:not(.is-empty) .mini-pill,
@@ -1116,6 +1139,14 @@ html[data-theme="dark"] .sheet:focus-within .urgency-standard { background: var(
 html[data-theme="dark"] .sheet.is-open .urgency-standard,
 html[data-theme="dark"] .sheet.is-open .urgency-standard[aria-expanded="true"],
 html[data-theme="dark"] .sheet.is-open .sheet-line:hover .urgency-standard { background: var(--grey); }
+html[data-theme="dark"] .sheet-line .urgency,
+html[data-theme="dark"] .sheet-line:hover .urgency,
+html[data-theme="dark"] .sheet:focus-within .urgency,
+html[data-theme="dark"] .sheet.is-open .urgency,
+html[data-theme="dark"] .sheet.is-open .sheet-line:hover .urgency,
+html[data-theme="dark"] .sheet-line .urgency[aria-expanded="true"] {
+  background: transparent;
+}
 
 html[data-theme="dark"] .sheet-type[data-type="Housekeeping"],
 html[data-theme="dark"] .sheet-type[data-type="Housekeeping"]:hover,
@@ -1468,7 +1499,7 @@ html[data-theme="dark"] .sheet-who.is-empty[aria-expanded="true"] .avatar.mini {
   background: var(--sidebar-grey);
   color: var(--black);
   font-size: var(--text-13);
-  font-weight: 500;
+  font-weight: 400;
   line-height: 16px;
 }
 
@@ -1619,7 +1650,7 @@ html[data-theme="dark"] .todo-side .side-photo-remove:hover {
 
 .side-type {
   font-size: var(--text-13);
-  font-weight: 500;
+  font-weight: 400;
 }
 
 .side-field > span {
@@ -1650,7 +1681,7 @@ html[data-theme="dark"] .todo-side .side-photo-remove:hover {
   height: 20px;
   padding: var(--space-2) var(--space-4);
   font-size: var(--text-13);
-  font-weight: 500;
+  font-weight: 400;
   line-height: 16px;
 }
 
@@ -1815,11 +1846,14 @@ html[data-theme="dark"] .todo-side .side-photo-remove:hover {
   .todo-side .comment { transition: none; }
 }
 
-@container sheet-filters (max-width: 720px) {
-  .filter-row { grid-template-columns: minmax(0, 1fr) auto; }
-  .filter-row .search { grid-column: 1; grid-row: 1; width: 100%; }
-  .filter-row > .drop { grid-column: 2; grid-row: 1; }
-  .filter-chips { grid-column: 1 / -1; grid-row: 2; margin-top: 0; }
+/* The filter stays on the search. A trailing control, such as the time range, shares that line until the row cannot hold it. */
+@container sheet-filters (max-width: 500px) {
+  .sheet-page .filter-row { grid-template-columns: 281px auto minmax(0, 1fr); }
+  .sheet-page .filter-row > .range {
+    grid-column: 1;
+    grid-row: 2;
+    justify-self: start;
+  }
 }
 
 @container sheet-lines (max-width: 800px) {
@@ -1870,7 +1904,7 @@ html[data-theme="dark"][data-dept-chip="dot"] .sheet-line:hover .sheet-type[data
 html[data-dept-chip="dot"] .sheet:focus-within .sheet-type[data-type],
 html[data-theme="dark"][data-dept-chip="dot"] .sheet:focus-within .sheet-type[data-type] {
   background: var(--white);
-  color: var(--black);
+  color: var(--text-muted);
   box-shadow: 0 0 0 1px var(--black-12);
 }
 /* One step past the row hover. Light row hover is --sidebar-grey, so --grey.

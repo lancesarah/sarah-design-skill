@@ -4,13 +4,14 @@ Run the rows this change could break. A row that does not match sends you back t
 
 ## Any change
 
-- [ ] Colors, type sizes, spacing, radii, shadows, and durations are tokens from `css/tokens.css`. A component uses a role or an alias. No second red, and no new hex. See [foundations.md](foundations.md).
+- [ ] Colors, type sizes, spacing, radii, shadows, and durations are tokens from `catalog/tokens.css`. A component uses a role or an alias. No second red, and no new hex. See [foundations.md](foundations.md).
 - [ ] Every new section has the empty state this product already uses for that kind of thing, or a note that the empty state is undecided. See [patterns.md](patterns.md).
 - [ ] Status copy matches the record. Open, In progress, and Completed say what the record is now.
 - [ ] Hover and selected share one step from the surface they sit on. A selected control does not take a second step under the pointer. Dark mode lightens that step. See [foundations.md](foundations.md).
 - [ ] A button changes its fill only. Primary goes to `--action-hover`. Secondary takes one step. Danger uses the 88% mix. A filter chip, an urgency, and a department fill stay. See [foundations.md](foundations.md).
 - [ ] A tooltip is the top layer. It paints above the page, the table, and the sidebar. A click does not hide it. A menu, the filter row, and the detail panel use the stack in [foundations.md](foundations.md). A new overlay does not invent a z-index.
 - [ ] The edit stayed on the control the user pointed at. Neighbors are unchanged. See [guard-rails.md](guard-rails.md).
+- [ ] Related things are grouped, and the gap inside a group is smaller than the gap between groups. A label the content does not need is absent. See Spacing a screen in [patterns.md](patterns.md). The lesson card’s measurements apply only to a lesson card.
 - [ ] Item spacing and section spacing were not swapped. A hairline stays 1px, and the edges of that box match. See [guard-rails.md](guard-rails.md).
 - [ ] The page still works at the viewport the gallery and notes pages already support.
 

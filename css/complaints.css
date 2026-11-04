@@ -31,8 +31,12 @@
   text-overflow: ellipsis;
 }
 
+.complaints-page .sheet-copy {
+  gap: var(--space-2);
+}
+
 .complaints-page .sheet-copy .side-field {
-  font-weight: 500;
+  font-weight: 400;
 }
 
 .complaints-page .sheet-line .sheet-guest {

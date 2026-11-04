@@ -1,11 +1,11 @@
 # Components
 
-The gallery in `index.html` is the component catalog. Reuse markup and classes from `css/gallery.css` before writing a new pattern.
+The gallery in `catalog/index.html` is the component catalog. Reuse markup and classes from `catalog/gallery.css` before writing a new pattern. The table specimen also uses `catalog/todos-alt.css`.
 
 When adding a component:
 
 1. Find the closest gallery section and copy its structure.
-2. Style with tokens from `css/tokens.css` only. Use the role or the alias, not a raw hue.
+2. Style with tokens from `catalog/tokens.css` only. Use the role or the alias, not a raw hue.
 3. Put icons in the page's SVG sprite and reference them with `<use>`.
 4. Add the new section to the gallery index if it is a shared component.
 
@@ -66,8 +66,8 @@ Color, type, and spacing are gallery specimens. They are not components. The hea
 
 - When: an urgency is named.
 - When not: a department, a status, or a filter chip.
-- Default: `.urgency`. Urgent includes the warning icon. High, Standard, and Low are that chip with the label only.
-- States: the chip keeps its color. Standard stays `--sidebar-grey`, and steps once on a hovered table row. The box is in Naming a person or an urgency in [patterns.md](patterns.md).
+- Default: `.urgency`. Urgent includes the warning icon. High, Standard, and Low are the label only. A table cell and a menu show the colored word with no pill. A filter chip keeps the filled box.
+- States: the word keeps its color. Standard’s word is `--black-50`. The filled chip, where it remains, is in Naming a person or an urgency in [patterns.md](patterns.md).
 
 ## Status
 
@@ -95,7 +95,7 @@ Color, type, and spacing are gallery specimens. They are not components. The hea
 - When: a list is searched.
 - When not: the page header. Search is not in the header.
 - Default: the gallery search.
-- States: 281px wide, 38px tall, `--sidebar-grey`, the list’s own placeholder. Hover and focus draw a 1px ring: `--black-25` in light mode, `--line` in dark mode. Text in the field is `--black`. The clear control stays while there is text.
+- States: 281px wide, 38px tall, `--sidebar-grey`, the list’s own placeholder. Hover and focus draw a 1px ring: `--black-25` in light mode, `--line` in dark mode. Text in the field is `--black`. The clear control stays while there is text. On a sheet the filter trigger sits on this field. The field does not grow to fill the row.
 
 ## Field
 
@@ -153,6 +153,15 @@ Color, type, and spacing are gallery specimens. They are not components. The hea
 - Default: `.segmented`, with one segment selected.
 - States: selected is `--white` with `--stroke` and `--black` text, and it does not take the unselected hover. Unselected hover is `--grey` and the label stays `--black-50`.
 
+## Lesson card
+
+- When: a training step that opens over the product, such as Lance Academy.
+- When not: a delete confirmation, a menu, or the body of a page.
+- Default: the card in [patterns.md](patterns.md), Lesson card.
+- States: open over the page. Continue is the only action. Close dismisses it.
+
+The title is `--text-24`. Progress is a `--space-2` bar on the bottom edge of the image. The step count shares the title’s line and is centered on the title, on the right. The space above the title is the card padding plus `--space-12`. The title group, the requirement, and the columns sit `--space-25` apart. A column title and the lines under it stay one block. Continue spans the content width at the bottom, stays inside the card padding, and is 40px tall. A button that does not span the bottom of a popup stays 28px. The close control is the only dismiss.
+
 ## Sidebar
 
 - When: every product page. It is the left nav.
@@ -160,7 +169,7 @@ Color, type, and spacing are gallery specimens. They are not components. The hea
 - Default: expanded, with the current page selected.
 - States: expanded and collapsed. Selected, unselected, hover, the grip, and the pin are measured below. The profile card is not settled.
 
-The sidebar is one component. `notes.html` (`aside.side`) is the markup. `css/gallery.css` (`.side` and its children) is the styling. Every product page uses that pair.
+The sidebar is one component. `catalog/notes.html` (`aside.side`) is the markup. `catalog/gallery.css` (`.side` and its children) is the styling. Every product page uses that pair.
 
 - Do not restyle the sidebar in a page stylesheet. Width, padding, search, icons, hover, selected row, tooltips, scroll fade, scrollbar, collapse, and the account row are part of the component. The scroll fade is a small blur on the edge that still has more content. That thin scrollbar is the default scrollbar. The thumb is `--black-25`, and the track matches the surface behind it. A short horizontal strip, such as the department tabs, does not use the system bar. It uses the department-bar thumb in [patterns.md](patterns.md).
 - A page may change link labels, `href`s, and which row has `aria-current="page"`. It may not change structure, spacing, or color.
@@ -184,7 +193,7 @@ A comment is the gallery comment. The row is at least 49px. The photo is 21px. T
 
 - When: records line up in columns, with a filter row and a task row.
 - When not: a note list. That is the note card.
-- Default: the gallery section `#table`, as on `todos.html` (`.sheet-page`).
+- Default: the gallery section `#table` in `catalog/index.html` (`.sheet-page`). Styling is in `catalog/todos-alt.css`.
 - States: the frame, the column widths, and the count. A row’s states are the task row block. The filter’s states are the filter row block.
 
 A new table copies that section. It does not invent a second row, chip, or filter.
@@ -193,4 +202,4 @@ Under the filter row, the columns are Status, Room, To-do, Urgency, Type, Assign
 
 A column is at least as wide as its title with equal padding on the left and the right, and at least as wide as the value it is showing. That width is the minimum. Dragging the line at the right of a header stops there, and so do the arrow keys. The To-do column gives up the space. Double-click the line to return that column to its usual width. The width stays on this page. The columns resize with the pane. The table scrolls sideways when those minimums do not fit. A cell does not paint on top of the next column. The title, the note under it, and the column header start on the same line. The frame ends at the last row and keeps its rounded corners. It scrolls only when the rows pass the space above the count. Under the frame, at the left, the count is `--text-12` `--text-muted` and reads Showing N of M.
 
-Notes-specific layout stays in `css/notes.css`. Do not fold one-off note chrome into the gallery unless it is reused.
+Screen-only note layout is not in this catalog. Do not fold one-off note chrome into the gallery unless it is reused.

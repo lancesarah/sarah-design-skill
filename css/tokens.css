@@ -91,6 +91,7 @@
   --text-14: 14px;
   --text-16: 16px;
   --text-20: 20px;
+  --text-24: 24px;
 
   /* Polish. Product pages apply these. Gallery specimens keep their measured boxes. */
   --font-smoothing: antialiased;

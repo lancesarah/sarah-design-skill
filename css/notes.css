@@ -441,6 +441,8 @@ html[data-theme="dark"] .brief-list button[aria-selected="true"] { background: v
   font-size: 14px;
 }
 
+.brief-empty { padding-left: var(--space-20); }
+
 .brief-body { margin: 0; max-width: 62ch; }
 
 .brief-replies {
@@ -1217,7 +1219,7 @@ html[data-theme="dark"] .notes-grid .cell-task[aria-pressed="true"] { background
   background: var(--tag-bg);
   color: var(--tag-text);
   font-size: var(--text-13);
-  font-weight: 500;
+  font-weight: 400;
   line-height: 16px;
 }
 

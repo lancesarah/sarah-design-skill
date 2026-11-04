@@ -2,6 +2,18 @@
 
 Corrections that came back more than once. Follow them with the component spec. They do not restyle a component the gallery already defines.
 
+## A lesson card
+
+A lesson card title is `--text-24`. It is larger than a row title or a side title, which stay `--text-20`.
+
+Progress is a bar on the bottom edge of the image, the full width of the card. The step count shares the title’s line and is centered on the title, on the right. Do not add a brand or product name beside it. The card title already names the lesson. The space above the title is greater than the card’s other padding. Do not pull the title up toward the image.
+
+The title group, the requirement, and the columns sit `--space-25` apart. The title and its subtitle stay `--space-4`.
+
+Continue is the only action. It spans the content width and sits at the bottom, inside the card padding. It keeps the button radius. It does not meet the card edge. A full-width action at the bottom of a popup is 40px tall. Every other button stays 28px. A close control in the corner is the dismiss. A second dismiss, such as Not now, does not sit beside Continue.
+
+Forced by: make the title bigger; turn the step count into a progress bar on the image edge and move “1 of 3” to the right, aligned with the section name; make Continue span the width, because Not now and the corner close are the same dismiss. Then, Continue still has margin. It sits in the bottom the way an inset button does, not along the card edge.
+
 ## Picking a person
 
 Picking a person is a dropdown of people who already exist. Adding a person is Settings, opened from the account gear. The name is typed there. A schedule, a to-do, and every other assignment use that menu.
@@ -48,9 +60,11 @@ Forced by: "right clicking the note card on the left should open the same option
 
 Item spacing and section spacing are separate. Changing one leaves the other alone.
 
+Proximity groups things that belong together. A title and its subtitle are one group. A section title and the content under it are one block. The gap inside a group stays smaller than the gap between groups. Expanding the space between sections leaves the gap inside a block alone. On the lesson card those gaps are `--space-4` and `--space-25`. Another screen keeps the gap its own component already uses.
+
 A divider spans the full width of its section. It lines up with the divider on the rest of the page. Do not inset it to match a new section gap.
 
-Forced by: "increase the spacing just between sections not between icons," and "the divider line should still match with the line across the page."
+Forced by: "increase the spacing just between sections not between icons," and "the divider line should still match with the line across the page," and "proximity groups things together and you should group like title and subtitle together," and "since the title and the content is one block, their internal spacing shouldn't change, only the spacing between sections."
 
 ## One hairline
 

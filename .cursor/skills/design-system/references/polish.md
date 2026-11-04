@@ -1,8 +1,8 @@
 # Polish
 
-Product pages read these values from `css/tokens.css`. Notes is the reference. The gallery keeps the measured sizes in `css/gallery.css`.
+Product pages read these values from `catalog/tokens.css`. `catalog/notes.html` is the reference. The gallery keeps the measured sizes in `catalog/gallery.css`.
 
-Express every change in the styling system the project already uses. This repo is plain CSS, `css/tokens.css`, and `css/gallery.css`. Do not add Tailwind, a motion library, or a second shadow recipe here. A project that already has Tailwind or a motion library keeps that system.
+Express every change in the styling system the project already uses. This product is plain CSS: `catalog/tokens.css`, `catalog/gallery.css`, and `catalog/todos-alt.css` for the table. Do not add Tailwind, a motion library, or a second shadow recipe to this product. A project that already has Tailwind or a motion library keeps that system and takes its values from the catalog.
 
 ## Motion
 

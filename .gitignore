@@ -1,2 +1,6 @@
 .vercel
 .eval-runs
+node_modules
+dist
+.next
+*.tsbuildinfo

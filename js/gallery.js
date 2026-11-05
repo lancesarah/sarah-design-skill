@@ -133,6 +133,120 @@ for (const group of document.querySelectorAll("[data-tabs]")) {
   });
 }
 
+/* A sliding fill for segmented controls, tabs, and paired buttons.
+   The edge facing the new option leads. Keyboard moves snap. */
+const mountSlide = (track, selector) => {
+  if (!track || track.querySelector(":scope > .slide-pill")) return;
+  const pill = document.createElement("span");
+  pill.className = "slide-pill";
+  pill.setAttribute("aria-hidden", "true");
+  track.prepend(pill);
+  track.classList.add("has-slide");
+  const items = () => [...track.querySelectorAll(`:scope > ${selector}`)];
+  const chosen = () => items().find((el) => el.getAttribute("aria-selected") === "true" || el.getAttribute("aria-pressed") === "true");
+  let ready = false;
+  const place = (animate) => {
+    const btn = chosen();
+    if (!btn || !btn.offsetWidth) {
+      pill.style.opacity = "0";
+      return;
+    }
+    const x = btn.offsetLeft;
+    const w = btn.offsetWidth;
+    const prev = parseFloat(pill.style.left) || 0;
+    const snap = !ready || !animate || document.documentElement.classList.contains("is-keys") || matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!snap && x !== prev) pill.dataset.dir = x > prev ? "right" : "left";
+    if (snap) pill.style.transition = "none";
+    pill.style.opacity = "1";
+    pill.style.top = `${btn.offsetTop}px`;
+    pill.style.height = `${btn.offsetHeight}px`;
+    pill.style.left = `${x}px`;
+    pill.style.right = `${track.clientWidth - x - w}px`;
+    if (snap) {
+      ready = true;
+      void pill.offsetWidth;
+      pill.style.transition = "";
+    }
+  };
+  const ro = new ResizeObserver(() => place(false));
+  ro.observe(track);
+  for (const el of items()) ro.observe(el);
+  const mo = new MutationObserver(() => place(true));
+  for (const el of items()) mo.observe(el, { attributes: true, attributeFilter: ["aria-selected", "aria-pressed"] });
+  place(false);
+
+  let press = null;
+  let dragged = false;
+  const at = (x) => {
+    let best = null;
+    let dist = Infinity;
+    for (const el of items()) {
+      if (el.disabled) continue;
+      const r = el.getBoundingClientRect();
+      const d = x < r.left ? r.left - x : x > r.right ? x - r.right : 0;
+      if (d < dist) {
+        dist = d;
+        best = el;
+      }
+    }
+    return best;
+  };
+  track.addEventListener("pointerdown", (event) => {
+    if (event.button !== 0) return;
+    const opt = event.target.closest(selector);
+    if (!opt || !track.contains(opt)) return;
+    press = { id: event.pointerId, x: event.clientX };
+    dragged = false;
+    track.setAttribute("data-pressed", "");
+  });
+  track.addEventListener("pointermove", (event) => {
+    if (!press || press.id !== event.pointerId) return;
+    if (Math.abs(event.clientX - press.x) < 4) return;
+    dragged = true;
+    const opt = at(event.clientX);
+    if (!opt) return;
+    if (opt.getAttribute("aria-selected") === "true" || opt.getAttribute("aria-pressed") === "true") return;
+    opt.click();
+  });
+  const endPress = (event) => {
+    if (!press || event.pointerId !== press.id) return;
+    press = null;
+    track.removeAttribute("data-pressed");
+  };
+  track.addEventListener("pointerup", endPress);
+  track.addEventListener("pointercancel", endPress);
+  track.addEventListener("click", (event) => {
+    if (!dragged) return;
+    dragged = false;
+    event.stopPropagation();
+    event.preventDefault();
+  }, true);
+};
+
+for (const group of document.querySelectorAll(".segmented")) mountSlide(group, ".segment");
+for (const group of document.querySelectorAll(".tabs")) {
+  if (group.querySelector(":scope > .tab")) mountSlide(group, ".tab");
+}
+for (const bar of document.querySelectorAll(".dev-switch")) {
+  const kids = [...bar.children];
+  let group = [];
+  const flush = () => {
+    if (group.length > 1) {
+      const wrap = document.createElement("span");
+      wrap.className = "slide-group";
+      group[0].before(wrap);
+      for (const button of group) wrap.append(button);
+      mountSlide(wrap, "button");
+    }
+    group = [];
+  };
+  for (const el of kids) {
+    if (el.matches("button")) group.push(el);
+    else flush();
+  }
+  flush();
+}
+
 const NAV_SECTIONS = {
   home: "Home",
   messages: "Messages",
@@ -532,25 +646,6 @@ const applyTheme = (dark) => {
 applyTheme(themeOn());
 for (const toggle of themeSwitches) {
   toggle.addEventListener("click", () => applyTheme(!themeOn()));
-}
-
-const chipButtons = [...document.querySelectorAll(".dev-switch [data-dept-chip]")];
-const applyDeptChip = (mode) => {
-  const dot = mode === "dot";
-  if (dot) document.documentElement.dataset.deptChip = "dot";
-  else delete document.documentElement.dataset.deptChip;
-  for (const button of chipButtons) {
-    button.setAttribute("aria-pressed", button.dataset.deptChip === (dot ? "dot" : "fill") ? "true" : "false");
-  }
-  try { localStorage.setItem("dept-chip", dot ? "dot" : "fill"); }
-  catch { /* storage can be blocked; the attribute still switches the page */ }
-};
-let savedChip = "fill";
-try { savedChip = localStorage.getItem("dept-chip") === "dot" ? "dot" : "fill"; }
-catch { /* keep the fill chip */ }
-applyDeptChip(savedChip);
-for (const button of chipButtons) {
-  button.addEventListener("click", () => applyDeptChip(button.dataset.deptChip));
 }
 
 const sheetLayoutButtons = [...document.querySelectorAll(".dev-switch [data-sheet-layout]")];

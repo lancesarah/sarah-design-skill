@@ -44,6 +44,14 @@ An icon control beside a title is centered on the title. Do not top-align the co
 
 Forced by: "optically it doesnt look aligned" and "even though 2/8 is a pill, it should still be aligned. alignment is the most important thing."
 
+## Chip and its label
+
+The label sits in the chip. The word, the icon, and the chevron share the chip’s center. This is the correct formatting for a table chip and for the same chip in the side panel.
+
+A table urgency does not keep the old sheet offset, `top: 2px` on `.sheet-line .urgency`. That offset was for the bare word. Inside the chip it drops the word onto the bottom edge, so the chip box and the label no longer match. The chip’s own `top` stays `0`, and the label’s `align-self` stays `center`.
+
+Forced by: the High chip, “the chip is misaligned with the text.”
+
 ## One icon construction
 
 A new icon follows the Internal notes construction in [polish.md](polish.md). That includes menu icons. Copy a symbol that already exists in the sprite. Icons in one menu share that construction. Do not trace one glyph from a screenshot and hand-draw the next with different caps, joins, or a different box.
@@ -105,6 +113,12 @@ The account control is the settings gear. Do not put a three-dot menu there.
 On resize, follow Window resize in [patterns.md](patterns.md). Do not stack the nav on the page. A click to expand either panel overrides its width limit and stays open.
 
 Forced by: "it should still have a thin bar," "make them center," "the horizontal scroll bar flashes," and "this should be the settings icon."
+
+## Dropdown width
+
+A menu of labels hugs its longest label, then leaves 16px to the edge. Less than that feels cramped. A fixed width leaves dead space after a short label. Short labels use `--menu-min` (132px). Past `--menu-max` (240px) the label truncates, and the icon stays. The check sits at the end of the row. It does not add a second gap. Every option label in the menu is `--text-14`, the same size as the category row. The check and the chevron share the trigger's inset, 6px from the row edge, and the chevron is `--black-50`. Delete is last, in red, with a full-width hairline above it. The calendar keeps its own width.
+
+Forced by: hug the longest label, then 16px to the edge. A minimum for short labels. A maximum, then truncate.
 
 ## Inputs and menus
 

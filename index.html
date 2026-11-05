@@ -6,7 +6,6 @@
   <script>
     try {
       if (localStorage.getItem("theme") === "dark") document.documentElement.dataset.theme = "dark";
-      if (localStorage.getItem("dept-chip") === "dot") document.documentElement.dataset.deptChip = "dot";
       if (localStorage.getItem("font") === "switzer") document.documentElement.dataset.font = "switzer";
     } catch (error) {}
   </script>
@@ -15,8 +14,8 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&display=swap">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital@0;1&display=swap">
   <link rel="stylesheet" href="css/tokens.css?v=20261031e">
-  <link rel="stylesheet" href="css/gallery.css?v=20261102d">
-  <link rel="stylesheet" href="css/todos-alt.css?v=20261102q">
+  <link rel="stylesheet" href="css/gallery.css?v=20261103a">
+  <link rel="stylesheet" href="css/todos-alt.css?v=20261103a">
 </head>
 <body>
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -127,18 +126,18 @@
           <div class="swatch"><i style="background: var(--action)"></i><b>--action</b><code>#3593dd</code><span>Primary button, active send, filter chip, switch track, in-progress status</span></div>
           <div class="swatch"><i style="background: var(--action-hover)"></i><b>--action-hover</b><code>#1f6ca9</code><span>Primary button hover</span></div>
           <div class="swatch"><i style="background: var(--destructive)"></i><b>--destructive</b><code>#e34144</code><span>Delete button, danger menu item</span></div>
-          <div class="swatch"><i style="background: var(--tag-text)"></i><b>--tag-text</b><code>#c09d00</code><span>Front desk tag text</span></div>
+          <div class="swatch"><i style="background: var(--tag-text)"></i><b>--tag-text</b><code>#f5c400</code><span>Front desk tag text</span></div>
           <div class="swatch"><i style="background: var(--tag-bg)"></i><b>--tag-bg</b><code>rgb(248 204 6 / 15%)</code><span>Front desk tag fill</span></div>
-          <div class="swatch"><i style="background: var(--dept-housekeeping)"></i><b>--dept-housekeeping</b><code>#2f8f4e</code><span>Housekeeping tag text</span></div>
-          <div class="swatch"><i style="background: var(--dept-housekeeping-bg)"></i><b>--dept-housekeeping-bg</b><code>rgb(47 143 78 / 15%)</code><span>Housekeeping tag fill</span></div>
-          <div class="swatch"><i style="background: var(--dept-maintenance)"></i><b>--dept-maintenance</b><code>#c46a2a</code><span>Maintenance tag text</span></div>
-          <div class="swatch"><i style="background: var(--dept-maintenance-bg)"></i><b>--dept-maintenance-bg</b><code>rgb(196 106 42 / 15%)</code><span>Maintenance tag fill</span></div>
-          <div class="swatch"><i style="background: var(--dept-food)"></i><b>--dept-food</b><code>#c4476a</code><span>Food &amp; Beverage tag text</span></div>
-          <div class="swatch"><i style="background: var(--dept-food-bg)"></i><b>--dept-food-bg</b><code>rgb(196 71 106 / 15%)</code><span>Food &amp; Beverage tag fill</span></div>
-          <div class="swatch"><i style="background: var(--dept-sales)"></i><b>--dept-sales</b><code>#1d7a94</code><span>Sales tag text</span></div>
-          <div class="swatch"><i style="background: var(--dept-sales-bg)"></i><b>--dept-sales-bg</b><code>rgb(29 122 148 / 15%)</code><span>Sales tag fill</span></div>
-          <div class="swatch"><i style="background: var(--dept-management)"></i><b>--dept-management</b><code>#7a4ea3</code><span>Management tag text</span></div>
-          <div class="swatch"><i style="background: var(--dept-management-bg)"></i><b>--dept-management-bg</b><code>rgb(122 78 163 / 15%)</code><span>Management tag fill</span></div>
+          <div class="swatch"><i style="background: var(--dept-housekeeping)"></i><b>--dept-housekeeping</b><code>#4ade80</code><span>Housekeeping tag text</span></div>
+          <div class="swatch"><i style="background: var(--dept-housekeeping-bg)"></i><b>--dept-housekeeping-bg</b><code>rgb(74 222 128 / 15%)</code><span>Housekeeping tag fill</span></div>
+          <div class="swatch"><i style="background: var(--dept-maintenance)"></i><b>--dept-maintenance</b><code>#ff8f1f</code><span>Maintenance tag text</span></div>
+          <div class="swatch"><i style="background: var(--dept-maintenance-bg)"></i><b>--dept-maintenance-bg</b><code>rgb(255 143 31 / 15%)</code><span>Maintenance tag fill</span></div>
+          <div class="swatch"><i style="background: var(--dept-food)"></i><b>--dept-food</b><code>#ff4d9a</code><span>Food &amp; Beverage tag text</span></div>
+          <div class="swatch"><i style="background: var(--dept-food-bg)"></i><b>--dept-food-bg</b><code>rgb(255 77 154 / 15%)</code><span>Food &amp; Beverage tag fill</span></div>
+          <div class="swatch"><i style="background: var(--dept-sales)"></i><b>--dept-sales</b><code>#2ad4ea</code><span>Sales tag text</span></div>
+          <div class="swatch"><i style="background: var(--dept-sales-bg)"></i><b>--dept-sales-bg</b><code>rgb(42 212 234 / 15%)</code><span>Sales tag fill</span></div>
+          <div class="swatch"><i style="background: var(--dept-management)"></i><b>--dept-management</b><code>#d08bff</code><span>Management tag text</span></div>
+          <div class="swatch"><i style="background: var(--dept-management-bg)"></i><b>--dept-management-bg</b><code>rgb(208 139 255 / 15%)</code><span>Management tag fill</span></div>
           <div class="swatch"><i style="background: var(--urgency-urgent)"></i><b>--urgency-urgent</b><code>#f76164</code><span>Urgent label, unread count</span></div>
           <div class="swatch"><i style="background: var(--urgency-urgent-bg)"></i><b>--urgency-urgent-bg</b><code>rgb(247 97 100 / 5%)</code><span>Urgent chip fill</span></div>
           <div class="swatch"><i style="background: var(--urgency-high)"></i><b>--urgency-high</b><code>#ff9300</code><span>High urgency label, open status</span></div>
@@ -784,6 +783,6 @@
     </div>
     </div>
   </main>
-  <script src="js/gallery.js?v=20261102b"></script>
+  <script src="js/gallery.js?v=20261103a"></script>
 </body>
 </html>

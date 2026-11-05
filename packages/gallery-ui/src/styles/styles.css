@@ -1,0 +1,718 @@
+/* Button, segment, and slide-pill rules from css/gallery.css.
+   Each control root carries .sds so these selectors do not restyle the host page.
+   Property values, tokens, and timings match the gallery. */
+
+.sds,
+.sds *,
+.sds *::before,
+.sds *::after {
+  box-sizing: border-box;
+}
+
+:where(button.sds) {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  border-radius: 0;
+  appearance: none;
+  cursor: pointer;
+}
+
+button.sds:active:not(:disabled) {
+  scale: 0.98;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  button.sds {
+    transition: none;
+  }
+  button.sds:active:not(:disabled) {
+    scale: 1;
+  }
+}
+
+.sds:focus-visible {
+  outline: 1px solid var(--black);
+  outline-offset: 2px;
+}
+
+.sds.text-icon.btn-delete-line:is(:hover, .is-hover) {
+  background: var(--sidebar-grey);
+  color: var(--destructive);
+  box-shadow: var(--stroke);
+}
+
+.sds.btn,
+.sds.segmented .segment {
+  transition: background-color 120ms ease, color 120ms ease, box-shadow 120ms ease, scale 160ms var(--ease-out);
+}
+
+.sds .i {
+  display: block;
+  flex: none;
+  scale: 0.95;
+}
+
+/* Gallery buttons inherit the 14px page. Set it on the control so a host body cannot change the measured size. */
+.sds.btn,
+.sds.segmented {
+  font-family: var(--font);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.sds.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 28px;
+  padding: 5px 6px;
+  border-radius: 6px;
+  background: var(--action);
+  color: var(--white);
+}
+
+.sds.btn:hover:not(:disabled),
+.sds.btn.is-hover:not(:disabled) {
+  background: var(--action-hover);
+}
+
+.sds.btn-icon {
+  width: 28px;
+  padding: 7px;
+}
+
+.sds.btn-secondary {
+  background: var(--white);
+  color: var(--black);
+  box-shadow: var(--stroke);
+}
+
+.sds.btn-secondary:hover:not(:disabled),
+.sds.btn-secondary.is-hover:not(:disabled) {
+  background: var(--sidebar-grey);
+}
+
+.sds.btn:has(svg):not(.btn-icon) {
+  padding: 5px 8px 5px 6px;
+}
+
+.sds.btn-danger {
+  background: var(--destructive);
+  color: var(--white);
+  box-shadow: none;
+}
+
+.sds.btn-danger:hover:not(:disabled),
+.sds.btn-danger.is-hover:not(:disabled) {
+  background: color-mix(in srgb, var(--destructive) 88%, black);
+}
+
+.sds.segmented {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  width: 225px;
+  height: 30px;
+  padding: 3px;
+  border-radius: 6px;
+  background: var(--sidebar-grey);
+}
+
+.sds.segmented .segment {
+  height: 24px;
+  padding: 3px 6px;
+  border-radius: 6px;
+  color: var(--black-50);
+  font: inherit;
+  background: none;
+  border: 0;
+  appearance: none;
+  cursor: pointer;
+}
+
+.sds.segmented .segment[aria-selected="true"] {
+  background: var(--white);
+  color: var(--black);
+  box-shadow: var(--stroke);
+}
+
+.sds.segmented .segment:hover,
+.sds.segmented .segment.is-hover {
+  background: var(--grey);
+  color: var(--black-50);
+}
+
+.sds.segmented .segment[aria-selected="true"]:hover,
+.sds.segmented .segment[aria-selected="true"].is-hover {
+  background: var(--white);
+  color: var(--black);
+}
+
+html[data-theme="dark"] .sds.segmented .segment[aria-selected="true"],
+html[data-theme="dark"] .sds.segmented .segment[aria-selected="true"]:hover,
+html[data-theme="dark"] .sds.segmented .segment[aria-selected="true"].is-hover {
+  background: var(--grey);
+}
+
+.sds.segmented {
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.sds.segmented::-webkit-scrollbar {
+  display: none;
+}
+
+.segment-track {
+  position: relative;
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  width: max-content;
+  min-width: 100%;
+}
+
+.sds.segmented .has-slide > .segment {
+  position: relative;
+  z-index: 1;
+}
+
+.sds.tabs-frame {
+  position: relative;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.sds.tabs-frame > .tabs-scroll {
+  position: relative;
+  z-index: 0;
+}
+
+.sds.tabs-scroll {
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--black-25) transparent;
+}
+
+.sds.tabs-scroll > .tabs {
+  width: max-content;
+  min-width: 100%;
+}
+
+.sds.segmented[data-overflow] {
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 var(--slide-fade-l, 0px), #000 calc(100% - var(--slide-fade-r, 0px)), transparent);
+  mask-image: linear-gradient(to right, transparent, #000 var(--slide-fade-l, 0px), #000 calc(100% - var(--slide-fade-r, 0px)), transparent);
+}
+
+.sds.segmented[data-ready] .segment,
+.sds.tabs-scroll[data-ready] .tab {
+  transition: color 120ms ease, background-color 120ms ease, box-shadow 120ms ease, width 200ms var(--ease-out);
+}
+
+.sds.tabs-scroll .tab .count {
+  animation: sds-count-in 200ms var(--ease-out) both;
+}
+
+@keyframes sds-count-in {
+  from {
+    opacity: 0;
+    transform: translateY(2px);
+    filter: blur(2px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+
+.sds.segmented .slide-pill {
+  position: absolute;
+  z-index: 0;
+  border-radius: 6px;
+  pointer-events: none;
+  opacity: 0;
+  background: var(--white);
+  box-shadow: var(--stroke);
+  transition: left 220ms var(--ease-out), right 160ms var(--ease-out), top 200ms var(--ease-out), height 200ms var(--ease-out), scale 160ms var(--ease-out);
+}
+
+.sds.segmented .slide-pill[data-dir="left"] {
+  transition-duration: 160ms, 220ms, 200ms, 200ms, 160ms;
+}
+
+.sds.segmented .has-slide[data-pressed] .slide-pill,
+.sds.tabs.has-slide[data-pressed] .slide-pill {
+  scale: 0.98;
+}
+
+html.is-keys .sds.segmented .slide-pill {
+  transition: none;
+}
+
+html[data-theme="dark"] .sds.segmented .slide-pill {
+  background: var(--grey);
+  box-shadow: none;
+}
+
+.sds.segmented.has-slide > .segment[aria-selected="true"],
+.sds.segmented.has-slide > .segment[aria-selected="true"]:hover,
+.sds.segmented.has-slide > .segment[aria-selected="true"].is-hover,
+html[data-theme="dark"] .sds.segmented.has-slide > .segment[aria-selected="true"],
+html[data-theme="dark"] .sds.segmented.has-slide > .segment[aria-selected="true"]:hover,
+html[data-theme="dark"] .sds.segmented.has-slide > .segment[aria-selected="true"].is-hover {
+  background: transparent;
+  box-shadow: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sds.segmented .slide-pill,
+  .sds.tabs .slide-pill {
+    transition: none;
+  }
+  .sds.segmented[data-ready] .segment,
+  .sds.tabs-scroll[data-ready] .tab,
+  .sds.tabs-scroll .tab .count {
+    animation: none;
+    transition: none;
+  }
+}
+
+html[data-theme="dark"] .sds.btn:not(.btn-secondary):not(.btn-danger) {
+  background: var(--action);
+  color: var(--button-fill);
+}
+
+html[data-theme="dark"] .sds.btn:not(.btn-secondary):not(.btn-danger):hover:not(:disabled),
+html[data-theme="dark"] .sds.btn:not(.btn-secondary):not(.btn-danger).is-hover:not(:disabled) {
+  background: var(--action-hover);
+  color: var(--button-fill);
+}
+
+html[data-theme="dark"] .sds.btn-secondary {
+  background: var(--white);
+  color: var(--black);
+  box-shadow: var(--stroke);
+}
+
+html[data-theme="dark"] .sds.btn-secondary:hover:not(:disabled),
+html[data-theme="dark"] .sds.btn-secondary.is-hover:not(:disabled) {
+  background: var(--grey);
+  color: var(--black);
+}
+
+html[data-theme="dark"] .sds.btn-danger,
+html[data-theme="dark"] .sds.btn-danger:hover,
+html[data-theme="dark"] .sds.btn-danger:active {
+  color: var(--button-fill);
+}
+
+button.sds:disabled {
+  cursor: default;
+}
+
+/* An open filter menu is taken out of flow. Keep room for the list and the submenu beside it. */
+.sds.filter-menu-host.is-open {
+  min-height: 340px;
+}
+
+.sds .menu-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The filled delete hover comes later and is equally specific. The outline delete stays an outline and only picks up the grey hover. */
+button.sds.text-icon.btn-delete-line:hover,
+button.sds.text-icon.btn-delete-line.is-hover {
+  background: var(--sidebar-grey);
+  color: var(--destructive);
+  box-shadow: var(--stroke);
+}
+
+/* The symbol list names the level. The word keeps its color. The pill fill stays off. */
+.sds.symbol-col .urgency {
+  background: transparent;
+  padding-inline: 0;
+}
+
+:where(.sds) .sheet-line:focus-visible {
+  outline: 1px solid var(--black);
+  outline-offset: -1px;
+}
+
+:where(.sds) .sheet-sort {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+:where(.sds) .title-sub {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+
+:where(.sds) .title-sub-titles {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  max-width: 100%;
+  height: 20px;
+  overflow: hidden;
+}
+
+:where(.sds) .title-sub-part {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  max-width: 100%;
+}
+
+:where(.sds) .title-sub-part:not(:last-child) { flex: none; }
+:where(.sds) .title-sub-part:last-child { flex: 0 1 auto; }
+
+:where(.sds) .title-sub-chip {
+  font-size: var(--text-14);
+  font-weight: 500;
+  line-height: 16px;
+}
+
+:where(.sds) .title-sub-field,
+:where(.sds) .title-sub-note {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  margin: 0;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  box-shadow: none;
+  outline: none;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+:where(.sds) .title-sub-field {
+  height: 20px;
+  padding: 2px 4px;
+  color: var(--black);
+  font-size: var(--text-14);
+  font-weight: 500;
+  line-height: 16px;
+}
+
+:where(.sds) .title-sub-note {
+  height: 16px;
+  padding: 0 0 0 4px;
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  font-weight: 400;
+  line-height: 16px;
+}
+
+:where(.sds) .title-sub-field::placeholder,
+:where(.sds) .title-sub-note::placeholder { color: var(--black-50); }
+
+/* An empty note stays out of the row until the pointer is on it. A written note stays. */
+:where(.sds) .title-sub:not(:has(.title-sub-chip:not(.is-empty))) .sheet-dot { color: var(--black-50); }
+
+:where(.sds) .sheet-line .title-sub-note.is-hint,
+:where(.sds) .sheet-line .title-sub-note::placeholder { color: transparent; }
+
+:where(.sds) .sheet-line:hover .title-sub-note.is-hint,
+:where(.sds) .sheet-line.is-hover .title-sub-note.is-hint,
+:where(.sds) .sheet-line:hover .title-sub-note:not(:focus)::placeholder,
+:where(.sds) .sheet-line.is-hover .title-sub-note:not(:focus)::placeholder { color: var(--black-50); }
+
+:where(.sds) .title-sub-field:focus,
+:where(.sds) .title-sub-note:focus {
+  align-self: flex-start;
+  width: max-content;
+  max-width: 100%;
+  field-sizing: content;
+  border-radius: 0;
+  box-shadow: none;
+  background-image: linear-gradient(var(--black-25), var(--black-25));
+  background-repeat: no-repeat;
+  background-position: left 4px bottom;
+  background-size: calc(100% - 4px) 1px;
+}
+
+:where(.sds) .title-sub-field:focus {
+  background-size: calc(100% - 8px) 1px;
+}
+
+/* Text columns size the track. The field stays inside the cell and does not widen it. */
+:where(.sds) .sheet-grid input,
+:where(.sds) .sheet-grid textarea {
+  min-width: 0;
+  max-width: 100%;
+  field-sizing: fixed;
+}
+
+/* Clip cell text so a long value cannot paint into the next column. The assignee chevron sits outside the circle, so that cell stays open. */
+:where(.sds) .sheet-cell-clip {
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+}
+/* A primary text column gives up the leftover space. Its field fills that width. */
+:where(.sds) .sheet-line > [data-text="primary"] .sheet-cell-clip {
+  flex: 1;
+  width: 100%;
+}
+:where(.sds) .sheet-cell-clip:has(.sheet-who),
+:where(.sds) .sheet-cell-clip:has(.sheet-type),
+:where(.sds) .sheet-cell-clip:has(.dept) {
+  overflow: visible;
+}
+
+/* Department trigger. Same hover as the table type chip: grey fill, chevron, and the open state keeps both. */
+button.sds.dept:hover,
+button.sds.dept[aria-expanded="true"] {
+  background: var(--grey);
+  color: var(--black);
+}
+html[data-theme="dark"] button.sds.dept:hover,
+html[data-theme="dark"] button.sds.dept[aria-expanded="true"] {
+  background: var(--black-12);
+  box-shadow: 0 0 0 1px var(--black-25);
+}
+button.sds.dept > .dept-chevron {
+  flex: none;
+  width: 0;
+  min-width: 0;
+  max-width: 0;
+  height: 10px;
+  margin-inline-start: 0;
+  overflow: hidden;
+  opacity: 0;
+  color: var(--black-50);
+  pointer-events: none;
+}
+button.sds.dept:hover > .dept-chevron,
+button.sds.dept[aria-expanded="true"] > .dept-chevron {
+  width: 10px;
+  min-width: 10px;
+  max-width: 10px;
+  margin-inline-start: var(--space-4);
+  opacity: 1;
+}
+button.sds.dept[aria-expanded="true"] > .dept-chevron {
+  transform: rotate(180deg);
+}
+
+button.sds.view-pick {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 22px;
+  padding: 2px 5px;
+  border-radius: 6px;
+  color: var(--black);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+}
+
+button.sds.view-pick .view-eye {
+  display: block;
+  flex: none;
+  margin-block: -1px;
+}
+
+button.sds.view-pick .meta-chevron {
+  display: block;
+  width: 10px;
+  height: 10px;
+  opacity: 0;
+}
+
+button.sds.view-pick:hover,
+button.sds.view-pick[aria-expanded="true"] {
+  background: var(--sidebar-grey);
+}
+
+button.sds.view-pick:hover .meta-chevron,
+button.sds.view-pick[aria-expanded="true"] .meta-chevron {
+  opacity: 1;
+}
+
+button.sds.view-pick[aria-expanded="true"] .meta-chevron {
+  transform: rotate(180deg);
+}
+
+.sds.view-menu {
+  min-width: 168px;
+  max-height: 280px;
+  overflow: auto;
+}
+
+.sds .menu-k {
+  margin: 0;
+  padding: 8px;
+  color: var(--black-50);
+  font-size: var(--text-12);
+  font-weight: 500;
+  line-height: 12px;
+}
+
+.sds .view-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  min-height: 30px;
+  padding: var(--space-8);
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+}
+
+.sds .view-row img.avatar {
+  object-fit: cover;
+  padding: 0;
+}
+
+.sds.activity-feed {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+  width: 100%;
+  max-width: 342px;
+  color: var(--black);
+}
+
+.sds.activity-feed .activity-head {
+  color: var(--black-50);
+  font-size: var(--text-12);
+  font-weight: 500;
+  line-height: normal;
+}
+
+.sds.activity-feed .activity-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-14);
+}
+
+.sds.activity-feed .comment-inner {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-10);
+}
+
+.sds.activity-feed .avatar.mini {
+  flex: none;
+  width: 21px;
+  height: 21px;
+  font-size: 9px;
+}
+
+.sds.activity-feed .person-copy {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: 2px;
+}
+
+.sds.activity-feed .mini-line {
+  height: auto;
+  font-size: var(--text-12);
+  font-weight: 500;
+  line-height: 16px;
+}
+
+.sds.activity-feed .mini-line time {
+  margin-left: 4px;
+  color: var(--black-50);
+  font-weight: 400;
+}
+
+.sds.activity-feed .person-copy p {
+  margin: 0;
+  color: var(--black);
+  font-size: var(--text-14);
+  font-weight: 400;
+  line-height: 18px;
+}
+
+.sds.activity-feed .side-log {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  min-width: 0;
+  color: var(--black);
+  font-size: var(--text-12);
+  font-weight: 400;
+  line-height: 16px;
+  /* A status that leads the list is the current event. */
+  opacity: 1;
+}
+
+/* Past status updates are the same black, at half strength.
+   Comments are not .side-log, so they stay fully opaque.
+   No class is toggled in script: position in the list decides it. */
+.sds.activity-feed .activity-list > .side-log:not(:first-child) {
+  opacity: 0.5;
+}
+
+.sds.activity-feed .side-log-text {
+  min-width: 0;
+}
+
+.sds.activity-feed .side-log .who {
+  font-weight: 500;
+}
+
+.sds.activity-feed .side-log time {
+  flex: none;
+  margin-left: auto;
+  color: var(--black);
+  font-size: var(--text-12);
+  font-weight: 400;
+  font-variant-numeric: var(--numeric);
+}
+
+/* Composer fill. The default messaging box keeps its gallery width. */
+.sds.msg.is-fill {
+  align-self: stretch;
+  width: 100%;
+  max-width: none;
+}
+
+:where(.sds) .sheet-row-actions {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  justify-self: end;
+  align-self: center;
+  z-index: 2;
+  width: max-content;
+  margin-inline-end: 12px;
+  pointer-events: auto;
+}

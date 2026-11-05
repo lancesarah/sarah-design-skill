@@ -110,6 +110,8 @@
   --gap-inline: var(--space-8);
   --radius-card: var(--radius-control);
   --elevation-menu: var(--shadow-menu);
+  --menu-min: 132px;
+  --menu-max: 240px;
   --motion-hover: 120ms;
   --motion-panel: 400ms;
   --motion-panel-out: 320ms;

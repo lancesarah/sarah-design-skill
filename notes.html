@@ -6,7 +6,6 @@
   <script>
     try {
       if (localStorage.getItem("theme") === "dark") document.documentElement.dataset.theme = "dark";
-      if (localStorage.getItem("dept-chip") === "dot") document.documentElement.dataset.deptChip = "dot";
       if (localStorage.getItem("font") === "switzer") document.documentElement.dataset.font = "switzer";
     } catch (error) {}
   </script>
@@ -14,8 +13,8 @@
   <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=switzer@400,500,600&display=swap">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&display=swap">
   <link rel="stylesheet" href="css/tokens.css?v=20261031e">
-  <link rel="stylesheet" href="css/gallery.css?v=20261102d">
-  <link rel="stylesheet" href="css/notes.css?v=20261102c">
+  <link rel="stylesheet" href="css/gallery.css?v=20261103a">
+  <link rel="stylesheet" href="css/notes.css?v=20261103a">
 </head>
 <body>
   <script>
@@ -414,9 +413,6 @@ Food and Bev 52.7/57.9</p>
     <span>Dev</span>
     <button type="button" data-view="top" aria-pressed="true">Top</button>
     <span class="dev-rule" aria-hidden="true"></span>
-    <button type="button" data-dept-chip="fill" aria-pressed="true">Color</button>
-    <button type="button" data-dept-chip="dot" aria-pressed="false">Stroke</button>
-    <span class="dev-rule" aria-hidden="true"></span>
     <button type="button" data-font="jakarta" aria-pressed="true">Jakarta</button>
     <button type="button" data-font="switzer" aria-pressed="false">Switzer</button>
   </div>
@@ -430,7 +426,7 @@ Food and Bev 52.7/57.9</p>
       </div>
     </div>
   </dialog>
-  <script src="js/gallery.js?v=20261102b"></script>
+  <script src="js/gallery.js?v=20261103a"></script>
   <script src="js/notes.js?v=20261031u"></script>
 </body>
 </html>

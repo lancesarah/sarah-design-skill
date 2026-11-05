@@ -19,20 +19,19 @@
   --text-muted: var(--black-50);
   --bg-surface: var(--white);
 
-  /* Department tags. Front desk keeps the original gold.
-     Each other department is its own text color on a 15% fill. */
-  --tag-text: #c09d00;
-  --tag-bg: rgb(248 204 6 / 15%);
-  --dept-housekeeping: #2f8f4e;
-  --dept-housekeeping-bg: rgb(47 143 78 / 15%);
-  --dept-maintenance: #c46a2a;
-  --dept-maintenance-bg: rgb(196 106 42 / 15%);
-  --dept-food: #c4476a;
-  --dept-food-bg: rgb(196 71 106 / 15%);
-  --dept-sales: #1d7a94;
-  --dept-sales-bg: rgb(29 122 148 / 15%);
-  --dept-management: #7a4ea3;
-  --dept-management-bg: rgb(122 78 163 / 15%);
+  /* Department tags. Each department is its own text color on a 15% fill. */
+  --tag-text: #ffc130;
+  --tag-bg: rgb(255 193 48 / 15%);
+  --dept-housekeeping: #009a30;
+  --dept-housekeeping-bg: rgb(0 154 48 / 15%);
+  --dept-maintenance: #ff6e1f;
+  --dept-maintenance-bg: rgb(255 110 31 / 15%);
+  --dept-food: #ec6081;
+  --dept-food-bg: rgb(236 96 129 / 15%);
+  --dept-sales: #1c3c97;
+  --dept-sales-bg: rgb(28 60 151 / 15%);
+  --dept-management: #aa36ae;
+  --dept-management-bg: rgb(170 54 174 / 15%);
 
   /* Urgency. Urgent also covers unread counts.
      High also covers the open status.
@@ -110,6 +109,8 @@
   --gap-inline: var(--space-8);
   --radius-card: var(--radius-control);
   --elevation-menu: var(--shadow-menu);
+  --menu-min: 132px;
+  --menu-max: 240px;
   --motion-hover: 120ms;
   --motion-panel: 400ms;
   --motion-panel-out: 320ms;

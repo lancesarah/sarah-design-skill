@@ -62,6 +62,67 @@ body .side-search,
 body .side-fold { max-height: 48px; }
 body .side-scroll > .side-group { max-height: 640px; }
 
+/* The open sizes above are unlayered, so the collapsed rail has to be restated here. */
+body.is-side-collapsed .side,
+body.is-side-settling .side {
+  flex: 0 0 calc(30px + var(--space-12) * 2);
+  width: calc(30px + var(--space-12) * 2);
+  min-width: calc(30px + var(--space-12) * 2);
+  max-width: calc(30px + var(--space-12) * 2);
+  gap: 0;
+  padding: var(--space-16) 0 var(--space-16);
+}
+body.is-side-collapsed .side-brand,
+body.is-side-settling .side-brand,
+body.is-side-collapsed .side-search,
+body.is-side-settling .side-search,
+body.is-side-collapsed .side-fold,
+body.is-side-settling .side-fold {
+  max-width: 0;
+  max-height: 0;
+  margin: 0;
+  padding: 0;
+  opacity: 0;
+  overflow: hidden;
+  pointer-events: none;
+  border-width: 0;
+}
+body.is-side-collapsed .side-scroll > .side-group ~ .side-group,
+body.is-side-settling .side-scroll > .side-group ~ .side-group {
+  max-height: 0;
+  margin: 0;
+  padding: 0;
+  opacity: 0;
+  overflow: hidden;
+  pointer-events: none;
+  border-width: 0;
+}
+body.is-side-collapsed .side-user .person-copy,
+body.is-side-settling .side-user .person-copy {
+  display: none;
+  max-height: 0;
+  opacity: 0;
+}
+body.is-side-collapsed .side .theme-switch-label,
+body.is-side-settling .side .theme-switch-label {
+  display: none;
+  max-width: 0;
+  opacity: 0;
+}
+body.is-side-collapsed .side-user,
+body.is-side-settling .side-user {
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-12);
+  width: auto;
+  height: auto;
+  margin: auto 0 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
 .notes-page {
   scrollbar-color: var(--black-25) var(--white);
   scrollbar-width: thin;
@@ -495,6 +556,7 @@ html[data-theme="dark"] .brief-list button[aria-selected="true"] { background: v
 .note-line .dept {
   flex: none;
   margin-block: -2px;
+  pointer-events: none;
 }
 
 .notes-page[data-view="top"] {
@@ -512,6 +574,7 @@ html[data-theme="dark"] .brief-list button[aria-selected="true"] { background: v
 .notes-page[data-view="top"] .stage { display: contents; }
 
 .notes-page[data-view="top"] .tabs-fade { grid-column: 1 / -1; grid-row: 2; }
+.notes-page[data-view="top"] .tabs-frame { grid-column: 1; grid-row: 2; min-width: 0; }
 
 .notes-page[data-view="top"] .filter-tools {
   display: flex;
@@ -575,8 +638,10 @@ html[data-theme="dark"] .brief-list button[aria-selected="true"] { background: v
   grid-column: 2;
   grid-row: 3 / span 3;
   min-height: 0;
-  overflow: hidden;
-  padding: 30px 0 64px;
+  /* The more button sits on the title and rises into this padding.
+     Hidden overflow sliced the top of its hover fill. */
+  overflow: visible;
+  padding: 6px 0 64px;
   container: note-read / inline-size;
 }
 
@@ -588,7 +653,7 @@ html[data-theme="dark"] .brief-list button[aria-selected="true"] { background: v
   align-items: start;
   height: 100%;
   min-height: 0;
-  margin-top: -6px;
+  margin-top: -23px;
   padding-top: 6px;
   overflow: hidden;
   column-gap: 16px;
@@ -800,7 +865,6 @@ html[data-theme="dark"] .note-more[aria-expanded="true"] { background: var(--gre
 .note-title::placeholder,
 .note-draft::placeholder { color: var(--black-50); }
 
-.note-title:focus::placeholder,
 .note-draft:focus::placeholder { color: transparent; }
 
 .note-draft {
@@ -841,10 +905,14 @@ html[data-theme="dark"] .note-more[aria-expanded="true"] { background: var(--gre
 .author-edit .menu-item .mini-pill { pointer-events: none; }
 .dept-slot { display: inline-grid; }
 .dept-slot > * { grid-area: 1 / 1; justify-self: start; }
-.dept-sizer { visibility: hidden; pointer-events: none; gap: 2px; }
+.dept-sizer { visibility: hidden; pointer-events: none; gap: 0; }
 .dept-pick {
   gap: 0;
   cursor: pointer;
+  border: 0;
+  appearance: none;
+  background: transparent;
+  color: var(--black);
 }
 .meta-chevron {
   display: block;
@@ -855,17 +923,14 @@ html[data-theme="dark"] .note-more[aria-expanded="true"] { background: var(--gre
   transition: opacity 120ms, transform 120ms;
 }
 .view-eye { display: block; width: 18px; height: 18px; flex: none; margin-block: -1px; }
-.dept-pick .meta-chevron,
-html[data-dept-chip="dot"] .dept-pick .meta-chevron {
+.dept-pick .meta-chevron {
   max-width: 0;
   margin-inline-start: 0;
   opacity: 0;
   overflow: hidden;
 }
 .dept-pick:hover .meta-chevron,
-.dept-pick[aria-expanded="true"] .meta-chevron,
-html[data-dept-chip="dot"] .dept-pick:hover .meta-chevron,
-html[data-dept-chip="dot"] .dept-pick[aria-expanded="true"] .meta-chevron {
+.dept-pick[aria-expanded="true"] .meta-chevron {
   max-width: 10px;
   margin-inline-start: var(--space-4);
   opacity: 1;
@@ -1036,11 +1101,20 @@ html[data-dept-chip="dot"] .dept-pick[aria-expanded="true"] .meta-chevron {
 }
 
 .notes-page[data-view="top"] .brief-meta { display: none; }
-.notes-page[data-view="top"] .brief-read h2 { font-size: var(--text-20); }
+.notes-page[data-view="top"] .brief-read h2,
+.notes-page[data-view="top"] .note-title {
+  font-size: var(--text-20);
+  line-height: 1;
+}
 
 .confirm-dialog {
+  position: fixed;
+  inset: 0;
   width: max-content;
+  height: fit-content;
   max-width: calc(100% - 32px);
+  max-height: calc(100% - 32px);
+  margin: auto;
   padding: 0;
   border: 0;
   background: transparent;
@@ -1104,6 +1178,18 @@ html[data-dept-chip="dot"] .dept-pick[aria-expanded="true"] .meta-chevron {
   color: var(--black);
 }
 
+.dev-switch .slide-group {
+  display: flex;
+  align-items: center;
+}
+
+.dev-switch .slide-pill { background: var(--white); border-radius: var(--radius-control); }
+
+.dev-switch .has-slide > button[aria-pressed="true"] {
+  background: transparent;
+  color: var(--black);
+}
+
 .dev-rule {
   width: 1px;
   align-self: stretch;
@@ -1122,6 +1208,16 @@ html[data-dept-chip="dot"] .dept-pick[aria-expanded="true"] .meta-chevron {
   background: var(--sidebar-grey);
   overflow-x: auto;
   overflow-y: hidden;
+}
+
+.page-filters .tabs-frame {
+  background: var(--sidebar-grey);
+  --scroll-fade: var(--sidebar-grey);
+}
+
+.page-filters .tabs-scroll > .tabs {
+  width: max-content;
+  overflow: visible;
 }
 
 .tabs-fade {
@@ -1208,41 +1304,6 @@ html[data-dept-chip="dot"] .dept-pick[aria-expanded="true"] .meta-chevron {
 
 .notes-grid .cell-task[aria-pressed="true"] { background: var(--sidebar-grey); }
 html[data-theme="dark"] .notes-grid .cell-task[aria-pressed="true"] { background: var(--grey); }
-
-.dept {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  height: 20px;
-  padding: var(--space-2) var(--space-4);
-  border-radius: 4px;
-  background: var(--tag-bg);
-  color: var(--tag-text);
-  font-size: var(--text-13);
-  font-weight: 400;
-  line-height: 16px;
-}
-
-.dept[data-dept="Housekeeping"] {
-  background: var(--dept-housekeeping-bg);
-  color: var(--dept-housekeeping);
-}
-.dept[data-dept="Maintenance"] {
-  background: var(--dept-maintenance-bg);
-  color: var(--dept-maintenance);
-}
-.dept[data-dept="Food & Beverage"] {
-  background: var(--dept-food-bg);
-  color: var(--dept-food);
-}
-.dept[data-dept="Sales"] {
-  background: var(--dept-sales-bg);
-  color: var(--dept-sales);
-}
-.dept[data-dept="Management"] {
-  background: var(--dept-management-bg);
-  color: var(--dept-management);
-}
 
 .dept.meta-fit { display: inline-grid; }
 
@@ -1356,13 +1417,13 @@ html[data-theme="dark"] .notes-page img.avatar {
   color: var(--black);
 }
 .comment:hover .comment-more,
-.comment.is-hover .comment-more,
+.comment.is-hover .comment-more { background: var(--sidebar-grey); }
 .comment-more:hover,
-.comment-more[aria-expanded="true"] { background: var(--sidebar-grey); }
+.comment-more[aria-expanded="true"] { background: var(--grey); }
 html[data-theme="dark"] .comment:hover .comment-more,
-html[data-theme="dark"] .comment.is-hover .comment-more,
+html[data-theme="dark"] .comment.is-hover .comment-more { background: var(--grey); }
 html[data-theme="dark"] .comment-more:hover,
-html[data-theme="dark"] .comment-more[aria-expanded="true"] { background: var(--grey); }
+html[data-theme="dark"] .comment-more[aria-expanded="true"] { background: var(--black-12); }
 .comment-menu .menu.is-context {
   position: fixed;
   z-index: 80;

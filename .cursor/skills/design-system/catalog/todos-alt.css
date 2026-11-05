@@ -103,7 +103,8 @@ html[data-theme="dark"] .sheet-page .auto-assign:not([aria-pressed="true"]):is(:
   left: calc(100% + 4px);
   z-index: 5;
   width: max-content;
-  min-width: 147px;
+  min-width: var(--menu-min);
+  max-width: var(--menu-max);
 }
 
 .sheet-page .filter-row .drop .filter-sub.is-left {
@@ -119,7 +120,7 @@ html[data-theme="dark"] .sheet-page .auto-assign:not([aria-pressed="true"]):is(:
   color: var(--black);
 }
 
-.sheet-page .filter-menu { min-width: 168px; }
+.sheet-page .filter-menu { min-width: var(--menu-min); max-width: var(--menu-max); }
 
 .sheet-page .menu-item .urgency,
 .sheet-page .menu-item .mini-pill { pointer-events: none; }
@@ -875,7 +876,8 @@ html[data-theme="dark"] .sheet-fade { background: var(--black-12); }
   position: fixed;
   z-index: 80;
   width: max-content;
-  min-width: 168px;
+  min-width: var(--menu-min);
+  max-width: var(--menu-max);
 }
 
 #row-menu .menu-item { white-space: nowrap; }
@@ -1883,7 +1885,7 @@ html[data-dept-chip="dot"] .side-type,
 html[data-theme="dark"][data-dept-chip="dot"] .side-type {
   background: transparent;
   color: var(--black);
-  box-shadow: 0 0 0 1px var(--black-12);
+  box-shadow: inset 0 0 0 0.5px var(--black-12), 0 0 0 0.5px var(--black-12);
 }
 html[data-dept-chip="dot"] .side-type:hover,
 html[data-dept-chip="dot"] .side-type[aria-expanded="true"] {
@@ -1905,7 +1907,7 @@ html[data-dept-chip="dot"] .sheet:focus-within .sheet-type[data-type],
 html[data-theme="dark"][data-dept-chip="dot"] .sheet:focus-within .sheet-type[data-type] {
   background: var(--white);
   color: var(--text-muted);
-  box-shadow: 0 0 0 1px var(--black-12);
+  box-shadow: inset 0 0 0 0.5px var(--black-12), 0 0 0 0.5px var(--black-12);
 }
 /* One step past the row hover. Light row hover is --sidebar-grey, so --grey.
    Dark row hover is --grey, so --black-12. */
@@ -1917,7 +1919,7 @@ html[data-dept-chip="dot"] .sheet:focus-within .sheet-type[data-type]:hover,
 html[data-dept-chip="dot"] .sheet:focus-within .sheet-type[data-type][aria-expanded="true"] {
   background: var(--grey);
   color: var(--black);
-  box-shadow: 0 0 0 1px var(--black-12);
+  box-shadow: inset 0 0 0 0.5px var(--black-12), 0 0 0 0.5px var(--black-12);
 }
 html[data-theme="dark"][data-dept-chip="dot"] .sheet-type[data-type]:hover,
 html[data-theme="dark"][data-dept-chip="dot"] .sheet-type[data-type][aria-expanded="true"],
@@ -1927,7 +1929,7 @@ html[data-theme="dark"][data-dept-chip="dot"] .sheet:focus-within .sheet-type[da
 html[data-theme="dark"][data-dept-chip="dot"] .sheet:focus-within .sheet-type[data-type][aria-expanded="true"] {
   background: var(--black-12);
   color: var(--black);
-  box-shadow: 0 0 0 1px var(--black-25);
+  box-shadow: inset 0 0 0 0.5px var(--black-25), 0 0 0 0.5px var(--black-25);
 }
 html[data-dept-chip="dot"] .sheet-type::before { margin-inline-end: var(--space-8); }
 html[data-dept-chip="dot"] .sheet-type > .sheet-edit,

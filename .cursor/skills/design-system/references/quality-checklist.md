@@ -29,7 +29,8 @@ Check this on every change, on the rendered screen. Equal padding is not alignme
 - [ ] A person, an urgency, and a type are the gallery treatment, including in a menu, a filter, and a table cell. See [patterns.md](patterns.md).
 - [ ] Picking a person is a dropdown of people who already exist. A new person is added in Settings. See [patterns.md](patterns.md).
 - [ ] A chip that opens a menu hugs its label and shows the chevron on hover without moving the items beside it. See [patterns.md](patterns.md).
-- [ ] A new table is the gallery table, filter row included. A column of fixed options is already as wide as its longest option. The control still hugs the value it is showing. See [components.md](components.md).
+- [ ] A dropdown hugs its longest label, then leaves 16px to the edge. Short labels use `--menu-min`. Past `--menu-max` the label truncates. Every option label is `--text-14`, the same size as the category row. The check and the chevron sit 6px from the row edge. Delete is last, in red, with a full-width line above it. See [components.md](components.md).
+- [ ] A new table is the gallery table, filter row included. A column of fixed options is already as wide as its longest option. The control still hugs the value it is showing. One column names the record and takes the leftover width. When the page has no title column, that column is chosen from the job of the page. See [components.md](components.md).
 
 ## If you added motion, an icon, or a container
 

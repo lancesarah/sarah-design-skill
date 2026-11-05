@@ -993,26 +993,28 @@ function revealNewCard(list, card) {
   }, 220);
 }
 
+const currentPerson = { name: "Sarah Mou", dept: "Front Desk", deptLabel: "Front desk" };
+
 function createNote() {
   const list = document.querySelector(".brief-list");
   const read = document.querySelector(".brief-read");
   if (!list || !read) return;
   const id = "new-" + Date.now();
   const stamp = noteStamp();
-  const deptChoices = departmentChoices("Front Desk");
+  const deptChoices = departmentChoices(currentPerson.dept);
   const card = document.createElement("button");
   card.type = "button";
   card.setAttribute("role", "option");
   card.dataset.note = id;
-  card.dataset.dept = "Front Desk";
+  card.dataset.dept = currentPerson.dept;
   card.classList.add("is-untitled");
-  card.innerHTML = `<span class="note-avatar-slot tip-host note-author"><img src="assets/avatar-sarah.png?v=20261029a" alt=""><span class="tip">Sarah Mou</span></span><span class="note-copy"><span class="note-line"><span class="note-time">${stamp}</span><span class="dept" data-dept="Front Desk">Front desk</span></span><span class="brief-title">Title</span><span class="brief-preview">New note</span></span>`;
+  card.innerHTML = `<span class="note-avatar-slot tip-host note-author"><img src="assets/avatar-sarah.png?v=20261029a" alt=""><span class="tip">${currentPerson.name}</span></span><span class="note-copy"><span class="note-line"><span class="note-time">${stamp}</span><span class="dept" data-dept="${currentPerson.dept}">${currentPerson.deptLabel}</span></span><span class="brief-title">New note</span><span class="brief-preview">Write a note...</span></span>`;
   revealNewCard(list, card);
   const article = document.createElement("article");
   article.className = "detail";
   article.dataset.detail = id;
   article.hidden = true;
-  article.innerHTML = `<div class="brief-top"><textarea class="note-title" aria-label="Title" placeholder="Title" rows="1"></textarea><div class="drop note-menu"><button class="note-more" type="button" aria-expanded="false" aria-haspopup="menu" aria-label="More"><svg class="i" width="14" height="14"><use href="#i-dots"/></svg></button><div class="menu" role="menu" hidden><button class="menu-item" type="button" role="menuitem" data-note-action="share"><svg class="i" width="14" height="14"><use href="#i-share"/></svg>Share</button><button class="menu-item" type="button" role="menuitem" data-note-action="copy-link"><svg class="i" width="14" height="14"><use href="#i-link"/></svg>Copy link</button><button class="menu-item danger" type="button" role="menuitem" data-note-action="delete"><svg class="i" width="14" height="14"><use href="#i-trash"/></svg>Delete</button></div></div></div><dl class="note-meta"><div><dt>Timestamp</dt><dd>${stamp}</dd></div><div><dt>Department</dt><dd><div class="drop dept-edit"><button class="dept dept-pick" type="button" data-dept="Front Desk" aria-expanded="false" aria-haspopup="menu"><span class="dept-name">Front desk</span><svg class="i meta-chevron" width="10" height="10"><use href="#i-chevron"/></svg></button><div class="menu" role="menu" hidden>${deptChoices}</div></div></dd></div><div><dt>Author</dt><dd>Sarah Mou</dd></div><div><dt>Viewed</dt><dd><div class="drop view-edit"><button class="chip view-pick" type="button" aria-expanded="false" aria-haspopup="menu"><svg class="i view-eye" width="18" height="18" aria-hidden="true"><use href="#i-eye"/></svg><span class="view-count">0/8</span><svg class="i meta-chevron" width="10" height="10"><use href="#i-chevron"/></svg></button><div class="menu view-menu" role="menu" hidden></div></div></dd></div></dl><div class="brief-main"><p class="brief-meta">Front desk</p><textarea class="note-draft" aria-label="Note" placeholder="New note"></textarea><section class="brief-replies" aria-label="Comments"><h3>Comments</h3><form class="msg" data-composer><span class="lead"><button class="well" type="button" aria-label="Add"><svg class="i" width="16" height="16"><use href="#i-plus"/></svg></button><input aria-label="Write a comment" placeholder="Write a comment..."></span><button class="well" type="submit" aria-label="Send"><svg class="i" width="16" height="16"><use href="#i-up"/></svg></button></form></section></div>`;
+  article.innerHTML = `<div class="brief-top"><textarea class="note-title" aria-label="Title" placeholder="New note" rows="1"></textarea><div class="drop note-menu"><button class="note-more" type="button" aria-expanded="false" aria-haspopup="menu" aria-label="More"><svg class="i" width="14" height="14"><use href="#i-dots"/></svg></button><div class="menu" role="menu" hidden><button class="menu-item" type="button" role="menuitem" data-note-action="share"><svg class="i" width="14" height="14"><use href="#i-share"/></svg>Share</button><button class="menu-item" type="button" role="menuitem" data-note-action="copy-link"><svg class="i" width="14" height="14"><use href="#i-link"/></svg>Copy link</button><button class="menu-item danger" type="button" role="menuitem" data-note-action="delete"><svg class="i" width="14" height="14"><use href="#i-trash"/></svg>Delete</button></div></div></div><dl class="note-meta"><div><dt>Timestamp</dt><dd>${stamp}</dd></div><div><dt>Department</dt><dd><div class="drop dept-edit"><button class="dept dept-pick" type="button" data-dept="${currentPerson.dept}" aria-expanded="false" aria-haspopup="menu"><span class="dept-name">${currentPerson.deptLabel}</span><svg class="i meta-chevron" width="10" height="10"><use href="#i-chevron"/></svg></button><div class="menu" role="menu" hidden>${deptChoices}</div></div></dd></div><div><dt>Author</dt><dd>${currentPerson.name}</dd></div><div><dt>Viewed</dt><dd><div class="drop view-edit"><button class="chip view-pick" type="button" aria-expanded="false" aria-haspopup="menu"><svg class="i view-eye" width="18" height="18" aria-hidden="true"><use href="#i-eye"/></svg><span class="view-count">0/8</span><svg class="i meta-chevron" width="10" height="10"><use href="#i-chevron"/></svg></button><div class="menu view-menu" role="menu" hidden></div></div></dd></div></dl><div class="brief-main"><p class="brief-meta">${currentPerson.deptLabel}</p><textarea class="note-draft" aria-label="Note" placeholder="Write a note..."></textarea><section class="brief-replies" aria-label="Comments"><h3>Comments</h3><form class="msg" data-composer><span class="lead"><button class="well" type="button" aria-label="Add"><svg class="i" width="16" height="16"><use href="#i-plus"/></svg></button><input aria-label="Write a comment" placeholder="Write a comment..."></span><button class="well" type="submit" aria-label="Send"><svg class="i" width="16" height="16"><use href="#i-up"/></svg></button></form></section></div>`;
   read.append(article);
   const titleInput = article.querySelector(".note-title");
   const draft = article.querySelector(".note-draft");
@@ -1024,18 +1026,24 @@ function createNote() {
     const title = titleInput.value.trim();
     card.classList.toggle("is-untitled", title.length === 0);
     card.classList.toggle("is-ready", title.length > 0 || draft.value.trim().length > 0);
-    card.querySelector(".brief-title").textContent = title || "Title";
+    card.querySelector(".brief-title").textContent = title || "New note";
     const line = draft.value.trim().split("\n").find(Boolean);
-    card.querySelector(".brief-preview").textContent = line || "New note";
+    card.querySelector(".brief-preview").textContent = line || "Write a note...";
     fitTitle();
     syncCommentLock(article);
     layoutOpenNote();
   };
   titleInput.addEventListener("input", syncDraft);
+  draft.addEventListener("focus", () => {
+    draft.placeholder = "";
+  });
+  draft.addEventListener("blur", () => {
+    if (!draft.value.trim()) draft.placeholder = "Write a note...";
+  });
   draft.addEventListener("input", syncDraft);
   rows.unshift(card);
   card.addEventListener("click", () => selectNote(card));
-  if (selectedDept() !== "All" && selectedDept() !== "Front Desk") {
+  if (selectedDept() !== "All" && selectedDept() !== currentPerson.dept) {
     for (const tab of deptTabs) tab.setAttribute("aria-selected", tab.dataset.dept === "All" ? "true" : "false");
   }
   selectNote(card);

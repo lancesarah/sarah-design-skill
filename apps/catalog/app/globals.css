@@ -1,0 +1,81 @@
+@layer theme, base, gallery-ui, utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/preflight.css" layer(base);
+@import "@lance-live/gallery-ui/tokens.css" layer(gallery-ui);
+@import "@lance-live/gallery-ui/styles.css" layer(gallery-ui);
+@import "tailwindcss/utilities.css" layer(utilities);
+
+body {
+  margin: 0;
+  background: var(--sidebar-grey);
+  color: var(--black);
+  --font: var(--font-sans), "Plus Jakarta Sans", sans-serif;
+  --serif: var(--font-serif), "Libre Baskerville", "Times New Roman", serif;
+  font-family: var(--font);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: normal;
+  -webkit-font-smoothing: antialiased;
+}
+
+html[data-font="switzer"] body {
+  --font: "Switzer", sans-serif;
+}
+
+.dev-switch {
+  position: fixed;
+  z-index: 20;
+  left: 50%;
+  bottom: 12px;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 4px 4px 8px;
+  border-radius: var(--radius-control);
+  background: var(--black);
+  color: var(--white);
+  font-family: var(--font);
+  font-size: 12px;
+}
+
+.dev-switch button {
+  position: relative;
+  z-index: 1;
+  border: 0;
+  border-radius: var(--radius-control);
+  background: transparent;
+  color: var(--white);
+  font: inherit;
+  padding: 4px 8px;
+  cursor: pointer;
+}
+
+.dev-switch .slide-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.dev-switch .slide-pill {
+  position: absolute;
+  z-index: 0;
+  border-radius: var(--radius-control);
+  background: var(--white);
+  pointer-events: none;
+  opacity: 0;
+  transition:
+    left 220ms var(--ease-out),
+    right 160ms var(--ease-out),
+    top 200ms var(--ease-out),
+    height 200ms var(--ease-out);
+}
+
+.dev-switch .slide-pill[data-dir="left"] {
+  transition-duration: 160ms, 220ms, 200ms, 200ms;
+}
+
+.dev-switch .has-slide > button[aria-pressed="true"] {
+  background: transparent;
+  color: var(--black);
+}

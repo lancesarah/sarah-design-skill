@@ -52,8 +52,8 @@ Color, type, and spacing are gallery specimens. They are not components. The hea
 
 - When: a department or a type is named.
 - When not: an urgency, a status, or a person.
-- Default: color mode, on the urgency chip’s box, hugging the label.
-- States: rest, hover, open menu, and stroke mode are measured in the Department tag section of [patterns.md](patterns.md). The department fill stays.
+- Default: the dot. Black label, an 8px circle in the department color, a clear chip, and a 1px `--black-12` ring. The same chip is used in a menu.
+- States: rest, hover, open menu, and stroke mode are measured in the Department tag section of [patterns.md](patterns.md). The department fill stays, except in a menu, where the circle carries the color.
 
 ## Person
 
@@ -67,7 +67,7 @@ Color, type, and spacing are gallery specimens. They are not components. The hea
 - When: an urgency is named.
 - When not: a department, a status, or a filter chip.
 - Default: `.urgency`. Urgent includes the warning icon. High, Standard, and Low are the label only. A table cell and a menu show the colored word with no pill. A filter chip keeps the filled box.
-- States: the word keeps its color. Standard’s word is `--black-50`. The filled chip, where it remains, is in Naming a person or an urgency in [patterns.md](patterns.md).
+- States: the word keeps its color. Standard’s word is `--black-50`. In a table chip and in the side panel, the word is centered in the chip with the chevron. `top` stays `0`. The filled chip, where it remains, is in Naming a person or an urgency in [patterns.md](patterns.md).
 
 ## Status
 
@@ -81,6 +81,10 @@ Color, type, and spacing are gallery specimens. They are not components. The hea
 - When: a list of options that already exist, or a more menu.
 - When not: creating a record. That happens on the page.
 - Default: the gallery menu, with `--elevation-menu`.
+- Width: hug the longest label, then leave 16px (`--space-16`) to the edge. The menu's 2px padding counts toward that 16px, so the row's trailing padding is 14px. The row is the icon and the label. A check sits at the end of that row and does not add a second gap. Less than 16px feels cramped. A fixed width leaves dead space after a short label. Short labels use `--menu-min` (132px). Past `--menu-max` (240px) the label truncates with an ellipsis, and the icon stays. The calendar is not this menu.
+- Trailing icon: the check, the submenu chevron, and the trigger chevron share one inset, 6px from the row edge. The row's 14px padding stays for the label. The icon draws 8px into that padding (`margin-right: -8px`) so it lands on the trigger's 6px. The chevron is `--black-50`.
+- Delete: Delete is the last item, in `--destructive`. A hairline runs the full width of the opening above it, through the menu's 2px padding. Search separators stay inset.
+- Type: every option label is `--text-14`, the same size as the category row (Type, Status, Urgency, Assigned). A department chip, an urgency, a status, a name, and a plain label all use that size inside the menu. The 13px chip size stays outside the menu. A description under an option stays `--text-12`.
 - States: option names are `--black`, descriptions stay `--text-muted`, and the check stays centered on the row. The trigger keeps its hover fill while the menu is open. A more menu also opens on right-click. Icons in one menu share the Internal notes construction in [polish.md](polish.md).
 
 ## Delete confirmation
@@ -200,6 +204,8 @@ A new table copies that section. It does not invent a second row, chip, or filte
 
 Under the filter row, the columns are Status, Room, To-do, Urgency, Type, Assigned, and Opened. Content starts `--space-16` after each column line, and Status starts that same distance from the left edge. The column gap stays `--space-20`.
 
-A column is at least as wide as its title with equal padding on the left and the right, and at least as wide as the value it is showing. That width is the minimum. Dragging the line at the right of a header stops there, and so do the arrow keys. The To-do column gives up the space. Double-click the line to return that column to its usual width. The width stays on this page. The columns resize with the pane. The table scrolls sideways when those minimums do not fit. A cell does not paint on top of the next column. The title, the note under it, and the column header start on the same line. The frame ends at the last row and keeps its rounded corners. It scrolls only when the rows pass the space above the count. Under the frame, at the left, the count is `--text-12` `--text-muted` and reads Showing N of M.
+A column is at least as wide as its title with equal padding on the left and the right, and at least as wide as the value it is showing. That width is the minimum. Dragging the line at the right of a header stops there, and so do the arrow keys. The To-do column gives up the space. The note under the title fills that column. It does not shrink to the words. The location and the item still hug their labels.
+
+One column names the record and takes the leftover width, so the row reaches the frame. On the to-do table that column is To-do. When a page has no title column, choose one from the job of the page: the column a person reads to tell one row from the next. A status, a time, a total, a person, and a department stay as wide as their values. Mark the chosen column so it grows. Use `flex` when the cell is a short name. Use `text: "primary"` when the cell is a title or a description. Double-click the line to return that column to its usual width. The width stays on this page. The columns resize with the pane. The table scrolls sideways when those minimums do not fit. A cell does not paint on top of the next column. The title, the note under it, and the column header start on the same line. The frame ends at the last row and keeps its rounded corners. It scrolls only when the rows pass the space above the count. Under the frame, at the left, the count is `--text-12` `--text-muted` and reads Showing N of M.
 
 Screen-only note layout is not in this catalog. Do not fold one-off note chrome into the gallery unless it is reused.

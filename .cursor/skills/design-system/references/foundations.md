@@ -44,6 +44,8 @@ These point at values already in use. A new page, a new row, a new menu, and a n
 | `--gap-inline` | `--space-8` | Header actions, tool rows, chip rows |
 | `--radius-card` | `--radius-control` | Menus, the confirm card, fields. Note list cards stay square |
 | `--elevation-menu` | `--shadow-menu` | Menus and the toast |
+| `--menu-min` | `132px` | A dropdown of short labels |
+| `--menu-max` | `240px` | A dropdown. The label truncates past this |
 | `--motion-hover` | `120ms` | The shared fill change |
 | `--motion-panel` | `400ms` | The detail panel entrance |
 | `--motion-panel-out` | `320ms` | The detail panel exit |
@@ -75,7 +77,7 @@ A button changes its fill by one step. The label, the icon, and the hairline sta
 | Icon button that is not primary | Clear | The one step from its surface | The icon color. Sidebar icon buttons stay unfilled at rest. |
 | Filter chip (`.chip-filter`) | `--filter-chip-bg`, `--action` text | The same fill | The chip does not wash on hover. |
 
-A control inside a hovered row takes the next step, not the row’s step. A status pill on a hovered row is `--grey` in light mode and `--black-12` in dark mode. An off switch on a hovered secondary button steps to `--grey-up` only so the track does not match the button. `--grey-up` is not a text-chip hover.
+A parent and its descendants are one hover region. Moving onto a chip, button, icon, or dropdown trigger inside that parent keeps the parent’s hover. The parent fill clears only when the pointer leaves the parent and everything inside it. The nested control keeps its own hover at the same time, one step past the parent, so a chip stays visible on a hovered row. A status pill on a hovered row is `--grey` in light mode and `--black-12` in dark mode. An off switch on a hovered secondary button steps to `--grey-up` only so the track does not match the button. `--grey-up` is not a text-chip hover.
 
 ## What changes, and what stays
 

@@ -391,7 +391,6 @@ section { scroll-margin-top: 24px; }
 .fit-label > * { grid-area: 1 / 1; }
 .fit-label > [aria-hidden="true"] { visibility: hidden; }
 .drop:has(.fit-label) { align-items: stretch; }
-.drop:has(.fit-label) .menu { width: 100%; }
 
 /* List filter and menus */
 .filter, .trigger {
@@ -408,6 +407,7 @@ section { scroll-margin-top: 24px; }
   box-shadow: var(--stroke);
 }
 .filter .pair, .trigger .pair { display: inline-flex; align-items: center; gap: 5px; min-width: 0; }
+.trigger > .i { color: var(--black-50); }
 .dim { opacity: 0.5; }
 .filter:hover, .filter.is-hover, .filter[aria-expanded="true"],
 .trigger:hover, .trigger.is-hover, .trigger[aria-expanded="true"] { background: var(--sidebar-grey); }
@@ -417,7 +417,9 @@ section { scroll-margin-top: 24px; }
 .menu {
   display: flex;
   flex-direction: column;
-  width: 147px;
+  width: max-content;
+  min-width: var(--menu-min);
+  max-width: var(--menu-max);
   padding: 2px;
   background: var(--white);
   border-radius: 6px;
@@ -430,11 +432,23 @@ section { scroll-margin-top: 24px; }
   gap: 4px;
   width: 100%;
   min-height: 30px;
-  padding: 6px 8px;
+  min-width: 0;
+  max-width: 100%;
+  padding: 6px 14px 6px 8px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
   border-radius: 4px;
   text-align: left;
 }
-.menu-item .check { margin-left: auto; visibility: hidden; }
+.menu-item > svg,
+.menu-item > .i { flex: none; }
+.menu-item .check,
+.menu-item .menu-next {
+  margin-left: auto;
+  margin-right: -8px;
+}
+.menu-item .check { visibility: hidden; }
 .menu-item[aria-checked="true"] .check { visibility: visible; }
 .menu-item.danger { color: var(--destructive); }
 .menu-item:hover, .menu-item.is-hover, .menu-item[aria-expanded="true"] { background: var(--sidebar-grey); }
@@ -449,6 +463,21 @@ section { scroll-margin-top: 24px; }
 }
 .menu-search input::placeholder { color: var(--black-50); }
 .menu-rule { height: 1px; margin: 0 2px; background: var(--line); }
+/* Every option in a menu matches the category row. Chips stay 13px outside a menu. */
+.menu {
+  font-size: var(--text-14);
+  font-weight: 400;
+}
+.menu .dept,
+.menu .urgency,
+.menu .status,
+.menu .mini-pill,
+.menu .menu-label,
+.menu .call-resolution {
+  font-size: inherit;
+  font-weight: 400;
+}
+.menu > .menu-rule:has(+ .menu-item.danger) { margin: 2px -2px; }
 
 /* Search */
 .search {
@@ -1771,12 +1800,44 @@ html[data-theme="dark"] .side-search kbd {
 .dept[data-dept="Sales"] { background: var(--dept-sales-bg); color: var(--dept-sales); }
 .dept[data-dept="Management"] { background: var(--dept-management-bg); color: var(--dept-management); }
 
+/* The department tag is the dot: a colored circle beside black text. The same chip is used in a menu. */
+.menu .dept,
+.menu .dept[data-dept],
+#department .dept,
+#department .dept[data-dept] {
+  gap: 0;
+  padding-inline: var(--space-8);
+  background: transparent;
+  color: var(--black);
+  box-shadow: 0 0 0 1px var(--black-12);
+}
+.menu .dept::before,
+#department .dept::before {
+  content: "";
+  width: var(--space-8);
+  height: var(--space-8);
+  flex: none;
+  border-radius: var(--radius-circle);
+  background: var(--tag-text);
+  margin-inline-end: var(--space-8);
+}
+.menu .dept[data-dept="Housekeeping"]::before,
+#department .dept[data-dept="Housekeeping"]::before { background: var(--dept-housekeeping); }
+.menu .dept[data-dept="Maintenance"]::before,
+#department .dept[data-dept="Maintenance"]::before { background: var(--dept-maintenance); }
+.menu .dept[data-dept="Food & Beverage"]::before,
+#department .dept[data-dept="Food & Beverage"]::before { background: var(--dept-food); }
+.menu .dept[data-dept="Sales"]::before,
+#department .dept[data-dept="Sales"]::before { background: var(--dept-sales); }
+.menu .dept[data-dept="Management"]::before,
+#department .dept[data-dept="Management"]::before { background: var(--dept-management); }
+
 #table .table-states { display: flex; flex-direction: column; gap: 36px; width: min(966px, 100%); }
 #table .state > .k { margin-bottom: 12px; }
 #table .table-subs { display: flex; flex-wrap: wrap; gap: 28px 32px; align-items: flex-start; }
 #table .table-subs .k { margin-bottom: 12px; }
 #table .is-menu-open { padding-bottom: 300px; }
-#table .catalog-menu { position: relative; width: max-content; min-width: 180px; }
+#table .catalog-menu { position: relative; width: max-content; min-width: var(--menu-min); max-width: var(--menu-max); }
 #table .filter-row {
   display: grid;
   grid-template-columns: 281px auto minmax(0, 1fr);
@@ -1942,7 +2003,7 @@ html[data-dept-chip="dot"] :is(.dept, .sheet-type, .side-type) {
 html[data-dept-chip="dot"] .dept {
   background: transparent;
   color: var(--black);
-  box-shadow: 0 0 0 1px var(--black-12);
+  box-shadow: inset 0 0 0 0.5px var(--black-12), 0 0 0 0.5px var(--black-12);
 }
 html[data-dept-chip="dot"] button.dept:hover,
 html[data-dept-chip="dot"] button.dept[aria-expanded="true"] {

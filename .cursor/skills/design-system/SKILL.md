@@ -46,6 +46,7 @@ These hold on every screen, including one that does not exist yet. The linked fi
 - Motion explains the change. A frequent control snaps. Something that leaves closes the gap. See [references/polish.md](references/polish.md).
 - A follow-up matches the settled answer for spacing, hairlines, collapse, tooltips, icons, and inputs. See [references/guard-rails.md](references/guard-rails.md).
 - Match the quality in Spacing a screen, not its layout. Group what belongs together. Keep the gap inside a group smaller than the gap between groups. Leave off a label the content does not need. One primary action, placed where the person is already looking. The lesson card’s measurements belong to the lesson card. See [references/patterns.md](references/patterns.md).
+- A dropdown hugs its longest label, then leaves 16px to the edge. Short labels stay at `--menu-min`. Past `--menu-max` the label truncates. Every option label is `--text-14`, the same size as the category row. See [references/components.md](references/components.md).
 
 ## Examples
 

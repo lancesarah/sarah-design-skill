@@ -1,12 +1,16 @@
 /* Run sheet. Each to-do is finished on its line. The table stays in todos.css. */
 
 .sheet-work {
-  position: relative;
   display: flex;
   flex: 1;
   min-width: 0;
   min-height: 0;
-  overflow: hidden;
+  margin-right: 0;
+}
+
+/* The detail panel is positioned against the page card, not this sheet. */
+.notes-page {
+  position: relative;
 }
 
 .sheet-list {
@@ -15,6 +19,7 @@
   flex: 1;
   min-width: 0;
   min-height: 0;
+  margin-right: 0;
   container: sheet-filters / inline-size;
 }
 
@@ -60,12 +65,19 @@
 
 .sheet-page .filter-row .trigger .pair > span { display: none; }
 
+.drop .menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  z-index: 80;
+}
+
 .sheet-page .filter-row .drop .menu {
   position: absolute;
   top: 32px;
   left: 0;
   right: auto;
-  z-index: 4;
+  z-index: 80;
   width: max-content;
 }
 
@@ -103,7 +115,8 @@ html[data-theme="dark"] .sheet-page .auto-assign:not([aria-pressed="true"]):is(:
   left: calc(100% + 4px);
   z-index: 5;
   width: max-content;
-  min-width: 147px;
+  min-width: var(--menu-min);
+  max-width: var(--menu-max);
 }
 
 .sheet-page .filter-row .drop .filter-sub.is-left {
@@ -119,7 +132,7 @@ html[data-theme="dark"] .sheet-page .auto-assign:not([aria-pressed="true"]):is(:
   color: var(--black);
 }
 
-.sheet-page .filter-menu { min-width: 168px; }
+.sheet-page .filter-menu { min-width: var(--menu-min); max-width: var(--menu-max); }
 
 .sheet-page .menu-item .urgency,
 .sheet-page .menu-item .mini-pill { pointer-events: none; }
@@ -139,9 +152,10 @@ html[data-theme="dark"] .sheet-page .auto-assign:not([aria-pressed="true"]):is(:
   min-width: 0;
   min-height: 0;
   display: flex;
-  padding: 1px;
-  background: var(--grey);
+  padding: 0;
+  border: 1px solid var(--grey);
   border-radius: var(--radius-control);
+  background: transparent;
   overflow: hidden;
 }
 
@@ -208,19 +222,26 @@ html[data-theme="dark"] .sheet-page .auto-assign:not([aria-pressed="true"]):is(:
 
 html[data-theme="dark"] .sheet-page[data-view="head"] .sheet-head,
 html[data-theme="dark"] .sheet-page .tabs-fade,
-html[data-theme="dark"] .sheet-page .page-filters .tabs {
+html[data-theme="dark"] .sheet-page .page-filters .tabs,
+html[data-theme="dark"] .sheet-page .page-filters .tabs-frame {
   background: var(--grey);
 }
-html[data-theme="dark"] .sheet-page .tabs-fade { --scroll-fade: var(--grey); }
+html[data-theme="dark"] .sheet-page .tabs-fade,
+html[data-theme="dark"] .sheet-page .page-filters .tabs-frame { --scroll-fade: var(--grey); }
 html[data-theme="dark"] .sheet-page .tabs-bar .tab[aria-selected="true"],
 html[data-theme="dark"] .sheet-page .tabs-bar .tab:hover,
 html[data-theme="dark"] .sheet-page .tabs-bar .tab.is-hover {
   background: var(--black-12);
 }
+html[data-theme="dark"] .sheet-page .tabs .slide-pill { background: var(--black-12); }
+html[data-theme="dark"] .sheet-page .has-slide > .tab[aria-selected="true"] { background: transparent; }
 html[data-theme="dark"] .sheet-page[data-view="head"] .sheet-head {
   border-bottom-color: var(--line);
 }
-html[data-theme="dark"] .sheet-fade { background: var(--black-12); }
+html[data-theme="dark"] .sheet-fade {
+  background: transparent;
+  border-color: var(--black-12);
+}
 
 .sheet-head > span {
   display: flex;
@@ -357,7 +378,8 @@ html[data-theme="dark"] .sheet-fade { background: var(--black-12); }
   cursor: text;
 }
 
-.sheet-line:hover { background: var(--sidebar-grey); }
+.sheet-line:hover,
+.sheet:not(.is-open) .sheet-line:has([aria-expanded="true"]) { background: var(--sidebar-grey); }
 .sheet.is-open .sheet-line,
 .sheet.is-open .sheet-line:hover {
   position: relative;
@@ -366,8 +388,8 @@ html[data-theme="dark"] .sheet-fade { background: var(--black-12); }
   box-shadow: inset 0 0 0 1px var(--action);
 }
 
-/* The frame is the last row's bottom edge. A second border stacks on it and
-   cuts the corner. The open row follows the frame's inner curve. */
+/* The last row has no divider. Its selection stroke stays the full ring and
+   follows the frame's inner curve, so the sides and bottom remain visible. */
 [data-sheet] > .sheet:not([hidden]):not(:has(~ .sheet:not([hidden]))) {
   border-bottom-width: 0;
 }
@@ -376,7 +398,6 @@ html[data-theme="dark"] .sheet-fade { background: var(--black-12); }
 [data-sheet] > .sheet:not([hidden]):not(:has(~ .sheet:not([hidden]))).is-open .sheet-line:hover {
   border-bottom-left-radius: calc(var(--radius-control) - 1px);
   border-bottom-right-radius: calc(var(--radius-control) - 1px);
-  box-shadow: inset 0 1px 0 var(--action), inset 1px 0 0 var(--action), inset -1px 0 0 var(--action);
 }
 
 .sheet-status {
@@ -425,6 +446,17 @@ html[data-theme="dark"] .sheet-fade { background: var(--black-12); }
 .sheet:focus-within .sheet-status[aria-expanded="true"],
 .sheet-line:hover .sheet-type:hover,
 .sheet:focus-within .sheet-type:hover { background: var(--grey); }
+
+/* The row stays hovered while the pointer is on a chip. The chip takes the next step. */
+.sheet-chevron { opacity: 0; }
+:hover > .sheet-chevron,
+[aria-expanded="true"] > .sheet-chevron { opacity: 1; }
+.sheet-chip:hover,
+.sheet-chip[aria-expanded="true"] { background: var(--sidebar-grey); }
+.sheet-line:hover .sheet-chip:hover,
+.sheet-line:hover .sheet-chip[aria-expanded="true"],
+.sheet:focus-within .sheet-chip:hover,
+.sheet:focus-within .sheet-chip[aria-expanded="true"] { background: var(--grey); }
 
 .sheet-room,
 .sheet-title,
@@ -614,9 +646,12 @@ html[data-theme="dark"] .sheet-fade { background: var(--black-12); }
 
 .sheet-who .who-name { display: none; }
 
+.urgency-standard:hover,
 .urgency-standard[aria-expanded="true"],
-.sheet-line:hover .urgency-standard,
-.sheet:focus-within .urgency-standard { background: var(--grey); }
+.sheet-line:hover .urgency-standard:hover,
+.sheet-line:hover .urgency-standard[aria-expanded="true"],
+.sheet:focus-within .urgency-standard:hover,
+.sheet:focus-within .urgency-standard[aria-expanded="true"] { background: var(--grey); }
 .sheet.is-open .urgency-standard,
 .sheet.is-open .urgency-standard[aria-expanded="true"],
 .sheet.is-open .sheet-line:hover .urgency-standard { background: var(--sidebar-grey); }
@@ -713,8 +748,8 @@ html[data-theme="dark"] .sheet-fade { background: var(--black-12); }
 .sheet-edit {
   flex: none;
   width: 10px;
-  min-width: 0;
-  max-width: 0;
+  min-width: 10px;
+  max-width: 10px;
   height: 10px;
   opacity: 0;
   overflow: hidden;
@@ -733,11 +768,6 @@ html[data-theme="dark"] .sheet-fade { background: var(--black-12); }
 .sheet-line .urgency {
   overflow: visible;
   max-width: none;
-}
-
-.sheet-type:hover,
-.sheet-type[aria-expanded="true"] {
-  margin-inline-end: calc((10px + var(--space-2)) * -1);
 }
 
 .sheet-type:hover > .sheet-edit,
@@ -763,81 +793,11 @@ html[data-theme="dark"] .sheet-fade { background: var(--black-12); }
 .sheet-who[aria-expanded="true"] .sheet-edit { transform: translateY(-50%) rotate(180deg); }
 
 
-.sheet-type[data-type="Housekeeping"],
-.sheet-type[data-type="Housekeeping"]:hover,
-.sheet-type[data-type="Housekeeping"][aria-expanded="true"],
-.sheet-line:hover .sheet-type[data-type="Housekeeping"]:hover,
-.sheet:focus-within .sheet-type[data-type="Housekeeping"]:hover,
-.side-type[data-type="Housekeeping"],
-.side-type[data-type="Housekeeping"]:hover,
-.side-type[data-type="Housekeeping"][aria-expanded="true"] {
-  background: var(--dept-housekeeping-bg);
-  color: var(--dept-housekeeping);
-}
-
-.sheet-type[data-type="Maintenance"],
-.sheet-type[data-type="Maintenance"]:hover,
-.sheet-type[data-type="Maintenance"][aria-expanded="true"],
-.sheet-line:hover .sheet-type[data-type="Maintenance"]:hover,
-.sheet:focus-within .sheet-type[data-type="Maintenance"]:hover,
-.side-type[data-type="Maintenance"],
-.side-type[data-type="Maintenance"]:hover,
-.side-type[data-type="Maintenance"][aria-expanded="true"] {
-  background: var(--dept-maintenance-bg);
-  color: var(--dept-maintenance);
-}
-
-.sheet-type[data-type="Front Desk"],
-.sheet-type[data-type="Front Desk"]:hover,
-.sheet-type[data-type="Front Desk"][aria-expanded="true"],
-.sheet-line:hover .sheet-type[data-type="Front Desk"]:hover,
-.sheet:focus-within .sheet-type[data-type="Front Desk"]:hover,
-.side-type[data-type="Front Desk"],
-.side-type[data-type="Front Desk"]:hover,
-.side-type[data-type="Front Desk"][aria-expanded="true"] {
-  background: var(--tag-bg);
-  color: var(--tag-text);
-}
-
-.sheet-type[data-type="Food & Beverage"],
-.sheet-type[data-type="Food & Beverage"]:hover,
-.sheet-type[data-type="Food & Beverage"][aria-expanded="true"],
-.sheet-line:hover .sheet-type[data-type="Food & Beverage"]:hover,
-.sheet:focus-within .sheet-type[data-type="Food & Beverage"]:hover,
-.side-type[data-type="Food & Beverage"],
-.side-type[data-type="Food & Beverage"]:hover,
-.side-type[data-type="Food & Beverage"][aria-expanded="true"] {
-  background: var(--dept-food-bg);
-  color: var(--dept-food);
-}
-
-.sheet-type[data-type="Sales"],
-.sheet-type[data-type="Sales"]:hover,
-.sheet-type[data-type="Sales"][aria-expanded="true"],
-.sheet-line:hover .sheet-type[data-type="Sales"]:hover,
-.sheet:focus-within .sheet-type[data-type="Sales"]:hover,
-.side-type[data-type="Sales"],
-.side-type[data-type="Sales"]:hover,
-.side-type[data-type="Sales"][aria-expanded="true"] {
-  background: var(--dept-sales-bg);
-  color: var(--dept-sales);
-}
-
-.sheet-type[data-type="Management"],
-.sheet-type[data-type="Management"]:hover,
-.sheet-type[data-type="Management"][aria-expanded="true"],
-.sheet-line:hover .sheet-type[data-type="Management"]:hover,
-.sheet:focus-within .sheet-type[data-type="Management"]:hover,
-.side-type[data-type="Management"],
-.side-type[data-type="Management"]:hover,
-.side-type[data-type="Management"][aria-expanded="true"] {
-  background: var(--dept-management-bg);
-  color: var(--dept-management);
-}
-
 .sheet-who {
   display: inline-flex;
   align-items: center;
+  /* The empty circle has no glyphs, so a baseline line box would hang a descender under it and grow the row. */
+  vertical-align: top;
   height: auto;
   padding: 0;
   background: transparent;
@@ -875,7 +835,8 @@ html[data-theme="dark"] .sheet-fade { background: var(--black-12); }
   position: fixed;
   z-index: 80;
   width: max-content;
-  min-width: 168px;
+  min-width: var(--menu-min);
+  max-width: var(--menu-max);
 }
 
 #row-menu .menu-item { white-space: nowrap; }
@@ -988,6 +949,109 @@ html[data-theme="dark"] .cal-day:hover:not(:disabled) { background: var(--grey);
 .sheet-activity { grid-column: 4 / -1; }
 
 .sheet-detail[hidden] { display: none; }
+
+.sheet-detail:has(.sheet-detail-body) { padding: 0; }
+
+.sheet-detail-body {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(240px, 0.9fr);
+  gap: var(--space-24);
+  align-items: start;
+  padding: var(--space-16) var(--space-12) var(--space-20);
+  min-width: 0;
+}
+
+.sheet-detail-body > .sheet-detail-main,
+.sheet-detail-body > .sheet-activity { grid-column: auto; min-width: 0; }
+
+.sheet-detail-main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-24);
+}
+
+.sheet-detail-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  min-width: 0;
+}
+
+.sheet-detail-group + .sheet-detail-group {
+  border-top: 1px solid var(--line);
+  padding-top: var(--space-16);
+}
+
+.sheet-field {
+  display: grid;
+  grid-template-columns: 112px minmax(0, 1fr);
+  gap: var(--space-12);
+  align-items: start;
+}
+
+.sheet-field-value {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  color: var(--black);
+  font-size: var(--text-14);
+  line-height: 20px;
+  text-wrap: var(--text-wrap-copy);
+  overflow-wrap: anywhere;
+}
+
+.sheet-detail-body .sheet-desc {
+  margin: 0;
+  overflow: visible;
+  min-height: 0;
+  text-wrap: var(--text-wrap-copy);
+  overflow-wrap: anywhere;
+}
+
+.sheet-detail-body .side-log { align-items: flex-start; }
+
+.sheet-detail-body .side-log-text {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--text-14);
+  line-height: 20px;
+}
+
+.sheet-activity .view-count {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sheet-fold {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 16px;
+  height: 20px;
+  margin-inline-start: auto;
+  padding: 0;
+  background: transparent;
+  color: var(--black-50);
+}
+
+.sheet-fold svg { transition: transform 160ms var(--ease-out); }
+.sheet-fold[aria-expanded="false"] svg { transform: rotate(-90deg); }
+
+.sheet-line:hover .sheet-fold:hover,
+.sheet.is-open .sheet-fold:hover {
+  background: var(--grey);
+  border-radius: 4px;
+}
+
+.sheet-detail-body .msg { width: 100%; height: auto; min-height: 38px; }
+.sheet-detail-body .msg .lead { align-items: center; gap: 6px; }
 
 .sheet-read,
 .sheet-activity { display: flex; flex-direction: column; gap: var(--space-8); min-width: 0; }
@@ -1109,6 +1173,7 @@ html[data-theme="dark"] .cal-day:hover:not(:disabled) { background: var(--grey);
 }
 
 html[data-theme="dark"] .sheet-line:hover,
+html[data-theme="dark"] .sheet:not(.is-open) .sheet-line:has([aria-expanded="true"]),
 html[data-theme="dark"] .sheet.is-open .sheet-detail { background: var(--grey); }
 html[data-theme="dark"] .sheet.is-open .sheet-line,
 html[data-theme="dark"] .sheet.is-open .sheet-line:hover {
@@ -1133,9 +1198,12 @@ html[data-theme="dark"] .sheet-line:hover .sheet-status:hover,
 html[data-theme="dark"] .sheet-line:hover .sheet-status[aria-expanded="true"],
 html[data-theme="dark"] .sheet:focus-within .sheet-status:hover,
 html[data-theme="dark"] .sheet:focus-within .sheet-status[aria-expanded="true"] { background: var(--black-12); }
+html[data-theme="dark"] .urgency-standard:hover,
 html[data-theme="dark"] .urgency-standard[aria-expanded="true"],
-html[data-theme="dark"] .sheet-line:hover .urgency-standard,
-html[data-theme="dark"] .sheet:focus-within .urgency-standard { background: var(--black-12); }
+html[data-theme="dark"] .sheet-line:hover .urgency-standard:hover,
+html[data-theme="dark"] .sheet-line:hover .urgency-standard[aria-expanded="true"],
+html[data-theme="dark"] .sheet:focus-within .urgency-standard:hover,
+html[data-theme="dark"] .sheet:focus-within .urgency-standard[aria-expanded="true"] { background: var(--black-12); }
 html[data-theme="dark"] .sheet.is-open .urgency-standard,
 html[data-theme="dark"] .sheet.is-open .urgency-standard[aria-expanded="true"],
 html[data-theme="dark"] .sheet.is-open .sheet-line:hover .urgency-standard { background: var(--grey); }
@@ -1148,77 +1216,18 @@ html[data-theme="dark"] .sheet-line .urgency[aria-expanded="true"] {
   background: transparent;
 }
 
-html[data-theme="dark"] .sheet-type[data-type="Housekeeping"],
-html[data-theme="dark"] .sheet-type[data-type="Housekeeping"]:hover,
-html[data-theme="dark"] .sheet-line:hover .sheet-type[data-type="Housekeeping"]:hover,
-html[data-theme="dark"] .sheet:focus-within .sheet-type[data-type="Housekeeping"]:hover,
-html[data-theme="dark"] .side-type[data-type="Housekeeping"],
-html[data-theme="dark"] .side-type[data-type="Housekeeping"]:hover,
-html[data-theme="dark"] .side-type[data-type="Housekeeping"][aria-expanded="true"] {
-  background: var(--dept-housekeeping-bg);
-  color: var(--dept-housekeeping);
-}
-
-html[data-theme="dark"] .sheet-type[data-type="Maintenance"],
-html[data-theme="dark"] .sheet-type[data-type="Maintenance"]:hover,
-html[data-theme="dark"] .sheet-line:hover .sheet-type[data-type="Maintenance"]:hover,
-html[data-theme="dark"] .sheet:focus-within .sheet-type[data-type="Maintenance"]:hover,
-html[data-theme="dark"] .side-type[data-type="Maintenance"],
-html[data-theme="dark"] .side-type[data-type="Maintenance"]:hover,
-html[data-theme="dark"] .side-type[data-type="Maintenance"][aria-expanded="true"] {
-  background: var(--dept-maintenance-bg);
-  color: var(--dept-maintenance);
-}
-
-html[data-theme="dark"] .sheet-type[data-type="Front Desk"],
-html[data-theme="dark"] .sheet-type[data-type="Front Desk"]:hover,
-html[data-theme="dark"] .sheet-line:hover .sheet-type[data-type="Front Desk"]:hover,
-html[data-theme="dark"] .sheet:focus-within .sheet-type[data-type="Front Desk"]:hover,
-html[data-theme="dark"] .side-type[data-type="Front Desk"],
-html[data-theme="dark"] .side-type[data-type="Front Desk"]:hover,
-html[data-theme="dark"] .side-type[data-type="Front Desk"][aria-expanded="true"] {
-  background: var(--tag-bg);
-  color: var(--tag-text);
-}
-
-html[data-theme="dark"] .sheet-type[data-type="Food & Beverage"],
-html[data-theme="dark"] .sheet-type[data-type="Food & Beverage"]:hover,
-html[data-theme="dark"] .sheet-line:hover .sheet-type[data-type="Food & Beverage"]:hover,
-html[data-theme="dark"] .sheet:focus-within .sheet-type[data-type="Food & Beverage"]:hover,
-html[data-theme="dark"] .side-type[data-type="Food & Beverage"],
-html[data-theme="dark"] .side-type[data-type="Food & Beverage"]:hover,
-html[data-theme="dark"] .side-type[data-type="Food & Beverage"][aria-expanded="true"] {
-  background: var(--dept-food-bg);
-  color: var(--dept-food);
-}
-
-html[data-theme="dark"] .sheet-type[data-type="Sales"],
-html[data-theme="dark"] .sheet-type[data-type="Sales"]:hover,
-html[data-theme="dark"] .sheet-line:hover .sheet-type[data-type="Sales"]:hover,
-html[data-theme="dark"] .sheet:focus-within .sheet-type[data-type="Sales"]:hover,
-html[data-theme="dark"] .side-type[data-type="Sales"],
-html[data-theme="dark"] .side-type[data-type="Sales"]:hover,
-html[data-theme="dark"] .side-type[data-type="Sales"][aria-expanded="true"] {
-  background: var(--dept-sales-bg);
-  color: var(--dept-sales);
-}
-
-html[data-theme="dark"] .sheet-type[data-type="Management"],
-html[data-theme="dark"] .sheet-type[data-type="Management"]:hover,
-html[data-theme="dark"] .sheet-line:hover .sheet-type[data-type="Management"]:hover,
-html[data-theme="dark"] .sheet:focus-within .sheet-type[data-type="Management"]:hover,
-html[data-theme="dark"] .side-type[data-type="Management"],
-html[data-theme="dark"] .side-type[data-type="Management"]:hover,
-html[data-theme="dark"] .side-type[data-type="Management"][aria-expanded="true"] {
-  background: var(--dept-management-bg);
-  color: var(--dept-management);
-}
 html[data-theme="dark"] .sheet-room:hover,
 html[data-theme="dark"] .sheet-room[aria-expanded="true"],
 html[data-theme="dark"] .sheet-line:hover .sheet-room:hover,
 html[data-theme="dark"] .sheet-line:hover .sheet-room[aria-expanded="true"],
 html[data-theme="dark"] .sheet:focus-within .sheet-room:hover,
 html[data-theme="dark"] .sheet:focus-within .sheet-room[aria-expanded="true"] { background: var(--black-12); }
+html[data-theme="dark"] .sheet-chip:hover,
+html[data-theme="dark"] .sheet-chip[aria-expanded="true"] { background: var(--grey); }
+html[data-theme="dark"] .sheet-line:hover .sheet-chip:hover,
+html[data-theme="dark"] .sheet-line:hover .sheet-chip[aria-expanded="true"],
+html[data-theme="dark"] .sheet:focus-within .sheet-chip:hover,
+html[data-theme="dark"] .sheet:focus-within .sheet-chip[aria-expanded="true"] { background: var(--black-12); }
 
 html[data-theme="dark"] .sheet-facts .side-field[aria-expanded="true"],
 html[data-theme="dark"] .sheet-line:hover .sheet-facts .side-field:hover,
@@ -1259,7 +1268,9 @@ html[data-theme="dark"] .sheet-who.is-empty[aria-expanded="true"] .avatar.mini {
 
 .todo-side {
   position: absolute;
-  top: 0;
+  /* Under the 60px title and the 43px tab row, on the card's right edge.
+     Lance stays outside the card, and the sheet underneath does not move. */
+  top: calc(60px + 43px);
   right: 0;
   bottom: 0;
   z-index: 60;
@@ -1327,6 +1338,13 @@ html[data-theme="dark"] .sheet-who.is-empty[aria-expanded="true"] .avatar.mini {
   gap: var(--space-8);
 }
 
+.todo-side-actions .drop .menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  left: auto;
+  z-index: 6;
+}
 .todo-side-actions .note-more { opacity: 1; }
 .todo-side-actions .note-more[aria-expanded="true"]:not(:hover) { background: transparent; }
 
@@ -1366,6 +1384,19 @@ html[data-theme="dark"] .sheet-who.is-empty[aria-expanded="true"] .avatar.mini {
   gap: 4px;
   min-width: 0;
   min-height: 20px;
+}
+
+/* The side title is the table's To-do pair: location, then item. The chip padding sits outside the word. */
+.todo-side-facts .title-sub {
+  width: auto;
+  max-width: 100%;
+  margin-inline-start: calc(var(--space-4) * -1);
+}
+
+.todo-side-facts .title-sub-titles {
+  height: auto;
+  min-height: 20px;
+  overflow: visible;
 }
 
 .todo-side-facts[hidden] { display: none; }
@@ -1440,7 +1471,10 @@ html[data-theme="dark"] .sheet-who.is-empty[aria-expanded="true"] .avatar.mini {
 }
 
 .todo-side [data-side-desc]::placeholder { color: var(--black-50); }
-.todo-side [data-side-desc]:focus { box-shadow: inset 0 -1px 0 var(--black-25); }
+/* Inset shadow is clipped by overflow: hidden, so the line is a border. */
+.todo-side [data-side-desc] { border-bottom: 1px solid var(--black-12); }
+.todo-side [data-side-desc]:hover,
+.todo-side [data-side-desc]:focus { border-bottom-color: var(--black-25); }
 
 .todo-side-rule {
   height: 1px;
@@ -1607,12 +1641,12 @@ html[data-sheet-layout="chips"] .sheet-facts {
 .side-field[aria-expanded="true"] { background: var(--sidebar-grey); }
 
 .todo-side .side-field:not(.side-type):hover,
-.todo-side .side-field:not(.side-type)[aria-expanded="true"] { background: var(--grey); }
+.todo-side .side-field:not(.side-type)[aria-expanded="true"] { background: var(--sidebar-grey); }
 
-/* Same fill as the table chip. --black-12 is the step past a hovered row, darker than --grey-up. */
+/* The panel is the page surface, so the hover is the first grey. A hovered table row is already that grey, and its chips stay one step darker. */
 html[data-theme="dark"] .todo-side .side-field:not(.side-type):hover,
 html[data-theme="dark"] .todo-side .side-field:not(.side-type)[aria-expanded="true"] {
-  background: var(--black-12);
+  background: var(--grey);
 }
 
 html[data-theme="dark"] .todo-side .side-status:hover,
@@ -1670,6 +1704,22 @@ html[data-theme="dark"] .todo-side .side-photo-remove:hover {
 .side-status .sheet-edit,
 .side-field .sheet-edit { margin-inline-start: -4px; }
 
+/* The detail view keeps the chevron in view. The pill fill still waits for hover. */
+.todo-side .side-field .sheet-edit,
+.todo-side .urgency .sheet-edit,
+.todo-side .side-who .sheet-edit,
+.todo-side .side-status .sheet-edit,
+.todo-side .side-type > .sheet-edit {
+  width: 10px;
+  min-width: 10px;
+  max-width: 10px;
+  margin-inline-start: 0;
+  opacity: 1;
+  color: var(--black-50);
+}
+
+.todo-side .sheet-edit { color: var(--black-50); }
+
 .side-status [data-side-status-icon] svg { display: block; width: 14px; height: 14px; }
 
 #field-menu .menu-item > svg:not(.check) { width: 14px; height: 14px; flex: none; }
@@ -1680,9 +1730,19 @@ html[data-theme="dark"] .todo-side .side-photo-remove:hover {
   width: max-content;
   height: 20px;
   padding: var(--space-2) var(--space-4);
-  font-size: var(--text-13);
+  font-size: var(--text-14);
   font-weight: 400;
   line-height: 16px;
+}
+
+/* Detail values share one size. Table chips stay 13px. */
+.todo-side-meta .sheet-type,
+.todo-side-meta .mini-pill,
+.todo-side-meta .status,
+.todo-side-meta .urgency,
+.todo-side-meta .side-field,
+.todo-side-meta .side-type {
+  font-size: var(--text-14);
 }
 
 .todo-side .urgency:hover .sheet-edit,
@@ -1696,6 +1756,12 @@ html[data-theme="dark"] .todo-side .side-photo-remove:hover {
   max-width: 10px;
   margin-inline-start: 0;
   opacity: 1;
+}
+
+.todo-side .side-field:hover .sheet-edit,
+.todo-side .side-field[aria-expanded="true"] .sheet-edit {
+  width: 10px;
+  min-width: 10px;
 }
 
 .todo-side .side-status[aria-expanded="true"] .sheet-edit,
@@ -1860,6 +1926,7 @@ html[data-theme="dark"] .todo-side .side-photo-remove:hover {
   .sheet-grid {
     --cols: max-content 56px minmax(140px, 1fr) minmax(max-content, max-content) minmax(max-content, max-content) minmax(max-content, max-content) minmax(max-content, max-content);
   }
+  .sheet-detail-body { grid-template-columns: minmax(0, 1fr); }
 }
 
 @container sheet-lines (max-width: 640px) {
@@ -1879,72 +1946,77 @@ html[data-theme="dark"] .todo-side .side-photo-remove:hover {
   .cal-pop { opacity: 1; scale: 1; }
 }
 
-html[data-dept-chip="dot"] .side-type,
-html[data-theme="dark"][data-dept-chip="dot"] .side-type {
+.side-type,
+html[data-theme="dark"] .side-type {
   background: transparent;
   color: var(--black);
   box-shadow: 0 0 0 1px var(--black-12);
 }
-html[data-dept-chip="dot"] .side-type:hover,
-html[data-dept-chip="dot"] .side-type[aria-expanded="true"] {
+.side-type:hover,
+.side-type[aria-expanded="true"] {
   background: var(--sidebar-grey);
   color: var(--black);
 }
-html[data-theme="dark"][data-dept-chip="dot"] .side-type:hover,
-html[data-theme="dark"][data-dept-chip="dot"] .side-type[aria-expanded="true"] {
+html[data-theme="dark"] .side-type:hover,
+html[data-theme="dark"] .side-type[aria-expanded="true"] {
   background: var(--grey);
   color: var(--black);
 }
 
 /* Opaque page fill, including while the row is hovered, so the row color does not show through. */
-html[data-dept-chip="dot"] .sheet-type[data-type],
-html[data-theme="dark"][data-dept-chip="dot"] .sheet-type[data-type],
-html[data-dept-chip="dot"] .sheet-line:hover .sheet-type[data-type],
-html[data-theme="dark"][data-dept-chip="dot"] .sheet-line:hover .sheet-type[data-type],
-html[data-dept-chip="dot"] .sheet:focus-within .sheet-type[data-type],
-html[data-theme="dark"][data-dept-chip="dot"] .sheet:focus-within .sheet-type[data-type] {
+.sheet-type[data-type],
+html[data-theme="dark"] .sheet-type[data-type],
+.sheet-line:hover .sheet-type[data-type],
+html[data-theme="dark"] .sheet-line:hover .sheet-type[data-type],
+.sheet:focus-within .sheet-type[data-type],
+html[data-theme="dark"] .sheet:focus-within .sheet-type[data-type] {
   background: var(--white);
   color: var(--text-muted);
   box-shadow: 0 0 0 1px var(--black-12);
 }
 /* One step past the row hover. Light row hover is --sidebar-grey, so --grey.
    Dark row hover is --grey, so --black-12. */
-html[data-dept-chip="dot"] .sheet-type[data-type]:hover,
-html[data-dept-chip="dot"] .sheet-type[data-type][aria-expanded="true"],
-html[data-dept-chip="dot"] .sheet-line:hover .sheet-type[data-type]:hover,
-html[data-dept-chip="dot"] .sheet-line:hover .sheet-type[data-type][aria-expanded="true"],
-html[data-dept-chip="dot"] .sheet:focus-within .sheet-type[data-type]:hover,
-html[data-dept-chip="dot"] .sheet:focus-within .sheet-type[data-type][aria-expanded="true"] {
+.sheet-type[data-type]:hover,
+.sheet-type[data-type][aria-expanded="true"],
+.sheet-line:hover .sheet-type[data-type]:hover,
+.sheet-line:hover .sheet-type[data-type][aria-expanded="true"],
+.sheet:focus-within .sheet-type[data-type]:hover,
+.sheet:focus-within .sheet-type[data-type][aria-expanded="true"] {
   background: var(--grey);
   color: var(--black);
   box-shadow: 0 0 0 1px var(--black-12);
 }
-html[data-theme="dark"][data-dept-chip="dot"] .sheet-type[data-type]:hover,
-html[data-theme="dark"][data-dept-chip="dot"] .sheet-type[data-type][aria-expanded="true"],
-html[data-theme="dark"][data-dept-chip="dot"] .sheet-line:hover .sheet-type[data-type]:hover,
-html[data-theme="dark"][data-dept-chip="dot"] .sheet-line:hover .sheet-type[data-type][aria-expanded="true"],
-html[data-theme="dark"][data-dept-chip="dot"] .sheet:focus-within .sheet-type[data-type]:hover,
-html[data-theme="dark"][data-dept-chip="dot"] .sheet:focus-within .sheet-type[data-type][aria-expanded="true"] {
+html[data-theme="dark"] .sheet-type[data-type]:hover,
+html[data-theme="dark"] .sheet-type[data-type][aria-expanded="true"],
+html[data-theme="dark"] .sheet-line:hover .sheet-type[data-type]:hover,
+html[data-theme="dark"] .sheet-line:hover .sheet-type[data-type][aria-expanded="true"],
+html[data-theme="dark"] .sheet:focus-within .sheet-type[data-type]:hover,
+html[data-theme="dark"] .sheet:focus-within .sheet-type[data-type][aria-expanded="true"] {
   background: var(--black-12);
   color: var(--black);
   box-shadow: 0 0 0 1px var(--black-25);
 }
-html[data-dept-chip="dot"] .sheet-type::before { margin-inline-end: var(--space-8); }
-html[data-dept-chip="dot"] .sheet-type > .sheet-edit,
-html[data-dept-chip="dot"] .side-type > .sheet-edit { margin-inline-start: 0; }
-html[data-dept-chip="dot"] .sheet-type:hover > .sheet-edit,
-html[data-dept-chip="dot"] .sheet-type[aria-expanded="true"] > .sheet-edit {
+/* The table type stays muted until hover. In the detail panel the label is black. */
+.todo-side .sheet-type[data-type],
+html[data-theme="dark"] .todo-side .sheet-type[data-type] {
+  color: var(--black);
+}
+.sheet-type::before { margin-inline-end: 6px; }
+.sheet-type > .sheet-edit,
+.side-type > .sheet-edit { margin-inline-start: 0; }
+.sheet-type:hover > .sheet-edit,
+.sheet-type[aria-expanded="true"] > .sheet-edit {
   margin-inline-start: var(--space-4);
 }
-html[data-dept-chip="dot"] .sheet-type:hover,
-html[data-dept-chip="dot"] .sheet-type[aria-expanded="true"] {
+.sheet-type:hover,
+.sheet-type[aria-expanded="true"] {
   margin-inline-end: calc((10px + var(--space-4)) * -1);
 }
 .sheet-type-slot > .sizer-chip { padding: var(--space-2) 7px; }
-html[data-dept-chip="dot"] .sheet-type-slot > .sizer-chip { padding-inline: var(--space-8); }
-html[data-dept-chip="dot"] .sheet-type-slot > .sizer-chip > span { gap: var(--space-8); }
+.sheet-type-slot > .sizer-chip { padding-inline: var(--space-8); }
+.sheet-type-slot > .sizer-chip > span { gap: var(--space-8); }
 
-html[data-dept-chip="dot"] .sheet-type-slot > .sizer-chip > span::before {
+.sheet-type-slot > .sizer-chip > span::before {
   content: "";
   width: var(--space-8);
   height: var(--space-8);

@@ -1,0 +1,46 @@
+{
+  "name": "@lance-live/gallery-ui",
+  "version": "0.1.0",
+  "private": true,
+  "description": "React components ported from the gallery design system. Distinct from @lance-live/ds-web.",
+  "type": "module",
+  "license": "UNLICENSED",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./tokens.css": "./dist/tokens.css",
+    "./styles.css": "./dist/styles.css"
+  },
+  "scripts": {
+    "build": "node scripts/prefix-gallery.mjs && tsup && node scripts/copy-css.mjs",
+    "prefix": "node scripts/prefix-gallery.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "peerDependencies": {
+    "react": "^19",
+    "react-dom": "^19"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "6.9.1",
+    "@testing-library/react": "16.3.2",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "jsdom": "29.0.0",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "tsup": "8.5.1",
+    "typescript": "5.7.2",
+    "vitest": "4.1.10"
+  }
+}

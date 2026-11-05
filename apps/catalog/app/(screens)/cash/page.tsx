@@ -162,6 +162,16 @@ export default function CashPage() {
     play();
   }
 
+  if (view.name === "locations") {
+    return (
+      <LocationsEditor
+        locations={locations}
+        onBack={() => setView({ name: "list" })}
+        onChange={setLocations}
+      />
+    );
+  }
+
   return (
     <PageLayout
       className="sheet-page cash-page"
@@ -247,9 +257,6 @@ export default function CashPage() {
           </div>
         </div>
       ) : null}
-      {view.name === "locations" ? (
-        <LocationsEditor locations={locations} onCancel={() => setView({ name: "list" })} onSave={(next) => { setLocations(next); setView({ name: "list" }); }} />
-      ) : null}
       {view.name === "count" ? (
         <CountForm
           locations={locations}
@@ -293,35 +300,43 @@ export default function CashPage() {
   );
 }
 
-function countColumns(departmentByLocation: Map<string, DepartmentName>): Array<DataColumn<CashCount>> {
+function countColumns(departmentByLocation: Map<string, DepartmentName | null>): Array<DataColumn<CashCount>> {
+  const even = { flex: true, minWidth: 125 };
   return [
     {
       id: "shift",
       title: "Shift",
       labelInset: 8,
+      ...even,
       sortValue: (row) => row.shift,
       render: (row) => <span className="cash-shift">{shiftLabel(row.shift)}</span>,
     },
     {
       id: "dept",
       title: "Dept",
-      flex: true,
       labelInset: 8,
-      render: (row) => <DepartmentChip name={departmentByLocation.get(row.locationId) ?? "Front desk"} />,
+      ...even,
+      render: (row) => {
+        const name = departmentByLocation.get(row.locationId);
+        return name ? <DepartmentChip name={name} /> : null;
+      },
     },
     {
       id: "by",
       title: "Counted by",
+      ...even,
       render: (row) => <Person variant="pill" name={row.by} initials={row.initials} />,
     },
     {
       id: "when",
       title: "Timestamp",
+      ...even,
       render: (row) => <span className="sheet-when">{row.when}</span>,
     },
     {
       id: "total",
       title: "Total",
+      ...even,
       sortValue: (row) => totalOf(row),
       render: (row) => <span className="cash-money">{formatMoney(totalOf(row))}</span>,
     },
@@ -329,6 +344,7 @@ function countColumns(departmentByLocation: Map<string, DepartmentName>): Array<
       id: "variance",
       title: "Over/short",
       sortable: true,
+      ...even,
       sortValue: (row) => varianceOf(row),
       render: (row) => <Variance count={row} />,
     },

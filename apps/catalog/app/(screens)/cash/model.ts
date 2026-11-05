@@ -23,7 +23,7 @@ export type CashShift = {
 export type CashLocation = {
   id: string;
   name: string;
-  department: DepartmentName;
+  department: DepartmentName | null;
   expected: number;
   archived: boolean;
   shifts: CashShift[];
@@ -202,7 +202,7 @@ export function createLocation(id: string): CashLocation {
   return {
     id,
     name: "",
-    department: "Front desk",
+    department: null,
     expected: 0,
     archived: false,
     shifts: SHIFT_ORDER.map((name) => ({ id: name, name, on: false })),

@@ -13,14 +13,14 @@ export function PageLayout({
   ...rest
 }: {
   icon: IconName;
-  title: string;
+  title: ReactNode;
   count?: ReactNode;
   /** Secondary actions first. The primary action is last, so it sits furthest right. */
   actions?: ReactNode;
   tabs?: ReactNode;
   toolbar?: ReactNode;
   children: ReactNode;
-} & HTMLAttributes<HTMLElement>) {
+} & Omit<HTMLAttributes<HTMLElement>, "title">) {
   return (
     <main className={["notes-page", "sds", className].filter(Boolean).join(" ")} {...rest}>
       <PageHeader mark={icon} title={title} count={count != null ? String(count) : undefined} actions={actions ?? null} />

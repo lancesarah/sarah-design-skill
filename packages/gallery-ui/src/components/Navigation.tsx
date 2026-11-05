@@ -12,7 +12,7 @@ export function PageHeader({
   search,
   actions,
 }: {
-  title: string;
+  title: ReactNode;
   count?: string;
   mark?: IconName;
   search?: ReactNode;

@@ -171,6 +171,19 @@
   margin-top: var(--space-25);
 }
 
+.cash-locations .page-head h1 {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  text-wrap: nowrap;
+}
+
+.cash-crumb-sep { color: var(--text-muted); }
+
+.cash-back:hover { text-decoration: underline; }
+
+.cash-back-icon { transform: rotate(90deg); }
+
 .cash-block {
   display: flex;
   flex-direction: column;
@@ -186,23 +199,12 @@
   width: 100%;
 }
 
-.cash-block-head h2,
-.cash-loc-title {
+.cash-block-head h2 {
   margin: 0;
   color: var(--black);
   font-family: var(--font);
   font-size: var(--text-16);
   font-weight: 500;
-  line-height: 20px;
-}
-
-.cash-loc-title { font-size: var(--text-20); line-height: 28px; }
-.cash-loc-title.is-empty { color: var(--text-muted); }
-
-.cash-sub {
-  margin: var(--space-4) 0 0;
-  color: var(--text-muted);
-  font-size: var(--text-14);
   line-height: 20px;
 }
 
@@ -295,169 +297,367 @@
   margin-left: auto;
 }
 
-.cash-manage-body {
+.cash-manage {
   display: flex;
   flex: 1;
-  min-height: 0;
+  flex-direction: column;
+  gap: var(--space-16);
   min-width: 0;
-}
-
-.cash-manage-list {
-  display: flex;
-  flex: none;
-  flex-direction: column;
-  gap: var(--space-8);
-  width: 240px;
   min-height: 0;
-  padding: var(--space-16);
   overflow: auto;
-  border-right: 1px solid var(--line);
+  padding: var(--space-16);
+  scrollbar-color: var(--black-25) var(--white);
+  scrollbar-width: thin;
 }
 
-.cash-manage-label {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: var(--space-8);
-}
-
-.cash-loc {
+.inset-card {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: 2px;
-  width: 100%;
-  padding: var(--space-8);
+  flex: none;
+  padding: 6px;
+  border: 1px solid var(--grey);
+  border-radius: 10px;
+  background: var(--sidebar-grey);
+}
+
+.inset-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-16);
+  min-height: 50px;
+  padding: 11px 22px;
+}
+
+/* The shell's top padding sits above the header, so the row centers in that grey band, flush with the white panel. */
+.inset-card:has(.inset-card-body) .inset-card-head {
+  margin-top: -6px;
+  min-height: 56px;
+}
+
+.inset-card-title {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+  font-size: var(--text-16);
+  line-height: 21px;
+}
+
+.inset-card-tools {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.inset-card-tools > button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
   border-radius: var(--radius-control);
   color: var(--black);
-  text-align: left;
 }
 
-.cash-loc:hover,
-.cash-loc[aria-current="true"] { background: var(--sidebar-grey); }
+.inset-card-tools > button:hover,
+.inset-card-tools > .cash-more[aria-expanded="true"] { background: var(--grey); }
 
-.cash-loc-name {
-  max-width: 100%;
-  overflow: hidden;
-  font-size: var(--text-14);
-  font-weight: 500;
-  line-height: 20px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
+.inset-card-chevron[aria-expanded="false"] .i { transform: rotate(-90deg); }
 
-.cash-loc-name.is-empty,
-.cash-loc-meta { color: var(--text-muted); font-weight: 400; font-size: var(--text-13); line-height: 16px; }
-.cash-loc-name.is-empty { font-size: var(--text-14); font-weight: 500; line-height: 20px; }
-
-.cash-manage-list .btn { margin-top: auto; }
-
-.cash-manage-detail {
-  flex: 1;
-  min-width: 0;
-  overflow: auto;
-  padding: var(--space-16) var(--space-16) var(--space-25);
-}
-
-.cash-loc-head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: var(--space-16);
-}
-
-.cash-loc-head .btn[aria-pressed="true"] { background: var(--sidebar-grey); }
-
-.cash-fields {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  gap: var(--space-16);
-  margin-top: var(--space-25);
-}
-
-.cash-page .cash-fields .field { width: min(268px, 100%); }
-
-.cash-check-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--space-4) var(--space-16);
-  width: 100%;
-}
-
-.cash-check-col {
+.inset-card-body {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  gap: 40px;
+  padding: 30px 30px 40px;
+  border: 1px solid var(--grey);
+  border-radius: var(--radius-control);
+  background: var(--white);
+}
+
+.cash-card-id {
+  display: flex;
+  align-items: center;
+  gap: var(--space-20);
+  min-width: 0;
+}
+
+.cash-card-name {
+  display: flex;
+  align-items: center;
   gap: var(--space-4);
   min-width: 0;
 }
 
-.cash-check {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-8);
-  max-width: 100%;
-  min-height: 28px;
-  padding: 0 var(--space-4);
-  border-radius: var(--radius-control);
-  color: var(--black);
-  font-size: var(--text-14);
-  line-height: 20px;
-  text-align: left;
+.cash-name-fit {
+  position: relative;
+  display: inline-block;
+  max-width: 36ch;
 }
 
-.cash-check:hover { background: var(--sidebar-grey); }
-.cash-check[aria-checked="false"] { color: var(--text-muted); }
+.cash-name-fit > span {
+  visibility: hidden;
+  display: block;
+  overflow: hidden;
+  white-space: pre;
+  font-size: var(--text-16);
+  line-height: 21px;
+}
+
+.cash-name-fit input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  color: var(--black);
+  font-size: var(--text-16);
+  line-height: 21px;
+}
+
+.cash-card-name input::placeholder { color: var(--black-25); }
+
+.inset-card.is-archived .cash-card-name input { color: var(--text-muted); }
+
+.cash-card-name button {
+  display: inline-flex;
+  flex: none;
+  color: var(--black);
+}
+
+.cash-card-id .dept-pick { background: var(--white); }
+
+.cash-card-bank {
+  flex: none;
+  color: var(--black);
+  font-size: var(--text-16);
+  line-height: 21px;
+  font-variant-numeric: var(--numeric);
+}
+
+.cash-card-bank.is-quiet { color: var(--black-25); }
+
+.cash-choose-dept {
+  display: inline-flex;
+  align-items: center;
+  height: 20px;
+  padding: var(--space-2) var(--space-8);
+  border-radius: 4px;
+  background: var(--white);
+  box-shadow: 0 0 0 1px var(--black-12);
+  color: var(--black);
+  font-size: var(--text-13);
+  font-weight: 400;
+  line-height: 16px;
+  white-space: nowrap;
+}
+
+.cash-choose-dot {
+  width: var(--space-8);
+  height: var(--space-8);
+  flex: none;
+  margin-inline-end: 6px;
+  border-radius: var(--radius-circle);
+  background: var(--black-25);
+}
+
+.cash-choose-chevron {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  width: 10px;
+  height: 10px;
+  margin-inline-start: var(--space-4);
+  color: var(--black-50);
+}
+
+.cash-choose-dept:hover,
+.cash-choose-dept[aria-expanded="true"] { background: var(--grey); }
+
+.cash-choose-dept[aria-expanded="true"] .cash-choose-chevron { transform: rotate(180deg); }
+
+.cash-archived {
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  line-height: 16px;
+}
+
+
+.cash-bank-figure {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+  gap: var(--space-4);
+}
+
+.cash-bank-figure > span {
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  line-height: 16px;
+}
+
+.cash-bank-figure label {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-4);
+  width: 100%;
+  min-width: 0;
+  color: var(--black);
+  font-size: 30px;
+  line-height: 40px;
+  font-variant-numeric: var(--numeric);
+}
+
+.cash-bank-sign { flex: none; }
+
+.cash-bank-figure input {
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  color: inherit;
+  font: inherit;
+  font-variant-numeric: inherit;
+  line-height: inherit;
+}
+
+.cash-bank-figure input.is-quiet { color: var(--black-25); }
+
+.cash-sec-head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-8);
+  margin-bottom: var(--space-16);
+}
+
+.cash-sec-head h2 {
+  margin: 0;
+  color: var(--black);
+  font-size: var(--text-14);
+  font-weight: 400;
+  line-height: 18px;
+}
+
+.cash-sec-head span {
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  line-height: 16px;
+  font-variant-numeric: var(--numeric);
+}
+
+.cash-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  column-gap: var(--space-16);
+  align-items: start;
+}
+
+.cash-col { min-width: 0; }
+
+.cash-col-k {
+  display: block;
+  height: 16px;
+  margin-bottom: var(--space-8);
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  line-height: 16px;
+}
+
+.cash-col-list {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 18px;
+}
+
+.cash-col-add .btn,
+.cash-add-input {
+  margin-top: -5px;
+  white-space: nowrap;
+}
+
+.cash-col-add .cash-col-list { margin-top: 18px; }
+
+.cash-add-input {
+  width: min(100%, 180px);
+  height: 28px;
+  padding: 0 var(--space-8);
+  border-radius: var(--radius-control);
+  background: var(--sidebar-grey);
+  color: var(--black);
+  font-size: var(--text-14);
+}
+
+.cash-add-input:focus { outline: none; box-shadow: 0 0 0 1px var(--black-25); }
+.cash-add-input::placeholder { color: var(--text-muted); }
 
 .cash-tick {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
+  gap: var(--space-8);
+  min-height: 18px;
+  color: var(--black);
+  font-size: var(--text-14);
+  line-height: 18px;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.cash-tick-box {
+  display: inline-flex;
   flex: none;
-  width: 16px;
-  height: 16px;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
   border-radius: 4px;
   background: var(--white);
   box-shadow: var(--stroke);
   color: var(--white);
 }
 
-.cash-check[aria-checked="true"] .cash-tick {
+.cash-tick:hover .cash-tick-box { background: var(--sidebar-grey); }
+
+.cash-tick[aria-checked="true"] .cash-tick-box,
+.cash-tick[aria-checked="true"]:hover .cash-tick-box {
   background: var(--action);
   box-shadow: none;
 }
 
-.cash-note {
-  margin: 0;
-  color: var(--text-muted);
-  font-size: var(--text-13);
-  line-height: 18px;
-}
-
-.cash-inline {
-  width: min(100%, 220px);
-}
+.cash-tick[aria-checked="true"]:hover .cash-tick-box { background: var(--action-hover); }
 
 html[data-theme="dark"] .cash-select:hover,
-html[data-theme="dark"] .cash-select[aria-expanded="true"],
-html[data-theme="dark"] .cash-loc:hover,
-html[data-theme="dark"] .cash-loc[aria-current="true"],
-html[data-theme="dark"] .cash-check:hover,
-html[data-theme="dark"] .cash-loc-head .btn[aria-pressed="true"] { background: var(--grey); }
+html[data-theme="dark"] .cash-select[aria-expanded="true"] { background: var(--grey); }
 
-html[data-theme="dark"] .cash-qty { background: var(--grey); }
-html[data-theme="dark"] .cash-tick { background: var(--bg-surface); }
-html[data-theme="dark"] .cash-check[aria-checked="true"] .cash-tick { background: var(--action); }
+html[data-theme="dark"] .cash-qty,
+html[data-theme="dark"] .cash-add-input { background: var(--grey); }
+
+html[data-theme="dark"] .inset-card-tools > button:hover,
+html[data-theme="dark"] .inset-card-tools > .cash-more[aria-expanded="true"] { background: var(--grey); }
+
+html[data-theme="dark"] .cash-choose-dept:hover,
+html[data-theme="dark"] .cash-choose-dept[aria-expanded="true"] {
+  background: var(--black-12);
+  box-shadow: 0 0 0 1px var(--black-25);
+}
+
+html[data-theme="dark"] .cash-tick:hover .cash-tick-box { background: var(--grey); }
+
+html[data-theme="dark"] .cash-tick[aria-checked="true"] .cash-tick-box,
+html[data-theme="dark"] .cash-tick[aria-checked="true"]:hover .cash-tick-box { background: var(--action); }
+
+html[data-theme="dark"] .cash-tick[aria-checked="true"]:hover .cash-tick-box { background: var(--action-hover); }
+
+html[data-theme="dark"] .cash-manage { scrollbar-color: var(--black-25) var(--white); }
+
+@media (max-width: 900px) {
+  .cash-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: var(--space-16); }
+}
 
 @media (max-width: 720px) {
-  .cash-denoms,
-  .cash-check-grid { grid-template-columns: 1fr; }
-  .cash-manage-body { flex-direction: column; }
-  .cash-manage-list {
-    width: auto;
-    max-height: 220px;
-    border-right: 0;
-    border-bottom: 1px solid var(--line);
-  }
+  .cash-denoms { grid-template-columns: 1fr; }
+  .inset-card-body { padding: var(--space-16); gap: var(--space-25); }
+}
+
+@media (max-width: 560px) {
+  .cash-grid { grid-template-columns: 1fr; }
 }

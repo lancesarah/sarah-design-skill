@@ -2365,6 +2365,7 @@ html[data-theme="dark"] :where(.sds) .sheet-page .auto-assign:not([aria-pressed=
   background: var(--white);
   scrollbar-color: var(--black-25) var(--white);
   scrollbar-width: thin;
+  scrollbar-gutter: auto;
   container: sheet-lines / inline-size;
 }
 
@@ -2504,6 +2505,75 @@ html[data-theme="dark"] :where(.sds) .sheet-fade, html[data-theme="dark"] :where
 
 :where(.sds) .sheet-line, :where(.sds).sheet-line {
   overflow: hidden;
+}
+
+/* Placeholders sit in the cells. The column rules stay on the cells, so they do not fade with the values. */
+:where(.sds) .sheet-line:has(.sheet-placeholder):not(.is-revealed), :where(.sds).sheet-line:has(.sheet-placeholder):not(.is-revealed) { pointer-events: none; }
+:where(.sds) .sheet-line:has(.sheet-placeholder) .sheet-cell-clip, :where(.sds).sheet-line:has(.sheet-placeholder) .sheet-cell-clip {
+  position: relative;
+  z-index: 2;
+  transition: opacity var(--sk-reveal-dur) ease-in-out, filter var(--sk-reveal-dur) ease-in-out;
+  transition-delay: calc(var(--sk-i, 0) * var(--sk-ripple));
+}
+:where(.sds) .sheet-line:has(.sheet-placeholder):not(.is-revealed) .sheet-cell-clip, :where(.sds).sheet-line:has(.sheet-placeholder):not(.is-revealed) .sheet-cell-clip {
+  opacity: 0;
+  filter: blur(var(--sk-reveal-blur));
+}
+:where(.sds) .sheet-line.is-revealed:has(.sheet-placeholder) .sheet-cell-clip, :where(.sds).sheet-line.is-revealed:has(.sheet-placeholder) .sheet-cell-clip {
+  opacity: 1;
+  filter: blur(0);
+}
+:where(.sds) .sheet-placeholder, :where(.sds).sheet-placeholder {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  display: flex;
+  align-items: flex-start;
+  padding-inline: 12px;
+  pointer-events: none;
+  opacity: 1;
+  filter: blur(0);
+  transition: opacity var(--sk-reveal-dur) ease-in-out, filter var(--sk-reveal-dur) ease-in-out;
+  transition-delay: calc(var(--sk-i, 0) * var(--sk-ripple));
+}
+:where(.sds) .sheet-line.is-revealed .sheet-placeholder, :where(.sds).sheet-line.is-revealed .sheet-placeholder {
+  opacity: 0;
+  filter: blur(var(--sk-reveal-blur));
+}
+:where(.sds) .sheet-skeleton-copy, :where(.sds).sheet-skeleton-copy {
+  display: grid;
+  gap: 6px;
+  width: 100%;
+}
+:where(.sds) .sheet-skeleton, :where(.sds).sheet-skeleton {
+  display: block;
+  height: 12px;
+  border-radius: 4px;
+  background: var(--grey);
+}
+:where(.sds) .sheet-skeleton.is-note, :where(.sds).sheet-skeleton.is-note { height: 10px; }
+:where(.sds) .sheet-skeleton.is-chip, :where(.sds).sheet-skeleton.is-chip {
+  width: 64px;
+  max-width: 100%;
+  height: 20px;
+}
+:where(.sds) .sheet-placeholder.is-pulsing .sheet-skeleton, :where(.sds).sheet-placeholder.is-pulsing .sheet-skeleton {
+  animation: sheet-sk-pulse var(--sk-pulse-dur) ease-in-out var(--sk-pulse-count);
+}
+@media (prefers-reduced-motion: reduce) {
+  :where(.sds) .sheet-placeholder, :where(.sds).sheet-placeholder,
+  :where(.sds) .sheet-line:has(.sheet-placeholder) .sheet-cell-clip, :where(.sds).sheet-line:has(.sheet-placeholder) .sheet-cell-clip {
+    transition: none !important;
+    transition-delay: 0ms !important;
+    filter: none !important;
+  }
+  :where(.sds) .sheet-placeholder.is-pulsing .sheet-skeleton, :where(.sds).sheet-placeholder.is-pulsing .sheet-skeleton {
+    animation: none !important;
+  }
+}
+@keyframes sheet-sk-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: var(--sk-pulse-min); }
 }
 
 :where(.sds) .sheet-page .sheet-line > *, :where(.sds).sheet-page .sheet-line > *,
@@ -3338,11 +3408,20 @@ html[data-theme="dark"] :where(.sds) .cal-day:hover:not(:disabled), html[data-th
 :where(.sds) .sheet-activity .msg, :where(.sds).sheet-activity .msg { width: 100%; }
 
 :where(.sds) .sheet-empty, :where(.sds).sheet-empty {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  min-height: 36px;
   margin: 0;
-  padding: var(--space-25) var(--space-16);
+  padding: var(--space-8) var(--space-16);
   color: var(--black-50);
   font-size: var(--text-14);
   text-wrap: var(--text-wrap-copy);
+}
+
+:where(.sds) .complaints-page .sheet-empty, :where(.sds).complaints-page .sheet-empty,
+:where(.sds) .todos-page .sheet-empty, :where(.sds).todos-page .sheet-empty {
+  min-height: calc(36px + 16px);
 }
 
 :where(.sds) .sheet-empty[hidden], :where(.sds).sheet-empty[hidden] { display: none; }
@@ -3609,7 +3688,6 @@ html[data-theme="dark"] :where(.sds) .sheet-who.is-empty[aria-expanded="true"] .
   white-space: normal;
   align-items: center;
 }
-:where(.sds) .todo-side .side-field > span, :where(.sds).todo-side .side-field > span,
 :where(.sds) .todo-side-facts .side-field > span, :where(.sds).todo-side-facts .side-field > span {
   overflow: visible;
   text-overflow: unset;
@@ -3662,10 +3740,9 @@ html[data-theme="dark"] :where(.sds) .sheet-who.is-empty[aria-expanded="true"] .
 }
 
 :where(.sds) .todo-side [data-side-desc]::placeholder, :where(.sds).todo-side [data-side-desc]::placeholder { color: var(--black-50); }
-/* Inset shadow is clipped by overflow: hidden, so the line is a border. */
-:where(.sds) .todo-side [data-side-desc], :where(.sds).todo-side [data-side-desc] { border-bottom: 1px solid var(--black-12); }
+:where(.sds) .todo-side [data-side-desc], :where(.sds).todo-side [data-side-desc] { border-bottom: 1px solid var(--line); }
 :where(.sds) .todo-side [data-side-desc]:hover, :where(.sds).todo-side [data-side-desc]:hover,
-:where(.sds) .todo-side [data-side-desc]:focus, :where(.sds).todo-side [data-side-desc]:focus { border-bottom-color: var(--black-25); }
+:where(.sds) .todo-side [data-side-desc]:focus, :where(.sds).todo-side [data-side-desc]:focus { border-bottom-color: var(--black-12); }
 
 :where(.sds) .todo-side-rule, :where(.sds).todo-side-rule {
   height: 1px;
@@ -3926,14 +4003,35 @@ html[data-theme="dark"] :where(.sds) .todo-side .side-photo-remove:hover, html[d
   line-height: 16px;
 }
 
-/* Detail values share one size. Table chips stay 13px. */
+/* Detail values share one type. The minimum stays on the chip, not the label inside it. Table chips stay 13px. */
+:where(.sds) .todo-side-meta .sheet-chip, :where(.sds).todo-side-meta .sheet-chip,
+:where(.sds) .todo-side-meta .mini-pill, :where(.sds).todo-side-meta .mini-pill,
+:where(.sds) .todo-side-meta .side-field, :where(.sds).todo-side-meta .side-field {
+  height: 20px;
+  min-height: 20px;
+}
+
+:where(.sds) .todo-side-meta .sheet-chip, :where(.sds).todo-side-meta .sheet-chip,
 :where(.sds) .todo-side-meta .sheet-type, :where(.sds).todo-side-meta .sheet-type,
 :where(.sds) .todo-side-meta .mini-pill, :where(.sds).todo-side-meta .mini-pill,
 :where(.sds) .todo-side-meta .status, :where(.sds).todo-side-meta .status,
 :where(.sds) .todo-side-meta .urgency, :where(.sds).todo-side-meta .urgency,
 :where(.sds) .todo-side-meta .side-field, :where(.sds).todo-side-meta .side-field,
 :where(.sds) .todo-side-meta .side-type, :where(.sds).todo-side-meta .side-type {
+  font-family: var(--font);
   font-size: var(--text-14);
+  font-weight: 400;
+  line-height: 16px;
+}
+
+:where(.sds) .todo-side-meta .side-field > span, :where(.sds).todo-side-meta .side-field > span {
+  line-height: 16px;
+}
+
+:where(.sds) .todo-side-meta .status svg, :where(.sds).todo-side-meta .status svg {
+  width: 16px;
+  height: 16px;
+  flex: none;
 }
 
 :where(.sds) .todo-side .urgency:hover .sheet-edit, :where(.sds).todo-side .urgency:hover .sheet-edit,

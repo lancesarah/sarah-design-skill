@@ -27,6 +27,58 @@ const STARTER: Todo[] = [
   { id: "ac", room: "436", note: "Air conditioning is warm", place: "Guestroom", item: "Climate", type: "Maintenance", urgency: "urgent", status: "open", bucket: "open", assignee: "Boris", initials: "B", opened: "3h", activity: [{ kind: "status", name: "Sarah", initials: "SM", text: "created this to-do", time: "3h" }] },
 ];
 
+function TodoPhotos() {
+  const input = useRef<HTMLInputElement>(null);
+  const [photos, setPhotos] = useState<{ src: string; alt: string }[]>([]);
+  const photosRef = useRef(photos);
+  photosRef.current = photos;
+  useEffect(
+    () => () => {
+      for (const photo of photosRef.current) URL.revokeObjectURL(photo.src);
+    },
+    [],
+  );
+
+  return (
+    <div className="todo-side-photos">
+      <span className="sheet-label">Photos</span>
+      <div className="side-photos">
+        {photos.map((photo) => (
+          <figure className="side-photo" key={photo.src}>
+            <img src={photo.src} alt={photo.alt || "Photo"} />
+            <button
+              className="side-photo-remove"
+              type="button"
+              aria-label="Remove photo"
+              onClick={() => {
+                URL.revokeObjectURL(photo.src);
+                setPhotos((current) => current.filter((item) => item.src !== photo.src));
+              }}
+            >
+              <Icon name="close" size={10} />
+            </button>
+          </figure>
+        ))}
+        <button className="side-photo-add" type="button" aria-label="Add photo" onClick={() => input.current?.click()}>
+          <Icon name="camera" size={24} />
+        </button>
+      </div>
+      <input
+        ref={input}
+        type="file"
+        accept="image/*"
+        multiple
+        hidden
+        onChange={(event) => {
+          const files = [...(event.target.files ?? [])].filter((file) => file.type.startsWith("image/"));
+          setPhotos((current) => [...current, ...files.map((file) => ({ src: URL.createObjectURL(file), alt: file.name }))]);
+          event.target.value = "";
+        }}
+      />
+    </div>
+  );
+}
+
 function TodoDetail({
   todo,
   hidden,
@@ -124,30 +176,31 @@ function TodoDetail({
         </div>
         <div className="todo-side-rule" />
         <div className="todo-side-meta">
-          <div>
+          <div className="meta-location">
             <span className="sheet-label">Location</span>
             <TaskFact empty={!todo.place}>{todo.place || "Location"}</TaskFact>
           </div>
-          <div>
+          <div className="meta-item">
             <span className="sheet-label">Item</span>
             <TaskFact empty={!todo.item}>{todo.item || "Item"}</TaskFact>
           </div>
-          <div>
+          <div className="meta-type">
             <span className="sheet-label">Type</span>
             <TypeCell value={type} onChange={setType} open={field === "type"} onToggle={() => toggle("type")} />
           </div>
-          <div>
+          <div className="meta-assigned">
             <span className="sheet-label">Assigned</span>
             <AssigneeCell name={todo.assignee} initials={todo.initials} named onSelect={(value) => onAssigneeChange?.(todo, value)} />
           </div>
-          <div>
+          <div className="meta-status">
             <span className="sheet-label">Status</span>
             <StatusCell value={status} onChange={setStatus} open={field === "status"} onToggle={() => toggle("status")} />
           </div>
-          <div>
+          <div className="meta-urgency">
             <span className="sheet-label">Urgency</span>
             <UrgencyCell value={urgency} onChange={setUrgency} open={field === "urgency"} onToggle={() => toggle("urgency")} />
           </div>
+          <TodoPhotos />
         </div>
         <div className="todo-side-rule" />
         <ActivityFeed className="todo-side-activity" items={todo.activity} />

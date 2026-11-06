@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, ConfirmDialog, DEPARTMENTS, DepartmentChip, Icon, OverlayMenu, captureClose, playEnter } from "@lance-live/gallery-ui";
+import { Button, Checkbox, ConfirmDialog, DEPARTMENTS, DepartmentChip, Icon, OverlayMenu, captureClose, playEnter } from "@lance-live/gallery-ui";
 import { forwardRef, useEffect, useId, useLayoutEffect, useRef, useState, type ButtonHTMLAttributes } from "react";
 import { flushSync } from "react-dom";
 import { InsetCard } from "../inset-card";
@@ -38,6 +38,8 @@ export function LocationsEditor({
   onChange: (locations: CashLocation[]) => void;
 }) {
   const [draft, setDraft] = useState(locations);
+  const [baseline] = useState(locations);
+  const dirty = JSON.stringify(draft) !== JSON.stringify(baseline);
   const [focusId, setFocusId] = useState<string | null>(null);
   const [enterId, setEnterId] = useState<string | null>(null);
   const entered = useRef<string | null>(null);
@@ -78,6 +80,7 @@ export function LocationsEditor({
   return (
     <PageLayout
       className="sheet-page cash-page cash-locations"
+      bodyClassName="cash-shift-body"
       icon="card"
       title={
         <>
@@ -92,9 +95,10 @@ export function LocationsEditor({
       }
       actions={
         <>
+          {dirty ? <p className="cash-save-note">Changes apply to new counts only.</p> : null}
           <Button variant="secondary" onClick={onBack}>
-            <Icon name="chevron" size={14} className="cash-back-icon" />
-            Back
+            {dirty ? null : <Icon name="chevron" size={14} className="cash-back-icon" />}
+            {dirty ? "Save" : "Back"}
           </Button>
           <Button onClick={addLocation}>
             <Icon name="plus" size={14} />
@@ -153,6 +157,7 @@ function LocationCard({
   const bodyId = useId();
   const department = useMenu();
   const more = useMenu();
+  const [morePoint, setMorePoint] = useState<{ x: number; y: number } | null>(null);
   const [open, setOpen] = useState(true);
   const [confirm, setConfirm] = useState(false);
   const customShifts = location.shifts.filter((shift) => !SHIFT_COLUMNS.some((column) => column.test(shift.name)));
@@ -171,6 +176,14 @@ function LocationCard({
       open={open}
       onOpenChange={setOpen}
       bodyId={bodyId}
+      onContextMenu={(event) => {
+        const target = event.target;
+        if (!(target instanceof Element)) return;
+        if (target.closest("input, textarea, .menu, .dept-slot, .confirm-dialog")) return;
+        event.preventDefault();
+        setMorePoint({ x: event.clientX, y: event.clientY });
+        more.setOpen(true);
+      }}
       title={
         <div className="cash-card-id">
           <div className="cash-card-name">
@@ -227,11 +240,12 @@ function LocationCard({
               ))}
             </OverlayMenu>
           </span>
-          {open ? null : (
-            <span className={location.expected === 0 ? "cash-card-bank is-quiet" : "cash-card-bank"}>
-              {formatMoney(location.expected)}
-            </span>
-          )}
+          <span
+            className={location.expected === 0 ? "cash-card-bank is-quiet" : "cash-card-bank"}
+            aria-hidden={open || undefined}
+          >
+            <span>{formatMoney(location.expected)}</span>
+          </span>
           {location.archived ? <span className="cash-archived">Archived</span> : null}
         </div>
       }
@@ -244,11 +258,14 @@ function LocationCard({
             aria-label="Location options"
             aria-haspopup="menu"
             aria-expanded={more.open}
-            onClick={() => more.setOpen((next) => !next)}
+            onClick={() => {
+              setMorePoint(null);
+              more.setOpen((next) => !next);
+            }}
           >
             <Icon name="dots" size={14} />
           </button>
-          <OverlayMenu open={more.open} anchorRef={more.anchorRef} marker={more.marker} label="Location options" align="end">
+          <OverlayMenu open={more.open} anchorRef={more.anchorRef} marker={more.marker} label="Location options" align="end" point={morePoint}>
           <button
             className="menu-item danger"
             type="button"
@@ -368,30 +385,38 @@ function LocationCard({
 
 function BankFigure({ value, onChange }: { value: number; onChange: (value: number) => void }) {
   const [text, setText] = useState<string | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const shown = text ?? value.toFixed(2);
   return (
     <div className="cash-bank-figure">
       <span>Expected bank</span>
       <label>
         <span className="cash-bank-sign">$</span>
-        <input
-          aria-label="Expected bank"
-          inputMode="decimal"
-          className={text === null && value === 0 ? "is-quiet" : undefined}
-          value={shown}
-          onFocus={() => setText(value ? value.toFixed(2) : "")}
-          onChange={(event) => {
-            const next = event.target.value.replace(/[^0-9.]/g, "");
-            setText(next);
-            if (!next.trim()) {
-              onChange(0);
-              return;
-            }
-            const amount = Number(next);
-            if (!Number.isNaN(amount)) onChange(amount);
-          }}
-          onBlur={() => setText(null)}
-        />
+        <span className="cash-bank-fit">
+          <span>{shown || "0.00"}</span>
+          <input
+            ref={inputRef}
+            aria-label="Expected bank"
+            inputMode="decimal"
+            className={text === null && value === 0 ? "is-quiet" : undefined}
+            value={shown}
+            onFocus={() => setText(value ? value.toFixed(2) : "")}
+            onChange={(event) => {
+              const next = event.target.value.replace(/[^0-9.]/g, "");
+              setText(next);
+              if (!next.trim()) {
+                onChange(0);
+                return;
+              }
+              const amount = Number(next);
+              if (!Number.isNaN(amount)) onChange(amount);
+            }}
+            onBlur={() => setText(null)}
+          />
+        </span>
+        <button type="button" className="cash-bank-edit" aria-label="Edit expected bank" onClick={() => inputRef.current?.focus()}>
+          <Icon name="edit" size={26} />
+        </button>
       </label>
     </div>
   );
@@ -413,7 +438,9 @@ function OptionColumn<T extends { id: string; on: boolean }>({
       <span className="cash-col-k">{label}</span>
       <div className="cash-col-list">
         {items.map((item) => (
-          <Check key={item.id} label={face(item)} checked={item.on} onChange={() => onToggle(item)} />
+          <Checkbox key={item.id} checked={item.on} onCheckedChange={() => onToggle(item)}>
+            {face(item)}
+          </Checkbox>
         ))}
       </div>
     </div>
@@ -479,7 +506,9 @@ function AddColumn<T extends { id: string; on: boolean }>({
       {items.length ? (
         <div className="cash-col-list">
           {items.map((item) => (
-            <Check key={item.id} label={face(item)} checked={item.on} onChange={() => onToggle(item)} />
+            <Checkbox key={item.id} checked={item.on} onCheckedChange={() => onToggle(item)}>
+              {face(item)}
+            </Checkbox>
           ))}
         </div>
       ) : null}
@@ -487,11 +516,3 @@ function AddColumn<T extends { id: string; on: boolean }>({
   );
 }
 
-function Check({ label, checked, onChange }: { label: string; checked: boolean; onChange: () => void }) {
-  return (
-    <button type="button" className="cash-tick" role="checkbox" aria-checked={checked} onClick={onChange}>
-      <span className="cash-tick-box">{checked ? <Icon name="check" size={10} /> : null}</span>
-      {label}
-    </button>
-  );
-}

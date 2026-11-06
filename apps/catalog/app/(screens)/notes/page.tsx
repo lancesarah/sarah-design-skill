@@ -132,7 +132,7 @@ export default function NotesPage() {
   const [query, setQuery] = useState("");
   const [range, setRange] = useState("7d");
   const [rooms, setRooms] = useState(["Room 12", "Room 18", "Room 12"]);
-  const [selected, setSelected] = useState("gss");
+  const [selected, setSelected] = useState<string | null>(null);
   const [menu, setMenu] = useState(false);
   const [menuPoint, setMenuPoint] = useState<{ x: number; y: number } | null>(null);
   const [pending, setPending] = useState<{ id: string; name: string } | null>(null);
@@ -157,7 +157,7 @@ export default function NotesPage() {
     () => notes.filter((note) => (dept === "All" || note.dept === dept) && note.title.toLowerCase().includes(query.trim().toLowerCase())),
     [notes, dept, query],
   );
-  const open = notes.find((note) => note.id === selected) ?? visible[0];
+  const open = selected ? (notes.find((note) => note.id === selected) ?? null) : null;
   const commentsLocked = Boolean(open?.draft && !open.title.trim() && !open.body.trim());
 
   useEffect(() => {
@@ -496,9 +496,9 @@ export default function NotesPage() {
                 </section>
               </div>
             </article>
-          ) : (
+          ) : visible.length === 0 ? (
             <p className="brief-empty">No notes</p>
-          )}
+          ) : null}
         </div>
       </div>
       <ConfirmDialog

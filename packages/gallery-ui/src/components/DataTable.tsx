@@ -159,10 +159,33 @@ function textColumnMin(column: { text?: DataTextSize; minWidth?: number }) {
   return null;
 }
 
+/** A fixed floor. Only a primary or flex column takes leftover width, so the others stay put from page to page. */
 function columnTrack(column: { text?: DataTextSize; flex?: boolean }, min: number) {
   if (column.text === "primary" || column.flex) return `minmax(${min}px, 1fr)`;
-  if (column.text === "short") return `${min}px`;
-  return `minmax(${min}px, max-content)`;
+  return `${min}px`;
+}
+
+function readMs(name: string, fallback: number) {
+  const raw = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  if (!raw) return fallback;
+  if (raw.endsWith("ms")) return parseFloat(raw);
+  if (raw.endsWith("s")) return parseFloat(raw) * 1000;
+  const value = parseFloat(raw);
+  return Number.isNaN(value) ? fallback : value;
+}
+
+function SkeletonCell({ column }: { column: { text?: DataTextSize; flex?: boolean } }) {
+  if (column.text === "primary") {
+    return (
+      <span className="sheet-skeleton-copy">
+        <span className="sheet-skeleton" style={{ width: "42%" }} />
+        <span className="sheet-skeleton is-note" style={{ width: "68%" }} />
+      </span>
+    );
+  }
+  if (column.text === "short") return <span className="sheet-skeleton" style={{ width: 120 }} />;
+  if (column.flex) return <span className="sheet-skeleton" style={{ width: "55%" }} />;
+  return <span className="sheet-skeleton is-chip" />;
 }
 
 export function DataTable<T extends { id: string }>({
@@ -188,12 +211,16 @@ export function DataTable<T extends { id: string }>({
   const columns = useMemo(() => orderDataColumns(sourceColumns), [sourceColumns]);
   const titleRefs = useRef<Array<HTMLSpanElement | null>>([]);
   const measureRef = useRef<HTMLDivElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
   const entered = useRef<string | null>(null);
   const menuAnchor = useRef<HTMLDivElement>(null);
   const menuId = useId().replace(/:/g, "");
   const [menu, setMenu] = useState<{ row: T; x: number; y: number } | null>(null);
   const [pendingDelete, setPendingDelete] = useState<T | null>(null);
-  const [mins, setMins] = useState<number[]>(() => columns.map((column) => column.minWidth ?? DATA_TABLE_PAD * 2));
+  const [measured, setMeasured] = useState(false);
+  const [revealed, setRevealed] = useState(false);
+  const [skeletonOn, setSkeletonOn] = useState(true);
+  const [mins, setMins] = useState<number[]>(() => columns.map((column) => textColumnMin(column) ?? column.minWidth ?? DATA_TABLE_PAD * 2));
 
   const closeMenu = () => setMenu(null);
   const hasMenu = Boolean(onDelete || rowMenu);
@@ -241,7 +268,7 @@ export function DataTable<T extends { id: string }>({
       const sample = titleRefs.current.find((node) => node);
       const font = sample ? getComputedStyle(sample).font : "";
       const probe = document.createElement("span");
-      probe.style.cssText = "position:absolute;left:-9999px;top:0;white-space:nowrap;visibility:hidden";
+      probe.style.cssText = "position:fixed;left:-10000px;top:0;white-space:nowrap;visibility:hidden";
       if (font) probe.style.font = font;
       document.body.appendChild(probe);
       const titles = columns.map((column) => {
@@ -261,19 +288,44 @@ export function DataTable<T extends { id: string }>({
         if (configured != null) return configured;
         return Math.max(Math.max(title, content[index] ?? 0) + DATA_TABLE_PAD * 2, column?.minWidth ?? 0);
       });
+      const node = gridRef.current;
+      if (node) {
+        node.style.gridTemplateColumns = next.map((min, index) => columnTrack(columns[index] ?? {}, min)).join(" ");
+        node.style.minWidth = `${next.reduce((sum, min) => sum + min, 0)}px`;
+      }
       setMins((current) => (current.length === next.length && current.every((value, index) => value === next[index]) ? current : next));
+      setMeasured(true);
     };
     apply();
-    const ready = document.fonts?.ready;
-    if (!ready) return;
     let cancel = false;
-    ready.then(() => {
+    document.fonts?.ready.then(() => {
       if (!cancel) apply();
     });
     return () => {
       cancel = true;
     };
   }, [columns, measureKey, shown]);
+
+  useLayoutEffect(() => {
+    if (!measured || revealed) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setRevealed(true);
+      setSkeletonOn(false);
+      return;
+    }
+    const dur = readMs("--sk-pulse-dur", 1000);
+    const count = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--sk-pulse-count")) || 1;
+    const timer = window.setTimeout(() => setRevealed(true), dur * count);
+    return () => window.clearTimeout(timer);
+  }, [measured, revealed]);
+
+  useEffect(() => {
+    if (!revealed || !skeletonOn) return;
+    const reveal = readMs("--sk-reveal-dur", 400);
+    const ripple = readMs("--sk-ripple", 32);
+    const timer = window.setTimeout(() => setSkeletonOn(false), reveal + Math.max(0, columns.length - 1) * ripple);
+    return () => window.clearTimeout(timer);
+  }, [columns.length, revealed, skeletonOn]);
 
   // The new row is in the DOM at full height. Collapse it, then let the sheet transition open it.
   useLayoutEffect(() => {
@@ -291,7 +343,7 @@ export function DataTable<T extends { id: string }>({
 
   return (
     <>
-      <div aria-hidden="true" style={{ position: "absolute", width: 0, height: 0, overflow: "hidden" }}>
+      <div aria-hidden="true" style={{ position: "fixed", left: -10000, top: 0, visibility: "hidden", pointerEvents: "none" }}>
         <div ref={measureRef} style={{ width: "max-content" }}>
           {columns.map((column) => {
             const samples = column.text
@@ -323,6 +375,7 @@ export function DataTable<T extends { id: string }>({
       <div className="sheet-fade">
       <div className="sheet-scroll">
       <div
+        ref={gridRef}
         className="sheet-grid"
         style={{
           ["--line-pad" as string]: "0px",
@@ -331,7 +384,9 @@ export function DataTable<T extends { id: string }>({
           width: "100%",
           minWidth: mins.reduce((sum, min) => sum + min, 0),
           gridTemplateColumns: tracks,
+          visibility: measured ? "visible" : "hidden",
         }}
+        aria-busy={revealed || shown.length === 0 ? undefined : true}
       >
         <div className="sheet-head" style={{ margin: 0, padding: 0 }}>
           {columns.map((column, index) => {
@@ -384,14 +439,19 @@ export function DataTable<T extends { id: string }>({
               event.preventDefault();
               onRowClick?.(row);
             };
-            const cells = columns.map((column) => (
-              <div key={column.id} data-text={column.text} style={{ ...cellStyle, whiteSpace: column.textDisplay === "wrap" ? "normal" : undefined }}>
+            const cells = columns.map((column, index) => (
+              <div key={column.id} data-text={column.text} style={{ ...cellStyle, ["--sk-i" as string]: index, whiteSpace: column.textDisplay === "wrap" ? "normal" : undefined }}>
+                {skeletonOn ? (
+                  <span className={revealed ? "sheet-placeholder" : "sheet-placeholder is-pulsing"} aria-hidden="true">
+                    <SkeletonCell column={column} />
+                  </span>
+                ) : null}
                 <div className="sheet-cell-clip" style={{ whiteSpace: "inherit" }}>
                   {column.render(row)}
                 </div>
               </div>
             ));
-            const lineClass = ["sheet-line", hoveredId === row.id ? "is-hover" : ""].filter(Boolean).join(" ");
+            const lineClass = ["sheet-line", revealed ? "is-revealed" : "", hoveredId === row.id ? "is-hover" : ""].filter(Boolean).join(" ");
             const lineStyle: CSSProperties = { paddingBlock: "var(--space-8)", paddingInline: 0, alignItems: "start", ...(onRowClick ? { cursor: "pointer" } : {}) };
             const onContextMenu = (event: MouseEvent) => {
               const target = event.target;
@@ -429,7 +489,7 @@ export function DataTable<T extends { id: string }>({
             return <Fragment key={row.id}>{wrapRow ? wrapRow(row, article) : article}</Fragment>;
           })}
         </div>
-        {shown.length === 0 ? <p className="sheet-empty">{empty}</p> : null}
+        {measured && shown.length === 0 ? <p className="sheet-empty">{empty}</p> : null}
       </div>
       </div>
     </div>

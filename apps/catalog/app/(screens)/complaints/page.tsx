@@ -290,15 +290,15 @@ function ComplaintDetail({
       <div className="todo-side-meta">
         <div>
           <span className="sheet-label">Phone</span>
-          <SideLine label="Phone" value={row.phone} placeholder="Add a phone" inputMode="tel" onCommit={(phone) => onPatch({ phone })} />
+          <SideLine label="Phone" value={row.phone} placeholder="Empty" inputMode="tel" onCommit={(phone) => onPatch({ phone })} />
         </div>
         <div>
           <span className="sheet-label">Email</span>
-          <SideLine label="Email" value={row.email} placeholder="Add an email" inputMode="email" onCommit={(email) => onPatch({ email })} />
+          <SideLine label="Email" value={row.email} placeholder="Empty" inputMode="email" onCommit={(email) => onPatch({ email })} />
         </div>
         <div>
           <span className="sheet-label">Loyalty #</span>
-          <SideLine label="Loyalty number" value={row.loyalty} placeholder="Add a number" onCommit={(loyalty) => onPatch({ loyalty })} />
+          <SideLine label="Loyalty number" value={row.loyalty} placeholder="Empty" onCommit={(loyalty) => onPatch({ loyalty })} />
         </div>
         <div>
           <span className="sheet-label">Guest mood</span>
@@ -368,7 +368,7 @@ export default function ComplaintsPage() {
   const [bucket, setBucket] = useState("open");
   const [query, setQuery] = useState("");
   const [urgency, setUrgency] = useState("");
-  const [selected, setSelected] = useState<string | null>("faucet");
+  const [selected, setSelected] = useState<string | null>(null);
   const [enteringId, setEnteringId] = useState<string | null>(null);
   const [present, setPresent] = useState(false);
   const [hidden, setHidden] = useState(true);
@@ -497,6 +497,7 @@ export default function ComplaintsPage() {
       <div className="sheet-work">
         <TaskTable
           layout="complaint"
+          titleOptions={COMPLAINTS}
           rows={tasks}
           total={records.length}
           empty="No complaints"

@@ -26,6 +26,12 @@ body .side {
   transition: flex-basis 150ms ease, width 150ms ease, min-width 150ms ease, max-width 150ms ease, padding 150ms ease, gap 150ms ease;
 }
 
+/* The page card sits 8px down and its header is 60px, so this rule meets that line. */
+body .side-top {
+  padding-top: calc(var(--space-4) + var(--space-2));
+  padding-bottom: var(--space-16);
+}
+
 body .side-top,
 body .side-fixed,
 body .side-scroll,

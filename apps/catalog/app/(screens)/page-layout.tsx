@@ -8,6 +8,7 @@ export function PageLayout({
   actions,
   tabs,
   toolbar,
+  bodyClassName,
   children,
   className,
   ...rest
@@ -19,11 +20,12 @@ export function PageLayout({
   actions?: ReactNode;
   tabs?: ReactNode;
   toolbar?: ReactNode;
+  /** Wraps everything under the header. The header stays outside so it can snap while the body moves. */
+  bodyClassName?: string;
   children: ReactNode;
 } & Omit<HTMLAttributes<HTMLElement>, "title">) {
-  return (
-    <main className={["notes-page", "sds", className].filter(Boolean).join(" ")} {...rest}>
-      <PageHeader mark={icon} title={title} count={count != null ? String(count) : undefined} actions={actions ?? null} />
+  const below = (
+    <>
       {tabs || toolbar ? (
         <div className="page-filters">
           {tabs}
@@ -31,6 +33,12 @@ export function PageLayout({
         </div>
       ) : null}
       {children}
+    </>
+  );
+  return (
+    <main className={["notes-page", "sds", className].filter(Boolean).join(" ")} {...rest}>
+      <PageHeader mark={icon} title={title} count={count != null ? String(count) : undefined} actions={actions ?? null} />
+      {bodyClassName ? <div className={bodyClassName}>{below}</div> : below}
     </main>
   );
 }

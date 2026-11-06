@@ -121,6 +121,10 @@ export const icons = {
     "viewBox": "0 0 14 14",
     "body": "<g transform=\"translate(0.400 -0.150) scale(0.550000)\"><path d=\"m16 12 2 2v2h-5v6l-1 1-1-1v-6H6v-2l2-2V5H7V3h10v2h-1Zm-7.15 2h6.3L14 12.85V5h-4v7.85Z\" fill=\"currentColor\"/></g>"
   },
+  "pin-filled": {
+    "viewBox": "0 0 14 14",
+    "body": "<g transform=\"translate(0.400 -0.150) scale(0.550000)\"><path d=\"m16 12 2 2v2h-5v6l-1 1-1-1v-6H6v-2l2-2V5H7V3h10v2h-1Z\" fill=\"currentColor\"/></g>"
+  },
   "unpin": {
     "viewBox": "0 0 14 14",
     "body": "<g transform=\"translate(0.847 13.045) scale(0.013614)\"><path d=\"M680-840v80h-40v327l-80-80v-247H400v87l-87-87-33-33v-47h400ZM480-40l-40-40v-240H240v-80l80-80v-46L56-792l56-56 736 736-58 56-264-264h-6v240l-40 40ZM354-400h92l-44-44-2-2-46 46Z\" fill=\"currentColor\"/></g>"

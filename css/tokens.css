@@ -114,6 +114,13 @@
   --motion-hover: 120ms;
   --motion-panel: 400ms;
   --motion-panel-out: 320ms;
+  /* Table skeleton. One pulse, then the values crossfade in. */
+  --sk-pulse-dur: 1000ms;
+  --sk-pulse-count: 1;
+  --sk-pulse-min: 0.5;
+  --sk-reveal-dur: 400ms;
+  --sk-reveal-blur: 2px;
+  --sk-ripple: 32ms;
 }
 
 html[data-font="switzer"] {

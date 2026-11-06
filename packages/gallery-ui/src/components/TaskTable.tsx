@@ -88,13 +88,15 @@ export type TaskTableProps = {
   deleteNoun?: string;
   rowName?: (row: TaskRow) => string;
   onAssigneeChange?: (row: TaskRow, value: string) => void;
-  /** Complaint rows are Room, Guest, To-do, Urgency, Status, Assigned, Completed. */
+  /** Complaint rows are Room, Guest, Complaint, Urgency, Status, Assigned, Completed. */
   layout?: TaskTableLayout;
   empty?: string;
   placeOptions?: readonly string[];
   itemOptions?: readonly string[];
   /** Location, item, and the note under the To-do title. Complaints use title, description, and guest. */
   onCopyChange?: (row: TaskRow, patch: { place?: string; item?: string; note?: string; title?: string; description?: string; guest?: string }) => void;
+  /** Complaint titles that already exist. The detail and the table share this list. */
+  titleOptions?: readonly string[];
   /** Room numbers that already exist. The detail and the table share this list. */
   roomOptions?: readonly string[];
   onRoomChange?: (row: TaskRow, value: string) => void;
@@ -103,6 +105,7 @@ export type TaskTableProps = {
 };
 
 const ROOMS = ["426", "244", "103", "436"];
+const COMPLAINT_TITLES = ["Cleanliness", "Noise", "Maintenance", "Temperature", "Amenities", "Service", "Billing", "Other"];
 const contentStyle: CSSProperties = {
   width: "max-content",
   maxWidth: "100%",
@@ -168,6 +171,7 @@ function CopyCell({
   menu,
   places,
   items,
+  titles,
   onCopyChange,
 }: {
   row: TaskRow;
@@ -175,6 +179,7 @@ function CopyCell({
   menu: TableMenu;
   places: readonly string[];
   items: readonly string[];
+  titles: readonly string[];
   onCopyChange?: TaskTableProps["onCopyChange"];
 }) {
   const bind = (field: string) => ({
@@ -182,13 +187,17 @@ function CopyCell({
     onToggle: () => menu.toggle(row.id, field),
   });
   if (complaint) {
+    const title = row.title || row.note;
     return (
       <TitleSubtitle
-        variant="editable"
-        title={row.title || row.note}
-        titleLabel="Complaint"
-        titlePlaceholder="Complaint"
-        onTitleChange={onCopyChange ? (value) => onCopyChange(row, { title: value }) : undefined}
+        variant="dropdown"
+        title={{
+          value: title,
+          placeholder: "Complaint",
+          options: withValue(title, titles),
+          onChange: onCopyChange ? (value) => onCopyChange(row, { title: value }) : undefined,
+          ...bind("title"),
+        }}
         subtitle={row.description || ""}
         subtitleLabel="Detail"
         subtitlePlaceholder="Add a note"
@@ -199,14 +208,14 @@ function CopyCell({
   // An empty to-do reads Location and Item. Filled rows keep the chosen values.
   const place = row.place ?? "";
   const item = row.item ?? "";
-  const titles: TitleDropdownValue[] = [
+  const parts: TitleDropdownValue[] = [
     { value: place, placeholder: "Location", options: withValue(place, places), onChange: (value) => onCopyChange?.(row, { place: value }), ...bind("place") },
     { value: item, placeholder: "Item", options: withValue(item, items), onChange: (value) => onCopyChange?.(row, { item: value }), ...bind("item") },
   ];
   return (
     <TitleSubtitle
       variant="dropdown"
-      title={titles}
+      title={parts}
       subtitle={row.note}
       subtitleLabel="Note"
       subtitlePlaceholder="Add a note"
@@ -221,6 +230,7 @@ function taskColumns(
   menu: TableMenu,
   places: readonly string[],
   items: readonly string[],
+  titles: readonly string[],
   onAssigneeChange?: (row: TaskRow, value: string) => void,
   onCopyChange?: TaskTableProps["onCopyChange"],
   onRoomChange?: TaskTableProps["onRoomChange"],
@@ -247,13 +257,14 @@ function taskColumns(
   });
   const todo: DataColumn<TaskRow> = {
     id: "todo",
-    title: "To-do",
+    title: complaint ? "Complaint" : "To-do",
     text: "primary",
     flex: true,
+    minWidth: 200,
     labelInset: CHIP_LABEL_INSET,
     sortable: false,
     sortValue: (row) => (complaint ? row.title || row.note : row.note),
-    render: (row) => <CopyCell row={row} complaint={complaint} menu={menu} places={places} items={items} onCopyChange={onCopyChange} />,
+    render: (row) => <CopyCell row={row} complaint={complaint} menu={menu} places={places} items={items} titles={titles} onCopyChange={onCopyChange} />,
   };
   return complaint ? [room, guest, todo, urgency, status, assignee, opened] : [status, room, todo, urgency, type, assignee, opened];
 }
@@ -272,6 +283,7 @@ function SheetGrid({
   empty = "No to-dos",
   placeOptions,
   itemOptions,
+  titleOptions,
   onAssigneeChange,
   onCopyChange,
   onRoomChange,
@@ -291,6 +303,7 @@ function SheetGrid({
   empty?: string;
   placeOptions?: readonly string[];
   itemOptions?: readonly string[];
+  titleOptions?: readonly string[];
   onAssigneeChange?: (row: TaskRow, value: string) => void;
   onCopyChange?: TaskTableProps["onCopyChange"];
   onRoomChange?: TaskTableProps["onRoomChange"];
@@ -302,7 +315,8 @@ function SheetGrid({
   const rooms = Array.from(new Set([...listed, ...rows.map((row) => row.room)])).filter(Boolean);
   const places = placeOptions ?? Array.from(new Set(rows.map((row) => row.place).filter((value): value is string => Boolean(value))));
   const items = itemOptions ?? Array.from(new Set(rows.map((row) => row.item).filter((value): value is string => Boolean(value))));
-  const columns = taskColumns(layout, rooms, menu, places, items, onAssigneeChange, onCopyChange, onRoomChange);
+  const titles = titleOptions ?? COMPLAINT_TITLES;
+  const columns = taskColumns(layout, rooms, menu, places, items, titles, onAssigneeChange, onCopyChange, onRoomChange);
   return (
     <DataTable
       columns={columns}
@@ -323,13 +337,13 @@ function SheetGrid({
 }
 
 
-export function TaskTable({ hover = false, chips = [], rows, total, selectedId, onRowClick, onRowContextMenu, onDelete, deleteNoun, rowName, onAssigneeChange, onCopyChange, onRoomChange, layout = "todo", empty, placeOptions, itemOptions, roomOptions, enteringId }: TaskTableProps) {
+export function TaskTable({ hover = false, chips = [], rows, total, selectedId, onRowClick, onRowContextMenu, onDelete, deleteNoun, rowName, onAssigneeChange, onCopyChange, onRoomChange, layout = "todo", empty, placeOptions, itemOptions, titleOptions, roomOptions, enteringId }: TaskTableProps) {
   if (rows) {
     const all = total ?? rows.length;
     return (
       <div className="sheet-list sheet-page" data-view="head">
         <div className="stage sheet-stage">
-          <SheetGrid rows={rows} total={all} selectedId={selectedId} onRowClick={onRowClick} onRowContextMenu={onRowContextMenu} onDelete={onDelete} deleteNoun={deleteNoun} rowName={rowName} onAssigneeChange={onAssigneeChange} onCopyChange={onCopyChange} onRoomChange={onRoomChange} layout={layout} empty={empty} placeOptions={placeOptions} itemOptions={itemOptions} roomOptions={roomOptions} enteringId={enteringId} />
+          <SheetGrid rows={rows} total={all} selectedId={selectedId} onRowClick={onRowClick} onRowContextMenu={onRowContextMenu} onDelete={onDelete} deleteNoun={deleteNoun} rowName={rowName} onAssigneeChange={onAssigneeChange} onCopyChange={onCopyChange} onRoomChange={onRoomChange} layout={layout} empty={empty} placeOptions={placeOptions} itemOptions={itemOptions} titleOptions={titleOptions} roomOptions={roomOptions} enteringId={enteringId} />
         </div>
       </div>
     );

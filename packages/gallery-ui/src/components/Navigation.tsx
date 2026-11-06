@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode, type RefObject } from "react";
 import { Button } from "./Button";
 import { Icon, type IconName } from "../icons";
 import { ThemeSwitch } from "./Fields";
@@ -64,14 +64,22 @@ export type SidebarGroup = {
   pinned?: boolean;
 };
 
-export function SidebarItem({ label, icon, href = "#sidebar", current, tip, pinned }: SidebarLink & { pinned?: boolean }) {
+export function SidebarItem({
+  label,
+  icon,
+  href = "#sidebar",
+  current,
+  tip,
+  pinned,
+  onPin,
+}: SidebarLink & { pinned?: boolean; onPin?: () => void }) {
   return (
     <div className="side-item" data-label={label}>
       <a href={href} aria-current={current ? "page" : undefined} className={tip ? "tip-host" : undefined}>
         <Icon name={icon} size={18} />
         {label}
         {tip ? (
-          <span className="tip">
+          <span className="tip" popover="manual" aria-hidden="true">
             {label} <span>{tip}</span>
           </span>
         ) : null}
@@ -80,15 +88,155 @@ export function SidebarItem({ label, icon, href = "#sidebar", current, tip, pinn
         <button className="side-action" type="button" data-side-drag aria-label="Reorder">
           <Icon name="grip" size={14} />
         </button>
-        <button className="side-action" type="button" aria-label={pinned ? "Unpin" : "Pin"}>
-          <Icon name={pinned ? "unpin" : "pin"} size={14} />
+        <button
+          className="side-action"
+          type="button"
+          aria-pressed={pinned}
+          aria-label={pinned ? "Unpin" : "Pin"}
+          onClick={onPin}
+        >
+          <Icon name={pinned ? "pin-filled" : "pin"} size={14} />
         </button>
       </span>
     </div>
   );
 }
 
-function SideList({ links, pinned, hidden }: { links: SidebarLink[]; pinned?: boolean; hidden?: boolean }) {
+function placeSideTip(host: HTMLElement) {
+  const tip = host.querySelector<HTMLElement>(":scope > .tip");
+  if (!tip || host.classList.contains("is-quiet")) return;
+  const rect = host.getBoundingClientRect();
+  const gap = Number.parseFloat(getComputedStyle(host).getPropertyValue("--tip-gap")) || 8;
+  tip.style.left = `${rect.right + gap}px`;
+  tip.style.top = `${rect.top + rect.height / 2}px`;
+}
+
+function revealSideTip(host: HTMLElement) {
+  const tip = host.querySelector<HTMLElement>(":scope > .tip");
+  if (!tip || host.classList.contains("is-quiet")) return;
+  placeSideTip(host);
+  try {
+    if (!tip.matches(":popover-open")) tip.showPopover();
+  } catch {
+    // The tip can already be opening as the pointer crosses the row.
+  }
+}
+
+function hideSideTip(host: HTMLElement) {
+  const tip = host.querySelector<HTMLElement>(":scope > .tip");
+  if (!tip?.matches(":popover-open")) return;
+  try {
+    tip.hidePopover();
+  } catch {
+    // The tip can already be closed when the pointer leaves.
+  }
+}
+
+function tipDelay(host: HTMLElement) {
+  const tip = host.querySelector<HTMLElement>(":scope > .tip");
+  const raw = tip ? getComputedStyle(tip).transitionDelay : "0.1s";
+  return raw.endsWith("ms") ? Number.parseFloat(raw) : (Number.parseFloat(raw) || 0) * 1000;
+}
+
+/** Sidebar keybind tips. The first one waits. The next one snaps. A click leaves it up. */
+function useSideTips(rootRef: RefObject<HTMLElement | null>) {
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+    let warmTimer = 0;
+    let followUntil = 0;
+    const hostFrom = (event: Event) => (event.target as Element | null)?.closest<HTMLElement>(".tip-host") ?? null;
+    const endWarm = () => {
+      window.clearTimeout(warmTimer);
+      root.querySelectorAll(".is-tip-source").forEach((host) => host.classList.remove("is-tip-source"));
+      if (!document.querySelector(".is-tip-source")) document.documentElement.classList.remove("is-tip-open");
+    };
+    const follow = (host: HTMLElement, until: number) => {
+      const tick = (now: number) => {
+        if (followUntil !== until) return;
+        placeSideTip(host);
+        if (now < until) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    };
+
+    const onOver = (event: PointerEvent) => {
+      const host = hostFrom(event);
+      if (!host || !root.contains(host) || host.contains(event.relatedTarget as Node) || host.classList.contains("is-quiet")) return;
+      revealSideTip(host);
+      followUntil = performance.now() + 200;
+      follow(host, followUntil);
+      if (document.documentElement.classList.contains("is-tip-open")) return;
+      window.clearTimeout(warmTimer);
+      warmTimer = window.setTimeout(() => {
+        if (!host.matches(":hover") || host.classList.contains("is-quiet")) return;
+        host.classList.add("is-tip-source");
+        document.documentElement.classList.add("is-tip-open");
+      }, tipDelay(host));
+    };
+    const onOut = (event: PointerEvent) => {
+      const host = hostFrom(event);
+      if (!host || !root.contains(host) || host.contains(event.relatedTarget as Node)) return;
+      if (host.matches(":hover") || host.matches(":focus-visible")) return;
+      const next = (event.relatedTarget as Element | null)?.closest<HTMLElement>(".tip-host") ?? null;
+      if (next && next !== host && root.contains(next) && !next.classList.contains("is-quiet")) {
+        host.classList.remove("is-tip-source", "is-quiet", "is-settled");
+        revealSideTip(next);
+        hideSideTip(host);
+        return;
+      }
+      hideSideTip(host);
+      host.classList.remove("is-quiet", "is-settled");
+      endWarm();
+    };
+    const onFocusIn = (event: FocusEvent) => {
+      const host = hostFrom(event);
+      if (host && root.contains(host)) revealSideTip(host);
+    };
+    const onFocusOut = (event: FocusEvent) => {
+      const host = hostFrom(event);
+      if (!host || !root.contains(host) || host.contains(event.relatedTarget as Node)) return;
+      hideSideTip(host);
+    };
+    const onClick = (event: MouseEvent) => {
+      const host = hostFrom(event);
+      if (host && root.contains(host)) host.classList.add("is-settled");
+    };
+    const onDown = () => {
+      followUntil = 0;
+    };
+
+    root.addEventListener("pointerover", onOver);
+    root.addEventListener("pointerout", onOut);
+    root.addEventListener("focusin", onFocusIn);
+    root.addEventListener("focusout", onFocusOut);
+    root.addEventListener("click", onClick);
+    root.addEventListener("pointerdown", onDown);
+    return () => {
+      endWarm();
+      followUntil = 0;
+      root.querySelectorAll<HTMLElement>(".tip-host").forEach(hideSideTip);
+      root.removeEventListener("pointerover", onOver);
+      root.removeEventListener("pointerout", onOut);
+      root.removeEventListener("focusin", onFocusIn);
+      root.removeEventListener("focusout", onFocusOut);
+      root.removeEventListener("click", onClick);
+      root.removeEventListener("pointerdown", onDown);
+    };
+  }, [rootRef]);
+}
+
+function SideList({
+  links,
+  pinnedLabels,
+  onPin,
+  hidden,
+}: {
+  links: SidebarLink[];
+  pinnedLabels?: ReadonlySet<string>;
+  onPin?: (label: string) => void;
+  hidden?: boolean;
+}) {
   const listRef = useRef<HTMLDivElement>(null);
   const signature = links.map((link) => link.label).join("\0");
   const [order, setOrder] = useState(() => links.map((link) => link.label));
@@ -218,7 +366,12 @@ function SideList({ links, pinned, hidden }: { links: SidebarLink[]; pinned?: bo
   return (
     <div className="side-links" ref={listRef} hidden={hidden}>
       {shown.map((link) => (
-        <SidebarItem key={link.label} {...link} pinned={pinned} />
+        <SidebarItem
+          key={link.label}
+          {...link}
+          pinned={pinnedLabels?.has(link.label)}
+          onPin={onPin ? () => onPin(link.label) : undefined}
+        />
       ))}
     </div>
   );
@@ -245,6 +398,8 @@ export function Sidebar({
   collapsed?: boolean;
   onCollapsedChange?: (collapsed: boolean) => void;
 }) {
+  const pinnedGroup = groups.find((group) => group.pinned)?.title ?? null;
+  const [pinned, setPinned] = useState<string[]>(() => groups.find((group) => group.pinned)?.links.map((link) => link.label) ?? []);
   const [open, setOpen] = useState(() => new Set(groups.filter((group) => group.open).map((group) => group.title)));
   const [dark, setDark] = useState(false);
   const [uncontrolledCollapsed, setUncontrolledCollapsed] = useState(false);
@@ -254,6 +409,8 @@ export function Sidebar({
     onCollapsedChange?.(next);
   };
   const scrollRef = useRef<HTMLDivElement>(null);
+  const asideRef = useRef<HTMLElement>(null);
+  useSideTips(asideRef);
   useEffect(() => {
     const el = scrollRef.current;
     const frame = el?.parentElement;
@@ -287,9 +444,31 @@ export function Sidebar({
     return () => observer.disconnect();
   }, []);
 
+  const catalog = new Map<string, SidebarLink>();
+  for (const link of fixed) catalog.set(link.label, link);
+  for (const group of groups) {
+    for (const link of group.links) catalog.set(link.label, link);
+  }
+  const pinnedLabels = new Set(pinned);
+
+  function pinLabel(label: string) {
+    const nextPinned = !pinnedLabels.has(label);
+    setPinned((current) => (current.includes(label) ? current.filter((item) => item !== label) : [label, ...current]));
+    if (nextPinned && pinnedGroup) {
+      setOpen((current) => {
+        if (current.has(pinnedGroup)) return current;
+        const next = new Set(current);
+        next.add(pinnedGroup);
+        return next;
+      });
+    }
+  }
+
+  const fixedLinks = fixed;
+
   return (
     <div className="sds side-frame">
-      <aside className="side sds" id={id} aria-label="Workspace">
+      <aside ref={asideRef} className="side sds" id={id} aria-label="Workspace">
         <div className="side-top">
           <button className="side-brand" type="button">
             <span className="side-mark">M</span>
@@ -313,12 +492,19 @@ export function Sidebar({
             <input type="search" placeholder="Search" aria-label="Search" />
             <kbd>⌘ K</kbd>
           </form>
-          {fixed.length ? <SideList links={fixed} /> : null}
+          {fixedLinks.length ? <SideList links={fixedLinks} pinnedLabels={pinnedLabels} onPin={pinLabel} /> : null}
         </div>
         <div className="side-scroll-frame">
           <div className="side-scroll" ref={scrollRef}>
             {groups.map((group) => {
               const expanded = open.has(group.title);
+              const links = group.pinned
+                ? pinned.flatMap((label) => {
+                    const link = catalog.get(label);
+                    return link ? [link] : [];
+                  })
+                : group.links;
+              if (group.pinned && links.length === 0) return null;
               return (
                 <div className="side-group" key={group.title}>
                   <button
@@ -336,7 +522,7 @@ export function Sidebar({
                   >
                     {group.title} <Icon name="chevron" size={14} />
                   </button>
-                  <SideList links={group.links} pinned={group.pinned} hidden={!expanded} />
+                  <SideList links={links} pinnedLabels={pinnedLabels} onPin={pinLabel} hidden={!expanded} />
                 </div>
               );
             })}

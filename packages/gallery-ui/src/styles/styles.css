@@ -706,6 +706,77 @@ button.sds.view-pick[aria-expanded="true"] .meta-chevron {
   max-width: none;
 }
 
+/* Checkbox. 14px box, 4px radius, measured from the manage-locations rows. */
+.sds.check {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-8);
+  min-height: 18px;
+  font-family: var(--font);
+  font-size: var(--text-14);
+  font-weight: 400;
+  line-height: 18px;
+  color: var(--black);
+  text-align: left;
+  white-space: nowrap;
+  transition: scale 160ms var(--ease-out);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sds.check { transition: none; }
+}
+
+.sds.check .check-box {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  background: var(--white);
+  box-shadow: var(--stroke);
+  color: var(--white);
+}
+
+.sds.check:hover:not(:disabled) .check-box,
+.sds.check.is-hover:not(:disabled) .check-box {
+  background: var(--sidebar-grey);
+}
+
+.sds.check[aria-checked="true"] .check-box {
+  background: var(--action);
+  box-shadow: none;
+}
+
+.sds.check[aria-checked="true"]:hover:not(:disabled) .check-box,
+.sds.check[aria-checked="true"].is-hover:not(:disabled) .check-box {
+  background: var(--action-hover);
+}
+
+html[data-theme="dark"] .sds.check:hover:not(:disabled) .check-box,
+html[data-theme="dark"] .sds.check.is-hover:not(:disabled) .check-box {
+  background: var(--grey);
+}
+
+html[data-theme="dark"] .sds.check[aria-checked="true"] .check-box,
+html[data-theme="dark"] .sds.check[aria-checked="true"]:hover:not(:disabled) .check-box,
+html[data-theme="dark"] .sds.check[aria-checked="true"].is-hover:not(:disabled) .check-box {
+  background: var(--action);
+}
+
+html[data-theme="dark"] .sds.check[aria-checked="true"]:hover:not(:disabled) .check-box,
+html[data-theme="dark"] .sds.check[aria-checked="true"].is-hover:not(:disabled) .check-box {
+  background: var(--action-hover);
+}
+
+.sds.check-list {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 18px;
+}
+
 :where(.sds) .sheet-row-actions {
   grid-column: 1 / -1;
   grid-row: 1;

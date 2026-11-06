@@ -2049,3 +2049,85 @@ html[data-dept-chip="dot"] :is(
   .sheet-type[data-type="Management"],
   .side-type[data-type="Management"]
 )::before { background: var(--dept-management); }
+
+.inset-card {
+  display: flex;
+  flex-direction: column;
+  flex: none;
+  padding: 6px;
+  border: 1px solid var(--grey);
+  border-radius: 10px;
+  background: var(--sidebar-grey);
+}
+
+.inset-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-16);
+  min-height: 56px;
+  margin-top: -6px;
+  padding: 11px 22px;
+}
+
+.inset-card-title {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+  font-size: var(--text-16);
+  line-height: 21px;
+}
+
+.inset-card-tools {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.inset-card-tools > button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-control);
+  color: var(--black);
+}
+
+.inset-card-tools > button:hover,
+.inset-card-tools > button[aria-expanded="true"] { background: var(--grey); }
+
+.inset-card-chevron .i {
+  transform: rotate(0deg);
+  transition: transform 160ms var(--ease-out);
+}
+
+.inset-card-chevron[aria-expanded="false"] .i { transform: rotate(-90deg); }
+
+.inset-card-clip {
+  overflow: hidden;
+  opacity: 0;
+}
+
+.inset-card.is-open .inset-card-clip { opacity: 1; }
+
+.inset-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  padding: 30px 30px 40px;
+  border: 1px solid var(--grey);
+  border-radius: var(--radius-control);
+  background: var(--white);
+}
+
+@media (max-width: 720px) {
+  .inset-card-body { padding: var(--space-16); gap: var(--space-25); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .inset-card-chevron .i,
+  .inset-card-clip { transition: none; }
+}

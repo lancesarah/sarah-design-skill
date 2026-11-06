@@ -113,6 +113,9 @@
 }
 
 .complaints-page .todo-side [data-side-desc] {
+  align-self: start;
+  width: fit-content;
+  max-width: 100%;
   field-sizing: content;
   min-height: 20px;
   white-space: pre-wrap;
@@ -144,7 +147,8 @@
 }
 
 .complaints-page .todo-side-meta .side-line {
-  width: 100%;
+  width: fit-content;
+  max-width: 100%;
   min-width: 0;
   min-height: 20px;
   height: auto;
@@ -159,20 +163,21 @@
   resize: none;
   overflow: hidden;
   field-sizing: content;
+  justify-self: start;
   cursor: text;
 }
 
 .complaints-page .todo-side-meta .side-line::placeholder { color: var(--black-50); }
-.complaints-page .todo-side-meta .side-line { border-bottom: 1px solid var(--black-12); }
+.complaints-page .todo-side-meta .side-line { border-bottom: 1px solid var(--line); }
+.complaints-page .todo-side-meta .side-line:placeholder-shown,
+.complaints-page .todo-side-meta .side-line:placeholder-shown:hover { border-bottom-color: transparent; }
 .complaints-page .todo-side-meta .side-line:focus::placeholder { color: transparent; }
 .complaints-page .todo-side-meta .side-line:hover,
-.complaints-page .todo-side-meta .side-line:focus { border-bottom-color: var(--black-25); }
+.complaints-page .todo-side-meta .side-line:focus { border-bottom-color: var(--black-12); }
 
 .complaints-page .todo-side-meta [data-menu-kind="mood"] {
   margin-inline-start: -4px;
   padding-inline: 4px;
-  font-size: var(--text-14);
-  font-weight: 500;
 }
 
 .complaints-page .todo-side-meta [data-menu-kind="mood"].is-empty { color: var(--black-50); }

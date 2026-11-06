@@ -49,6 +49,12 @@ These point at values already in use. A new page, a new row, a new menu, and a n
 | `--motion-hover` | `120ms` | The shared fill change |
 | `--motion-panel` | `400ms` | The detail panel entrance |
 | `--motion-panel-out` | `320ms` | The detail panel exit |
+| `--sk-pulse-dur` | `1000ms` | The table skeleton’s one pulse |
+| `--sk-pulse-count` | `1` | That pulse does not loop |
+| `--sk-pulse-min` | `0.5` | The middle of the pulse |
+| `--sk-reveal-dur` | `400ms` | The values crossfade in as the bars leave |
+| `--sk-reveal-blur` | `2px` | The blur on that crossfade |
+| `--sk-ripple` | `32ms` | The delay from one column to the next |
 
 Press stays 160ms. It is not `--motion-hover`.
 
@@ -160,7 +166,7 @@ Sidebar icon buttons stay unfilled. The switch under Settings uses `--action` an
 ## Type
 
 - `--font`: Plus Jakarta Sans, weights 400 and 500. Plus Jakarta Sans is the UI face. Switzer stays on the dev switch so the two can be compared. Libre Baskerville is for editorial moments only, where the gallery already uses it.
-- Sizes: `--text-10`, `--text-12`, `--text-13`, `--text-14`, `--text-16`, `--text-20`, `--text-24`. `--text-13` is the urgency chip, the department chip, the status label, and the name chip. The gallery Typography section is the set used on notes and to-dos: record title 16/500, page title, body, and button 14/400, count 14/400 in `--text-muted`, place 14/500, chip 13/400, label 12/500 in `--text-muted`, note 12/400, meta 12/400 in `--text-muted`, filter 10/400. `--text-20` is a side title. `--text-24` is a lesson card title, weight 500, line-height 28px.
+- Sizes: `--text-10`, `--text-12`, `--text-13`, `--text-14`, `--text-16`, `--text-20`, `--text-24`. `--text-13` is the table urgency chip, the department chip, the status label, and the name chip. Those same values in a detail panel are `--text-14` and weight 400. The gallery Typography section is the set used on notes and to-dos: record title 16/500, page title, body, and button 14/400, count 14/400 in `--text-muted`, place 14/500, chip 13/400, detail value 14/400, label 12/500 in `--text-muted`, note 12/400, meta 12/400 in `--text-muted`, filter 10/400. `--text-20` is a side title. `--text-24` is a lesson card title, weight 500, line-height 28px.
 - `--font-smoothing`: `antialiased` on product pages.
 - `--text-wrap-title`: `balance` for headings. `--text-wrap-copy`: `pretty` for short copy.
 - `--numeric`: `tabular-nums` for counts and other figures that update.

@@ -104,7 +104,7 @@ The collapsed selection box is a 32px square on the icon. Hover uses that same s
 
 A collapsed section label takes no space, including the gap under it. The icon above a divider and the icon below it sit the same distance from the line.
 
-The reorder grip and the pin are part of the sidebar component in [components.md](components.md). Collapse hides both. Hovering the rail does not bring them back.
+The reorder grip and the pin are part of the sidebar component in [components.md](components.md). The pin fills when it is selected and moves that item to the front. Collapse hides both. Hovering the rail does not bring them back.
 
 Sidebar hover does not animate. The grey fill appears at once.
 
@@ -163,6 +163,14 @@ Do not put every section in the same fill. A stack of matching grey cards — th
 A short record, a list, and a toolbar stay on the page.
 
 Forced by: the call detail. First, “use color and sectioning so with a lot of info it’s not all just text.” Then, “be more tasteful with the cards, not put EVERYTHING in boxes.”
+
+## One thing is the page
+
+A card is for several similar items on one screen. Each card is one of that set, and the shell is what separates one item from the next. Locations, notes, and any other repeated kind of thing are that case.
+
+A screen with one action or one thing does not need a card. The content sits on the page. Keep the pieces the screen still needs. Leave the outer card behind. It has nothing else to separate.
+
+Forced by: a single screen was built inside the card used for a set of similar items. Then, “there will only be one thing on the page so there is no need for the outer cards,” and that rule is any one action or thing, not one kind of record.
 
 ## Dark mode
 

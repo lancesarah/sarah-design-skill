@@ -33,7 +33,6 @@ import {
   varianceOf,
   type CashCount,
   type CashLocation,
-  type DepartmentName,
 } from "./model";
 
 type View =
@@ -74,6 +73,33 @@ function inRange(when: string, range: string) {
   return Date.now() - countedAt(when) <= hours * 60 * 60 * 1000;
 }
 
+/** Push or pop the locations page. Keyboard and reduced motion land immediately. */
+function shiftCash(direction: "forward" | "back", update: () => void) {
+  const snap =
+    document.documentElement.classList.contains("is-keys") ||
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (snap || typeof document.startViewTransition !== "function") {
+    update();
+    return;
+  }
+  document.documentElement.dataset.cashShift = direction;
+  let transition: ViewTransition;
+  try {
+    transition = document.startViewTransition(() => {
+      flushSync(update);
+    });
+  } catch {
+    delete document.documentElement.dataset.cashShift;
+    update();
+    return;
+  }
+  transition.finished.finally(() => {
+    if (document.documentElement.dataset.cashShift === direction) {
+      delete document.documentElement.dataset.cashShift;
+    }
+  });
+}
+
 export default function CashPage() {
   const [locations, setLocations] = useState(INITIAL_LOCATIONS);
   const [counts, setCounts] = useState(INITIAL_COUNTS);
@@ -87,10 +113,22 @@ export default function CashPage() {
   const [hidden, setHidden] = useState(true);
   const [enteringId, setEnteringId] = useState<string | null>(null);
   const [sort, setSort] = useState<DataSort | null>(null);
+  const [pinnedIds, setPinnedIds] = useState<string[]>([]);
   const retained = useRef<CashCount | null>(null);
 
   const shiftOptions = useMemo(() => sortShifts([...new Set(counts.map((count) => count.shift))]), [counts]);
   const places = useMemo(() => locations.filter((location) => !location.archived), [locations]);
+  const orderedLocations = useMemo(() => {
+    const rank = new Map(pinnedIds.map((id, index) => [id, index]));
+    return [...locations].sort((a, b) => {
+      const aRank = rank.get(a.id);
+      const bRank = rank.get(b.id);
+      if (aRank == null && bRank == null) return 0;
+      if (aRank == null) return 1;
+      if (bRank == null) return -1;
+      return aRank - bRank;
+    });
+  }, [locations, pinnedIds]);
   const matched = useMemo(() => {
     const needle = query.trim().toLowerCase();
     return counts.filter((count) => {
@@ -118,8 +156,7 @@ export default function CashPage() {
     [matched, places],
   );
 
-  const departmentByLocation = useMemo(() => new Map(locations.map((location) => [location.id, location.department])), [locations]);
-  const columns = useMemo(() => countColumns(departmentByLocation), [departmentByLocation]);
+  const columns = useMemo(() => countColumns(), []);
   const active = locations.some((location) => !location.archived);
   const open = counts.find((count) => count.id === selectedId) ?? null;
   if (open) retained.current = open;
@@ -166,8 +203,39 @@ export default function CashPage() {
     return (
       <LocationsEditor
         locations={locations}
-        onBack={() => setView({ name: "list" })}
+        onBack={() => shiftCash("back", () => setView({ name: "list" }))}
         onChange={setLocations}
+      />
+    );
+  }
+
+  if (view.name === "count") {
+    const editing = view.count;
+    return (
+      <CountForm
+        locations={locations}
+        initial={editing}
+        onCancel={() => shiftCash("back", () => setView({ name: "list" }))}
+        onPost={(posted) => {
+          const id = editing?.id ?? `count-${Date.now()}`;
+          const keep = Boolean(editing && !editing.entry && Object.keys(posted.entry).length === 0);
+          const next: CashCount = {
+            id,
+            locationId: posted.locationId,
+            shift: posted.shift,
+            by: editing?.by ?? "Sarah",
+            initials: editing?.initials ?? "SM",
+            when: editing?.when ?? formatWhen(new Date()),
+            notes: posted.notes,
+            expected: editing && keep ? editing.expected : posted.expected,
+            entry: editing && keep ? null : posted.entry,
+            total: editing && keep ? editing.total : posted.total,
+          };
+          setCounts((list) => (editing ? list.map((item) => (item.id === id ? next : item)) : [next, ...list]));
+          setEnteringId(editing ? null : id);
+          setSelectedId(id);
+          shiftCash("back", () => setView({ name: "list" }));
+        }}
       />
     );
   }
@@ -175,6 +243,7 @@ export default function CashPage() {
   return (
     <PageLayout
       className="sheet-page cash-page"
+      bodyClassName="cash-shift-body"
       data-view="head"
       icon="card"
       title="Cash & bank"
@@ -187,11 +256,11 @@ export default function CashPage() {
       actions={
         view.name === "list" ? (
           <>
-            <Button variant="secondary" onClick={() => setView({ name: "locations" })}>
+            <Button variant="secondary" onClick={() => shiftCash("forward", () => setView({ name: "locations" }))}>
               <Icon name="pin" size={14} />
               Manage locations
             </Button>
-            <Button disabled={!active} onClick={() => setView({ name: "count", count: null })}>
+            <Button disabled={!active} onClick={() => shiftCash("forward", () => setView({ name: "count", count: null }))}>
               <Icon name="plus-bold" size={14} />
               New count
             </Button>
@@ -224,20 +293,34 @@ export default function CashPage() {
       {view.name === "list" ? (
         <div className="sheet-work">
           <div className="sheet-list">
-            {visible.length === 0 ? (
+            {visible.length === 0 && (place !== "all" || places.length === 0) ? (
               <div className="stage sheet-stage">
                 <DataTable rows={[]} total={counts.length} empty="No counts" columns={columns} />
               </div>
             ) : (
-              locations.map((location) => {
+              orderedLocations.map((location) => {
                 const rows = visible.filter((count) => count.locationId === location.id);
-                if (rows.length === 0) return null;
+                const onAll = place === "all" && !location.archived;
+                if (rows.length === 0 && !onAll) return null;
                 const owned = counts.filter((count) => count.locationId === location.id).length;
                 return (
                   <div key={location.id} className="stage sheet-stage">
                     <h2 className="cash-place">
-                      <Icon name="pin" size={14} />
                       {location.name || "New location"}
+                      <button
+                        className="cash-pin"
+                        type="button"
+                        aria-pressed={pinnedIds.includes(location.id)}
+                        aria-label={pinnedIds.includes(location.id) ? "Unpin" : "Pin"}
+                        onClick={() =>
+                          setPinnedIds((current) =>
+                            current.includes(location.id) ? current.filter((id) => id !== location.id) : [location.id, ...current],
+                          )
+                        }
+                      >
+                        <Icon name={pinnedIds.includes(location.id) ? "pin-filled" : "pin"} size={14} />
+                      </button>
+                      {location.department ? <DepartmentChip name={location.department} /> : null}
                     </h2>
                     <DataTable
                       rows={rows}
@@ -249,6 +332,10 @@ export default function CashPage() {
                       sort={sort}
                       onSortChange={setSort}
                       onRowClick={(row) => setSelectedId((current) => (current === row.id ? null : row.id))}
+                      onRowContextMenu={(row) => setSelectedId(row.id)}
+                      onDelete={remove}
+                      deleteNoun="count"
+                      rowName={(row) => shiftLabel(row.shift)}
                     />
                   </div>
                 );
@@ -257,34 +344,6 @@ export default function CashPage() {
           </div>
         </div>
       ) : null}
-      {view.name === "count" ? (
-        <CountForm
-          locations={locations}
-          initial={view.count}
-          onCancel={() => setView({ name: "list" })}
-          onPost={(posted) => {
-            const editing = view.count;
-            const id = editing?.id ?? `count-${Date.now()}`;
-            const keep = Boolean(editing && !editing.entry && Object.keys(posted.entry).length === 0);
-            const next: CashCount = {
-              id,
-              locationId: posted.locationId,
-              shift: posted.shift,
-              by: editing?.by ?? "Sarah",
-              initials: editing?.initials ?? "SM",
-              when: editing?.when ?? formatWhen(new Date()),
-              notes: posted.notes,
-              expected: editing && keep ? editing.expected : posted.expected,
-              entry: editing && keep ? null : posted.entry,
-              total: editing && keep ? editing.total : posted.total,
-            };
-            setCounts((list) => (editing ? list.map((item) => (item.id === id ? next : item)) : [next, ...list]));
-            setEnteringId(editing ? null : id);
-            setSelectedId(id);
-            setView({ name: "list" });
-          }}
-        />
-      ) : null}
       {view.name === "list" && present && sideCount && sideLocation ? (
         <CountSide
           count={sideCount}
@@ -292,7 +351,7 @@ export default function CashPage() {
           hidden={hidden}
           onClose={() => setSelectedId(null)}
           onExited={() => setPresent(false)}
-          onEdit={() => setView({ name: "count", count: sideCount })}
+          onEdit={() => shiftCash("forward", () => setView({ name: "count", count: sideCount }))}
           onDeleted={() => remove(sideCount)}
         />
       ) : null}
@@ -300,7 +359,7 @@ export default function CashPage() {
   );
 }
 
-function countColumns(departmentByLocation: Map<string, DepartmentName | null>): Array<DataColumn<CashCount>> {
+function countColumns(): Array<DataColumn<CashCount>> {
   const even = { flex: true, minWidth: 125 };
   return [
     {
@@ -310,16 +369,6 @@ function countColumns(departmentByLocation: Map<string, DepartmentName | null>):
       ...even,
       sortValue: (row) => row.shift,
       render: (row) => <span className="cash-shift">{shiftLabel(row.shift)}</span>,
-    },
-    {
-      id: "dept",
-      title: "Dept",
-      labelInset: 8,
-      ...even,
-      render: (row) => {
-        const name = departmentByLocation.get(row.locationId);
-        return name ? <DepartmentChip name={name} /> : null;
-      },
     },
     {
       id: "by",
@@ -392,17 +441,19 @@ function CountSide({
     >
       <div className="cash-side-head">
         <div className="todo-side-intro">
-          <div className="todo-side-title-row">
+          <div className="cash-side-id">
             <h2>{shiftLabel(count.shift)}</h2>
-            <Variance count={count} />
+            <p className="cash-side-meta">
+              <Person variant="pill" name={count.by} initials={count.initials} />
+              <span>{count.when}</span>
+            </p>
           </div>
-          <p className="cash-side-meta">
-            <Person variant="pill" name={count.by} initials={count.initials} />
-            <span>{count.when}</span>
-          </p>
           <p className="cash-side-total">
             <span className="sheet-label">Total</span>
-            <span className="cash-money">{formatMoney(totalOf(count))}</span>
+            <span className="cash-side-sum">
+              <span className="cash-money">{formatMoney(totalOf(count))}</span>
+              <Variance count={count} />
+            </span>
           </p>
         </div>
         <div className="todo-side-rule" />

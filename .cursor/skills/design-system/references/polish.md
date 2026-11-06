@@ -53,6 +53,12 @@ A drag, a gesture, something that should feel alive, or a decorative follow of t
 
 How long. A larger element takes longer than a smaller one. An exit is about 20% faster than the entrance. A longer travel gets a longer duration. Everyday UI stays under 300ms. A small control, such as a select, does not sit on a 400ms animation. A modal or a drawer may run 200–500ms on `--ease-drawer`. A drawer this gallery already measured stays on that measurement when it lands inside the range. The to-do panel is `--motion-panel` (400ms) in and `--motion-panel-out` (320ms) out.
 
+A table skeleton pulses once, then the values crossfade in. The pulse is `--sk-pulse-dur` (1000ms), ease-in-out, one iteration, from opacity 1 to `--sk-pulse-min` (0.5) and back. The crossfade is `--sk-reveal-dur` (400ms), ease-in-out, with a `--sk-reveal-blur` (2px) blur. Columns follow each other by `--sk-ripple` (32ms). This is the one skeleton. Do not add a shimmer or a loop. `prefers-reduced-motion: reduce` drops the pulse, the blur, and the delay. The measurements are in [components.md](components.md), Table.
+
+A new table row grows from height 0 to its content over 200ms. The rows under it move down. `prefers-reduced-motion: reduce` inserts the row at full height. Creating a new item in [patterns.md](patterns.md) is the rule.
+
+An inset card opens in place. The title stays put. The body grows and fades in over 240ms on `--ease-out`. It closes over 192ms. The chevron turns over 160ms on `--ease-out`. `prefers-reduced-motion: reduce` snaps the body and the chevron. The measurements are in [components.md](components.md), Inset card.
+
 | What moves | Duration |
 | --- | --- |
 | A button press | 100–160ms on `--ease-out`. This gallery uses 160ms. The whole control scales to `0.98`, including the label and the icon. `0.95`–`0.98` is the range. |
@@ -90,6 +96,8 @@ An underline is a link. Emphasis in the interface is weight or color. Bold is fo
 ## Fewer containers
 
 Fewer boxes mean more room. The page is the surface. Do not wrap a screen, a list, or a toolbar in another card when that page is already the background. A box belongs to a control that needs one, such as a field, a menu, a button, or a chip that is itself the control. Do not add a shell around a group that can sit on the page. A long record can give one different kind of block a fill. It does not put every section in a matching card. See [guard-rails.md](guard-rails.md).
+
+A card is one of several similar items. Locations, notes, lessons, or any other set use a card so each item can be told apart from the next. A screen with one action or one thing does not need a card. That thing sits on the page. Keep the pieces that belong, and leave the outer card behind.
 
 Color pulls the key item forward and lets the rest recede. A selected or starred row uses an accent the system already has. The same kind of row, when it is not selected, stays `--black-50` with no fill. Do not give both a box and expect the border to say which one matters.
 

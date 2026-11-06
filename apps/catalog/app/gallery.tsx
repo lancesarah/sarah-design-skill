@@ -2,6 +2,7 @@
 
 import { useRef, useState, type ReactNode } from "react";
 import {
+  Checkbox,
   Chip,
   ColorSwatches,
   ActivityFeed,
@@ -507,6 +508,36 @@ export function GallerySections() {
               <span className="frame">
                 <SearchField className="ref" iconOnly label="Search" state="hover" />
               </span>
+            </Col>
+          </div>
+        </section>
+        <section id="checkbox">
+          <h2>Checkbox</h2>
+          <div className="cols">
+            <Col k="Interactive">
+              <span className="sds check-list">
+                <Checkbox defaultChecked>Pennies</Checkbox>
+                <Checkbox defaultChecked>Nickels</Checkbox>
+                <Checkbox>Deposit/drop</Checkbox>
+              </span>
+            </Col>
+            <Col k="Checked">
+              <Checkbox className="ref" checked>
+                Pennies
+              </Checkbox>
+            </Col>
+            <Col k="Unchecked">
+              <Checkbox className="ref">Deposit/drop</Checkbox>
+            </Col>
+            <Col k="Hover">
+              <Checkbox className="ref" state="hover">
+                Deposit/drop
+              </Checkbox>
+            </Col>
+            <Col k="Checked hover">
+              <Checkbox className="ref" checked state="hover">
+                Pennies
+              </Checkbox>
             </Col>
           </div>
         </section>

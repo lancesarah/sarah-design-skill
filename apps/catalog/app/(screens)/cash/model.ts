@@ -220,6 +220,15 @@ export const INITIAL_LOCATIONS: CashLocation[] = [
     shifts: defaultShifts(),
     lines: defaultLines(),
   },
+  {
+    id: "restaurant",
+    name: "Restaurant",
+    department: "Food & Beverage",
+    expected: 0,
+    archived: false,
+    shifts: defaultShifts(),
+    lines: defaultLines(),
+  },
 ];
 
 export const INITIAL_COUNTS: CashCount[] = [

@@ -1,7 +1,8 @@
 "use client";
 
-import { Button, Icon, OverlayMenu, SegmentedControl } from "@lance-live/gallery-ui";
-import { useMemo, useState } from "react";
+import { Button, DepartmentChip, Icon, OverlayMenu, SegmentedControl } from "@lance-live/gallery-ui";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { PageLayout } from "../page-layout";
 import {
   countLines,
   dollarsFromInput,
@@ -12,8 +13,19 @@ import {
   varianceLabel,
   type CashLine,
   type CashLocation,
+  type LineGroup,
 } from "./model";
 import { useMenu } from "./use-menu";
+
+const LINE_GROUPS: Array<{ id: LineGroup; label: string }> = [
+  { id: "coins", label: "Coins" },
+  { id: "bills", label: "Bills" },
+  { id: "other", label: "Other" },
+];
+
+function shiftFace(name: string) {
+  return name.replace(/ In$/, " in").replace(/ Out$/, " out");
+}
 
 type Mode = "count" | "amount";
 
@@ -49,7 +61,7 @@ export function CountForm({
   const [shift, setShift] = useState(() => (initial?.shift && shifts.includes(initial.shift) ? initial.shift : shifts.includes("PM In") ? "PM In" : (shifts[0] ?? "")));
   const [mode, setMode] = useState<Mode>("count");
   const [notes, setNotes] = useState(initial?.notes ?? "");
-  const [focused, setFocused] = useState<string | null>(null);
+  const [focused, setFocused] = useState<string | null>(initial?.id ? null : "pennies");
   const lines = useMemo(() => (location ? countLines(location) : []), [location]);
   const [values, setValues] = useState<Record<string, string>>(() => {
     if (!initial?.entry || !location) return {};
@@ -109,74 +121,107 @@ export function CountForm({
   const delta = total - expected;
   const tone = !started ? "" : delta === 0 ? "is-even" : delta > 0 ? "is-over" : "is-short";
 
-  return (
-    <div className="cash-screen">
-      <div className="cash-scroll">
-        <div className="cash-meta">
-          <LocationField locations={active} value={locationId} locked={Boolean(initial?.id)} onChange={chooseLocation} />
-          <ShiftField shifts={shifts} value={shift} onChange={setShift} />
-          <div className="cash-meta-item">
-            <span className="sheet-label">Entry mode</span>
-            <SegmentedControl
-              aria-label="Entry mode"
-              value={mode}
-              onValueChange={chooseMode}
-              options={[
-                { value: "count", label: "# Count" },
-                { value: "amount", label: "$ Amount" },
-              ]}
-            />
-          </div>
-          <div className="cash-meta-item">
-            <span className="sheet-label">Expected bank</span>
-            <span className="cash-meta-value cash-money">{formatMoney(expected)}</span>
-          </div>
-        </div>
-        <div className="cash-blocks">
-          <div className="cash-block">
-            <h2>Denominations</h2>
-            <div className="cash-denoms">
-              {lines.map((line) => (
-                <DenomRow
-                  key={line.id}
-                  line={line}
-                  mode={mode}
-                  value={values[line.id] ?? ""}
-                  focused={focused === line.id}
-                  onFocus={() => setFocused(line.id)}
-                  onBlur={() => setFocused((current) => (current === line.id ? null : current))}
-                  onChange={(value) => setValues((current) => ({ ...current, [line.id]: value }))}
-                />
-              ))}
-              <label className="cash-denom cash-notes-field">
-                <span className="cash-denom-name">Notes</span>
-                <input className="cash-qty" aria-label="Notes" value={notes} onChange={(event) => setNotes(event.target.value)} />
-              </label>
-            </div>
-          </div>
-        </div>
-      </div>
-      <footer className="cash-foot">
-        <div className="cash-totals">
-          <div className="cash-total">
-            <span className="sheet-label">Running total</span>
-            <strong>{formatMoney(total)}</strong>
-          </div>
-          <div className={`cash-total ${tone}`}>
-            <span className="sheet-label">Over / Short</span>
-            <strong>{started ? varianceLabel(delta) : "—"}</strong>
-          </div>
-        </div>
-        <div className="cash-foot-actions">
+  const title = initial?.id ? "Edit count" : "New count";
+  const page = (children: ReactNode) => (
+    <PageLayout
+      className="sheet-page cash-page"
+      bodyClassName="cash-shift-body"
+      icon="card"
+      title={
+        <>
+          <button type="button" className="cash-back" onClick={onCancel}>
+            Cash & bank
+          </button>
+          <span className="cash-crumb-sep" aria-hidden="true">
+            /
+          </span>
+          {title}
+        </>
+      }
+      actions={
+        <>
           <Button variant="secondary" onClick={onCancel}>
-            Cancel
+            <Icon name="chevron" size={14} className="cash-back-icon" />
+            Back
           </Button>
           <Button disabled={!location || !shift} onClick={() => location && shift && onPost({ locationId: location.id, shift, notes: notes.trim(), entry, total, expected })}>
             Post count
           </Button>
+        </>
+      }
+    >
+      <div className="cash-screen">
+        <div className="cash-manage">{children}</div>
+      </div>
+    </PageLayout>
+  );
+
+  if (!location) return page(<p className="cash-none">No locations</p>);
+
+  return page(
+    <div className="cash-count">
+      <div className="cash-bank-figure">
+        <span>Counted</span>
+        <div className={started ? "cash-count-sum" : "cash-count-sum is-quiet"}>
+          <span className="cash-bank-sign">$</span>
+          {total.toFixed(2)}
         </div>
-      </footer>
-    </div>
+        <div className="cash-count-ref">
+          <span>Expected {formatMoney(expected)}</span>
+          <span className={tone}>{started ? varianceLabel(delta) : "—"}</span>
+        </div>
+      </div>
+      <div className="cash-count-picks">
+        <div className="cash-count-place">
+          <LocationField locations={active} value={location.id} locked={Boolean(initial?.id)} onChange={chooseLocation} />
+          {location.department ? <DepartmentChip name={location.department} style={{ boxShadow: "none" }} /> : null}
+        </div>
+        <ShiftField shifts={shifts} value={shift} onChange={setShift} />
+        <SegmentedControl
+          className="cash-count-mode"
+          aria-label="Entry mode"
+          value={mode}
+          onValueChange={chooseMode}
+          options={[
+            { value: "count", label: "Count" },
+            { value: "amount", label: "Amount" },
+          ]}
+        />
+      </div>
+      <section className="cash-sec">
+        <div className="cash-sec-head">
+          <h2>Lines</h2>
+        </div>
+        <div className="cash-grid">
+          {LINE_GROUPS.map((group) => (
+            <div className="cash-col" key={group.id}>
+              <span className="cash-col-k">{group.label}</span>
+              <div className="cash-col-list">
+                {lines
+                  .filter((line) => line.group === group.id)
+                  .map((line) => (
+                    <DenomRow
+                      key={line.id}
+                      line={line}
+                      mode={mode}
+                      value={values[line.id] ?? ""}
+                      focused={focused === line.id}
+                      autoFocus={!initial?.id && line.id === "pennies"}
+                      onFocus={() => setFocused(line.id)}
+                      onBlur={() => setFocused((current) => (current === line.id ? null : current))}
+                      onChange={(value) => setValues((current) => ({ ...current, [line.id]: value }))}
+                    />
+                  ))}
+              </div>
+            </div>
+          ))}
+          <div className="cash-col cash-col-notes">
+            <span className="cash-col-k">Notes</span>
+            <textarea className="cash-add-input cash-count-notes" aria-label="Notes" value={notes} onChange={(event) => setNotes(event.target.value)} />
+          </div>
+        </div>
+      </section>
+    </div>,
   );
 }
 
@@ -194,13 +239,14 @@ function LocationField({
   const current = locations.find((location) => location.id === value);
   const name = current?.name || "New location";
   const menu = useMenu();
-  return (
-    <div className="cash-meta-item">
-      <span className="sheet-label">Location</span>
-      {locked || locations.length < 2 ? (
-        <span className="cash-meta-value">{name}</span>
+  return locked || locations.length < 2 ? (
+        <span className="cash-meta-item">
+          <span className="sheet-label">Location</span>
+          <span className="cash-meta-value">{name}</span>
+        </span>
       ) : (
         <span className="drop">
+          <span className="sheet-label">Location</span>
           <button ref={menu.anchorRef} className="cash-select" type="button" aria-haspopup="menu" aria-expanded={menu.open} onClick={() => menu.setOpen((open) => !open)}>
             {name}
             <Icon name="chevron" size={14} />
@@ -219,46 +265,42 @@ function LocationField({
                 }}
               >
                 {location.name || "New location"}
-                <Icon name="check" className="check" />
+                <Icon name="check" size={14} className="check" />
               </button>
             ))}
           </OverlayMenu>
         </span>
-      )}
-    </div>
-  );
+      );
 }
 
 function ShiftField({ shifts, value, onChange }: { shifts: string[]; value: string; onChange: (shift: string) => void }) {
   const menu = useMenu();
   return (
-    <div className="cash-meta-item">
+    <span className="drop">
       <span className="sheet-label">Shift</span>
-      <span className="drop">
-        <button ref={menu.anchorRef} className="cash-select" type="button" aria-haspopup="menu" aria-expanded={menu.open} onClick={() => menu.setOpen((open) => !open)}>
-          {value || "—"}
-          <Icon name="chevron" size={14} />
-        </button>
-        <OverlayMenu open={menu.open} anchorRef={menu.anchorRef} marker={menu.marker} label="Shift">
-          {shifts.map((shift) => (
-            <button
-              key={shift}
-              className="menu-item"
-              type="button"
-              role="menuitemradio"
-              aria-checked={shift === value}
-              onClick={() => {
-                onChange(shift);
-                menu.setOpen(false);
-              }}
-            >
-              {shift}
-              <Icon name="check" className="check" />
-            </button>
-          ))}
-        </OverlayMenu>
-      </span>
-    </div>
+      <button ref={menu.anchorRef} className="cash-select" type="button" aria-haspopup="menu" aria-expanded={menu.open} onClick={() => menu.setOpen((open) => !open)}>
+        {value ? shiftFace(value) : "Shift"}
+        <Icon name="chevron" size={14} />
+      </button>
+      <OverlayMenu open={menu.open} anchorRef={menu.anchorRef} marker={menu.marker} label="Shift">
+        {shifts.map((shift) => (
+          <button
+            key={shift}
+            className="menu-item"
+            type="button"
+            role="menuitemradio"
+            aria-checked={shift === value}
+            onClick={() => {
+              onChange(shift);
+              menu.setOpen(false);
+            }}
+          >
+            {shiftFace(shift)}
+            <Icon name="check" size={14} className="check" />
+          </button>
+        ))}
+      </OverlayMenu>
+    </span>
   );
 }
 
@@ -267,6 +309,7 @@ function DenomRow({
   mode,
   value,
   focused,
+  autoFocus,
   onFocus,
   onBlur,
   onChange,
@@ -275,27 +318,39 @@ function DenomRow({
   mode: Mode;
   value: string;
   focused: boolean;
+  autoFocus?: boolean;
   onFocus: () => void;
   onBlur: () => void;
   onChange: (value: string) => void;
 }) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (!autoFocus) return;
+    const input = inputRef.current;
+    if (!input) return;
+    input.focus();
+    input.select();
+  }, [autoFocus]);
   const piece = mode === "count" && line.kind === "count";
   const dollars = dollarsFromInput(line, value, mode);
   const showEq = piece && (focused || value !== "");
   return (
-    <label className="cash-denom">
-      <span className="cash-denom-name">{line.countLabel ?? line.label}</span>
+    <label className={["cash-count-line", focused ? "is-active" : "", value ? "has-value" : ""].filter(Boolean).join(" ")}>
+      <span className="cash-count-copy">
+        <span>{line.countLabel ?? line.label}</span>
+        {showEq ? <span className="cash-eq">{formatMoney(dollars)}</span> : null}
+      </span>
       <input
+        ref={inputRef}
         className="cash-qty"
         inputMode="decimal"
         aria-label={line.label}
         value={value}
-        placeholder={piece ? "0" : "—"}
+        placeholder={focused ? "0" : "—"}
         onFocus={onFocus}
         onBlur={onBlur}
         onChange={(event) => onChange(event.target.value.replace(/[^0-9.]/g, ""))}
       />
-      <span className="cash-eq">{showEq ? `${value || "0"} → ${formatMoney(dollars)}` : ""}</span>
     </label>
   );
 }

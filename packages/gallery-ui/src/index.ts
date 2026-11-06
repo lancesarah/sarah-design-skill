@@ -1,4 +1,5 @@
 export { Button, type ButtonProps, type ButtonVariant } from "./components/Button";
+export { Checkbox, type CheckboxProps } from "./components/Checkbox";
 export {
   SegmentedControl,
   type SegmentedControlProps,

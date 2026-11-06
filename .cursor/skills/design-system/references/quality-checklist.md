@@ -36,7 +36,7 @@ Check this on every change, on the rendered screen. Equal padding is not alignme
 
 - [ ] A press scales the whole control. A frequent control, especially a table row, does not fade its hover. A keyboard action snaps. Something removed closes the gap. Completing an item holds, then leaves. See [polish.md](polish.md) and [patterns.md](patterns.md).
 - [ ] A new icon matches the Internal notes construction. Icons in one menu share it. See [polish.md](polish.md).
-- [ ] The page is the surface. A list or a toolbar is not wrapped in an extra card. A long record does not put every section in a matching fill. See [polish.md](polish.md) and [guard-rails.md](guard-rails.md).
+- [ ] The page is the surface. A list or a toolbar is not wrapped in an extra card. A card is for several similar items. One action or one thing on a screen sits on the page. A long record does not put every section in a matching fill. See [polish.md](polish.md) and [guard-rails.md](guard-rails.md).
 
 ## If you touched chrome or a record
 

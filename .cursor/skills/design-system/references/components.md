@@ -9,7 +9,7 @@ When adding a component:
 3. Put icons in the page's SVG sprite and reference them with `<use>`.
 4. Add the new section to the gallery index if it is a shared component.
 
-Each component below has four lines: when, when not, default, and the states already built. Loading and error are undecided on every one of them. Leave those two off until they are built.
+Each component below has four lines: when, when not, default, and the states already built. Loading is specified for the table. Error is undecided on every component. A page does not draw its own error. Leave it off until one treatment is added here.
 
 Color, type, and spacing are gallery specimens. They are not components. The header, the filter row, the note card, the comment thread, the task row, and the detail panel are blocks in [patterns.md](patterns.md).
 
@@ -41,10 +41,17 @@ Color, type, and spacing are gallery specimens. They are not components. The hea
 - Default: `.chip-filter`.
 - States: rest is `--filter-chip-bg` and `--action` text. Hover keeps that fill.
 
+## Checkbox
+
+- When: a row is included or left out, such as a shift or a cash line.
+- When not: a setting that is on or off for the whole view. That is the switch. A choice among labeled options is a menu.
+- Default: `.check`, unchecked. The label is the row name, `--text-14`, `--black`.
+- States: the box is 14px with a 4px radius. Unchecked is `--white` and `--stroke`. Hover fills the box one step, `--sidebar-grey` in light mode and `--grey` in dark mode. Checked is `--action` with a white check and no stroke. Checked hover is `--action-hover`. Press scales the whole row to `0.98`. Disabled does not scale and does not take the hover fill.
+
 ## Switch
 
 - When: a setting that is on or off, such as dark mode.
-- When not: a choice among three or more. That is tabs or segments.
+- When not: a choice among three or more. That is tabs or segments. A row that is included or left out is a checkbox.
 - Default: `.theme-switch`, off.
 - States: off track is `--grey`, on track is `--action`, knob is `--switch-knob`. The knob travels `--switch-dur` (160ms) on `--ease-out` and stops at the end. The track snaps. Reduced motion skips the travel and keeps the color. On a hovered secondary button the off track steps to `--grey-up`. The on track stays `--action`.
 
@@ -180,9 +187,35 @@ The sidebar is one component. `catalog/notes.html` (`aside.side`) is the markup.
 - Keybind tooltips use the tool tip component: Messages is Opt M, Notifications is Opt N.
 - Collapsed and expanded are the only two layouts. Both stay a fixed width.
 - The selected row is a `--grey` fill. It has no white fill and no stroke, in both themes. The label and icon turn `--black`. An unselected row stays `--black-50`, including on hover. The pill is 30px tall, the same width as the search field above it, with a 6px radius and 1px between rows.
-- Each nav row shows a reorder grip and a pin control on hover, and only while the sidebar is expanded. A row in Pinned uses the unpin glyph. Every other row uses the pin glyph. It is not the hidden eye. Its hover is the icon chip: an 18px box, 2px padding, and a 6px radius. Collapsed hides both. Hovering the rail does not bring them back.
+- Each nav row shows a reorder grip and a pin on hover, and only while the sidebar is expanded. The pin is the Pin component below. Collapsed hides both. Hovering the rail does not bring them back. Pinning opens the Pinned group. The item stays in its home group.
 - A section label stays 12px. Its weight is 500 so the text matches the nav link under it. The row stays the same height.
 - The profile card at the bottom is not settled. Leave its layout alone until it is redesigned.
+
+## Pin
+
+- When: a person pins a nav row or a section so that item stays at the top.
+- When not: a map marker, a decorative icon, or the hidden eye.
+- Default: the outline pin. Pressed: the filled pin.
+- States: rest, hover, pinned, and unpinned. On the sidebar it also hides when the rail is collapsed.
+
+The control is the icon chip: an 18px box, 2px padding, and a 6px radius. At rest the icon is `--black-50`. Hover fills `--black-12` and the icon turns `--black`. The label is Pin. When it is pinned, `aria-pressed` is true, the icon is the filled pin, and the label is Unpin.
+
+Pinning moves that item to the front of the pinned set. A newer pin sits ahead of an older one. Unpinning takes it off that front. A copy that still lives in its home list stays where it was.
+
+On the sidebar the grip and the pin show on row hover, and only while the sidebar is expanded. On a section heading the pin sits at the end of the heading and shows when that stage is hovered or focused.
+
+## Inset card
+
+- When: several similar items share a page, and each one expands in place with the title staying put. The card is how one item is told apart from the next.
+- When not: the screen has one action or one thing. That thing sits on the page. The shell and the white inset exist to separate a set. They are not a frame for a single screen. The detail panel slides over the table. A menu is not this card.
+- Default: open, in the gallery section `#inset-card`.
+- States: open and closed. The title row is the same in both.
+
+The shell is `--sidebar-grey`, with 6px of padding, a 1px `--grey` border, and a 10px radius. The head is at least 56px, padded `11px 22px`, and pulled up 6px so it sits in that shell padding. The title is `--text-16` with a 21px line-height. Page actions sit in the tools, and the chevron stays last. Each tool button is 28px with `--radius-control`. Hover fills `--grey`.
+
+The chevron points down while the card is open. Closed, it turns −90 degrees over 160ms on `--ease-out`. The body is a white inset with a 1px `--grey` border and `--radius-control`. Its padding is `30px 30px 40px`, and the contents stack with a 40px gap. Below 720px that padding is `--space-16` and the gap is `--space-25`. The page supplies the body. The card does not restyle for one page’s fields.
+
+Opening grows the body and fades it in over 240ms on `--ease-out`. Closing runs 192ms, about 20% faster. The title does not move. `prefers-reduced-motion: reduce` snaps the body and the chevron.
 
 ## Comment
 
@@ -204,8 +237,12 @@ A new table copies that section. It does not invent a second row, chip, or filte
 
 Under the filter row, the columns are Status, Room, To-do, Urgency, Type, Assigned, and Opened. Content starts `--space-16` after each column line, and Status starts that same distance from the left edge. The column gap stays `--space-20`.
 
-A column is at least as wide as its title with equal padding on the left and the right, and at least as wide as the value it is showing. That width is the minimum. Dragging the line at the right of a header stops there, and so do the arrow keys. The To-do column gives up the space. The note under the title fills that column. It does not shrink to the words. The location and the item still hug their labels.
+A column is at least as wide as its title with equal padding on the left and the right, and at least as wide as the value it is showing. That width is the minimum. The note under the title fills that column. It does not shrink to the words. The location and the item still hug their labels.
+
+The resize handle sits on the right edge of each header. The hit area is 12px wide and centered on the column line. The drawn line is 1px. It stays clear until hover, keyboard focus, or a drag, and then it is `--black-50`. While the pointer is down, a 1px `--black-50` guide follows that edge. Dragging stops at the minimum. The arrow keys step 8px and stop at the same minimum. The column that takes the leftover width gives up space first. Double-click returns that column to its usual width. The width stays on this page.
 
 One column names the record and takes the leftover width, so the row reaches the frame. On the to-do table that column is To-do. When a page has no title column, choose one from the job of the page: the column a person reads to tell one row from the next. A status, a time, a total, a person, and a department stay as wide as their values. Mark the chosen column so it grows. Use `flex` when the cell is a short name. Use `text: "primary"` when the cell is a title or a description. Double-click the line to return that column to its usual width. The width stays on this page. The columns resize with the pane. The table scrolls sideways when those minimums do not fit. A cell does not paint on top of the next column. The title, the note under it, and the column header start on the same line. The frame ends at the last row and keeps its rounded corners. It scrolls only when the rows pass the space above the count. Under the frame, at the left, the count is `--text-12` `--text-muted` and reads Showing N of M.
+
+While the rows are still loading, the same table shows the skeleton in the Loading state of that section. The bars sit in the cells. The columns do not change width when the values arrive. A title cell is two bars, 6px apart: the title is 12px tall and 42% of the column, and the note is 10px tall and 68%. A chip, a status, or a person is one bar, 64px by 20px. A short value is one 12px bar. Every bar is `--grey` with a 4px radius. The bars pulse once, opacity 1 to `--sk-pulse-min` and back, over `--sk-pulse-dur`, ease-in-out. The values then crossfade in and the bars crossfade out over `--sk-reveal-dur`, with a `--sk-reveal-blur` blur. Each column starts `--sk-ripple` after the one on its left. The row takes no hover and no press while the bars are up. `prefers-reduced-motion: reduce` skips the pulse, the blur, and the delay, and the values appear in place. Do not add a shimmer, a second grey, or a skeleton that sits outside the cell.
 
 Screen-only note layout is not in this catalog. Do not fold one-off note chrome into the gallery unless it is reused.

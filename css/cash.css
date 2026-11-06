@@ -2,9 +2,11 @@
    This file only places the count, the location editor, and the posting form. */
 
 .cash-place {
+  position: relative;
   display: flex;
   align-items: center;
   gap: var(--space-8);
+  width: 100%;
   margin: 0 0 var(--space-12);
   color: var(--black);
   font-size: var(--text-14);
@@ -12,7 +14,48 @@
   line-height: 20px;
 }
 
-.cash-place .i { color: var(--text-muted); }
+.cash-pin {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  translate: 0 -50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  padding: 2px;
+  border: 0;
+  border-radius: var(--radius-control);
+  background: transparent;
+  color: var(--black-50);
+  opacity: 0;
+}
+
+.cash-page .sheet-stage:hover .cash-pin,
+.cash-page .sheet-stage:focus-within .cash-pin { opacity: 1; }
+
+.cash-pin:hover,
+.cash-pin.is-hover { background: var(--black-12); color: var(--black); }
+
+.cash-pin .i { margin: 0; }
+
+.cash-place .dept { margin-inline-start: var(--space-8); }
+
+/* Location blocks stack at their content height, 50px apart. */
+.cash-page .sheet-stage {
+  flex: none;
+}
+
+.cash-page .sheet-stage:not(:last-child) {
+  padding-bottom: 0;
+}
+
+.cash-page .sheet-stage + .sheet-stage {
+  margin-top: 50px;
+  padding-top: 0;
+}
 
 .cash-shift {
   display: inline-flex;
@@ -25,6 +68,11 @@
   font-weight: 500;
   line-height: 16px;
   white-space: nowrap;
+}
+
+/* The 1px ring sits outside the pill. The cell clip would keep only the rounded corners. */
+.sheet-cell-clip:has(.cash-shift) {
+  overflow: visible;
 }
 
 .cash-money {
@@ -49,21 +97,50 @@
   gap: 24px;
 }
 
+.cash-side-id {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  width: 100%;
+}
+
+.cash-page .cash-side-id h2 {
+  margin: 0;
+  font-size: var(--text-20);
+  font-weight: 500;
+  line-height: 24px;
+  text-wrap: var(--text-wrap-title);
+}
+
 .cash-side-meta {
   display: flex;
   align-items: center;
   gap: var(--space-8);
   margin: 0;
   color: var(--text-muted);
-  font-size: var(--text-14);
-  line-height: 20px;
+  font-size: var(--text-12);
+  line-height: 16px;
 }
 
 .cash-side-total {
   display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-4);
+  margin: 0;
+}
+
+.cash-side-sum {
+  display: flex;
   align-items: baseline;
   gap: var(--space-8);
-  margin: 0;
+  color: var(--black);
+  font-size: var(--text-20);
+  line-height: 24px;
+  font-variant-numeric: var(--numeric);
+}
+
+.cash-side-sum .cash-var {
   font-size: var(--text-14);
   line-height: 20px;
 }
@@ -95,8 +172,8 @@
 .cash-none {
   margin: 0;
   color: var(--text-muted);
-  font-family: var(--serif);
-  font-style: italic;
+  font-family: var(--font);
+  font-style: normal;
 }
 
 .cash-page .todo-side-desc .cash-none,
@@ -171,7 +248,7 @@
   margin-top: var(--space-25);
 }
 
-.cash-locations .page-head h1 {
+.cash-page .page-head h1 {
   display: flex;
   align-items: center;
   gap: var(--space-8);
@@ -325,14 +402,9 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--space-16);
-  min-height: 50px;
-  padding: 11px 22px;
-}
-
-/* The shell's top padding sits above the header, so the row centers in that grey band, flush with the white panel. */
-.inset-card:has(.inset-card-body) .inset-card-head {
-  margin-top: -6px;
   min-height: 56px;
+  margin-top: -6px;
+  padding: 11px 22px;
 }
 
 .inset-card-title {
@@ -364,7 +436,19 @@
 .inset-card-tools > button:hover,
 .inset-card-tools > .cash-more[aria-expanded="true"] { background: var(--grey); }
 
+.inset-card-chevron .i {
+  transform: rotate(0deg);
+  transition: transform 160ms var(--ease-out);
+}
+
 .inset-card-chevron[aria-expanded="false"] .i { transform: rotate(-90deg); }
+
+.inset-card-clip {
+  overflow: hidden;
+  opacity: 0;
+}
+
+.inset-card.is-open .inset-card-clip { opacity: 1; }
 
 .inset-card-body {
   display: flex;
@@ -418,20 +502,49 @@
 
 .inset-card.is-archived .cash-card-name input { color: var(--text-muted); }
 
-.cash-card-name button {
+.cash-card-name button,
+.cash-bank-edit {
   display: inline-flex;
   flex: none;
-  color: var(--black);
+  align-self: center;
+  color: var(--black-50);
+  opacity: 0;
 }
+
+.cash-card-name:hover button,
+.cash-card-name:focus-within button,
+.cash-bank-figure:hover .cash-bank-edit,
+.cash-bank-figure:focus-within .cash-bank-edit { opacity: 1; }
 
 .cash-card-id .dept-pick { background: var(--white); }
 
 .cash-card-bank {
+  display: inline-grid;
+  grid-template-columns: 1fr;
   flex: none;
+  min-width: 0;
   color: var(--black);
   font-size: var(--text-16);
   line-height: 21px;
   font-variant-numeric: var(--numeric);
+  transition:
+    grid-template-columns 192ms var(--ease-out),
+    margin-inline 192ms var(--ease-out),
+    opacity 192ms var(--ease-out);
+}
+
+.cash-card-bank > span {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.inset-card.is-open .cash-card-bank {
+  grid-template-columns: 0fr;
+  margin-inline: calc(-1 * var(--space-20));
+  opacity: 0;
+  pointer-events: none;
+  transition-duration: 160ms;
 }
 
 .cash-card-bank.is-quiet { color: var(--black-25); }
@@ -482,6 +595,174 @@
 }
 
 
+.cash-count {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-25);
+  width: min(100%, 820px);
+  margin-inline: auto;
+  padding-top: var(--space-16);
+}
+
+.cash-count-picks {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-16);
+}
+
+.cash-count-place {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-8);
+}
+
+.cash-count-place > .dept { margin-bottom: 2px; box-shadow: none; }
+
+.cash-count-mode {
+  width: max-content;
+  flex: none;
+  margin-bottom: 0;
+}
+
+.cash-count-mode .segment-track {
+  width: max-content;
+  min-width: 0;
+}
+
+.cash-count-sum {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-4);
+  color: var(--black);
+  font-size: 30px;
+  line-height: 40px;
+  font-variant-numeric: var(--numeric);
+}
+
+.cash-count-sum.is-quiet { color: var(--black-25); }
+
+.cash-count-ref {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4) var(--space-16);
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  line-height: 16px;
+  font-variant-numeric: var(--numeric);
+}
+
+.cash-count-ref .is-over { color: var(--status-complete); }
+.cash-count-ref .is-short { color: var(--destructive); }
+
+.cash-count-line {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-12);
+  width: 100%;
+  min-height: 48px;
+  padding: 8px 8px 8px 12px;
+  border-radius: 0;
+}
+
+.cash-count-line::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 1px;
+  background: var(--line);
+  pointer-events: none;
+}
+
+.cash-count-line.is-active {
+  background: var(--sidebar-grey);
+  border-radius: 8px;
+}
+
+.cash-count-line.is-active::after { content: none; }
+
+.cash-count-copy {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-8);
+  min-width: 0;
+}
+
+.cash-count-copy > span:first-child {
+  overflow: hidden;
+  color: var(--black-50);
+  font-size: var(--text-14);
+  font-weight: 400;
+  line-height: 20px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cash-count-line.is-active .cash-count-copy > span:first-child {
+  color: var(--black);
+  font-weight: 500;
+}
+
+.cash-count-line.has-value .cash-count-copy > span:first-child { color: var(--black); }
+
+.cash-count-line .cash-qty {
+  width: 28px;
+  flex: none;
+  height: 36px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  color: var(--black-50);
+  font-size: var(--text-14);
+  text-align: right;
+}
+
+.cash-count-line .cash-qty::placeholder { color: var(--black-50); }
+
+.cash-count-line.is-active .cash-qty,
+.cash-count-line.has-value .cash-qty {
+  width: 64px;
+  padding: 0 8px;
+}
+
+.cash-count-line.is-active .cash-qty {
+  border: 1px solid var(--grey);
+  border-radius: var(--radius-control);
+  background: var(--white);
+  color: var(--black);
+}
+
+.cash-count-line.is-active .cash-qty::placeholder { color: var(--black); }
+.cash-count-line.has-value .cash-qty { color: var(--black); }
+
+.cash-count-line .cash-qty:hover,
+.cash-count-line .cash-qty:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.cash-col-notes {
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+}
+
+.cash-count-notes.cash-add-input {
+  flex: 1;
+  width: 100%;
+  height: auto;
+  min-height: 28px;
+  margin-top: 0;
+  padding: var(--space-8);
+  white-space: normal;
+  resize: none;
+}
+
 .cash-bank-figure {
   display: flex;
   flex-direction: column;
@@ -510,6 +791,30 @@
 
 .cash-bank-sign { flex: none; }
 
+.cash-bank-fit {
+  position: relative;
+  display: inline-block;
+  flex: none;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.cash-bank-fit > span {
+  visibility: hidden;
+  display: block;
+  white-space: pre;
+  font: inherit;
+  line-height: inherit;
+  font-variant-numeric: inherit;
+}
+
+.cash-bank-fit input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  flex: none;
+}
+
 .cash-bank-figure input {
   flex: 1;
   width: 100%;
@@ -537,7 +842,7 @@
   line-height: 18px;
 }
 
-.cash-sec-head span {
+.cash-sec-head > span {
   color: var(--text-muted);
   font-size: var(--text-12);
   line-height: 16px;
@@ -565,9 +870,11 @@
 .cash-col-list {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: 18px;
+  align-items: stretch;
+  gap: 0;
 }
+
+.cash-col-list:has(> .check) { gap: var(--space-8); }
 
 .cash-col-add .btn,
 .cash-add-input {
@@ -590,46 +897,18 @@
 .cash-add-input:focus { outline: none; box-shadow: 0 0 0 1px var(--black-25); }
 .cash-add-input::placeholder { color: var(--text-muted); }
 
-.cash-tick {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-8);
-  min-height: 18px;
-  color: var(--black);
-  font-size: var(--text-14);
-  line-height: 18px;
-  text-align: left;
-  white-space: nowrap;
-}
-
-.cash-tick-box {
-  display: inline-flex;
-  flex: none;
-  align-items: center;
-  justify-content: center;
-  width: 14px;
-  height: 14px;
-  border-radius: 4px;
-  background: var(--white);
-  box-shadow: var(--stroke);
-  color: var(--white);
-}
-
-.cash-tick:hover .cash-tick-box { background: var(--sidebar-grey); }
-
-.cash-tick[aria-checked="true"] .cash-tick-box,
-.cash-tick[aria-checked="true"]:hover .cash-tick-box {
-  background: var(--action);
-  box-shadow: none;
-}
-
-.cash-tick[aria-checked="true"]:hover .cash-tick-box { background: var(--action-hover); }
-
 html[data-theme="dark"] .cash-select:hover,
 html[data-theme="dark"] .cash-select[aria-expanded="true"] { background: var(--grey); }
 
 html[data-theme="dark"] .cash-qty,
 html[data-theme="dark"] .cash-add-input { background: var(--grey); }
+
+html[data-theme="dark"] .cash-count-line .cash-qty { background: transparent; }
+
+html[data-theme="dark"] .cash-count-line.is-active .cash-qty {
+  border-color: var(--line);
+  background: var(--white);
+}
 
 html[data-theme="dark"] .inset-card-tools > button:hover,
 html[data-theme="dark"] .inset-card-tools > .cash-more[aria-expanded="true"] { background: var(--grey); }
@@ -640,14 +919,89 @@ html[data-theme="dark"] .cash-choose-dept[aria-expanded="true"] {
   box-shadow: 0 0 0 1px var(--black-25);
 }
 
-html[data-theme="dark"] .cash-tick:hover .cash-tick-box { background: var(--grey); }
-
-html[data-theme="dark"] .cash-tick[aria-checked="true"] .cash-tick-box,
-html[data-theme="dark"] .cash-tick[aria-checked="true"]:hover .cash-tick-box { background: var(--action); }
-
-html[data-theme="dark"] .cash-tick[aria-checked="true"]:hover .cash-tick-box { background: var(--action-hover); }
-
 html[data-theme="dark"] .cash-manage { scrollbar-color: var(--black-25) var(--white); }
+
+.cash-save-note {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  line-height: 16px;
+  white-space: nowrap;
+}
+
+.cash-shift-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--white);
+}
+
+/* Manage locations pushes in from the right. The header stays put and snaps.
+   The body clips the travel so it does not cross the title bar or the sidebar. */
+html[data-cash-shift] .cash-shift-body {
+  view-transition-name: cash-body;
+}
+
+html[data-cash-shift]::view-transition-group(cash-body) {
+  overflow: clip;
+  border-radius: 0 0 calc(var(--radius-control) + var(--space-8)) calc(var(--radius-control) + var(--space-8));
+  background: var(--white);
+  animation: none;
+}
+
+html[data-cash-shift]::view-transition-old(root) {
+  animation: none;
+  opacity: 0;
+}
+
+html[data-cash-shift]::view-transition-new(root) {
+  animation: none;
+  opacity: 1;
+}
+
+html[data-cash-shift="forward"]::view-transition-old(cash-body) {
+  animation: cash-shift-aside var(--motion-panel) var(--ease-out) both;
+}
+
+html[data-cash-shift="forward"]::view-transition-new(cash-body) {
+  animation: cash-shift-in var(--motion-panel) var(--ease-out) both;
+}
+
+html[data-cash-shift="back"]::view-transition-old(cash-body) {
+  z-index: 1;
+  animation: cash-shift-out var(--motion-panel-out) var(--ease-out) both;
+}
+
+html[data-cash-shift="back"]::view-transition-new(cash-body) {
+  z-index: 0;
+  animation: cash-shift-return var(--motion-panel-out) var(--ease-out) both;
+}
+
+@keyframes cash-shift-aside {
+  to { transform: translateX(-32%); }
+}
+
+@keyframes cash-shift-in {
+  from { transform: translateX(100%); }
+}
+
+@keyframes cash-shift-out {
+  to { transform: translateX(100%); }
+}
+
+@keyframes cash-shift-return {
+  from { transform: translateX(-32%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-cash-shift]::view-transition-old(cash-body),
+  html[data-cash-shift]::view-transition-new(cash-body) {
+    animation: none;
+  }
+}
 
 @media (max-width: 900px) {
   .cash-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: var(--space-16); }
@@ -660,4 +1014,10 @@ html[data-theme="dark"] .cash-manage { scrollbar-color: var(--black-25) var(--wh
 
 @media (max-width: 560px) {
   .cash-grid { grid-template-columns: 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .inset-card-chevron .i,
+  .inset-card-clip,
+  .cash-card-bank { transition: none; }
 }

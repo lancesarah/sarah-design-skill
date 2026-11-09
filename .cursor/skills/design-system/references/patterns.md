@@ -14,11 +14,25 @@ A new screen is the job sentence plus these blocks. Use a block for the part of 
 
 ### Header
 
-- States: the title row, which is always there. The department bar, when the page filters by department. The action corner, either the one primary button or empty.
+- States: the title row, which is always there. The department bar, when the page filters by department. The action corner: the one primary button or empty on a main page, and back navigation on a subpage.
 
-Every product page uses the gallery header in the center column. `catalog/notes.html` is the reference. It is 60px tall: a 30px page icon, a 14px regular title, and a 14px `--text-muted` count. Page actions sit on the right of that row. A 1px `--line` closes the row. A primary button, with an icon, is the main action when the page creates or commits something. One main action. A page that only views something leaves that corner empty. Do not invent a button so the header matches notes. The title row does not hold search.
+Every product page uses the gallery header in the center column. `catalog/notes.html` is the reference. It is 60px tall: a 30px page icon, a 14px regular title, and a 14px `--text-muted` count. The title is `--black`. A parent in that title, the word you click to go back, is the same `--black`. It does not drop to `--black-50` or `--text-muted`. The count stays `--text-muted`. Page actions sit on the right of that row. A button in that row always has an icon beside its label. A text-only header button is wrong. An icon-only tool already meets this. A 1px `--line` closes the row. On a main page, a primary button, with an icon, is the main action when the page creates or commits something. One main action. A page that only views something leaves that corner empty. A subpage follows Subpage below. Do not invent a button so the header matches notes. The title row does not hold search.
+
+A subpage title is one line, 14px, line-height 20px, aligned to the baseline. It is the parent, then `/`, then the current page. A step between them is the same kind of parent: black text you click to go back one level. The slash is `--black-25`, with `--space-4` on each side. The parent and any middle step are text, not a padded chip. Hover may wash them, and that wash does not move the words. The current page is `--black` and ellipsizes. The count stays in its own slot, after the title. Cash and preventive maintenance use this same title. Do not give one page a wider gap, a darker slash, or a different line.
 
 Department bar, when the page filters by department. A full-width `--sidebar-grey` strip directly under that line. The selected tab uses `--grey`. Its name is `--black` and its count is `--black-50`. An unselected name is `--black-50`. Its count is `--black-25`. The tabs are the tabs component.
+
+A list page is Page layout in [components.md](components.md). Preventive maintenance, Readings, and Knowledge base use that stack and do not restyle it.
+
+### Subpage
+
+A full subpage keeps its content within 820px and uses the top-right only for back navigation. A primary action belongs in the page content.
+
+- The content width does not exceed 820px.
+- The top-right of a subpage does not hold a primary action.
+- The only control in that corner is back navigation.
+- A primary button may be used, and it sits inside the page content.
+- A primary action in the top-right is reserved for main pages.
 
 ### Filter row
 
@@ -30,7 +44,7 @@ On a sheet the row is one module. Search is 281px. The filter trigger sits on th
 
 On notes, top view is the layout. The header search is hidden. The filter tools are the search, then Filters, Print, and New. The Filters trigger shows the word and is 121px wide. When chips exist they take the next line, full width, starting at the left edge. They sit under those buttons. They do not sit above them.
 
-The to-do filter menu lists Type, Status, Urgency, Assigned, Room, Area, Item, Detail, and Source. Each row opens a submenu to the side. Type uses the department chip. Status is the words Open, In progress, and Completed. Urgency is the colored word, with the warning icon on Urgent, and no pill. Assigned uses the miniature name pill. Room, Area, Item, Detail, and Source are plain labels. A check marks the chosen option. A chosen filter becomes a filter chip. The chip hugs that value. It does not reserve width for every option. The notes menu is the time range already on that page: 7d, 24h, and 30d.
+The to-do filter menu lists Type, Status, Urgency, Assigned, Room, Area, Item, Detail, and Source. Each row opens a submenu to the side. Type uses the department chip. Status is the words Open, In progress, and Completed. Urgency is the colored word, with the warning icon on Urgent, and no pill. Assigned uses the miniature name pill. Room, Area, Item, Detail, and Source are plain labels. A check marks every option that applies. Choosing one leaves the others checked, and the menu stays open. Each chosen filter becomes its own chip. The chip hugs that value. It does not reserve width for every option. The notes menu is the time range already on that page: 7d, 24h, and 30d. Those options stay checked together, the same as every other filter.
 
 The Filters trigger keeps one width, closed and open: the longest option, including its icon and padding. Size that label with every option stacked in the same grid cell. Do not let the closed label shrink to the selected value. The label text stays next to its leading icon. The extra width sits after that label, before the chevron. Do not spread the icon, the label, and the chevron across the control. The menu that opens from it follows Menu width in [components.md](components.md).
 
@@ -55,10 +69,10 @@ Comments that no longer fit scroll, and the body does not shrink to make room. T
 - Hover paints the row `--sidebar-grey`. In dark mode the row hover is `--grey`, one step lighter than the page. The “Add a note” placeholder appears only then. A note that is already written stays visible. Focus clears the placeholder.
 - The open row is the selection: a 1px `--action` box and a `--filter-chip-bg` fill. Hover stays that blue. Another row can be grey at the same time. The detail under the open row stays `--sidebar-grey`.
 - Status is the gallery status symbol. Its hover is a pill, `--grey` when the row is already hovered. In dark mode that pill is `--black-12`, one step past the hovered row. `--grey-up` is too light for that pill.
-- Room is 16px and 500, the same size in the detail panel. It is a dropdown of rooms that already exist. An empty room is a quiet dash. It does not say Room. The number is not typed. Choosing a room updates the table and the side panel together. The room number shares the title’s baseline.
+- Room follows Room in [components.md](components.md). The room number shares the title’s baseline. Choosing a room updates the table and the side panel together.
 - To-do is the location chip, a middot, and the item chip, side by side in place of one title. They have a hover fill and no chevron. The location stays whole. The item truncates. The note fills the column. It does not shrink to the words. Empty says Location and Item, and the middot is quiet. The table and the detail panel use one box: height 20px, padding `2px 4px`, radius 4px, and the same hover fill. Light mode uses `--grey`. Dark mode uses `--black-12`. The detail chip does not take a lighter step than the table chip.
-- Urgency and type hug the value. The word sits in the chip and shares its center with the chevron. The old sheet offset, `top: 2px` on `.urgency`, stays off once the word is inside the chip. Hover shows the down chevron in the chip’s gap and does not move the next column. The column is already as wide as its longest option, including Urgent’s icon and Food & Beverage. Standard stays `--sidebar-grey`. The type fill stays the department color on hover and while the menu is open. Stroke mode is the exception: the row shows through a clear chip, so the table chip rests on the page fill with a `--black-12` ring. Its hover is `--grey` in light mode and `--black-12` in dark mode. The dark pressed ring is `--black-25`.
-- Assigned is the initials in a 35px avatar. Hover shows the chevron beside that circle, outside the pill, and the full name in a tooltip. Only the circle’s fill changes. The ring stays the same 1px. It does not gain a second stroke. The chevron does not sit in that pill, and the next column stays put. The row hover does not change the photo. Unassigned is the dashed empty avatar and says “Unassigned”. It opens the people menu. The name is not typed on the row. In dark mode a named photo is `--grey`, lighter than the page. Hovering that circle uses a `--black-12` fill. The ring stays 1px. An empty photo stays clear, with a 1px dashed `--black-50` stroke. The dark photo clip that insets a portrait does not apply to that dash.
+- Urgency follows Urgency in [components.md](components.md). Type follows Department tag.
+- Assigned follows Table in [components.md](components.md).
 - Opened is already as wide as “May 30”.
 - Right-click opens the row menu: Schedule for future, then Delete. Delete uses the danger item.
 
@@ -66,15 +80,7 @@ Clicking a row opens its detail. Clicking that open row again closes it. A butto
 
 ### Detail panel
 
-- States: closed, open, entering, and leaving. Entering is `--motion-panel` (400ms) on `--ease-drawer`. Leaving is `--motion-panel-out` (320ms). Reduced motion skips the slide. Empty title is Location and Item.
-
-The detail panel is one component. It is 392px and sits over the right of the table. The table keeps its width. It does not shrink to sit beside the panel. Entering and leaving use the durations above. Reduced motion skips the slide.
-
-Every page uses the same header. The back button sits on the left and closes the panel. The right-hand group holds any page action, then the more button. The more button is clear at rest. Its grey fill shows only while the pointer is on it. Its menu is Delete only, and it opens again after it closes. A right-click on the panel opens that same menu. The body is the page’s fields. A page does not restyle the width, the header, or the slide.
-
-The body stacks its sections 24px apart. The scroll padding is `--space-16` on top and `--space-25` on the sides and the bottom. A rule between sections is 1px `--line` and runs the full width of the panel, through that side padding. A section label is `--text-12`, weight 500, and `--black-50`. A fact row is a 70px label and the value, `--space-16` apart, at least 20px tall, in `--text-14`. In dark mode the detail uses `--grey`.
-
-On a to-do, the panel opens and closes from the task row. The side title is the location and item chips, empty or filled, so those values can be edited there as well as in the fields below. An empty title is the task row’s empty: Location and Item, not the word “To-do”. The title chips use the task row’s box and the same hover. In the side panel, guest mood, type, assigned, status, and urgency share one type: `--font`, `--text-14`, weight 400, and a 16px line-height. The control is 20px tall, with padding `2px 4px` and a 4px radius. The status icon is 16px so the word stays on that line. Table chips stay `--text-13`. A menu option stays `--text-14`. The assignee keeps the miniature avatar, the name, and a `--sidebar-grey` fill. Hover and an open menu keep that fill and show the down chevron. Status keeps its icon and label and has no fill at rest. Type is the department chip for that type. The chip keeps that fill at rest, on hover, and while its menu is open. The room uses the task row’s room control. Location and Item are dropdowns. At rest they are the value with no fill. Hover and an open menu show a `--sidebar-grey` pill and a down chevron after the value. The room, title, and date use `--space-16`. The Description label is `--text-12`. The note under it is `--text-14`. Activity stacks its heading and reply `--space-8` apart. The reply field is `--text-14`. Guest mood, phone, email, and a page’s other facts use this same panel. They do not get a second header or a second width.
+See Detail panel in [components.md](components.md).
 
 ## Open note
 
@@ -86,9 +92,7 @@ The body grows with the text and pushes the comment thread down. The body keeps 
 
 ## Department tag
 
-The department tag’s base is the dot: a black label, an 8px circle in the department color, a clear chip, and a 1px `--black-12` ring. Height 20px. Radius 4px. Type is 13px, weight 400, line-height 16px. The colored fill is the other mode. Front desk’s circle stays `--tag-text`. The list card and the open note use this same tag for that department. At rest the chip hugs the label. It does not keep a gap for a chevron that is hidden. On hover and when the menu is open, the chevron appears after the label, in the chip’s 4px gap, and the chip widens to fit it. It does not cover the word. That extra width does not move the items beside the chip. Leave enough space after the chip that the chevron stays clear of the next design item.
-
-Stroke mode keeps the dot and drops the department fill. The notes chip rests clear, with `--black` text and a 1px `--black-12` ring centered on the chip edge. Its hover fills `--sidebar-grey` in light mode and `--grey` in dark mode, because that chip sits on the page. The same chip on a to-do row rests on the page fill with the `--black-12` ring, so the hovered row does not show through. Its hover is one step past that row: `--grey` in light mode, `--black-12` in dark mode, and the dark pressed ring is `--black-25`. The label is `--text-muted` at rest and `--black` on hover and while the menu is open. Color mode keeps the department fill in both themes.
+See Department tag in [components.md](components.md).
 
 ## Department bar thumb
 
@@ -98,10 +102,10 @@ The department tabs scroll sideways. Do not use the system horizontal scrollbar 
 
 The left nav is the sidebar component in [components.md](components.md). Copy it from `catalog/notes.html`. Do not redesign it per screen. The left nav and the right Lance chat are fixed-width panels.
 
-- Keep each panel at its designed width. Do not set them to a percentage, `flex-grow`, or `min()` that tracks the viewport. Open widths are 277px and 392px. The collapsed rails are 54px and 62px.
+- Keep each panel at its designed width. Do not set them to a percentage, `flex-grow`, or `min()` that tracks the viewport. Open widths are Sidebar and Detail panel in [components.md](components.md). The collapsed rails are the sidebar rail and the Lance rail, 62px.
 - The center keeps 895px: the 375px list and a 520px open note, so the note stays wide enough for Timestamp, Department, Author, and Viewed on one row. Only the center changes width between the limits below.
-- On resize, collapse the left nav first. It collapses when the viewport is under 1564px (277 + 895 + 392).
-- Collapse the Lance chat second. It collapses when the viewport is under 1341px (54 + 895 + 392).
+- On resize, collapse the left nav first. It collapses when the viewport is under 1564px.
+- Collapse the Lance chat second. It collapses when the viewport is under 1341px.
 - Do not squeeze either panel, and do not hide it. Each one is open, or it is its rail. A manual collapse stays collapsed when the window grows. A panel below its limit starts collapsed. Clicking expand on either panel opens it anyway and keeps it open until the user collapses it or the window is wide enough.
 
 ## Creating a new item
@@ -113,7 +117,7 @@ Internal notes is the reference. The main action creates the new record on the p
 - The open record uses the same layout as an existing one.
 - The title shows "Title" in `--text-muted` until the user types. A new note opens with that field focused.
 - The body shows "New note" in `--text-muted`. That placeholder disappears when the field is clicked, and it comes back if the field is left empty.
-- Timestamp, author, and viewed are filled from what the product already knows. The department starts as Front desk. The four fields keep one equal gap. Timestamp, author, and viewed stay wide enough for their longest value. The department tag uses the padding in the Department tag section, so it hugs the label.
+- Timestamp, author, and viewed are filled from what the product already knows. The department starts as Front desk. The four fields keep one equal gap. Timestamp, author, and viewed stay wide enough for their longest value. The department tag uses the padding on Department tag in [components.md](components.md), so it hugs the label.
 - The department chip shows its down chevron and hugs its label. The chevron is inline with that label, so it moves with the chip. Author and Viewed are the next fields, so they stay put when the label changes. The chevron turns when the menu is open. Clicking it opens every department. Choosing one files the record there, and the list card follows.
 - The viewed count is a chip with an eye, because the number has no word beside it. Hovering it shows a down chevron. Clicking it opens who viewed the note and who did not. Each person uses the gallery person row: a mini avatar and a name. The chip count is those people. A new note starts with no one in Viewed, and that empty group is left out, heading included.
 
@@ -131,21 +135,7 @@ Deleting an item from a list moves the items below it up to close the space. Del
 
 ## Naming a person or an urgency
 
-A person’s name uses the gallery person treatment every time it appears. A compact name is the miniature tag: `.mini-pill` with `.avatar.mini` and the name. Use that in a menu option, a filter, a chip, a table cell, an activity line, and any sentence that names someone. A name with a role, or a longer identity, is `.person` with the avatar and the name. The menu row, the check, and the surrounding sentence stay. The name itself is the component. An unassigned person is that same avatar with no initials. The fill is clear and the stroke is 1px dashed `--black-50`. A named person keeps the solid `--black-12` stroke. In dark mode a named photo on the to-do table is `--grey` at rest and `--grey-up` on a hovered row or when the chip is hovered, so the photo stays lighter than the surface behind it. The empty avatar stays clear with the dashed `--black-50` stroke. Dark mode clips a portrait by 1px. That clip stays off the empty avatar, or the dash disappears.
-
-Picking a person is a dropdown every time. The menu lists people who already exist. The closed control shows that person, or Unassigned. A new person is added in Settings, from the account gear. Settings is where the name is typed. Saving that person puts them in every person menu. A schedule, a to-do, a filter, and a note pick from that menu.
-
-Picking a room is a dropdown every time. The menu lists rooms that already exist. The closed control shows that room number, or the quiet dash when it is empty. The number is not typed on a to-do, a complaint, a filter, or a side panel.
-
-An urgency level uses the gallery colors every time it is named. Urgent, High, Standard, and Low are `.urgency`. Urgent includes the warning icon. High, Standard, and Low are the label only. In a table cell and in a menu the fill is off: the word and the icon keep the urgency color, and Standard’s word is `--black-50`. A filter chip still uses the filled box. Use the urgency tokens. Do not recolor the word because the row or the menu behind it changes. On a table row and in the side panel, the word is centered in the chip with the chevron. It does not take the old `top: 2px` sheet offset.
-
-A type uses the department chip every time it is named. The menu and the filter list every department: Front desk, Housekeeping, Maintenance, Food & Beverage, Sales, and Management. Front desk uses `--tag-text` on `--tag-bg`. Housekeeping uses `--dept-housekeeping` on `--dept-housekeeping-bg`. Maintenance uses `--dept-maintenance` on `--dept-maintenance-bg`. Food & Beverage uses `--dept-food` on `--dept-food-bg`. Sales uses `--dept-sales` on `--dept-sales-bg`. Management uses `--dept-management` on `--dept-management-bg`. The fill stays on hover and while the menu is open, except in a menu. In a menu the type is the dot, not the colored pill. The label is `--black`. An 8px circle carries the department color, and the chip stays clear with a 1px `--black-12` ring. On the table the chip hugs that label. It is not stretched to the longest department.
-
-A column that shows one of a fixed set of options is already as wide as its longest option, including that option’s icon and padding. This holds for every aligned grid, including a table and a week schedule. The header and every row share one set of tracks. Do not let each row measure its own columns. That is how a header label lands on the column beside it. The control still hugs the value it is showing. Choosing another option does not move that column or the columns beside it. Stack every option in the same grid cell and hide the ones that are not selected.
-
-Urgency, type, status, and the name chip share one font size. All are 13px, weight 400, line-height 16px. Inside a dropdown they match the category row instead: `--text-14`. See Menu in [components.md](components.md). A filled urgency chip and a type chip share `2px 4px` padding, a 20px height, and a 4px radius. A table cell and a menu drop that fill and that horizontal padding, so the word lines up with the column. A filter chip and the side panel keep the filled box. The department tag uses it too.
-
-A chip that opens a menu uses the department tag above: the chevron shows on hover, the chip hugs the label, and the items beside it stay put. Urgent still includes the warning icon. High, Standard, and Low stay that chip with the label only. The name chip is the gallery miniature pill, and it hugs the name the same way. On a to-do row the chip shows the initials. An unassigned row shows the empty avatar with the dashed stroke. Hover shows that person’s full name in the tooltip, centered on the chip. Unassigned says “Unassigned”. The people menu paints in front of the table, including while the pointer is still on the chip. Hover motion follows [polish.md](polish.md).
+A person, a room, an urgency, a type, and a status use their components every time they are named. See Person, Room, Urgency, Department tag, Status, and Table in [components.md](components.md). Chip type is in [SKILL.md](../SKILL.md). Inside a menu, option type follows Menu.
 
 ## The job
 
@@ -163,6 +153,8 @@ Read this before drawing. The measurements in this section are the level of qual
 
 Group what belongs together, then set the space between those groups. A title and the line under it are one group. A section title and the content under it are one block. The gap inside a group stays smaller than the gap between groups. Opening the screen up changes the space between groups. It leaves the space inside a group alone.
 
+A title and the content it names keep at least 40px. That gap does not go under 40px. A subtitle that belongs to the title stays `--space-4`.
+
 A title has room to breathe above it. A count or a step sits with the title it belongs to, centered on that title, when the screen has one. Leave off a brand, a product name, or any other label the content does not need.
 
 One primary action, where the person is already looking. On a card it stays inside the padding and keeps its radius. A control gets taller only when its job earns it, the way a full-width action at the bottom of a popup does. The corner close is the dismiss when a close is already there.
@@ -171,23 +163,15 @@ A phrase in the copy is not a new labeled block. A placeholder stands in for an 
 
 ## Lesson card
 
-A training lesson is a card over the page, not a second page. The measurements below are the reference. The card uses the confirm surface: `--white`, `--radius-card`, and `--stroke` with `--elevation-menu`.
-
-The title is `--text-24`, weight 500, line-height 28px. A row title and a side title stay `--text-20`. The title and the line under it are one group, `--space-4` apart. The title group, the requirement, and the columns sit `--space-25` apart. A column title and the lines under it stay one block, so that inner gap does not grow with the section gap. The space above the title is the card padding plus `--space-12`. Do not pull the title up toward the image.
-
-An image sits at the top and meets the card edges. Progress is a bar on the bottom edge of that image, the full width of the card. The filled part is `--action`. The rest of the bar is `--black-12`. The height is `--space-2`. The step fraction, such as “1 of 3”, shares the title’s line and is centered on the title, on the right. Do not add a brand or product name beside it. The card title already names the lesson.
-
-The card has one action, and it is Continue. That button is the primary button. It spans the content width and sits at the bottom, inside the card padding, so the margin around it matches the rest of the card. It keeps the button radius. It does not run out to the card edge. Because it spans the bottom of a popup, it is 40px tall. A button anywhere else stays 28px. A corner close is the dismiss. Do not add a second dismiss, such as Not now, beside Continue.
-
-Do not turn a phrase from the lesson into a new labeled block. A placeholder stands in for an image the lesson already has.
+See Lesson card in [components.md](components.md). A training lesson is that card over the page, not a second page.
 
 ## Building a screen
 
 1. Name the job, then read the blocks above and `foundations.md` for the roles and aliases you will touch.
 2. Pull component markup from the gallery. Assemble the screen from the blocks the job needs.
 3. Compose the screen in the product stylesheet, not by forking token values.
-4. Keep one primary action per view, using `--action`. Pressing Delete opens the gallery confirmation first. Destructive confirmation uses `--destructive` and only on the confirming control.
-5. A person, an urgency, a type, and a status use the gallery treatment in Naming a person or an urgency. Keep each component’s padding, height, and radius.
+4. Keep one primary action per view, using `--action`. Any destructive action opens the gallery confirmation first. A trash icon and a Delete button are the same press. That control, and the confirming control, are danger fill.
+5. A person, an urgency, a type, and a status follow Person, Urgency, Department tag, and Status in [components.md](components.md).
 
 ## Empty, loading, and error
 

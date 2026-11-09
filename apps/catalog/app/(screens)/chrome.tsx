@@ -4,12 +4,13 @@ import { OverlayMenu, SegmentedControl, Sidebar, type SidebarGroup, type Sidebar
 import { useRef, useState, type ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import { Glyph } from "./glyph";
+import { NOTICE_COUNT } from "./notifications";
 import { useHtmlSlide } from "./slide";
 
 const FIXED: SidebarLink[] = [
   { href: "/", icon: "home", label: "Home" },
   { href: "/#sidebar", icon: "bubble", label: "Messages", tip: "Opt M" },
-  { href: "/#sidebar", icon: "bell", label: "Notifications", tip: "Opt N" },
+  { href: "/#sidebar", icon: "bell", label: "Notifications", tip: "Opt N", count: NOTICE_COUNT },
   { href: "/notes", icon: "doc", label: "Internal notes" },
 ];
 
@@ -50,8 +51,8 @@ const GROUPS: SidebarGroup[] = [
     title: "Facilities",
     open: false,
     links: [
-      { href: "/#sidebar", icon: "wrench", label: "PM" },
-      { href: "/#sidebar", icon: "gauge", label: "Readings" },
+      { href: "/pm", icon: "wrench", label: "PM" },
+      { href: "/readings", icon: "gauge", label: "Readings" },
     ],
   },
   {
@@ -69,9 +70,24 @@ const GROUPS: SidebarGroup[] = [
   },
 ];
 
-export function WorkspaceSide({ collapsed, onCollapsedChange }: { collapsed: boolean; onCollapsedChange: (collapsed: boolean) => void }) {
+export function WorkspaceSide({
+  collapsed,
+  onCollapsedChange,
+  inboxOpen,
+  onToggleInbox,
+}: {
+  collapsed: boolean;
+  onCollapsedChange: (collapsed: boolean) => void;
+  inboxOpen: boolean;
+  onToggleInbox: () => void;
+}) {
   const pathname = usePathname();
-  const mark = (link: SidebarLink): SidebarLink => ({ ...link, current: pathname === link.href });
+  const mark = (link: SidebarLink): SidebarLink => {
+    if (link.label === "Notifications") {
+      return { ...link, current: inboxOpen, onClick: onToggleInbox };
+    }
+    return { ...link, current: inboxOpen ? false : pathname === link.href };
+  };
   return (
     <Sidebar
       id="workspace"
@@ -242,10 +258,17 @@ export function FilterMenu({
   value,
   onValueChange,
   options,
+  sorts,
+  sortId,
+  onSortChange,
 }: {
-  value: string;
-  onValueChange: (value: string) => void;
+  value: readonly string[];
+  onValueChange: (value: string[]) => void;
   options: string[];
+  /** Single-choice sort, listed under the filters. */
+  sorts?: Array<{ id: string; label: string }>;
+  sortId?: string | null;
+  onSortChange?: (id: string) => void;
 }) {
   const [open, setOpen] = useState(false);
   const anchorRef = useRef<HTMLButtonElement>(null);
@@ -254,27 +277,48 @@ export function FilterMenu({
       <button ref={anchorRef} className="trigger" type="button" aria-expanded={open} aria-haspopup="menu" aria-label="Filters" onClick={() => setOpen((next) => !next)}>
         <span className="pair">
           <Glyph name="filter" />
-          <span className="fit-label">{value || "Filters"}</span>
+          <span className="fit-label">Filters</span>
         </span>
         <Glyph name="chevron" />
       </button>
       <OverlayMenu open={open} anchorRef={anchorRef}>
-        {options.map((option) => (
-          <button
-            key={option}
-            className="menu-item"
-            type="button"
-            role="menuitemradio"
-            aria-checked={value === option}
-            onClick={() => {
-              onValueChange(option);
-              setOpen(false);
-            }}
-          >
-            {option}
-            <Glyph name="check" className="check" />
-          </button>
-        ))}
+        {options.map((option) => {
+          const checked = value.includes(option);
+          return (
+            <button
+              key={option}
+              className="menu-item"
+              type="button"
+              role="menuitemcheckbox"
+              aria-checked={checked}
+              onClick={() => onValueChange(checked ? value.filter((item) => item !== option) : [...value, option])}
+            >
+              {option}
+              <Glyph name="check" className="check" />
+            </button>
+          );
+        })}
+        {sorts && sorts.length > 0 ? (
+          <>
+            <div className="menu-rule" role="separator" />
+            {sorts.map((option) => {
+              const checked = sortId === option.id;
+              return (
+                <button
+                  key={option.id}
+                  className="menu-item"
+                  type="button"
+                  role="menuitemradio"
+                  aria-checked={checked}
+                  onClick={() => onSortChange?.(option.id)}
+                >
+                  {option.label}
+                  <Glyph name="check" className="check" />
+                </button>
+              );
+            })}
+          </>
+        ) : null}
       </OverlayMenu>
     </div>
   );

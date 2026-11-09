@@ -22,6 +22,10 @@ html[data-font="switzer"] body {
   --font: "Switzer", sans-serif;
 }
 
+html[data-icon-ink="muted"] .i[data-icon-label] {
+  color: var(--text-muted) !important;
+}
+
 .dev-switch {
   position: fixed;
   z-index: 20;
@@ -78,4 +82,114 @@ html[data-font="switzer"] body {
 .dev-switch .has-slide > button[aria-pressed="true"] {
   background: transparent;
   color: var(--black);
+}
+
+.dev-switch > button[aria-pressed="true"] {
+  background: var(--white);
+  color: var(--black);
+}
+
+html[data-sheet-lines="off"] :where(.sds) .sheet-page .sheet-line > :not(:first-child)::before,
+html[data-sheet-lines="off"] :where(.sds).sheet-page .sheet-line > :not(:first-child)::before,
+html[data-sheet-lines="off"] :where(.sds) .sheet-page[data-view="head"] .sheet-head > span:not(:first-child)::before,
+html[data-sheet-lines="off"] :where(.sds).sheet-page[data-view="head"] .sheet-head > span:not(:first-child)::before {
+  content: none;
+}
+
+html[data-sheet-lines="off"] .sheet-fade {
+  border-inline: 0;
+}
+
+/* Dev preview. Pill tabs keep their box. The fill becomes an underline. */
+html[data-tab-style="line"] .tabs .slide-pill {
+  opacity: 0;
+  visibility: hidden;
+}
+
+html[data-tab-style="line"] .tab,
+html[data-tab-style="line"] .tab:hover,
+html[data-tab-style="line"] .tab.is-hover,
+html[data-tab-style="line"] .tab[aria-selected="true"],
+html[data-tab-style="line"] .tabs-bar .tab,
+html[data-tab-style="line"] .tabs-bar .tab:hover,
+html[data-tab-style="line"] .tabs-bar .tab.is-hover,
+html[data-tab-style="line"] .tabs-bar .tab[aria-selected="true"] {
+  background: transparent;
+  box-shadow: none;
+  border-radius: 0;
+}
+
+html[data-tab-style="line"] .tab {
+  color: #8a8a8a;
+}
+
+html[data-tab-style="line"] .tab:hover,
+html[data-tab-style="line"] .tab.is-hover,
+html[data-tab-style="line"] .tab[aria-selected="true"] {
+  color: #1a1a1a;
+}
+
+html[data-tab-style="line"] .tab[aria-selected="true"] {
+  font-weight: 600;
+}
+
+html[data-tab-style="line"] .tab .count {
+  color: var(--black-25);
+  font-weight: 400;
+}
+
+html[data-tab-style="line"] .tab[aria-selected="true"] .count {
+  color: var(--black-50);
+}
+
+html[data-tab-style="line"] .tabs {
+  box-shadow: inset 0 -1px 0 #ececec;
+}
+
+html[data-tab-style="line"] .tab[aria-selected="true"]::after {
+  content: "";
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: 0;
+  height: 2px;
+  border-radius: 1px;
+  background: var(--action);
+  pointer-events: none;
+}
+
+html[data-tab-style="line"] .page-filters .tab[aria-selected="true"]::after {
+  bottom: -8px;
+}
+
+html[data-tab-style="line"] .pm-editor > .tabs-frame {
+  align-self: stretch;
+}
+
+html[data-tab-style="line"] .pm-editor .tabs {
+  width: 100%;
+}
+
+html[data-tab-style="line"] .page-filters .tabs,
+html[data-tab-style="line"] .page-filters .tabs-frame,
+html[data-tab-style="line"] .tabs-fade,
+html[data-theme="dark"][data-tab-style="line"] .sheet-page .page-filters .tabs,
+html[data-theme="dark"][data-tab-style="line"] .sheet-page .page-filters .tabs-frame,
+html[data-theme="dark"][data-tab-style="line"] .sheet-page .tabs-fade {
+  background: transparent;
+  --scroll-fade: var(--white);
+}
+
+html[data-theme="dark"][data-tab-style="line"] .tab {
+  color: var(--black-50);
+}
+
+html[data-theme="dark"][data-tab-style="line"] .tab:hover,
+html[data-theme="dark"][data-tab-style="line"] .tab.is-hover,
+html[data-theme="dark"][data-tab-style="line"] .tab[aria-selected="true"] {
+  color: var(--black);
+}
+
+html[data-theme="dark"][data-tab-style="line"] .tabs {
+  box-shadow: inset 0 -1px 0 var(--line);
 }

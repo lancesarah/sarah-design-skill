@@ -2,7 +2,7 @@
 
 import { forwardRef, type ButtonHTMLAttributes } from "react";
 
-export type ButtonVariant = "primary" | "secondary" | "danger";
+export type ButtonVariant = "primary" | "secondary" | "tertiary" | "danger" | "danger-light";
 
 export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: ButtonVariant;
@@ -16,7 +16,9 @@ function classes(variant: ButtonVariant, icon: boolean, state: ButtonProps["stat
     "sds",
     "btn",
     variant === "secondary" ? "btn-secondary" : "",
+    variant === "tertiary" ? "btn-tertiary" : "",
     variant === "danger" ? "btn-danger" : "",
+    variant === "danger-light" ? "btn-danger-light" : "",
     icon ? "btn-icon" : "",
     state === "hover" && !disabled ? "is-hover" : "",
     className,

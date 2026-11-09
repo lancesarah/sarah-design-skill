@@ -145,6 +145,65 @@ html[data-theme="dark"] .sheet-page .auto-assign:not([aria-pressed="true"]):is(:
   gap: 0;
 }
 
+/* The name of one table when several tables share a page. Not a record title. */
+.sheet-group {
+  margin: 0 0 var(--space-8);
+  color: var(--black);
+  font-size: var(--text-14);
+  font-weight: 500;
+  line-height: 20px;
+}
+
+.sheet-group .count {
+  margin-left: var(--space-8);
+  color: var(--black-50);
+  font-size: var(--text-14);
+  font-weight: 400;
+}
+
+/* The checklist is this table without the sheet chrome. */
+.sheet-fade.is-list {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.sheet-fade.is-list .sheet {
+  margin-inline: 0;
+  border-bottom: 0;
+  border-top: 1px solid var(--line);
+  background: transparent;
+}
+
+.sheet-fade.is-list .sheet-line {
+  min-height: var(--hit);
+  padding: 0;
+  background: transparent;
+  cursor: default;
+}
+
+.sheet-fade.is-list .sheet-line > * { margin-inline-start: 0; }
+
+.sheet-fade.is-list .sheet-line > :not(:first-child)::before { content: none; }
+
+.sheet-fade.is-list .sheet-line,
+.sheet-fade.is-list .sheet:not(.is-open) .sheet-line:has([aria-expanded="true"]) {
+  background: transparent;
+}
+
+.sheet-fade.is-list .sheet-line:hover {
+  background: var(--sidebar-grey);
+}
+
+html[data-theme="dark"] .sheet-fade.is-list .sheet-line,
+html[data-theme="dark"] .sheet-fade.is-list .sheet:not(.is-open) .sheet-line:has([aria-expanded="true"]) {
+  background: transparent;
+}
+
+html[data-theme="dark"] .sheet-fade.is-list .sheet-line:hover {
+  background: var(--grey);
+}
+
 .sheet-fade {
   position: relative;
   flex: 0 1 auto;
@@ -314,6 +373,9 @@ html[data-theme="dark"] .sheet-fade {
   overflow: hidden;
 }
 
+/* The skeleton is position absolute. The cell is its frame, including a table that is not on a sheet page. */
+.sheet-line > * { position: relative; }
+
 /* Placeholders sit in the cells. The column rules stay on the cells, so they do not fade with the values. */
 .sheet-line:has(.sheet-placeholder):not(.is-revealed) { pointer-events: none; }
 .sheet-line:has(.sheet-placeholder) .sheet-cell-clip {
@@ -437,6 +499,18 @@ html[data-theme="dark"] .sheet-fade {
   cursor: pointer;
 }
 
+/* Plain text is the quiet ink. The name stays black. A second text column is black only when the name is not enough. A person keeps its own color. */
+.sheet-page .sheet-fade:not(.is-list) .sheet-line {
+  color: var(--text-muted);
+}
+
+.sheet-page .sheet-fade:not(.is-list) .sheet-line [data-text="primary"],
+.sheet-page .sheet-fade:not(.is-list) .sheet-line [data-ink="strong"],
+.sheet-page .sheet-fade:not(.is-list) .mini-pill,
+.sheet-page .sheet-fade:not(.is-list) .person {
+  color: var(--black);
+}
+
 .sheet-line .sheet-room,
 .sheet-line .sheet-title,
 .sheet-line .sheet-note {
@@ -476,7 +550,6 @@ html[data-theme="dark"] .sheet-fade {
   justify-content: center;
   width: 28px;
   height: 28px;
-  margin-top: -1px;
   padding: 0;
   border-radius: var(--radius-control);
   color: var(--black-50);
@@ -702,7 +775,7 @@ html[data-theme="dark"] .sheet-fade {
   position: relative;
   flex: none;
   width: 35px;
-  height: 36px;
+  height: 35px;
   padding: 0;
   gap: 0;
   border-radius: 999px;
@@ -710,7 +783,7 @@ html[data-theme="dark"] .sheet-fade {
 
 .sheet-who .avatar.mini {
   width: 35px;
-  height: 36px;
+  height: 35px;
   font-size: var(--text-14);
 }
 
@@ -1532,26 +1605,85 @@ html[data-theme="dark"] .sheet-who.is-empty[aria-expanded="true"] .avatar.mini {
 .todo-side-desc {
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
+  gap: var(--space-8);
 }
 
-.todo-side [data-side-desc] {
+.edit-text {
+  display: inline-flex;
+  align-items: flex-start;
+  max-width: 100%;
+  vertical-align: top;
+}
+
+.edit-text.is-fill {
+  display: flex;
   width: 100%;
-  min-height: 16px;
-  padding: 0;
-  resize: none;
-  overflow: hidden;
-  color: var(--black);
-  background: transparent;
-  font-size: var(--text-14);
-  line-height: normal;
-  text-wrap: var(--text-wrap-copy);
 }
 
-.todo-side [data-side-desc]::placeholder { color: var(--black-50); }
-.todo-side [data-side-desc] { border-bottom: 1px solid var(--line); }
+.edit-text.is-fill > textarea,
+.edit-text.is-fill > input { flex: 1; min-width: 0; width: auto; }
+
+.edit-text-mark {
+  flex: none;
+  margin: 3px 0 0 6px;
+  color: var(--black-50);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.edit-text:hover .edit-text-mark { opacity: 1; }
+.edit-text:focus-within .edit-text-mark { opacity: 0; }
+
+.sheet-line .edit-text-mark,
+.sheet-grid .edit-text-mark { display: none; }
+
+/* A section title over a larger text field. The knowledge answer is the specimen. */
+.todo-side [data-side-desc],
+.text-well {
+  width: 100%;
+  min-height: 96px;
+  margin: 0;
+  padding: var(--space-10);
+  border: 0;
+  border-radius: var(--radius-control);
+  background: var(--sidebar-grey);
+  box-shadow: none;
+  color: var(--black);
+  font: inherit;
+  font-size: var(--text-14);
+  font-weight: 400;
+  line-height: 20px;
+  text-wrap: var(--text-wrap-copy);
+  resize: vertical;
+}
+
+textarea.text-well,
+.todo-side textarea[data-side-desc] {
+  height: 96px;
+  min-height: 96px;
+  field-sizing: auto;
+}
+
+.todo-side [data-side-desc]::placeholder,
+.text-well::placeholder { color: var(--text-muted); }
+
 .todo-side [data-side-desc]:hover,
-.todo-side [data-side-desc]:focus { border-bottom-color: var(--black-12); }
+textarea.text-well:hover,
+input.text-well:hover { box-shadow: 0 0 0 1px var(--black-12); }
+
+.todo-side [data-side-desc]:focus,
+textarea.text-well:focus,
+input.text-well:focus {
+  outline: none;
+  color: var(--black);
+  box-shadow: 0 0 0 1px var(--black-25);
+}
+
+html[data-theme="dark"] .todo-side [data-side-desc],
+html[data-theme="dark"] .text-well { background: var(--grey); }
+
+.edit-text:has(.text-well) .edit-text-mark,
+.edit-text:has([data-side-desc]) .edit-text-mark { display: none; }
 
 .todo-side-rule {
   height: 1px;

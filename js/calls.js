@@ -126,7 +126,14 @@ function clock(total) {
 
 function durationLabel(seconds) {
   const whole = Math.max(0, Math.floor(seconds));
-  return `${String(Math.floor(whole / 60)).padStart(2, "0")}:${String(whole % 60).padStart(2, "0")}`;
+  const hours = Math.floor(whole / 3600);
+  const minutes = Math.floor((whole % 3600) / 60);
+  const rest = whole % 60;
+  const parts = [];
+  if (hours) parts.push(`${hours}h`);
+  if (minutes) parts.push(`${minutes}m`);
+  if (rest || parts.length === 0) parts.push(`${rest}s`);
+  return parts.join(" ");
 }
 
 function displayType(value) {
@@ -139,15 +146,10 @@ function resolutionKey(call) {
 
 function whenLabel(minutes) {
   const n = Number(minutes) || 0;
-  if (n < 1) return "Just now";
-  if (n < 60) return n === 1 ? "1 minute ago" : `${n} minutes ago`;
-  if (n < 24 * 60) {
-    const hours = Math.round(n / 60);
-    return hours === 1 ? "1 hour ago" : `${hours} hours ago`;
-  }
-  const days = Math.round(n / (24 * 60));
-  if (days === 1) return "Yesterday";
-  return `${days} days ago`;
+  if (n < 1) return "now";
+  if (n < 60) return `${n}m`;
+  if (n < 24 * 60) return `${Math.round(n / 60)}h`;
+  return `${Math.round(n / (24 * 60))}d`;
 }
 
 function selectedBucket() {
@@ -335,7 +337,7 @@ function buildCall(row, index) {
         </span>
         <span class="col-reserve">
           <span class="sheet-when" data-when></span>
-          <span class="fit-label sizer-when" aria-hidden="true"><span>59 minutes ago</span></span>
+          <span class="fit-label sizer-when" aria-hidden="true"><span>59m</span></span>
         </span>
       </div>
     </div></div>`;

@@ -113,11 +113,9 @@
 }
 
 .complaints-page .todo-side [data-side-desc] {
-  align-self: start;
-  width: fit-content;
+  align-self: stretch;
+  width: 100%;
   max-width: 100%;
-  field-sizing: content;
-  min-height: 20px;
   white-space: pre-wrap;
 }
 

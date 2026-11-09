@@ -1,7 +1,7 @@
 const CATS = ["Hours", "Policies", "Fees", "Parking", "Amenities"];
 const AVAIL = ["Permanent", "Seasonal"];
 const STATUS = { verified: "Verified", due: "Due soon", stale: "Stale" };
-const RANGE_LABEL = { "24h": "24 hours", "7d": "7 days", "30d": "30 days" };
+const RANGE_LABEL = { "24h": "24h", "7d": "7d", "30d": "30d" };
 const RESOLVE = { transferred: "Transferred", resolved: "Resolved", missed: "Missed", abandoned: "Abandoned" };
 const HEADS = {
   all: ["Status", "Question", "Answer", "Category", "Asked"],

@@ -4,14 +4,16 @@ Run the rows this change could break. A row that does not match sends you back t
 
 ## Any change
 
+- [ ] No existing component was restyled. Search, the filter row, and every other named control keep the size, fill, and states in their own section. A screenshot is not a reason to redraw one. See [guard-rails.md](guard-rails.md).
 - [ ] Colors, type sizes, spacing, radii, shadows, and durations are tokens from `catalog/tokens.css`. A component uses a role or an alias. No second red, and no new hex. See [foundations.md](foundations.md).
 - [ ] Every new section has the empty state this product already uses for that kind of thing, or a note that the empty state is undecided. See [patterns.md](patterns.md).
 - [ ] Status copy matches the record. Open, In progress, and Completed say what the record is now.
 - [ ] Hover and selected share one step from the surface they sit on. A selected control does not take a second step under the pointer. Dark mode lightens that step. See [foundations.md](foundations.md).
-- [ ] A button changes its fill only. Primary goes to `--action-hover`. Secondary takes one step. Danger uses the 88% mix. A filter chip, an urgency, and a department fill stay. See [foundations.md](foundations.md).
+- [ ] A button changes its fill only. See Primary button, Secondary button, Tertiary button, Danger button, and Filter chip in [components.md](components.md).
+- [ ] A description or notes field is the text well, and every one of those boxes is the same height. A one-line input box is the field or the line field. See [components.md](components.md).
 - [ ] A tooltip is the top layer. It paints above the page, the table, and the sidebar. A click does not hide it. A menu, the filter row, and the detail panel use the stack in [foundations.md](foundations.md). A new overlay does not invent a z-index.
 - [ ] The edit stayed on the control the user pointed at. Neighbors are unchanged. See [guard-rails.md](guard-rails.md).
-- [ ] Related things are grouped, and the gap inside a group is smaller than the gap between groups. A label the content does not need is absent. See Spacing a screen in [patterns.md](patterns.md). The lesson card’s measurements apply only to a lesson card.
+- [ ] Related things are grouped, and the gap inside a group is smaller than the gap between groups. A title and the content it names keep at least 40px. A label the content does not need is absent. See Spacing a screen in [patterns.md](patterns.md). The lesson card’s measurements apply only to a lesson card.
 - [ ] Item spacing and section spacing were not swapped. A hairline stays 1px, and the edges of that box match. See [guard-rails.md](guard-rails.md).
 - [ ] The page still works at the viewport the gallery and notes pages already support.
 
@@ -26,11 +28,13 @@ Check this on every change, on the rendered screen. Equal padding is not alignme
 
 ## If you drew a person, an urgency, a type, or a table
 
-- [ ] A person, an urgency, and a type are the gallery treatment, including in a menu, a filter, and a table cell. See [patterns.md](patterns.md).
-- [ ] Picking a person is a dropdown of people who already exist. A new person is added in Settings. See [patterns.md](patterns.md).
-- [ ] A chip that opens a menu hugs its label and shows the chevron on hover without moving the items beside it. See [patterns.md](patterns.md).
-- [ ] A dropdown hugs its longest label, then leaves 16px to the edge. Short labels use `--menu-min`. Past `--menu-max` the label truncates. Every option label is `--text-14`, the same size as the category row. The check and the chevron sit 6px from the row edge. Delete is last, in red, with a full-width line above it. See [components.md](components.md).
-- [ ] A new table is the gallery table, filter row included. A column of fixed options is already as wide as its longest option. The control still hugs the value it is showing. One column names the record and takes the leftover width. When the page has no title column, that column is chosen from the job of the page. See [components.md](components.md).
+- [ ] A person, an urgency, and a type follow Person, Urgency, and Department tag in [components.md](components.md).
+- [ ] Picking a person follows Person in [components.md](components.md).
+- [ ] A table’s Assigned column follows Table in [components.md](components.md).
+- [ ] A chip that opens a menu follows Department tag in [components.md](components.md).
+- [ ] A dropdown follows Menu in [components.md](components.md).
+- [ ] A new table follows Table in [components.md](components.md).
+- [ ] A filter follows the filter row in [patterns.md](patterns.md).
 
 ## If you added motion, an icon, or a container
 
@@ -40,6 +44,8 @@ Check this on every change, on the rendered screen. Equal padding is not alignme
 
 ## If you touched chrome or a record
 
-- [ ] The sidebar, the header, and a side panel match the shared component. A horizontal line follows the title and the summary, and it marks a layout change. See [components.md](components.md), [patterns.md](patterns.md), and [guard-rails.md](guard-rails.md).
-- [ ] Delete opens the gallery confirmation before anything is removed. A new record is created on the page, not in a prompt. See [components.md](components.md) and [patterns.md](patterns.md).
+- [ ] The sidebar, the header, and a side panel follow Sidebar, Header, and Detail panel in [components.md](components.md). A horizontal line follows [guard-rails.md](guard-rails.md).
+- [ ] A subpage follows the subpage block in [patterns.md](patterns.md).
+- [ ] A measured count follows Progress bar in [components.md](components.md). A lesson follows Lesson card.
+- [ ] Delete follows Delete confirmation in [components.md](components.md). A new record is created on the page, not in a prompt.
 - [ ] A dropdown trigger keeps its hover fill while the menu is open. See [foundations.md](foundations.md).

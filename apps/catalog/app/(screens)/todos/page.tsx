@@ -4,6 +4,7 @@ import { ASSIGNEE_PEOPLE, ActivityFeed, AssigneeCell, Button, DetailPanel, Icon,
 import { useEffect, useMemo, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { FilterMenu, SearchBox } from "../chrome";
+import { EditText } from "../edit-text";
 import { Glyph } from "../glyph";
 import { PageLayout } from "../page-layout";
 
@@ -172,7 +173,9 @@ function TodoDetail({
         </div>
         <div className="todo-side-desc">
           <label className="sheet-label" htmlFor="side-desc">Description</label>
-          <textarea id="side-desc" data-side-desc rows={1} defaultValue={todo.note} placeholder="Add a note" />
+          <EditText fill>
+            <textarea id="side-desc" className="text-well" data-side-desc rows={4} defaultValue={todo.note} placeholder="Add a note" />
+          </EditText>
         </div>
         <div className="todo-side-rule" />
         <div className="todo-side-meta">
@@ -212,7 +215,7 @@ export default function TodosPage() {
   const [todos, setTodos] = useState(STARTER);
   const [bucket, setBucket] = useState("open");
   const [query, setQuery] = useState("");
-  const [type, setType] = useState("");
+  const [types, setTypes] = useState<string[]>([]);
   const [auto, setAuto] = useState(false);
   const [selected, setSelected] = useState<string | null>(null);
   const [enteringId, setEnteringId] = useState<string | null>(null);
@@ -225,10 +228,10 @@ export default function TodosPage() {
       todos.filter(
         (todo) =>
           todo.bucket === bucket &&
-          (!type || todo.type === type) &&
+          (types.length === 0 || types.includes(todo.type)) &&
           `${todo.room} ${todo.note}`.toLowerCase().includes(query.trim().toLowerCase()),
       ),
-    [todos, bucket, query, type],
+    [todos, bucket, query, types],
   );
   const open = visible.find((todo) => todo.id === selected) ?? null;
   if (open) retained.current = open;
@@ -269,7 +272,7 @@ export default function TodosPage() {
     };
     setBucket("open");
     setQuery("");
-    setType("");
+    setTypes([]);
     setTodos((list) => [blank, ...list]);
     setSelected(id);
     setEnteringId(id);
@@ -326,13 +329,13 @@ export default function TodosPage() {
       <div className="sheet-stack">
         <div className="filter-row page-toolbar">
           <SearchBox placeholder="Search to-dos" label="Search to-dos" value={query} onValueChange={setQuery} />
-          <FilterMenu value={type} onValueChange={setType} options={["Housekeeping", "Maintenance"]} />
+          <FilterMenu value={types} onValueChange={setTypes} options={["Housekeeping", "Maintenance"]} />
           <div className="filter-chips">
-            {type ? (
-              <button className="chip chip-filter" type="button" onClick={() => setType("")}>
-                <span className="chip-k">Type</span>: {type} <Glyph name="plus" size={10} className="x" />
+            {types.map((value) => (
+              <button key={value} className="chip chip-filter" type="button" onClick={() => setTypes((current) => current.filter((item) => item !== value))}>
+                <span className="chip-k">Type</span>: {value} <Glyph name="plus" size={10} className="x" />
               </button>
-            ) : null}
+            ))}
           </div>
         </div>
         <div className="sheet-work">

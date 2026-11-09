@@ -4,7 +4,7 @@ import { Button, Checkbox, ConfirmDialog, DEPARTMENTS, DepartmentChip, Icon, Ove
 import { forwardRef, useEffect, useId, useLayoutEffect, useRef, useState, type ButtonHTMLAttributes } from "react";
 import { flushSync } from "react-dom";
 import { InsetCard } from "../inset-card";
-import { PageLayout } from "../page-layout";
+import { PageLayout, PageTitle } from "../page-layout";
 import { createLocation, formatMoney, type CashLine, type CashLocation, type DepartmentName, type LineGroup } from "./model";
 import { useMenu } from "./use-menu";
 
@@ -83,15 +83,7 @@ export function LocationsEditor({
       bodyClassName="cash-shift-body"
       icon="card"
       title={
-        <>
-          <button type="button" className="cash-back" onClick={onBack}>
-            Cash & bank
-          </button>
-          <span className="cash-crumb-sep" aria-hidden="true">
-            /
-          </span>
-          Manage locations
-        </>
+        <PageTitle parent="Cash & bank" current="Manage locations" onBack={onBack} />
       }
       actions={
         <>
@@ -100,15 +92,18 @@ export function LocationsEditor({
             {dirty ? null : <Icon name="chevron" size={14} className="cash-back-icon" />}
             {dirty ? "Save" : "Back"}
           </Button>
-          <Button onClick={addLocation}>
-            <Icon name="plus" size={14} />
-            New location
-          </Button>
         </>
       }
     >
       <div className="cash-screen">
         <div className="cash-manage" ref={scroller}>
+          <button type="button" className="cash-new-location" onClick={addLocation}>
+            <svg className="cash-new-stroke" aria-hidden="true">
+              <rect x="0.5" y="0.5" width="calc(100% - 1px)" height="calc(100% - 1px)" rx="9.5" fill="none" stroke="currentColor" strokeWidth="1" strokeDasharray="9 8" />
+            </svg>
+            <Icon name="plus" size={14} />
+            New location
+          </button>
           {draft.map((location) => (
             <LocationCard
               key={location.id}
@@ -467,8 +462,9 @@ function AddColumn<T extends { id: string; on: boolean }>({
 
   function commit() {
     const name = draft?.trim() ?? "";
+    if (!name) return;
     setDraft(null);
-    if (name) onAdd(name);
+    onAdd(name);
   }
 
   return (
@@ -480,28 +476,43 @@ function AddColumn<T extends { id: string; on: boolean }>({
           {label}
         </Button>
       ) : (
-        <input
-          className="cash-add-input"
-          autoFocus
-          aria-label={placeholder}
-          placeholder={placeholder}
-          value={draft}
-          onChange={(event) => setDraft(event.target.value)}
-          onBlur={() => {
-            if (skip.current) {
-              skip.current = false;
-              return;
-            }
-            commit();
-          }}
-          onKeyDown={(event) => {
-            if (event.key === "Enter") event.currentTarget.blur();
-            if (event.key === "Escape") {
-              skip.current = true;
-              setDraft(null);
-            }
-          }}
-        />
+        <div className="cash-add-line">
+          <input
+            className="line"
+            autoFocus
+            aria-label={placeholder}
+            placeholder={placeholder}
+            value={draft}
+            onChange={(event) => setDraft(event.target.value)}
+            onBlur={() => {
+              if (skip.current) {
+                skip.current = false;
+                return;
+              }
+              if (!draft.trim()) setDraft(null);
+            }}
+            onKeyDown={(event) => {
+              if (event.key === "Enter") {
+                event.preventDefault();
+                commit();
+              }
+              if (event.key === "Escape") {
+                skip.current = true;
+                setDraft(null);
+              }
+            }}
+          />
+          <Button
+            variant="secondary"
+            icon
+            aria-label={label}
+            disabled={!draft.trim()}
+            onMouseDown={(event) => event.preventDefault()}
+            onClick={commit}
+          >
+            <Icon name="plus" size={14} />
+          </Button>
+        </div>
       )}
       {items.length ? (
         <div className="cash-col-list">

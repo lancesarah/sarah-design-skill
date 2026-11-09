@@ -2,6 +2,7 @@
 
 import { useEffect, useState, type ReactNode } from "react";
 import { Button, SegmentedControl, ThemeSwitch, type ButtonVariant } from "@lance-live/gallery-ui";
+import { DocPage, Example } from "./docs-example";
 
 function Plus() {
   return (
@@ -20,11 +21,20 @@ function Specimen({ k, children }: { k: string; children: ReactNode }) {
   );
 }
 
-function VariantBlock({ variant, name }: { variant: ButtonVariant; name: string }) {
+function VariantBlock({ variant, name, description }: { variant: ButtonVariant; name: string; description: string }) {
   const label = variant === "danger" ? "Delete" : "New";
+  const code = `import { Button } from "@lance-live/gallery-ui";
+
+export function ${name.replace(/\s/g, "")}() {
   return (
-    <section>
-      <h2>{name}</h2>
+    <Button variant="${variant}">
+      <PlusIcon />
+      ${label}
+    </Button>
+  );
+}`;
+  return (
+    <Example id={variant} title={name} description={description} code={code}>
       <div className="cols">
         <Specimen k="Interactive">
           <Button variant={variant}>
@@ -38,7 +48,7 @@ function VariantBlock({ variant, name }: { variant: ButtonVariant; name: string 
             {label}
           </Button>
         </Specimen>
-        <Specimen k="Base">
+        <Specimen k="Icon">
           <Button variant={variant} icon aria-label={label}>
             <Plus />
           </Button>
@@ -56,7 +66,7 @@ function VariantBlock({ variant, name }: { variant: ButtonVariant; name: string 
           </Button>
         </Specimen>
       </div>
-    </section>
+    </Example>
   );
 }
 
@@ -73,7 +83,7 @@ function InteractiveSegments() {
   );
 }
 
-function ThemeToggle() {
+export function ThemeToggle() {
   const [dark, setDark] = useState(false);
   useEffect(() => {
     const sync = () => setDark(document.documentElement.dataset.theme === "dark");
@@ -94,47 +104,64 @@ function ThemeToggle() {
   );
 }
 
-export function Specimens() {
+const SEGMENT_CODE = `import { SegmentedControl } from "@lance-live/gallery-ui";
+
+export function StatusSegments() {
   return (
-    <main className="mx-auto w-full max-w-[1120px] px-6 pt-10">
-      <header className="mb-8 flex items-center justify-between gap-4">
-        <h1 className="text-base font-medium">Gallery UI</h1>
-        <ThemeToggle />
-      </header>
-      <div className="sds group">
-      <h2>Buttons</h2>
-      <VariantBlock variant="primary" name="Primary button" />
-      <VariantBlock variant="secondary" name="Secondary button" />
-      <VariantBlock variant="danger" name="Danger button" />
-      <section>
-        <h2>Secondary tabs 3 MAX</h2>
-        <div className="cols">
-          <Specimen k="Interactive">
-            <span className="frame">
-              <InteractiveSegments />
-            </span>
-          </Specimen>
-          <Specimen k="Base">
-            <SegmentedControl readOnly aria-label="Base" value="open" options={segments} />
-          </Specimen>
-          <Specimen k="Hover">
-            <SegmentedControl
-              readOnly
-              aria-label="Hover unselected"
-              value="open"
-              options={[
-                { value: "open", label: "Open" },
-                { value: "scheduled", label: "Scheduled", state: "hover" },
-                { value: "completed", label: "Completed" },
-              ]}
-            />
-          </Specimen>
-          <Specimen k="Hover">
-            <SegmentedControl readOnly aria-label="Selected scheduled" value="scheduled" options={segments} />
-          </Specimen>
-        </div>
-      </section>
-      </div>
-    </main>
+    <SegmentedControl
+      aria-label="Status"
+      value="open"
+      options={[
+        { value: "open", label: "Open" },
+        { value: "scheduled", label: "Scheduled" },
+        { value: "completed", label: "Completed" },
+      ]}
+    />
   );
+}`;
+
+export function Specimens({ page }: { page: string }) {
+  if (page === "button") {
+    return (
+      <DocPage title="Button" description="A button starts an action. One primary button is the main action on a page. Secondary and danger sit beside it.">
+        <VariantBlock variant="primary" name="Primary" description="Use a primary button for the action the page exists to do, such as creating a record." />
+        <VariantBlock variant="secondary" name="Secondary" description="Use a secondary button for an action that is available, but is not the main one." />
+        <VariantBlock variant="danger" name="Danger" description="Use a danger button for a destructive action, such as delete." />
+      </DocPage>
+    );
+  }
+  if (page === "segments") {
+    return (
+      <DocPage title="Segmented control" description="A segmented control switches a view. Three options is the maximum.">
+        <Example id="segments-default" title="Default" description="The selected segment is the current view. The others stay quiet until they are chosen." code={SEGMENT_CODE}>
+          <div className="cols">
+            <Specimen k="Interactive">
+              <span className="frame">
+                <InteractiveSegments />
+              </span>
+            </Specimen>
+            <Specimen k="Base">
+              <SegmentedControl readOnly aria-label="Base" value="open" options={segments} />
+            </Specimen>
+            <Specimen k="Hover">
+              <SegmentedControl
+                readOnly
+                aria-label="Hover unselected"
+                value="open"
+                options={[
+                  { value: "open", label: "Open" },
+                  { value: "scheduled", label: "Scheduled", state: "hover" },
+                  { value: "completed", label: "Completed" },
+                ]}
+              />
+            </Specimen>
+            <Specimen k="Selected">
+              <SegmentedControl readOnly aria-label="Selected scheduled" value="scheduled" options={segments} />
+            </Specimen>
+          </div>
+        </Example>
+      </DocPage>
+    );
+  }
+  return null;
 }

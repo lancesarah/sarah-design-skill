@@ -105,7 +105,7 @@ export default function CashPage() {
   const [counts, setCounts] = useState(INITIAL_COUNTS);
   const [view, setView] = useState<View>({ name: "list" });
   const [query, setQuery] = useState("");
-  const [shift, setShift] = useState("");
+  const [shifts, setShifts] = useState<string[]>([]);
   const [place, setPlace] = useState("all");
   const [range, setRange] = useState("anytime");
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -132,14 +132,14 @@ export default function CashPage() {
   const matched = useMemo(() => {
     const needle = query.trim().toLowerCase();
     return counts.filter((count) => {
-      if (shift && count.shift !== shift) return false;
+      if (shifts.length > 0 && !shifts.includes(count.shift)) return false;
       if (!inRange(count.when, range)) return false;
       if (!needle) return true;
       const location = locations.find((item) => item.id === count.locationId);
       const hay = `${count.shift} ${count.by} ${count.notes} ${count.when} ${location?.name ?? ""} ${location?.department ?? ""} ${formatMoney(totalOf(count))}`.toLowerCase();
       return hay.includes(needle);
     });
-  }, [counts, locations, query, range, shift]);
+  }, [counts, locations, query, range, shifts]);
   const visible = useMemo(
     () => (place === "all" ? matched : matched.filter((count) => count.locationId === place)),
     [matched, place],
@@ -271,13 +271,13 @@ export default function CashPage() {
         view.name === "list" ? (
           <div className="filter-row page-toolbar">
             <SearchBox placeholder="Search" label="Search counts" value={query} onValueChange={setQuery} />
-            <FilterMenu value={shift} onValueChange={setShift} options={shiftOptions} />
+            <FilterMenu value={shifts} onValueChange={setShifts} options={shiftOptions} />
             <div className="filter-chips">
-              {shift ? (
-                <button className="chip chip-filter" type="button" onClick={() => setShift("")}>
-                  <span className="chip-k">Shift</span>: {shift} <Glyph name="plus" size={10} className="x" />
+              {shifts.map((value) => (
+                <button key={value} className="chip chip-filter" type="button" onClick={() => setShifts((current) => current.filter((item) => item !== value))}>
+                  <span className="chip-k">Shift</span>: {value} <Glyph name="plus" size={10} className="x" />
                 </button>
-              ) : null}
+              ))}
             </div>
             <SegmentedControl
               className="range"
@@ -305,7 +305,7 @@ export default function CashPage() {
                 const owned = counts.filter((count) => count.locationId === location.id).length;
                 return (
                   <div key={location.id} className="stage sheet-stage">
-                    <h2 className="cash-place">
+                    <h2 className="sheet-group cash-place">
                       {location.name || "New location"}
                       <button
                         className="cash-pin"
@@ -320,7 +320,7 @@ export default function CashPage() {
                       >
                         <Icon name={pinnedIds.includes(location.id) ? "pin-filled" : "pin"} size={14} />
                       </button>
-                      {location.department ? <DepartmentChip name={location.department} /> : null}
+                      {location.department ? <DepartmentChip name={location.department} plain /> : null}
                     </h2>
                     <DataTable
                       rows={rows}

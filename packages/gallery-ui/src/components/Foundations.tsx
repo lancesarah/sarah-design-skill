@@ -1,9 +1,9 @@
 const colors: Array<[string, string, string]> = [
-  ["--sidebar-grey", "#f6f6f6", "Page background, hovers, table header, search bar"],
-  ["--grey", "#eaeaea", "Dividers, strokes, messaging composer"],
-  ["--black-50", "#808080", "Secondary text, placeholders, meta labels"],
-  ["--black-25", "#bfbfbf", "Tab counts, focus ring, scrollbar"],
-  ["--black-12", "#dbdbdb", "Hover outlines, icon-button hover"],
+  ["--sidebar-grey", "#f8f8f8", "Page background, hovers, table header, search bar"],
+  ["--grey", "#eeeeee", "Dividers, strokes, messaging composer"],
+  ["--black-50", "#848484", "Secondary text, placeholders, meta labels"],
+  ["--black-25", "#c3c3c3", "Tab counts, focus ring, scrollbar"],
+  ["--black-12", "#dfdfdf", "Hover outlines, icon-button hover"],
   ["--white", "#ffffff", "Surfaces, text on filled buttons"],
   ["--black", "#000000", "Primary text, toast, tooltip"],
   ["--action", "#3593dd", "Primary button, active send, filter chip"],
@@ -21,7 +21,7 @@ const colors: Array<[string, string, string]> = [
   ["--urgency-low", "#8ccd1a", "Low urgency label"],
   ["--status-complete", "#8ccd1a", "Completed status"],
   ["--filter-chip-bg", "rgb(53 147 221 / 5%)", "Filter chip fill"],
-  ["--switch-knob", "#f5f5f5", "Switch knob"],
+  ["--switch-knob", "#f7f7f7", "Switch knob"],
 ];
 
 const spaces = ["2", "4", "8", "10", "12", "14", "16", "20", "25"];

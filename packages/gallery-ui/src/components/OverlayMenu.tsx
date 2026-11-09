@@ -102,6 +102,13 @@ export function OverlayMenu({
       if (!menu) return;
       const anchor = anchorRef.current;
       const trigger = anchor && anchor.isConnected ? anchor.getBoundingClientRect() : null;
+      menu.style.width = "";
+      menu.style.maxWidth = "";
+      if (!point && trigger && trigger.width > menu.offsetWidth) {
+        const width = `${Math.round(trigger.width)}px`;
+        menu.style.width = width;
+        menu.style.maxWidth = width;
+      }
       const size = { width: menu.offsetWidth, height: menu.offsetHeight };
       const next = point
         ? placeAtPoint(point, size)

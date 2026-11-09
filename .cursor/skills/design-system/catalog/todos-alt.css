@@ -133,6 +133,22 @@ html[data-theme="dark"] .sheet-page .auto-assign:not([aria-pressed="true"]):is(:
   gap: 0;
 }
 
+/* The name of one table when several tables share a page. Not a record title. */
+.sheet-group {
+  margin: 0 0 var(--space-8);
+  color: var(--black);
+  font-size: var(--text-14);
+  font-weight: 500;
+  line-height: 20px;
+}
+
+.sheet-group .count {
+  margin-left: var(--space-8);
+  color: var(--black-50);
+  font-size: var(--text-14);
+  font-weight: 400;
+}
+
 .sheet-fade {
   position: relative;
   flex: 0 1 auto;
@@ -1494,24 +1510,43 @@ html[data-theme="dark"] .sheet-who.is-empty[aria-expanded="true"] .avatar.mini {
 .todo-side-desc {
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
+  gap: var(--space-8);
 }
 
-.todo-side [data-side-desc] {
+.todo-side [data-side-desc],
+.text-well {
   width: 100%;
-  min-height: 16px;
-  padding: 0;
-  resize: none;
-  overflow: hidden;
+  min-height: 96px;
+  margin: 0;
+  padding: var(--space-10);
+  border: 0;
+  border-radius: var(--radius-control);
+  background: var(--sidebar-grey);
+  box-shadow: none;
   color: var(--black);
-  background: transparent;
+  font: inherit;
   font-size: var(--text-14);
-  line-height: normal;
+  font-weight: 400;
+  line-height: 20px;
   text-wrap: var(--text-wrap-copy);
+  resize: vertical;
 }
 
-.todo-side [data-side-desc]::placeholder { color: var(--black-50); }
-.todo-side [data-side-desc]:focus { box-shadow: inset 0 -1px 0 var(--black-25); }
+.todo-side [data-side-desc]::placeholder,
+.text-well::placeholder { color: var(--text-muted); }
+
+.todo-side [data-side-desc]:hover,
+textarea.text-well:hover { box-shadow: 0 0 0 1px var(--black-12); }
+
+.todo-side [data-side-desc]:focus,
+textarea.text-well:focus {
+  outline: none;
+  color: var(--black);
+  box-shadow: 0 0 0 1px var(--black-25);
+}
+
+html[data-theme="dark"] .todo-side [data-side-desc],
+html[data-theme="dark"] .text-well { background: var(--grey); }
 
 .todo-side-rule {
   height: 1px;

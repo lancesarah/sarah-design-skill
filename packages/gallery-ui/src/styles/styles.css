@@ -38,12 +38,6 @@ button.sds:active:not(:disabled) {
   outline-offset: 2px;
 }
 
-.sds.text-icon.btn-delete-line:is(:hover, .is-hover) {
-  background: var(--sidebar-grey);
-  color: var(--destructive);
-  box-shadow: var(--stroke);
-}
-
 .sds.btn,
 .sds.segmented .segment {
   transition: background-color 120ms ease, color 120ms ease, box-shadow 120ms ease, scale 160ms var(--ease-out);
@@ -70,7 +64,8 @@ button.sds:active:not(:disabled) {
   justify-content: center;
   gap: 6px;
   height: 28px;
-  padding: 5px 6px;
+  padding: 4px 6px;
+  line-height: 20px;
   border-radius: 6px;
   background: var(--action);
   color: var(--white);
@@ -84,6 +79,7 @@ button.sds:active:not(:disabled) {
 .sds.btn-icon {
   width: 28px;
   padding: 7px;
+  line-height: 0;
 }
 
 .sds.btn-secondary {
@@ -97,8 +93,21 @@ button.sds:active:not(:disabled) {
   background: var(--sidebar-grey);
 }
 
+.sds.btn-tertiary {
+  background: var(--grey);
+  color: var(--black);
+  box-shadow: none;
+}
+
+.sds.btn-tertiary:hover:not(:disabled),
+.sds.btn-tertiary.is-hover:not(:disabled),
+.sds.btn-tertiary[aria-expanded="true"] {
+  background: var(--black-12);
+  color: var(--black);
+}
+
 .sds.btn:has(svg):not(.btn-icon) {
-  padding: 5px 8px 5px 6px;
+  padding: 4px 6px;
 }
 
 .sds.btn-danger {
@@ -112,11 +121,25 @@ button.sds:active:not(:disabled) {
   background: color-mix(in srgb, var(--destructive) 88%, black);
 }
 
+.sds.btn-danger-light {
+  background: color-mix(in srgb, var(--destructive) 5%, transparent);
+  color: var(--destructive);
+  box-shadow: none;
+}
+
+.sds.btn-danger-light:hover:not(:disabled),
+.sds.btn-danger-light.is-hover:not(:disabled) {
+  background: color-mix(in srgb, var(--destructive) 12%, transparent);
+  color: var(--destructive);
+}
+
 .sds.segmented {
   display: flex;
+  flex: none;
   gap: 5px;
   align-items: center;
-  width: 225px;
+  width: max-content;
+  max-width: 100%;
   height: 30px;
   padding: 3px;
   border-radius: 6px;
@@ -139,6 +162,16 @@ button.sds:active:not(:disabled) {
   background: var(--white);
   color: var(--black);
   box-shadow: var(--stroke);
+}
+
+.sds.segmented .segment .count {
+  margin: 0 0 0 4px;
+  color: var(--black-25);
+  font-size: 14px;
+}
+
+.sds.segmented .segment[aria-selected="true"] .count {
+  color: var(--black-50);
 }
 
 .sds.segmented .segment:hover,
@@ -285,13 +318,13 @@ html[data-theme="dark"] .sds.segmented.has-slide > .segment[aria-selected="true"
   }
 }
 
-html[data-theme="dark"] .sds.btn:not(.btn-secondary):not(.btn-danger) {
+html[data-theme="dark"] .sds.btn:not(.btn-secondary):not(.btn-tertiary):not(.btn-danger):not(.btn-danger-light) {
   background: var(--action);
   color: var(--button-fill);
 }
 
-html[data-theme="dark"] .sds.btn:not(.btn-secondary):not(.btn-danger):hover:not(:disabled),
-html[data-theme="dark"] .sds.btn:not(.btn-secondary):not(.btn-danger).is-hover:not(:disabled) {
+html[data-theme="dark"] .sds.btn:not(.btn-secondary):not(.btn-tertiary):not(.btn-danger):not(.btn-danger-light):hover:not(:disabled),
+html[data-theme="dark"] .sds.btn:not(.btn-secondary):not(.btn-tertiary):not(.btn-danger):not(.btn-danger-light).is-hover:not(:disabled) {
   background: var(--action-hover);
   color: var(--button-fill);
 }
@@ -328,14 +361,6 @@ button.sds:disabled {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-/* The filled delete hover comes later and is equally specific. The outline delete stays an outline and only picks up the grey hover. */
-button.sds.text-icon.btn-delete-line:hover,
-button.sds.text-icon.btn-delete-line.is-hover {
-  background: var(--sidebar-grey);
-  color: var(--destructive);
-  box-shadow: var(--stroke);
 }
 
 /* The symbol list names the level. The word keeps its color. The pill fill stays off. */
@@ -488,7 +513,9 @@ button.sds.text-icon.btn-delete-line.is-hover {
 }
 :where(.sds) .sheet-cell-clip:has(.sheet-who),
 :where(.sds) .sheet-cell-clip:has(.sheet-type),
-:where(.sds) .sheet-cell-clip:has(.dept) {
+:where(.sds) .sheet-cell-clip:has(.dept),
+:where(.sds) .sheet-cell-clip:has(.btn),
+:where(.sds) .sheet-cell-clip:has(input, textarea) {
   overflow: visible;
 }
 

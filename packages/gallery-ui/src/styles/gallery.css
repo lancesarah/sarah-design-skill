@@ -131,10 +131,13 @@
 
 :where(.sds) .page-title h1, :where(.sds).page-title h1 {
   margin: 0;
+  color: var(--black);
   font-family: var(--serif);
   font-size: 16px;
   font-weight: 400;
 }
+
+:where(.sds) .page-title h1 button, :where(.sds).page-title h1 button { color: inherit; }
 
 :where(.sds) .canvas section, :where(.sds).canvas section,
 :where(.sds) .canvas h2, :where(.sds).canvas h2 {
@@ -331,12 +334,7 @@ html.is-keys :where(.sds) * {
   color: var(--white);
   font-size: 14px;
 }
-:where(.sds) .btn-delete-line, :where(.sds).btn-delete-line {
-  background: var(--white);
-  color: var(--destructive);
-  box-shadow: var(--stroke);
-}
-:where(.sds) .text-icon:hover, :where(.sds).text-icon:hover, :where(.sds) .btn-delete-line:hover, :where(.sds).btn-delete-line:hover { background: var(--sidebar-grey); }
+:where(.sds) .text-icon:hover, :where(.sds).text-icon:hover { background: var(--sidebar-grey); }
 :where(.sds) .btn-delete:hover, :where(.sds).btn-delete:hover { background: color-mix(in srgb, var(--destructive) 88%, black); }
 
 /* Title */
@@ -361,7 +359,9 @@ html.is-keys :where(.sds) * {
 :where(.sds) .btn:hover, :where(.sds).btn:hover, :where(.sds) .btn.is-hover, :where(.sds).btn.is-hover { background: var(--action-hover); }
 :where(.sds) .btn-icon, :where(.sds).btn-icon { width: 28px; padding: 7px; }
 :where(.sds) .btn-secondary, :where(.sds).btn-secondary { background: var(--white); color: var(--black); box-shadow: var(--stroke); }
-:where(.sds) .btn-secondary:hover, :where(.sds).btn-secondary:hover, :where(.sds) .btn-secondary.is-hover, :where(.sds).btn-secondary.is-hover { background: var(--sidebar-grey); }
+:where(.sds) .btn-secondary:hover, :where(.sds).btn-secondary:hover, :where(.sds) .btn-secondary.is-hover, :where(.sds).btn-secondary.is-hover, :where(.sds) .btn-secondary[aria-pressed="true"], :where(.sds).btn-secondary[aria-pressed="true"], :where(.sds) .btn-secondary[aria-expanded="true"], :where(.sds).btn-secondary[aria-expanded="true"] { background: var(--sidebar-grey); }
+:where(.sds) .btn-tertiary, :where(.sds).btn-tertiary { background: var(--grey); color: var(--black); box-shadow: none; }
+:where(.sds) .btn-tertiary:hover, :where(.sds).btn-tertiary:hover, :where(.sds) .btn-tertiary.is-hover, :where(.sds).btn-tertiary.is-hover, :where(.sds) .btn-tertiary[aria-expanded="true"], :where(.sds).btn-tertiary[aria-expanded="true"] { background: var(--black-12); color: var(--black); }
 :where(.sds) .btn:has(svg):not(.btn-icon), :where(.sds).btn:has(svg):not(.btn-icon) { padding: 5px 8px 5px 6px; }
 
 :where(.sds) .chip, :where(.sds).chip {
@@ -651,8 +651,15 @@ html[data-theme="dark"] :where(.sds) .note-avatar-slot img, html[data-theme="dar
 :where(.sds) .mode:hover, :where(.sds).mode:hover, :where(.sds) .mode[aria-expanded="true"], :where(.sds).mode[aria-expanded="true"] { background: var(--grey); color: var(--black-50); }
 
 /* Fields */
-:where(.sds) .field, :where(.sds).field { display: flex; flex-direction: column; gap: 5px; width: 268px; }
+:where(.sds) .field, :where(.sds).field { display: flex; flex-direction: column; gap: var(--space-4); width: 268px; }
 :where(.sds) .field span, :where(.sds).field span { font-size: 16px; font-weight: 500; line-height: 16px; }
+:where(.sds) .field:has(textarea), :where(.sds).field:has(textarea) { gap: var(--space-4); }
+:where(.sds) .field:has(textarea) span, :where(.sds).field:has(textarea) span {
+  color: var(--black-50);
+  font-size: var(--text-12);
+  font-weight: 500;
+  line-height: normal;
+}
 :where(.sds) .field input, :where(.sds).field input, :where(.sds) .field textarea, :where(.sds).field textarea {
   width: 100%;
   padding: 10px;
@@ -661,26 +668,60 @@ html[data-theme="dark"] :where(.sds) .note-avatar-slot img, html[data-theme="dar
   color: var(--black-50);
   resize: none;
 }
-:where(.sds) .field input, :where(.sds).field input { height: 36px; }
-:where(.sds) .field textarea, :where(.sds).field textarea { height: 175px; }
+:where(.sds) .field input, :where(.sds).field input { height: 32px; }
+:where(.sds) .field textarea, :where(.sds).field textarea {
+  min-height: 96px;
+  height: auto;
+  color: var(--black);
+  font-size: var(--text-14);
+  line-height: 20px;
+  resize: vertical;
+}
 :where(.sds) .field input:hover, :where(.sds).field input:hover, :where(.sds) .field textarea:hover, :where(.sds).field textarea:hover { box-shadow: 0 0 0 1px var(--black-12); }
-:where(.sds) .field input:focus, :where(.sds).field input:focus, :where(.sds) .field textarea:focus, :where(.sds).field textarea:focus { color: var(--black); box-shadow: 0 0 0 1px var(--black-25); }
+:where(.sds) .field textarea:focus, :where(.sds).field textarea:focus { color: var(--black); box-shadow: 0 0 0 1px var(--black-25); }
+html[data-theme="dark"] :where(.sds) .field textarea, html[data-theme="dark"] :where(.sds).field textarea { background: var(--grey); }
+
+:where(.sds) .line, :where(.sds).line {
+  width: 100%;
+  height: 32px;
+  margin: 0;
+  padding: 0 var(--space-10);
+  border: 0;
+  border-radius: var(--radius-control);
+  background: var(--white);
+  box-shadow: var(--stroke);
+  color: var(--black);
+  font: inherit;
+  font-size: var(--text-14);
+  line-height: 20px;
+  overflow: visible;
+}
+:where(.sds) .line:hover, :where(.sds).line:hover { box-shadow: 0 0 0 1px var(--black-12); }
+:where(.sds) .line:focus, :where(.sds).line:focus { outline: none; box-shadow: 0 0 0 1px var(--black-25); }
+:where(.sds) .line::placeholder, :where(.sds).line::placeholder { color: var(--text-muted); }
 
 /* Toast and tooltip */
 :where(.sds) .toast, :where(.sds).toast {
   display: flex;
   align-items: center;
   gap: 8px;
-  width: 311px;
-  height: 41px;
-  padding: 0 14px;
+  width: max-content;
+  max-width: min(440px, calc(100vw - var(--space-25) * 2));
+  min-height: 41px;
+  height: auto;
+  padding: 10px 14px;
   border-radius: 10px;
   background: var(--black);
   color: var(--white);
   box-shadow: var(--shadow-menu);
 }
-:where(.sds) .toast .when, :where(.sds).toast .when { color: var(--black-50); }
-:where(.sds) .toast-link, :where(.sds).toast-link { margin-left: auto; color: var(--white); }
+:where(.sds) .toast > svg, :where(.sds).toast > svg { flex: none; }
+:where(.sds) .toast > span:not(.when), :where(.sds).toast > span:not(.when) {
+  min-width: 0;
+  line-height: 20px;
+}
+:where(.sds) .toast .when, :where(.sds).toast .when { color: var(--black-50); white-space: nowrap; }
+:where(.sds) .toast-link, :where(.sds).toast-link { flex: none; margin-left: auto; color: var(--white); white-space: nowrap; }
 :where(.sds) .toast-link:hover, :where(.sds).toast-link:hover { opacity: 0.7; }
 :where(.sds) .tip, :where(.sds).tip {
   display: inline-flex;
@@ -899,6 +940,8 @@ html[data-theme="dark"] :where(.sds) .menu .call-resolution, html[data-theme="da
   color: var(--black-50);
 }
 :where(.sds) .segment[aria-selected="true"], :where(.sds).segment[aria-selected="true"] { background: var(--white); color: var(--black); box-shadow: var(--stroke); }
+:where(.sds) .segment .count, :where(.sds).segment .count { color: var(--black-25); margin: 0 0 0 4px; font-size: 14px; }
+:where(.sds) .segment[aria-selected="true"] .count, :where(.sds).segment[aria-selected="true"] .count { color: var(--black-50); }
 :where(.sds) .segment:hover, :where(.sds).segment:hover, :where(.sds) .segment.is-hover, :where(.sds).segment.is-hover { background: var(--grey); color: var(--black-50); }
 :where(.sds) .segment[aria-selected="true"]:hover, :where(.sds).segment[aria-selected="true"]:hover, :where(.sds) .segment[aria-selected="true"].is-hover, :where(.sds).segment[aria-selected="true"].is-hover {
   background: var(--white);
@@ -1737,7 +1780,6 @@ body.is-side-settling :where(.sds) .side-user .avatar, body.is-side-settling :wh
 
 /* Dark mode. Colors only. Light-mode rules above stay put. */
 html[data-theme="dark"] :where(.sds) .text-icon:hover, html[data-theme="dark"] :where(.sds).text-icon:hover,
-html[data-theme="dark"] :where(.sds) .btn-delete-line:hover, html[data-theme="dark"] :where(.sds).btn-delete-line:hover,
 html[data-theme="dark"] :where(.sds) .chip:hover, html[data-theme="dark"] :where(.sds).chip:hover,
 html[data-theme="dark"] :where(.sds) .chip.is-hover, html[data-theme="dark"] :where(.sds).chip.is-hover,
 html[data-theme="dark"] :where(.sds) .view-pick[aria-expanded="true"], html[data-theme="dark"] :where(.sds).view-pick[aria-expanded="true"],
@@ -1834,7 +1876,7 @@ html[data-theme="dark"] body.is-side-collapsed :where(.sds) .side-links a[aria-c
 html[data-theme="dark"] body.is-side-settling :where(.sds) .side-links a[aria-current="page"].is-settled:hover::before, html[data-theme="dark"] body.is-side-settling :where(.sds).side-links a[aria-current="page"].is-settled:hover::before {
   background: var(--grey);
 }
-html[data-theme="dark"] :where(.sds) .btn:not(.btn-secondary):not(.btn-danger), html[data-theme="dark"] :where(.sds).btn:not(.btn-secondary):not(.btn-danger) {
+html[data-theme="dark"] :where(.sds) .btn:not(.btn-secondary):not(.btn-tertiary):not(.btn-danger):not(.btn-danger-light), html[data-theme="dark"] :where(.sds).btn:not(.btn-secondary):not(.btn-tertiary):not(.btn-danger):not(.btn-danger-light) {
   background: var(--action);
   color: var(--button-fill);
 }
@@ -1846,8 +1888,8 @@ html[data-theme="dark"] :where(.sds) .well.is-on, html[data-theme="dark"] :where
   background-color: var(--action);
   color: var(--button-fill);
 }
-html[data-theme="dark"] :where(.sds) .btn:not(.btn-secondary):not(.btn-danger):hover, html[data-theme="dark"] :where(.sds).btn:not(.btn-secondary):not(.btn-danger):hover,
-html[data-theme="dark"] :where(.sds) .btn:not(.btn-secondary):not(.btn-danger).is-hover, html[data-theme="dark"] :where(.sds).btn:not(.btn-secondary):not(.btn-danger).is-hover {
+html[data-theme="dark"] :where(.sds) .btn:not(.btn-secondary):not(.btn-tertiary):not(.btn-danger):not(.btn-danger-light):hover, html[data-theme="dark"] :where(.sds).btn:not(.btn-secondary):not(.btn-tertiary):not(.btn-danger):not(.btn-danger-light):hover,
+html[data-theme="dark"] :where(.sds) .btn:not(.btn-secondary):not(.btn-tertiary):not(.btn-danger):not(.btn-danger-light).is-hover, html[data-theme="dark"] :where(.sds).btn:not(.btn-secondary):not(.btn-tertiary):not(.btn-danger):not(.btn-danger-light).is-hover {
   background: var(--action-hover);
   color: var(--button-fill);
 }
@@ -2001,7 +2043,7 @@ html[data-theme="dark"] :where(.sds) #table .sheet.is-open .sheet-line.is-hover 
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: var(--space-16);
   width: min(720px, 100%);
   height: 60px;
   padding: 0 16px;
@@ -2013,7 +2055,7 @@ html[data-theme="dark"] :where(.sds) #table .sheet.is-open .sheet-line.is-hover 
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: 8px;
+  gap: var(--space-8);
   min-width: 0;
   position: static;
   z-index: auto;
@@ -2031,7 +2073,54 @@ html[data-theme="dark"] :where(.sds) #table .sheet.is-open .sheet-line.is-hover 
 }
 :where(.sds) #header h1, :where(.sds)#header h1 { margin: 0; font-family: var(--font); font-size: 14px; font-weight: 400; }
 :where(.sds) #header .count, :where(.sds)#header .count { margin: 0; font-size: 14px; font-weight: 400; color: var(--black-50); }
-:where(.sds) #header .head-actions, :where(.sds)#header .head-actions { display: flex; align-items: center; gap: 8px; }
+:where(.sds) #header .head-actions, :where(.sds)#header .head-actions { display: flex; align-items: center; gap: var(--space-8); }
+
+:where(.sds) #page-layout .page-layout, :where(.sds)#page-layout .page-layout {
+  width: min(720px, 100%);
+  overflow: hidden;
+  background: var(--white);
+  border-radius: var(--radius-shell);
+  box-shadow: var(--stroke);
+}
+:where(.sds) #page-layout .page-head, :where(.sds)#page-layout .page-head {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-16);
+  width: auto;
+  height: 60px;
+  margin: 0;
+  padding: 0 var(--space-16);
+  background: var(--white);
+  border-bottom: 1px solid var(--line);
+  border-radius: 0;
+}
+:where(.sds) #page-layout .page-title, :where(.sds)#page-layout .page-title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+:where(.sds) #page-layout .page-mark, :where(.sds)#page-layout .page-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+}
+:where(.sds) #page-layout h1, :where(.sds)#page-layout h1 { margin: 0; font-family: var(--font); font-size: 14px; font-weight: 400; }
+:where(.sds) #page-layout .count, :where(.sds)#page-layout .count { margin: 0; font-size: 14px; font-weight: 400; color: var(--black-50); }
+:where(.sds) #page-layout .head-actions, :where(.sds)#page-layout .head-actions { display: flex; align-items: center; gap: var(--space-8); }
+:where(.sds) #page-layout .tabs, :where(.sds)#page-layout .tabs {
+  padding: var(--space-8) var(--space-16);
+  background: var(--sidebar-grey);
+}
+:where(.sds) #page-layout .filter-row, :where(.sds)#page-layout .filter-row { padding: var(--space-12) var(--space-16); }
 
 :where(.sds) #comment .comment-row, :where(.sds)#comment .comment-row {
   display: flex;
@@ -2095,6 +2184,13 @@ html[data-theme="dark"] :where(.sds) #table .sheet.is-open .sheet-line.is-hover 
   background: transparent;
   color: var(--black);
   box-shadow: inset 0 0 0 0.5px var(--black-12), 0 0 0 0.5px var(--black-12);
+}
+/* A label: the circle and the name, with no stroke and no control. */
+:where(.sds) .dept.dept-plain, :where(.sds).dept.dept-plain {
+  height: auto;
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
 }
 :where(.sds) button.dept:hover,
 :where(.sds) button.dept[aria-expanded="true"] {
@@ -2190,6 +2286,116 @@ html[data-theme="dark"] :where(.sds) button.dept[aria-expanded="true"] {
   .sheet-type[data-type="Management"],
   .side-type[data-type="Management"]
 )::before { background: var(--dept-management); }
+
+:where(.sds) .inset-card, :where(.sds).inset-card {
+  display: flex;
+  flex-direction: column;
+  flex: none;
+  padding: 6px;
+  border: 1px solid var(--grey);
+  border-radius: 10px;
+  background: var(--sidebar-grey);
+}
+
+:where(.sds) .inset-card-head, :where(.sds).inset-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-16);
+  min-height: 56px;
+  margin-top: -6px;
+  padding: 11px 22px;
+}
+
+:where(.sds) .inset-card-title, :where(.sds).inset-card-title {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+  font-size: var(--text-16);
+  line-height: 21px;
+}
+
+:where(.sds) .inset-card-tools, :where(.sds).inset-card-tools {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+:where(.sds) .inset-card-tools > button, :where(.sds).inset-card-tools > button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-control);
+  color: var(--black);
+}
+
+:where(.sds) .inset-card-tools > button:hover, :where(.sds).inset-card-tools > button:hover,
+:where(.sds) .inset-card-tools > button[aria-expanded="true"], :where(.sds).inset-card-tools > button[aria-expanded="true"] { background: var(--grey); }
+
+:where(.sds) .inset-card-chevron .i, :where(.sds).inset-card-chevron .i {
+  transform: rotate(0deg);
+  transition: transform 160ms var(--ease-out);
+}
+
+:where(.sds) .inset-card-chevron[aria-expanded="false"] .i, :where(.sds).inset-card-chevron[aria-expanded="false"] .i { transform: rotate(-90deg); }
+
+:where(.sds) .inset-card-clip, :where(.sds).inset-card-clip {
+  overflow: hidden;
+  opacity: 0;
+}
+
+:where(.sds) .inset-card.is-open .inset-card-clip, :where(.sds).inset-card.is-open .inset-card-clip { opacity: 1; }
+
+:where(.sds) .inset-card-body, :where(.sds).inset-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  padding: 30px 30px 40px;
+  border: 1px solid var(--grey);
+  border-radius: var(--radius-control);
+  background: var(--white);
+}
+
+@media (max-width: 720px) {
+  :where(.sds) .inset-card-body, :where(.sds).inset-card-body { padding: var(--space-16); gap: var(--space-25); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where(.sds) .inset-card-chevron .i, :where(.sds).inset-card-chevron .i,
+  :where(.sds) .inset-card-clip, :where(.sds).inset-card-clip { transition: none; }
+}
+
+:where(.sds) .cash-new-location, :where(.sds).cash-new-location {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  width: 100%;
+  min-height: 56px;
+  border-radius: 10px;
+  background: var(--sidebar-grey);
+  color: var(--text-muted);
+  font-size: var(--text-14);
+  line-height: 20px;
+}
+
+:where(.sds) .cash-new-stroke, :where(.sds).cash-new-stroke {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  color: var(--black-12);
+  pointer-events: none;
+}
+
+:where(.sds) .cash-new-location:hover, :where(.sds).cash-new-location:hover { background: var(--grey); }
+
+html[data-theme="dark"] :where(.sds) .cash-new-location:hover, html[data-theme="dark"] :where(.sds).cash-new-location:hover { background: var(--black-12); }
 
 /* Run sheet. Each to-do is finished on its line. The table stays in todos.css. */
 
@@ -2336,6 +2542,65 @@ html[data-theme="dark"] :where(.sds) .sheet-page .auto-assign:not([aria-pressed=
   min-height: 0;
   padding: var(--space-16);
   gap: 0;
+}
+
+/* The name of one table when several tables share a page. Not a record title. */
+:where(.sds) .sheet-group, :where(.sds).sheet-group {
+  margin: 0 0 var(--space-8);
+  color: var(--black);
+  font-size: var(--text-14);
+  font-weight: 500;
+  line-height: 20px;
+}
+
+:where(.sds) .sheet-group .count, :where(.sds).sheet-group .count {
+  margin-left: var(--space-8);
+  color: var(--black-50);
+  font-size: var(--text-14);
+  font-weight: 400;
+}
+
+/* The checklist is this table without the sheet chrome. */
+:where(.sds) .sheet-fade.is-list, :where(.sds).sheet-fade.is-list {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+:where(.sds) .sheet-fade.is-list .sheet, :where(.sds).sheet-fade.is-list .sheet {
+  margin-inline: 0;
+  border-bottom: 0;
+  border-top: 1px solid var(--line);
+  background: transparent;
+}
+
+:where(.sds) .sheet-fade.is-list .sheet-line, :where(.sds).sheet-fade.is-list .sheet-line {
+  min-height: var(--hit);
+  padding: 0;
+  background: transparent;
+  cursor: default;
+}
+
+:where(.sds) .sheet-fade.is-list .sheet-line > *, :where(.sds).sheet-fade.is-list .sheet-line > * { margin-inline-start: 0; }
+
+:where(.sds) .sheet-fade.is-list .sheet-line > :not(:first-child)::before, :where(.sds).sheet-fade.is-list .sheet-line > :not(:first-child)::before { content: none; }
+
+:where(.sds) .sheet-fade.is-list .sheet-line, :where(.sds).sheet-fade.is-list .sheet-line,
+:where(.sds) .sheet-fade.is-list .sheet:not(.is-open) .sheet-line:has([aria-expanded="true"]), :where(.sds).sheet-fade.is-list .sheet:not(.is-open) .sheet-line:has([aria-expanded="true"]) {
+  background: transparent;
+}
+
+:where(.sds) .sheet-fade.is-list .sheet-line:hover, :where(.sds).sheet-fade.is-list .sheet-line:hover {
+  background: var(--sidebar-grey);
+}
+
+html[data-theme="dark"] :where(.sds) .sheet-fade.is-list .sheet-line, html[data-theme="dark"] :where(.sds).sheet-fade.is-list .sheet-line,
+html[data-theme="dark"] :where(.sds) .sheet-fade.is-list .sheet:not(.is-open) .sheet-line:has([aria-expanded="true"]), html[data-theme="dark"] :where(.sds).sheet-fade.is-list .sheet:not(.is-open) .sheet-line:has([aria-expanded="true"]) {
+  background: transparent;
+}
+
+html[data-theme="dark"] :where(.sds) .sheet-fade.is-list .sheet-line:hover, html[data-theme="dark"] :where(.sds).sheet-fade.is-list .sheet-line:hover {
+  background: var(--grey);
 }
 
 :where(.sds) .sheet-fade, :where(.sds).sheet-fade {
@@ -2507,6 +2772,9 @@ html[data-theme="dark"] :where(.sds) .sheet-fade, html[data-theme="dark"] :where
   overflow: hidden;
 }
 
+/* The skeleton is position absolute. The cell is its frame, including a table that is not on a sheet page. */
+:where(.sds) .sheet-line > *, :where(.sds).sheet-line > * { position: relative; }
+
 /* Placeholders sit in the cells. The column rules stay on the cells, so they do not fade with the values. */
 :where(.sds) .sheet-line:has(.sheet-placeholder):not(.is-revealed), :where(.sds).sheet-line:has(.sheet-placeholder):not(.is-revealed) { pointer-events: none; }
 :where(.sds) .sheet-line:has(.sheet-placeholder) .sheet-cell-clip, :where(.sds).sheet-line:has(.sheet-placeholder) .sheet-cell-clip {
@@ -2630,6 +2898,18 @@ html[data-theme="dark"] :where(.sds) .sheet-fade, html[data-theme="dark"] :where
   cursor: pointer;
 }
 
+/* Plain text is the quiet ink. The name stays black. A second text column is black only when the name is not enough. A person keeps its own color. */
+:where(.sds) .sheet-page .sheet-fade:not(.is-list) .sheet-line, :where(.sds).sheet-page .sheet-fade:not(.is-list) .sheet-line {
+  color: var(--text-muted);
+}
+
+:where(.sds) .sheet-page .sheet-fade:not(.is-list) .sheet-line [data-text="primary"], :where(.sds).sheet-page .sheet-fade:not(.is-list) .sheet-line [data-text="primary"],
+:where(.sds) .sheet-page .sheet-fade:not(.is-list) .sheet-line [data-ink="strong"], :where(.sds).sheet-page .sheet-fade:not(.is-list) .sheet-line [data-ink="strong"],
+:where(.sds) .sheet-page .sheet-fade:not(.is-list) .mini-pill, :where(.sds).sheet-page .sheet-fade:not(.is-list) .mini-pill,
+:where(.sds) .sheet-page .sheet-fade:not(.is-list) .person, :where(.sds).sheet-page .sheet-fade:not(.is-list) .person {
+  color: var(--black);
+}
+
 :where(.sds) .sheet-line .sheet-room, :where(.sds).sheet-line .sheet-room,
 :where(.sds) .sheet-line .sheet-title, :where(.sds).sheet-line .sheet-title,
 :where(.sds) .sheet-line .sheet-note, :where(.sds).sheet-line .sheet-note {
@@ -2669,7 +2949,6 @@ html[data-theme="dark"] :where(.sds) .sheet-fade, html[data-theme="dark"] :where
   justify-content: center;
   width: 28px;
   height: 28px;
-  margin-top: -1px;
   padding: 0;
   border-radius: var(--radius-control);
   color: var(--black-50);
@@ -2893,7 +3172,7 @@ html[data-theme="dark"] :where(.sds) .sheet-fade, html[data-theme="dark"] :where
   position: relative;
   flex: none;
   width: 35px;
-  height: 36px;
+  height: 35px;
   padding: 0;
   gap: 0;
   border-radius: 999px;
@@ -2901,7 +3180,7 @@ html[data-theme="dark"] :where(.sds) .sheet-fade, html[data-theme="dark"] :where
 
 :where(.sds) .sheet-who .avatar.mini, :where(.sds).sheet-who .avatar.mini {
   width: 35px;
-  height: 36px;
+  height: 35px;
   font-size: var(--text-14);
 }
 
@@ -3723,26 +4002,85 @@ html[data-theme="dark"] :where(.sds) .sheet-who.is-empty[aria-expanded="true"] .
 :where(.sds) .todo-side-desc, :where(.sds).todo-side-desc {
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
+  gap: var(--space-8);
 }
 
-:where(.sds) .todo-side [data-side-desc], :where(.sds).todo-side [data-side-desc] {
+:where(.sds) .edit-text, :where(.sds).edit-text {
+  display: inline-flex;
+  align-items: flex-start;
+  max-width: 100%;
+  vertical-align: top;
+}
+
+:where(.sds) .edit-text.is-fill, :where(.sds).edit-text.is-fill {
+  display: flex;
   width: 100%;
-  min-height: 16px;
-  padding: 0;
-  resize: none;
-  overflow: hidden;
-  color: var(--black);
-  background: transparent;
-  font-size: var(--text-14);
-  line-height: normal;
-  text-wrap: var(--text-wrap-copy);
 }
 
-:where(.sds) .todo-side [data-side-desc]::placeholder, :where(.sds).todo-side [data-side-desc]::placeholder { color: var(--black-50); }
-:where(.sds) .todo-side [data-side-desc], :where(.sds).todo-side [data-side-desc] { border-bottom: 1px solid var(--line); }
+:where(.sds) .edit-text.is-fill > textarea, :where(.sds).edit-text.is-fill > textarea,
+:where(.sds) .edit-text.is-fill > input, :where(.sds).edit-text.is-fill > input { flex: 1; min-width: 0; width: auto; }
+
+:where(.sds) .edit-text-mark, :where(.sds).edit-text-mark {
+  flex: none;
+  margin: 3px 0 0 6px;
+  color: var(--black-50);
+  opacity: 0;
+  pointer-events: none;
+}
+
+:where(.sds) .edit-text:hover .edit-text-mark, :where(.sds).edit-text:hover .edit-text-mark { opacity: 1; }
+:where(.sds) .edit-text:focus-within .edit-text-mark, :where(.sds).edit-text:focus-within .edit-text-mark { opacity: 0; }
+
+:where(.sds) .sheet-line .edit-text-mark, :where(.sds).sheet-line .edit-text-mark,
+:where(.sds) .sheet-grid .edit-text-mark, :where(.sds).sheet-grid .edit-text-mark { display: none; }
+
+/* A section title over a larger text field. The knowledge answer is the specimen. */
+:where(.sds) .todo-side [data-side-desc], :where(.sds).todo-side [data-side-desc],
+:where(.sds) .text-well, :where(.sds).text-well {
+  width: 100%;
+  min-height: 96px;
+  margin: 0;
+  padding: var(--space-10);
+  border: 0;
+  border-radius: var(--radius-control);
+  background: var(--sidebar-grey);
+  box-shadow: none;
+  color: var(--black);
+  font: inherit;
+  font-size: var(--text-14);
+  font-weight: 400;
+  line-height: 20px;
+  text-wrap: var(--text-wrap-copy);
+  resize: vertical;
+}
+
+:where(.sds) textarea.text-well,
+:where(.sds) .todo-side textarea[data-side-desc], :where(.sds).todo-side textarea[data-side-desc] {
+  height: 96px;
+  min-height: 96px;
+  field-sizing: auto;
+}
+
+:where(.sds) .todo-side [data-side-desc]::placeholder, :where(.sds).todo-side [data-side-desc]::placeholder,
+:where(.sds) .text-well::placeholder, :where(.sds).text-well::placeholder { color: var(--text-muted); }
+
 :where(.sds) .todo-side [data-side-desc]:hover, :where(.sds).todo-side [data-side-desc]:hover,
-:where(.sds) .todo-side [data-side-desc]:focus, :where(.sds).todo-side [data-side-desc]:focus { border-bottom-color: var(--black-12); }
+:where(.sds) textarea.text-well:hover,
+:where(.sds) input.text-well:hover { box-shadow: 0 0 0 1px var(--black-12); }
+
+:where(.sds) .todo-side [data-side-desc]:focus, :where(.sds).todo-side [data-side-desc]:focus,
+:where(.sds) textarea.text-well:focus,
+:where(.sds) input.text-well:focus {
+  outline: none;
+  color: var(--black);
+  box-shadow: 0 0 0 1px var(--black-25);
+}
+
+html[data-theme="dark"] :where(.sds) .todo-side [data-side-desc], html[data-theme="dark"] :where(.sds).todo-side [data-side-desc],
+html[data-theme="dark"] :where(.sds) .text-well, html[data-theme="dark"] :where(.sds).text-well { background: var(--grey); }
+
+:where(.sds) .edit-text:has(.text-well) .edit-text-mark, :where(.sds).edit-text:has(.text-well) .edit-text-mark,
+:where(.sds) .edit-text:has([data-side-desc]) .edit-text-mark, :where(.sds).edit-text:has([data-side-desc]) .edit-text-mark { display: none; }
 
 :where(.sds) .todo-side-rule, :where(.sds).todo-side-rule {
   height: 1px;

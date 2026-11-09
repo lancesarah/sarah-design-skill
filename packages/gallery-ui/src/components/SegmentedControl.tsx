@@ -14,6 +14,8 @@ import { useSlidePill } from "../use-slide";
 export type SegmentOption = {
   value: string;
   label: ReactNode;
+  /** Same count as a tab: a separate figure, not part of the label. */
+  count?: number;
   /** Paints the unselected hover specimen. Ignored once the sliding pill is mounted. */
   state?: "hover";
 };
@@ -170,7 +172,16 @@ export function SegmentedControl({
         {readOnly ? null : <span ref={pillRef} className="slide-pill" aria-hidden="true" />}
         {options.map((option) => {
           const selected = option.value === value;
-          const label = <span className="slide-content">{option.label}</span>;
+          const label = (
+            <span className="slide-content">
+              {option.label}
+              {option.count !== undefined ? (
+                <span key={String(option.count)} className="count">
+                  {option.count}
+                </span>
+              ) : null}
+            </span>
+          );
           if (readOnly) {
             return (
               <span

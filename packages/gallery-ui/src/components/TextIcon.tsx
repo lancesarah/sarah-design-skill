@@ -6,7 +6,7 @@ import { Icon, type IconName } from "../icons";
 export type TextIconProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   icon?: IconName;
   size?: "md" | "sm";
-  tone?: "default" | "delete" | "delete-line";
+  tone?: "default" | "delete";
   state?: "hover";
 };
 
@@ -24,8 +24,7 @@ export function TextIcon({
     "sds",
     "text-icon",
     size === "sm" ? "sm" : "",
-    tone === "delete" || tone === "delete-line" ? "btn-delete" : "",
-    tone === "delete-line" ? "btn-delete-line" : "",
+    tone === "delete" ? "btn-delete" : "",
     state === "hover" ? "is-hover" : "",
     className,
   ]

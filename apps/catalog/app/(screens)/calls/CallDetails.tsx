@@ -1,6 +1,6 @@
 "use client";
 
-import { ConfirmDialog, DetailPanel, Icon, OverlayMenu, captureClose, type MenuPoint } from "@lance-live/gallery-ui";
+import { ConfirmDialog, DepartmentChip, DetailPanel, Icon, OverlayMenu, captureClose, type MenuPoint } from "@lance-live/gallery-ui";
 import { useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { ReplyForm } from "../chrome";
@@ -71,7 +71,14 @@ function clock(total: number) {
 
 function durationLabel(seconds: number) {
   const whole = Math.max(0, Math.floor(seconds));
-  return `${String(Math.floor(whole / 60)).padStart(2, "0")}:${String(whole % 60).padStart(2, "0")}`;
+  const hours = Math.floor(whole / 3600);
+  const minutes = Math.floor((whole % 3600) / 60);
+  const rest = whole % 60;
+  const parts = [];
+  if (hours) parts.push(`${hours}h`);
+  if (minutes) parts.push(`${minutes}m`);
+  if (rest || parts.length === 0) parts.push(`${rest}s`);
+  return parts.join(" ");
 }
 
 function formatHandled(iso: string, handler: string) {
@@ -126,16 +133,23 @@ function detailFor(summary: string, resolution: CallResolution, dept: string, mi
   };
 }
 
-const SEED: Array<[string, string, CallResolution, string, string, number]> = [
-  ["+1 (917) 822-3169", "The guest asked about same-day dry cleaning. The agent did not have that detail and transferred the call to the front desk.", "transferred", "Front Desk", "26 minutes ago", 26],
-  ["+1 (310) 770-6689", "The guest called to confirm a late checkout.", "transferred", "Front Desk", "59 minutes ago", 59],
-  ["+1 (866) 550-1427", "The guest was trying to reach the restaurant for a reservation.", "resolved", "Food & Beverage", "3 hours ago", 190],
-  ["+1 (408) 555-0148", "The guest called about a missing room key and hung up.", "missed", "Front Desk", "4 hours ago", 240],
-  ["+1 (206) 555-0172", "The guest wanted extra towels sent to the room.", "abandoned", "Housekeeping", "4 hours ago", 260],
+function whenLabel(minutes: number) {
+  if (minutes < 1) return "now";
+  if (minutes < 60) return `${minutes}m`;
+  if (minutes < 24 * 60) return `${Math.round(minutes / 60)}h`;
+  return `${Math.round(minutes / (24 * 60))}d`;
+}
+
+const SEED: Array<[string, string, CallResolution, string, number]> = [
+  ["+1 (917) 822-3169", "The guest asked about same-day dry cleaning. The agent did not have that detail and transferred the call to the front desk.", "transferred", "Front Desk", 26],
+  ["+1 (310) 770-6689", "The guest called to confirm a late checkout.", "transferred", "Front Desk", 59],
+  ["+1 (866) 550-1427", "The guest was trying to reach the restaurant for a reservation.", "resolved", "Food & Beverage", 190],
+  ["+1 (408) 555-0148", "The guest called about a missing room key and hung up.", "missed", "Front Desk", 240],
+  ["+1 (206) 555-0172", "The guest wanted extra towels sent to the room.", "abandoned", "Housekeeping", 260],
 ];
 
 export function initialCalls(): CallRecord[] {
-  return SEED.map(([phone, summary, resolution, dept, when, minutes]) => {
+  return SEED.map(([phone, summary, resolution, dept, minutes]) => {
     const featured = phone === "+1 (917) 822-3169";
     const detail = featured
       ? {
@@ -163,7 +177,7 @@ export function initialCalls(): CallRecord[] {
       summary,
       resolution,
       dept,
-      when,
+      when: whenLabel(minutes),
       origin: "External",
       handler: "Lance AI",
       comments: [],
@@ -339,12 +353,12 @@ export function CallDetails({
       </section>
       <section className="call-block">
         <h3 className="sheet-label">Summary</h3>
-        <p className="call-summary-full">{call.summary}</p>
+        <p className="call-summary-full text-well">{call.summary}</p>
       </section>
       <div className="todo-side-rule" />
       <section className="call-block">
         <h3 className="sheet-label">Key moment</h3>
-        <p className="call-key">{call.key}</p>
+        <p className="call-key text-well">{call.key}</p>
       </section>
       <div className="todo-side-rule" />
       <section className="call-transcript">
@@ -393,9 +407,7 @@ export function CallDetails({
           </div>
           <div>
             <span className="sheet-label">{transferred ? "Transferred to" : "Department"}</span>
-            <span className="side-field side-type call-dept" data-type={call.dept}>
-              <span>{deptLabel(call.dept)}</span>
-            </span>
+            <DepartmentChip className="call-dept" name={deptLabel(call.dept)} plain />
           </div>
           <div>
             <span className="sheet-label">Type</span>

@@ -39,7 +39,7 @@ export default function CallsPage() {
   const [bucket, setBucket] = useState("all");
   const [query, setQuery] = useState("");
   const [range, setRange] = useState("24h");
-  const [dept, setDept] = useState("");
+  const [depts, setDepts] = useState<string[]>([]);
   const [selected, setSelected] = useState<string | null>(null);
   const [pending, setPending] = useState<{ id: string; resolution: CallResolution } | null>(null);
 
@@ -59,9 +59,9 @@ export default function CallsPage() {
           bucket === "all" ||
           (bucket === "attention" ? call.resolution === "missed" || call.resolution === "abandoned" : call.resolution === bucket);
         const text = `${call.phone} ${call.summary}`.toLowerCase().includes(query.trim().toLowerCase());
-        return tab && text && (!dept || call.dept === dept);
+        return tab && text && (depts.length === 0 || depts.includes(call.dept));
       }),
-    [bucket, calls, dept, query],
+    [bucket, calls, depts, query],
   );
   const [shownId, setShownId] = useState<string | null>(null);
   const open = calls.find((call) => call.id === selected) ?? null;
@@ -113,8 +113,14 @@ export default function CallsPage() {
       toolbar={
         <div className="filter-row page-toolbar">
           <SearchBox placeholder="Search calls" label="Search calls" value={query} onValueChange={setQuery} />
-          <FilterMenu value={dept} onValueChange={setDept} options={["Front Desk", "Housekeeping", "Food & Beverage"]} />
-          <div className="filter-chips" />
+          <FilterMenu value={depts} onValueChange={setDepts} options={["Front Desk", "Housekeeping", "Food & Beverage"]} />
+          <div className="filter-chips">
+            {depts.map((value) => (
+              <button key={value} className="chip chip-filter" type="button" onClick={() => setDepts((current) => current.filter((item) => item !== value))}>
+                <span className="chip-k">Department</span>: {value} <Glyph name="plus" size={10} className="x" />
+              </button>
+            ))}
+          </div>
           <RangeControl label="Time range" value={range} onValueChange={setRange} />
         </div>
       }

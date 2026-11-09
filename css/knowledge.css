@@ -20,7 +20,7 @@
   align-items: stretch;
   column-gap: var(--space-25);
   flex: none;
-  margin: 28px var(--space-16) var(--space-8);
+  margin: var(--space-25) var(--space-16) 40px;
 }
 
 .kb-health-score,
@@ -498,7 +498,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: var(--space-8);
+  gap: var(--space-4);
   width: 100%;
 }
 
@@ -508,23 +508,7 @@
 
 .kb-section > .sheet-label { margin: 0; }
 
-.kb-answer {
-  width: 100%;
-  min-height: 96px;
-  padding: var(--space-10);
-  border: 0;
-  border-radius: var(--radius-control);
-  background: var(--sidebar-grey);
-  color: var(--black);
-  font: inherit;
-  font-size: var(--text-14);
-  line-height: 20px;
-  resize: vertical;
-}
-
-.kb-answer::placeholder { color: var(--text-muted); }
-.kb-answer:hover { box-shadow: 0 0 0 1px var(--black-12); }
-.kb-answer:focus { outline: none; box-shadow: 0 0 0 1px var(--black-25); }
+.edit-text:has(.kb-question) .edit-text-mark { margin-top: 5px; }
 
 .kb-help { font-size: var(--text-12); line-height: 16px; }
 
@@ -601,19 +585,19 @@ html[data-theme="dark"] .kb-page .todo-side .kb-variant .note-more:focus-visible
   flex: 1;
   min-width: 0;
   max-width: 100%;
-  min-height: 38px;
-  padding: var(--space-10);
+  height: 32px;
+  min-height: 32px;
+  padding: 0 var(--space-10);
   border: 0;
   border-radius: var(--radius-control);
   background: var(--sidebar-grey);
   color: var(--black);
   font: inherit;
   font-size: var(--text-14);
-  line-height: 18px;
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
+  line-height: 32px;
+  white-space: nowrap;
+  overflow: hidden;
   resize: none;
-  field-sizing: content;
 }
 
 .kb-add textarea::placeholder { color: var(--text-muted); }
@@ -678,7 +662,6 @@ html[data-theme="dark"] .kb-page .todo-side .kb-variant .note-more:focus-visible
   white-space: normal;
 }
 
-html[data-theme="dark"] .kb-answer,
 html[data-theme="dark"] .kb-add textarea { background: var(--grey); }
 
 html[data-theme="dark"] .kb-page .sheet-line:not(:hover) .kb-cat:hover,

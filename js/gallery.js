@@ -38,6 +38,12 @@ for (const menu of document.querySelectorAll("[data-menu]")) {
   panel.addEventListener("click", (event) => {
     const item = event.target.closest("[data-value]");
     if (!item) return;
+    if (button.getAttribute("aria-label") === "Filters") {
+      const on = item.getAttribute("aria-checked") === "true";
+      item.setAttribute("role", "menuitemcheckbox");
+      item.setAttribute("aria-checked", on ? "false" : "true");
+      return;
+    }
     if (label) {
       label.textContent = item.dataset.value;
       label.classList.toggle("dim", item.dataset.value === "Anytime");

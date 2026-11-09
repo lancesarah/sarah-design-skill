@@ -1,10 +1,10 @@
 :root {
   /* Primitives. Neutrals, the blue, and the red. Roles point at these. */
-  --sidebar-grey: #f6f6f6;
-  --grey: #eaeaea;
-  --black-50: #808080;
-  --black-25: #bfbfbf;
-  --black-12: #dbdbdb;
+  --sidebar-grey: #f8f8f8;
+  --grey: #eeeeee;
+  --black-50: #848484;
+  --black-25: #c3c3c3;
+  --black-12: #dfdfdf;
   --white: #ffffff;
   --black: #000000;
   --blue: #3593dd;
@@ -48,7 +48,7 @@
 
   /* Filter chip fill is 5% of --blue. Switch knob stays separate. */
   --filter-chip-bg: rgb(53 147 221 / 5%);
-  --switch-knob: #f5f5f5;
+  --switch-knob: #f7f7f7;
   /* Strong curves. Built-in CSS easings are too weak for UI motion. */
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
@@ -114,6 +114,8 @@
   --motion-hover: 120ms;
   --motion-panel: 400ms;
   --motion-panel-out: 320ms;
+  --motion-grow: 240ms;
+  --motion-grow-out: 192ms;
   /* Table skeleton. One pulse, then the values crossfade in. */
   --sk-pulse-dur: 1000ms;
   --sk-pulse-count: 1;

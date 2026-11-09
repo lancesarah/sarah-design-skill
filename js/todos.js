@@ -254,9 +254,13 @@ function selectedBucket() {
   return tabs.find((tab) => tab.getAttribute("aria-selected") === "true")?.dataset.bucket || "open";
 }
 
-function selectedType() {
-  const checked = filterMenu?.querySelector('[data-filter-pick="type"][aria-checked="true"]');
-  return checked?.dataset.value || "";
+function selectedTypes() {
+  return [...(filterMenu?.querySelectorAll('[data-filter-pick="type"][aria-checked="true"]') || [])].map((item) => item.dataset.value);
+}
+
+function matchesType(todo) {
+  const types = selectedTypes();
+  return types.length === 0 || types.includes(todo.dataset.type);
 }
 
 function todoText(todo) {
@@ -266,11 +270,10 @@ function todoText(todo) {
 function applyFilters() {
   const query = (searchInput?.value || "").trim().toLowerCase();
   const bucket = selectedBucket();
-  const type = selectedType();
   const totals = { open: 0, scheduled: 0, completed: 0 };
   let visible = 0;
   for (const todo of list.querySelectorAll(":scope > .todo")) {
-    const typeMatch = !type || todo.dataset.type === type;
+    const typeMatch = matchesType(todo);
     if (typeMatch) totals[todo.dataset.bucket] = (totals[todo.dataset.bucket] || 0) + 1;
     const show = typeMatch && todo.dataset.bucket === bucket && (!query || todoText(todo).includes(query));
     if (!todo.classList.contains("is-leaving")) todo.hidden = !show;
@@ -293,8 +296,7 @@ function syncBucket(todo) {
 
 function hideIfFiltered(todo) {
   const bucket = selectedBucket();
-  const type = selectedType();
-  const stays = todo.dataset.bucket === bucket && (!type || todo.dataset.type === type);
+  const stays = todo.dataset.bucket === bucket && matchesType(todo);
   if (stays) {
     applyFilters();
     return;
@@ -471,19 +473,21 @@ function assignUnowned() {
   }
 }
 
-function setTypeChip(value) {
+function paintTypeChips() {
   chips.replaceChildren();
-  if (!value) return;
-  const chip = document.createElement("button");
-  chip.className = "chip chip-filter";
-  chip.type = "button";
-  chip.innerHTML = `<span class="chip-k">Type</span>: ${esc(value)} <svg class="i x" width="10" height="10"><use href="#i-plus"/></svg>`;
-  chip.addEventListener("click", () => {
-    for (const item of filterMenu.querySelectorAll("[data-filter-pick=type]")) item.setAttribute("aria-checked", "false");
-    chips.replaceChildren();
-    applyFilters();
-  });
-  chips.append(chip);
+  for (const value of selectedTypes()) {
+    const chip = document.createElement("button");
+    chip.className = "chip chip-filter";
+    chip.type = "button";
+    chip.innerHTML = `<span class="chip-k">Type</span>: ${esc(value)} <svg class="i x" width="10" height="10"><use href="#i-plus"/></svg>`;
+    chip.addEventListener("click", () => {
+      const item = [...filterMenu.querySelectorAll("[data-filter-pick=type]")].find((node) => node.dataset.value === value);
+      item?.setAttribute("aria-checked", "false");
+      paintTypeChips();
+      applyFilters();
+    });
+    chips.append(chip);
+  }
 }
 
 function urgencyRank(todo) {
@@ -668,15 +672,12 @@ filterMenu?.addEventListener("click", (event) => {
   }
   const choice = event.target.closest("[data-filter-pick]");
   if (!choice) return;
-  const group = choice.closest(".filter-sub");
-  for (const item of group.querySelectorAll("[data-filter-pick]")) {
-    item.setAttribute("aria-checked", item === choice ? "true" : "false");
-  }
+  const on = choice.getAttribute("aria-checked") === "true";
+  choice.setAttribute("aria-checked", on ? "false" : "true");
   if (choice.dataset.filterPick === "type") {
-    setTypeChip(choice.dataset.value);
+    paintTypeChips();
     applyFilters();
   }
-  closePanels();
 });
 
 list.addEventListener("click", (event) => {

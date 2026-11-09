@@ -23,6 +23,7 @@ import {
 import { useEffect, useMemo, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { FilterMenu, SearchBox } from "../chrome";
+import { EditText } from "../edit-text";
 import { Glyph } from "../glyph";
 import { PageLayout } from "../page-layout";
 
@@ -127,25 +128,27 @@ function SideLine({
   onCommit: (value: string) => void;
 }) {
   return (
-    <textarea
-      className="side-line"
-      aria-label={label}
-      placeholder={placeholder}
-      rows={1}
-      inputMode={inputMode}
-      defaultValue={value}
-      onChange={(event) => {
-        const clean = event.target.value.replace(/\n+/g, " ");
-        if (clean !== event.target.value) event.target.value = clean;
-      }}
-      onKeyDown={(event) => {
-        if (event.key === "Enter") {
-          event.preventDefault();
-          event.currentTarget.blur();
-        }
-      }}
-      onBlur={(event) => onCommit(event.target.value.trim())}
-    />
+    <EditText>
+      <textarea
+        className="side-line"
+        aria-label={label}
+        placeholder={placeholder}
+        rows={1}
+        inputMode={inputMode}
+        defaultValue={value}
+        onChange={(event) => {
+          const clean = event.target.value.replace(/\n+/g, " ");
+          if (clean !== event.target.value) event.target.value = clean;
+        }}
+        onKeyDown={(event) => {
+          if (event.key === "Enter") {
+            event.preventDefault();
+            event.currentTarget.blur();
+          }
+        }}
+        onBlur={(event) => onCommit(event.target.value.trim())}
+      />
+    </EditText>
   );
 }
 
@@ -284,7 +287,9 @@ function ComplaintDetail({
       </div>
       <div className="todo-side-desc">
         <label className="sheet-label" htmlFor="side-desc">Description</label>
-        <textarea id="side-desc" data-side-desc rows={1} defaultValue={row.complaint} placeholder="Add a note" />
+        <EditText fill>
+          <textarea id="side-desc" className="text-well" data-side-desc rows={4} defaultValue={row.complaint} placeholder="Add a note" />
+        </EditText>
       </div>
       <div className="todo-side-rule" />
       <div className="todo-side-meta">
@@ -367,7 +372,7 @@ export default function ComplaintsPage() {
   const [records, setRecords] = useState(STARTER);
   const [bucket, setBucket] = useState("open");
   const [query, setQuery] = useState("");
-  const [urgency, setUrgency] = useState("");
+  const [urgencies, setUrgencies] = useState<string[]>([]);
   const [selected, setSelected] = useState<string | null>(null);
   const [enteringId, setEnteringId] = useState<string | null>(null);
   const [present, setPresent] = useState(false);
@@ -378,10 +383,10 @@ export default function ComplaintsPage() {
       records.filter(
         (row) =>
           row.bucket === bucket &&
-          (!urgency || row.urgency === urgency) &&
+          (urgencies.length === 0 || urgencies.includes(row.urgency)) &&
           `${row.guest} ${row.complaint} ${row.room}`.toLowerCase().includes(query.trim().toLowerCase()),
       ),
-    [bucket, query, urgency, records],
+    [bucket, query, urgencies, records],
   );
   const tasks: TaskRow[] = visible.map((row) => ({
     id: row.id,
@@ -421,7 +426,7 @@ export default function ComplaintsPage() {
     const id = `complaint-${Date.now()}`;
     setBucket("open");
     setQuery("");
-    setUrgency("");
+    setUrgencies([]);
     setRecords((list) => [
       {
         id,
@@ -483,13 +488,13 @@ export default function ComplaintsPage() {
       toolbar={
         <div className="filter-row page-toolbar">
           <SearchBox placeholder="Search complaints" label="Search complaints" value={query} onValueChange={setQuery} />
-          <FilterMenu value={urgency} onValueChange={setUrgency} options={["urgent", "high", "standard", "low"]} />
+          <FilterMenu value={urgencies} onValueChange={setUrgencies} options={["urgent", "high", "standard", "low"]} />
           <div className="filter-chips">
-            {urgency ? (
-              <button className="chip chip-filter" type="button" onClick={() => setUrgency("")}>
-                <span className="chip-k">Urgency</span>: {URGENCY[urgency]} <Glyph name="plus" size={10} className="x" />
+            {urgencies.map((value) => (
+              <button key={value} className="chip chip-filter" type="button" onClick={() => setUrgencies((current) => current.filter((item) => item !== value))}>
+                <span className="chip-k">Urgency</span>: {URGENCY[value]} <Glyph name="plus" size={10} className="x" />
               </button>
-            ) : null}
+            ))}
           </div>
         </div>
       }

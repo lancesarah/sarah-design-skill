@@ -55,6 +55,9 @@ export type SidebarLink = {
   href?: string;
   current?: boolean;
   tip?: string;
+  /** Unread count. Urgent covers this pill. */
+  count?: number;
+  onClick?: () => void;
 };
 
 export type SidebarGroup = {
@@ -70,34 +73,52 @@ export function SidebarItem({
   href = "#sidebar",
   current,
   tip,
+  count,
+  onClick,
   pinned,
   onPin,
-}: SidebarLink & { pinned?: boolean; onPin?: () => void }) {
+  actions = true,
+}: SidebarLink & { pinned?: boolean; onPin?: () => void; actions?: boolean }) {
   return (
     <div className="side-item" data-label={label}>
-      <a href={href} aria-current={current ? "page" : undefined} className={tip ? "tip-host" : undefined}>
+      <a
+        href={href}
+        aria-current={current ? "page" : undefined}
+        className={tip ? "tip-host" : undefined}
+        onClick={
+          onClick
+            ? (event) => {
+                event.preventDefault();
+                onClick();
+              }
+            : undefined
+        }
+      >
         <Icon name={icon} size={18} />
         {label}
+        {count ? <span className="side-count">{count}</span> : null}
         {tip ? (
           <span className="tip" popover="manual" aria-hidden="true">
             {label} <span>{tip}</span>
           </span>
         ) : null}
       </a>
-      <span className="side-actions">
-        <button className="side-action" type="button" data-side-drag aria-label="Reorder">
-          <Icon name="grip" size={14} />
-        </button>
-        <button
-          className="side-action"
-          type="button"
-          aria-pressed={pinned}
-          aria-label={pinned ? "Unpin" : "Pin"}
-          onClick={onPin}
-        >
-          <Icon name={pinned ? "pin-filled" : "pin"} size={14} />
-        </button>
-      </span>
+      {actions ? (
+        <span className="side-actions">
+          <button className="side-action" type="button" data-side-drag aria-label="Reorder">
+            <Icon name="grip" size={14} />
+          </button>
+          <button
+            className="side-action"
+            type="button"
+            aria-pressed={pinned}
+            aria-label={pinned ? "Unpin" : "Pin"}
+            onClick={onPin}
+          >
+            <Icon name={pinned ? "pin-filled" : "pin"} size={14} />
+          </button>
+        </span>
+      ) : null}
     </div>
   );
 }
@@ -231,11 +252,14 @@ function SideList({
   pinnedLabels,
   onPin,
   hidden,
+  actions = true,
 }: {
   links: SidebarLink[];
   pinnedLabels?: ReadonlySet<string>;
   onPin?: (label: string) => void;
   hidden?: boolean;
+  /** Fixed links stay put. No grip, no pin. */
+  actions?: boolean;
 }) {
   const listRef = useRef<HTMLDivElement>(null);
   const signature = links.map((link) => link.label).join("\0");
@@ -256,7 +280,7 @@ function SideList({
 
   useEffect(() => {
     const list = listRef.current;
-    if (!list) return;
+    if (!list || !actions) return;
     let cancel = () => {};
 
     const onPointerDown = (event: PointerEvent) => {
@@ -361,7 +385,7 @@ function SideList({
       list.removeEventListener("pointerdown", onPointerDown);
       cancel();
     };
-  }, []);
+  }, [actions]);
 
   return (
     <div className="side-links" ref={listRef} hidden={hidden}>
@@ -369,8 +393,9 @@ function SideList({
         <SidebarItem
           key={link.label}
           {...link}
-          pinned={pinnedLabels?.has(link.label)}
-          onPin={onPin ? () => onPin(link.label) : undefined}
+          actions={actions}
+          pinned={actions ? pinnedLabels?.has(link.label) : undefined}
+          onPin={actions && onPin ? () => onPin(link.label) : undefined}
         />
       ))}
     </div>
@@ -401,6 +426,20 @@ export function Sidebar({
   const pinnedGroup = groups.find((group) => group.pinned)?.title ?? null;
   const [pinned, setPinned] = useState<string[]>(() => groups.find((group) => group.pinned)?.links.map((link) => link.label) ?? []);
   const [open, setOpen] = useState(() => new Set(groups.filter((group) => group.open).map((group) => group.title)));
+  const currentGroup = groups
+    .filter((group) => group.links.some((link) => link.current))
+    .map((group) => group.title)
+    .join("|");
+  useEffect(() => {
+    if (!currentGroup) return;
+    setOpen((current) => {
+      const titles = currentGroup.split("|");
+      if (titles.every((title) => current.has(title))) return current;
+      const next = new Set(current);
+      for (const title of titles) next.add(title);
+      return next;
+    });
+  }, [currentGroup]);
   const [dark, setDark] = useState(false);
   const [uncontrolledCollapsed, setUncontrolledCollapsed] = useState(false);
   const collapsed = collapsedProp ?? uncontrolledCollapsed;
@@ -492,7 +531,7 @@ export function Sidebar({
             <input type="search" placeholder="Search" aria-label="Search" />
             <kbd>⌘ K</kbd>
           </form>
-          {fixedLinks.length ? <SideList links={fixedLinks} pinnedLabels={pinnedLabels} onPin={pinLabel} /> : null}
+          {fixedLinks.length ? <SideList links={fixedLinks} actions={false} /> : null}
         </div>
         <div className="side-scroll-frame">
           <div className="side-scroll" ref={scrollRef}>

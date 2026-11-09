@@ -4,6 +4,7 @@ import { Button, ConfirmDialog, DEPARTMENTS, DepartmentChip, Icon, OverlayMenu, 
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { FilterMenu, ReplyForm, SearchBox } from "../chrome";
+import { EditText } from "../edit-text";
 import { Glyph } from "../glyph";
 import { PageLayout } from "../page-layout";
 
@@ -130,9 +131,9 @@ export default function NotesPage() {
   const [records, setRecords] = useState(NOTES);
   const [dept, setDept] = useState("All");
   const [query, setQuery] = useState("");
-  const [range, setRange] = useState("7d");
+  const [ranges, setRanges] = useState<string[]>(["7d"]);
   const [rooms, setRooms] = useState(["Room 12", "Room 18", "Room 12"]);
-  const [selected, setSelected] = useState<string | null>(null);
+  const [selected, setSelected] = useState<string | null>(NOTES[0]?.id ?? null);
   const [menu, setMenu] = useState(false);
   const [menuPoint, setMenuPoint] = useState<{ x: number; y: number } | null>(null);
   const [pending, setPending] = useState<{ id: string; name: string } | null>(null);
@@ -159,6 +160,11 @@ export default function NotesPage() {
   );
   const open = selected ? (notes.find((note) => note.id === selected) ?? null) : null;
   const commentsLocked = Boolean(open?.draft && !open.title.trim() && !open.body.trim());
+
+  useEffect(() => {
+    if (visible.some((note) => note.id === selected)) return;
+    setSelected(visible[0]?.id ?? null);
+  }, [visible, selected]);
 
   useEffect(() => {
     setBodyFocused(false);
@@ -287,7 +293,7 @@ export default function NotesPage() {
           <div className="filter-tools">
             <SearchBox className="rail-search" placeholder="Search notes" label="Search notes" value={query} onValueChange={setQuery} />
             <div className="filter-actions">
-              <FilterMenu value={range} onValueChange={setRange} options={["7d", "24h", "30d"]} />
+              <FilterMenu value={ranges} onValueChange={setRanges} options={["7d", "24h", "30d"]} />
             </div>
           </div>
           <div className="filter-chips">
@@ -330,7 +336,7 @@ export default function NotesPage() {
                 <span className="note-copy">
                   <span className="note-line">
                     <span className="note-time">{note.time}</span>
-                    <DepartmentChip className="note-dept" name={note.deptLabel} />
+                    <DepartmentChip className="note-dept" name={note.deptLabel} plain />
                   </span>
                   <span className="brief-title">{note.title.trim() || (note.draft ? TITLE_PLACEHOLDER : note.title)}</span>
                   <span className="brief-preview">{preview}</span>
@@ -345,18 +351,20 @@ export default function NotesPage() {
             <article className="detail">
               <div className="brief-top">
                 {open.draft ? (
-                  <textarea
-                    ref={titleRef}
-                    className="note-title"
-                    aria-label="Title"
-                    placeholder={TITLE_PLACEHOLDER}
-                    rows={1}
-                    value={open.title}
-                    onChange={(event) => {
-                      updateNote(open.id, { title: event.target.value });
-                      fitTitle(event.currentTarget);
-                    }}
-                  />
+                  <EditText fill>
+                    <textarea
+                      ref={titleRef}
+                      className="note-title"
+                      aria-label="Title"
+                      placeholder={TITLE_PLACEHOLDER}
+                      rows={1}
+                      value={open.title}
+                      onChange={(event) => {
+                        updateNote(open.id, { title: event.target.value });
+                        fitTitle(event.currentTarget);
+                      }}
+                    />
+                  </EditText>
                 ) : (
                   <h2>{open.title}</h2>
                 )}
@@ -467,15 +475,17 @@ export default function NotesPage() {
               <div className="brief-main">
                 <p className="brief-meta">{open.dept}</p>
                 {open.draft ? (
-                  <textarea
-                    className="note-draft"
-                    aria-label="Note"
-                    placeholder={bodyFocused ? "" : BODY_PLACEHOLDER}
-                    value={open.body}
-                    onFocus={() => setBodyFocused(true)}
-                    onBlur={() => setBodyFocused(false)}
-                    onChange={(event) => updateNote(open.id, { body: event.target.value })}
-                  />
+                  <EditText fill>
+                    <textarea
+                      className="note-draft"
+                      aria-label="Note"
+                      placeholder={bodyFocused ? "" : BODY_PLACEHOLDER}
+                      value={open.body}
+                      onFocus={() => setBodyFocused(true)}
+                      onBlur={() => setBodyFocused(false)}
+                      onChange={(event) => updateNote(open.id, { body: event.target.value })}
+                    />
+                  </EditText>
                 ) : (
                   <p className="brief-body">{open.body}</p>
                 )}

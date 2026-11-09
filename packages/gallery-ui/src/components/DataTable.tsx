@@ -36,25 +36,28 @@ export type DataSort = {
 
 /**
  * Where a column sits relative to the other columns.
- * Status is the leftmost data column. Selection and expand controls may sit before it.
+ * Status sits immediately after the primary column. Selection and expand controls stay in front.
  * A column with no role keeps the order the page configured.
  */
 export type DataColumnRole = "selection" | "expand" | "status";
 
-/** Status columns lead the data columns. Pages without one keep their configured order. */
+/** Status columns follow the primary column. Pages without one keep their configured order. */
 export function orderDataColumns<T>(columns: Array<DataColumn<T>>): Array<DataColumn<T>> {
   if (!columns.some((column) => column.role === "status")) return columns;
   const selection: Array<DataColumn<T>> = [];
   const expand: Array<DataColumn<T>> = [];
-  const status: Array<DataColumn<T>> = [];
-  const rest: Array<DataColumn<T>> = [];
+  const body: Array<DataColumn<T>> = [];
   for (const column of columns) {
     if (column.role === "selection") selection.push(column);
     else if (column.role === "expand") expand.push(column);
-    else if (column.role === "status") status.push(column);
-    else rest.push(column);
+    else body.push(column);
   }
-  return [...selection, ...expand, ...status, ...rest];
+  const primary = body.find((column) => column.text === "primary" && column.role !== "status");
+  if (!primary) return [...selection, ...expand, ...body];
+  const status = body.filter((column) => column.role === "status");
+  const rest = body.filter((column) => column.role !== "status");
+  rest.splice(rest.indexOf(primary) + 1, 0, ...status);
+  return [...selection, ...expand, ...rest];
 }
 
 export type DataColumn<T> = {
@@ -62,11 +65,13 @@ export type DataColumn<T> = {
   title: string;
   /**
    * Set by the column, not inferred from its title.
-   * "status" is a status or status-like indicator and is placed first among data columns.
+   * "status" is a status or status-like indicator and sits immediately after the primary column.
    */
   role?: DataColumnRole;
   /** This column absorbs leftover width. Primary text columns do this even when flex is omitted. */
   flex?: boolean;
+  /** Plain text is muted. "strong" is the rare second black text column, used only when the name is not enough to tell the rows apart. A person is not this. */
+  ink?: "strong";
   /**
    * Text sizing. "short" is a 200px column. "primary" is a title or description:
    * at least 320px, growing with leftover space. The field fills that column.
@@ -75,9 +80,11 @@ export type DataColumn<T> = {
   text?: DataTextSize;
   /** "clip" ellipsizes on one line. "wrap" breaks inside the column width. */
   textDisplay?: DataTextDisplay;
+  /** How many lines the cell shows. A one-line cell gets one skeleton bar. A title with a note under it gets two. */
+  lines?: 1 | 2;
   /**
-   * Shift the header so it lines up with the label inside a chip,
-   * not with the chip’s outer edge. The chip itself still starts after DATA_TABLE_PAD.
+   * Extra width in the column measure. The title stays on the 12px inset.
+   * It does not shift to follow the label inside a chip.
    */
   labelInset?: number;
   /** Floor for the whole column, including the 12px clearance on both sides. */
@@ -94,10 +101,22 @@ export type DataColumn<T> = {
   minContent?: ReactNode;
 };
 
+export type DataTableVariant = "sheet" | "list";
+
 export type DataTableProps<T extends { id: string }> = {
   columns: Array<DataColumn<T>>;
   rows: T[];
-  /** Full set, before the page filters `rows`. Defaults to the rows passed in. */
+  /**
+   * "sheet" is the table: column header, column rules, and row wash.
+   * The Showing count is part of that sheet only when `total` is set.
+   * "list" is the checklist. Same rows and columns, without that chrome.
+   */
+  variant?: DataTableVariant;
+  /**
+   * Full set, before a search, filter, tab, or other control hides rows.
+   * The Showing count is drawn only when this is set. Omit it when every
+   * row is always on screen.
+   */
   total?: number;
   empty?: string;
   selectedId?: string | null;
@@ -148,8 +167,8 @@ const cellStyle: CSSProperties = {
   alignSelf: "start",
 };
 
-function headerStyle(inset: number): CSSProperties {
-  return { ...columnStyle, paddingInlineStart: DATA_TABLE_PAD + inset };
+function headerStyle(): CSSProperties {
+  return columnStyle;
 }
 
 /** Configured text width, already including both 12px paddings. Content is not measured. */
@@ -174,8 +193,8 @@ function readMs(name: string, fallback: number) {
   return Number.isNaN(value) ? fallback : value;
 }
 
-function SkeletonCell({ column }: { column: { text?: DataTextSize; flex?: boolean } }) {
-  if (column.text === "primary") {
+function SkeletonCell({ column }: { column: { text?: DataTextSize; flex?: boolean; lines?: 1 | 2 } }) {
+  if (column.text === "primary" && column.lines !== 1) {
     return (
       <span className="sheet-skeleton-copy">
         <span className="sheet-skeleton" style={{ width: "42%" }} />
@@ -184,6 +203,7 @@ function SkeletonCell({ column }: { column: { text?: DataTextSize; flex?: boolea
     );
   }
   if (column.text === "short") return <span className="sheet-skeleton" style={{ width: 120 }} />;
+  if (column.text === "primary") return <span className="sheet-skeleton" style={{ width: "68%" }} />;
   if (column.flex) return <span className="sheet-skeleton" style={{ width: "55%" }} />;
   return <span className="sheet-skeleton is-chip" />;
 }
@@ -191,6 +211,7 @@ function SkeletonCell({ column }: { column: { text?: DataTextSize; flex?: boolea
 export function DataTable<T extends { id: string }>({
   columns: sourceColumns,
   rows,
+  variant = "sheet",
   total,
   empty = "Nothing to show",
   selectedId,
@@ -218,12 +239,15 @@ export function DataTable<T extends { id: string }>({
   const [menu, setMenu] = useState<{ row: T; x: number; y: number } | null>(null);
   const [pendingDelete, setPendingDelete] = useState<T | null>(null);
   const [measured, setMeasured] = useState(false);
-  const [revealed, setRevealed] = useState(false);
-  const [skeletonOn, setSkeletonOn] = useState(true);
+  // Rows that are already here do not play the skeleton. It covers the wait, and it starts when the rows arrive.
+  const ready = useRef(rows.length > 0);
+  const [revealed, setRevealed] = useState(ready.current);
+  const [skeletonOn, setSkeletonOn] = useState(!ready.current);
   const [mins, setMins] = useState<number[]>(() => columns.map((column) => textColumnMin(column) ?? column.minWidth ?? DATA_TABLE_PAD * 2));
 
   const closeMenu = () => setMenu(null);
   const hasMenu = Boolean(onDelete || rowMenu);
+  const list = variant === "list";
 
   useEffect(() => {
     if (!menu) return;
@@ -307,7 +331,7 @@ export function DataTable<T extends { id: string }>({
   }, [columns, measureKey, shown]);
 
   useLayoutEffect(() => {
-    if (!measured || revealed) return;
+    if (!measured || revealed || shown.length === 0) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       setRevealed(true);
       setSkeletonOn(false);
@@ -317,7 +341,7 @@ export function DataTable<T extends { id: string }>({
     const count = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--sk-pulse-count")) || 1;
     const timer = window.setTimeout(() => setRevealed(true), dur * count);
     return () => window.clearTimeout(timer);
-  }, [measured, revealed]);
+  }, [measured, revealed, shown.length]);
 
   useEffect(() => {
     if (!revealed || !skeletonOn) return;
@@ -372,7 +396,7 @@ export function DataTable<T extends { id: string }>({
           })}
         </div>
       </div>
-      <div className="sheet-fade">
+      <div className={list ? "sheet-fade is-list" : "sheet-fade"}>
       <div className="sheet-scroll">
       <div
         ref={gridRef}
@@ -386,9 +410,9 @@ export function DataTable<T extends { id: string }>({
           gridTemplateColumns: tracks,
           visibility: measured ? "visible" : "hidden",
         }}
-        aria-busy={revealed || shown.length === 0 ? undefined : true}
+        aria-busy={!list && !revealed && shown.length > 0 ? true : undefined}
       >
-        <div className="sheet-head" style={{ margin: 0, padding: 0 }}>
+        {list ? null : <div className="sheet-head" style={{ margin: 0, padding: 0 }}>
           {columns.map((column, index) => {
             const sorted = sort?.columnId === column.id ? sort.direction : undefined;
             const title = (
@@ -397,7 +421,7 @@ export function DataTable<T extends { id: string }>({
               </span>
             );
             return (
-              <span key={column.id} style={headerStyle(column.labelInset ?? 0)}>
+              <span key={column.id} style={headerStyle()}>
                 {column.sortable && onSortChange ? (
                   <button
                     className="sheet-sort"
@@ -423,7 +447,7 @@ export function DataTable<T extends { id: string }>({
               </span>
             );
           })}
-        </div>
+        </div>}
         <div data-sheet>
           {shown.map((row) => {
             const selected = selectedId === row.id;
@@ -440,8 +464,8 @@ export function DataTable<T extends { id: string }>({
               onRowClick?.(row);
             };
             const cells = columns.map((column, index) => (
-              <div key={column.id} data-text={column.text} style={{ ...cellStyle, ["--sk-i" as string]: index, whiteSpace: column.textDisplay === "wrap" ? "normal" : undefined }}>
-                {skeletonOn ? (
+              <div key={column.id} data-text={column.text} data-ink={column.ink} style={{ ...cellStyle, ...(list ? { alignItems: "center", alignSelf: "center" } : {}), ["--sk-i" as string]: index, whiteSpace: column.textDisplay === "wrap" ? "normal" : undefined }}>
+                {!list && skeletonOn ? (
                   <span className={revealed ? "sheet-placeholder" : "sheet-placeholder is-pulsing"} aria-hidden="true">
                     <SkeletonCell column={column} />
                   </span>
@@ -452,7 +476,7 @@ export function DataTable<T extends { id: string }>({
               </div>
             ));
             const lineClass = ["sheet-line", revealed ? "is-revealed" : "", hoveredId === row.id ? "is-hover" : ""].filter(Boolean).join(" ");
-            const lineStyle: CSSProperties = { paddingBlock: "var(--space-8)", paddingInline: 0, alignItems: "start", ...(onRowClick ? { cursor: "pointer" } : {}) };
+            const lineStyle: CSSProperties = { paddingBlock: list ? 0 : "var(--space-8)", paddingInline: 0, alignItems: list ? "center" : "start", ...(onRowClick ? { cursor: "pointer" } : {}) };
             const onContextMenu = (event: MouseEvent) => {
               const target = event.target;
               if (target instanceof Element && target.closest("input, textarea, .menu")) return;
@@ -493,9 +517,11 @@ export function DataTable<T extends { id: string }>({
       </div>
       </div>
     </div>
+    {list || total == null ? null : (
     <p className="count sheet-count">
-      Showing {shown.length} of {total ?? rows.length}
+      Showing {shown.length} of {total}
     </p>
+    )}
     <div ref={menuAnchor} hidden />
     <OverlayMenu open={menu != null} anchorRef={menuAnchor} marker={menuId} label="Options" point={menu}>
       {menu && rowMenu ? rowMenu(menu.row, closeMenu) : null}

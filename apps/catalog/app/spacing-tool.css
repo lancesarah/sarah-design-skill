@@ -1,0 +1,121 @@
+/* Dev overlay. The red marks are measurement ink, separate from the product palette. */
+
+.measure-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483000;
+  cursor: crosshair;
+}
+
+.measure-lines {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.measure-lines line {
+  stroke: #f24822;
+  stroke-width: 1;
+}
+
+.measure-lines .is-off line {
+  stroke: #e09b12;
+}
+
+.measure-box {
+  position: absolute;
+  box-sizing: border-box;
+}
+
+.measure-box.is-selected {
+  outline: 1px solid #1b9bff;
+  outline-offset: -1px;
+}
+
+.measure-box.is-hover {
+  outline: 1px solid #f24822;
+  outline-offset: -1px;
+}
+
+.measure-label,
+.measure-size {
+  position: absolute;
+  padding: 1px 4px;
+  border-radius: 3px;
+  background: #f24822;
+  color: #fff;
+  font-family: var(--font);
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 14px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.measure-label.is-off {
+  background: #e09b12;
+  color: #1a1a1a;
+}
+
+.measure-size {
+  background: #1b9bff;
+}
+
+.measure-chrome {
+  position: fixed;
+  z-index: 2147483001;
+  left: 50%;
+  bottom: 64px;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: default;
+}
+
+.measure-toggle {
+  border: 0;
+  border-radius: var(--radius-control);
+  background: var(--black);
+  color: var(--white);
+  font-family: var(--font);
+  font-size: 12px;
+  line-height: normal;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+.measure-toggle[aria-pressed="true"] {
+  background: var(--white);
+  color: var(--black);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+
+.measure-hud {
+  margin: 0;
+  max-width: 560px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2px 10px;
+  padding: 6px 10px;
+  border-radius: var(--radius-control);
+  background: var(--black);
+  color: var(--white);
+  font-family: var(--font);
+  font-size: 12px;
+  line-height: 16px;
+  pointer-events: none;
+}
+
+.measure-hud-title {
+  font-weight: 500;
+}
+
+.measure-hud-off {
+  color: #e09b12;
+}

@@ -2,29 +2,31 @@
 
 Corrections that came back more than once. Follow them with the component spec. They do not restyle a component the gallery already defines.
 
+## Do not restyle
+
+Do not restyle anything the gallery already draws. Use the component's class, size, fill, padding, radius, icon, and states. A new screen may place that component. It may not change how the component is drawn.
+
+If a corresponding component already exists, copy it. Search is Search. The filter row is the filter row. A button is that button. Do not draw a second version beside the one the product already uses, and do not override it in a page stylesheet. A screenshot, a narrow column, or a closer match to a picture is not a reason.
+
+A change to the component itself is written in that component's section and applied everywhere. It is not a one-off restyle for one screen.
+
+Forced by: "Why did you restyle them? Make a rule in the design system that you are not allowed to restyle ANYTHING. ESPECIALLY IF there's already a corresponding component already in the design system."
+
 ## A lesson card
 
-A lesson card title is `--text-24`. It is larger than a row title or a side title, which stay `--text-20`.
-
-Progress is a bar on the bottom edge of the image, the full width of the card. The step count shares the title’s line and is centered on the title, on the right. Do not add a brand or product name beside it. The card title already names the lesson. The space above the title is greater than the card’s other padding. Do not pull the title up toward the image.
-
-The title group, the requirement, and the columns sit `--space-25` apart. The title and its subtitle stay `--space-4`.
-
-Continue is the only action. It spans the content width and sits at the bottom, inside the card padding. It keeps the button radius. It does not meet the card edge. A full-width action at the bottom of a popup is 40px tall. Every other button stays 28px. A close control in the corner is the dismiss. A second dismiss, such as Not now, does not sit beside Continue.
-
-Forced by: make the title bigger; turn the step count into a progress bar on the image edge and move “1 of 3” to the right, aligned with the section name; make Continue span the width, because Not now and the corner close are the same dismiss. Then, Continue still has margin. It sits in the bottom the way an inset button does, not along the card edge.
+See Lesson card in [components.md](components.md).
 
 ## Picking a person
 
-Picking a person is a dropdown of people who already exist. Adding a person is Settings, opened from the account gear. The name is typed there. A schedule, a to-do, and every other assignment use that menu.
+See Person in [components.md](components.md).
 
-Forced by: “Picking a person should ALWAYS be a drop down. Adding a person is through settings, not from this.”
+## Assigned column
+
+See Table in [components.md](components.md).
 
 ## Picking a room
 
-Picking a room is a dropdown of rooms that already exist. The number is not typed on the row, in the side panel, or anywhere else a room is chosen. An empty room is the quiet dash.
-
-Forced by: “room will always be a drop down.”
+See Room in [components.md](components.md).
 
 ## Scope
 
@@ -46,11 +48,7 @@ Forced by: "optically it doesnt look aligned" and "even though 2/8 is a pill, it
 
 ## Chip and its label
 
-The label sits in the chip. The word, the icon, and the chevron share the chip’s center. This is the correct formatting for a table chip and for the same chip in the side panel.
-
-A table urgency does not keep the old sheet offset, `top: 2px` on `.sheet-line .urgency`. That offset was for the bare word. Inside the chip it drops the word onto the bottom edge, so the chip box and the label no longer match. The chip’s own `top` stays `0`, and the label’s `align-self` stays `center`.
-
-Forced by: the High chip, “the chip is misaligned with the text.”
+See Urgency in [components.md](components.md).
 
 ## One icon construction
 
@@ -60,15 +58,13 @@ Forced by: "why are the share and delete icons so different? they should follow 
 
 ## The more menu on right-click
 
-A thing that has a more menu opens that same menu on right-click. The items, order, and actions match the more button. The menu opens at the pointer. Do not build a second menu. The open note is not that target. Right-clicking the note itself does not offer Share or Delete. The note card does.
-
-Forced by: "right clicking the note card on the left should open the same options as the more button, share and delete."
+See Menu in [components.md](components.md).
 
 ## Two kinds of space
 
 Item spacing and section spacing are separate. Changing one leaves the other alone.
 
-Proximity groups things that belong together. A title and its subtitle are one group. A section title and the content under it are one block. The gap inside a group stays smaller than the gap between groups. Expanding the space between sections leaves the gap inside a block alone. On the lesson card those gaps are `--space-4` and `--space-25`. Another screen keeps the gap its own component already uses.
+Proximity groups things that belong together. A title and its subtitle are one group. A label and the field, card, or component it names are one group, and that gap is `--space-4`. A section title and the content under it are one block. The gap inside a group stays smaller than the gap between groups. Expanding the space between sections leaves the gap inside a block alone. On the lesson card those gaps are `--space-4` and `--space-25`. Another screen keeps the gap its own component already uses. A title and the content it names stay at least 40px apart. Do not close that gap under 40px.
 
 A divider spans the full width of its section. It lines up with the divider on the rest of the page. Do not inset it to match a new section gap.
 
@@ -94,53 +90,19 @@ Forced by: "compensate for the smaller font size with padding so it still has th
 
 ## Sidebar collapse
 
-Collapsed is a thin icon rail. Hide the labels. Keep the rail. The row stays wide enough for the 18px icon, so the glyph is not clipped.
+See Sidebar in [components.md](components.md). Window resize stays in [patterns.md](patterns.md).
 
-Collapsed icons are centered in the rail. The panel still moves. The 18px glyph is not clipped.
+## Header buttons
 
-Opening and closing do not flash a horizontal scrollbar.
-
-The collapsed selection box is a 32px square on the icon. Hover uses that same square. The square does not slide or resize. The glyph stays put inside it. Keep that box when you adjust spacing.
-
-A collapsed section label takes no space, including the gap under it. The icon above a divider and the icon below it sit the same distance from the line.
-
-The reorder grip and the pin are part of the sidebar component in [components.md](components.md). The pin fills when it is selected and moves that item to the front. Collapse hides both. Hovering the rail does not bring them back.
-
-Sidebar hover does not animate. The grey fill appears at once.
-
-The account control is the settings gear. Do not put a three-dot menu there.
-
-On resize, follow Window resize in [patterns.md](patterns.md). Do not stack the nav on the page. A click to expand either panel overrides its width limit and stays open.
-
-Forced by: "it should still have a thin bar," "make them center," "the horizontal scroll bar flashes," and "this should be the settings icon."
+See Header in [components.md](components.md).
 
 ## Dropdown width
 
-A menu of labels hugs its longest label, then leaves 16px to the edge. Less than that feels cramped. A fixed width leaves dead space after a short label. Short labels use `--menu-min` (132px). Past `--menu-max` (240px) the label truncates, and the icon stays. The check sits at the end of the row. It does not add a second gap. Every option label in the menu is `--text-14`, the same size as the category row. The check and the chevron share the trigger's inset, 6px from the row edge, and the chevron is `--black-50`. Delete is last, in red, with a full-width hairline above it. The calendar keeps its own width.
-
-Forced by: hug the longest label, then 16px to the edge. A minimum for short labels. A maximum, then truncate.
+See Menu in [components.md](components.md).
 
 ## Inputs and menus
 
-Hover on a text field, search field, or composer darkens the outer stroke by one step. It does not fill the field.
-
-Search text stays `--black` while the field has a value. The clear control stays visible for that whole time.
-
-The composer add control stays grey. Its hover is `--grey`, the same fill as a left nav row. It does not turn blue.
-
-The microphone turns `--action` only while it is on. Otherwise its hover is `--grey`, the same fill as a left nav row. The mode control uses that same hover.
-
-The send arrow stays grey when the field is empty, including on hover. It turns `--action` only when the field has text.
-
-A closed menu shows the selected option's icon.
-
-Hovering a table cell highlights the whole row.
-
-A tooltip fits on one line. A tip on a tag is centered on that tag, stacked with it, and the shadow is on the tip.
-
-A tooltip is always in front. It paints above the page, the table, and the sidebar. A table, a header, or a sidebar does not cover a tip. A click does not hide a tooltip. The tip stays while the pointer is on the control. Timing, the snap between tips, and a keyboard action follow [polish.md](polish.md).
-
-Forced by: the search and Lance state notes, "the entire row should highlight," "the tooltip should fit in one line" and sit centered on the tag, "tooltips are always in front," and "a click should not hide the tip."
+See Field, Text well, Search, Lance composer, Message composer, Menu, Table, and Tooltip in [components.md](components.md).
 
 ## Horizontal lines
 
@@ -151,6 +113,10 @@ A line also sits where the layout changes. A property list is a different layout
 The line spans the panel. It does not shrink away when the panel scrolls.
 
 Forced by: the call detail, “every time the layout shifts it should have one, and after the title and the summary/description, the most important two elements.”
+
+## A title above a table
+
+See Table in [components.md](components.md).
 
 ## A dense record is sectioned
 

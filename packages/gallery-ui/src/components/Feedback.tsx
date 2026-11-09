@@ -59,7 +59,18 @@ export function Urgency({ level, children, style }: { level: "urgent" | "high" |
   );
 }
 
-export function Toast({ message, action = "See task", time = "Now" }: { message: string; action?: string; time?: string }) {
+export function Toast({
+  message,
+  action = "See task",
+  time = "Now",
+  onAction,
+}: {
+  message: string;
+  /** Pass null when the toast only confirms and has nothing to reopen. */
+  action?: string | null;
+  time?: string;
+  onAction?: () => void;
+}) {
   const [hidden, setHidden] = useState(false);
   if (hidden) return null;
   return (
@@ -67,9 +78,11 @@ export function Toast({ message, action = "See task", time = "Now" }: { message:
       <CompleteMark />
       <span>{message}</span>
       <span className="when">· {time}</span>
-      <button className="toast-link" type="button" onClick={() => setHidden(true)}>
-        {action}
-      </button>
+      {action ? (
+        <button className="toast-link" type="button" onClick={() => { onAction?.(); setHidden(true); }}>
+          {action}
+        </button>
+      ) : null}
     </div>
   );
 }

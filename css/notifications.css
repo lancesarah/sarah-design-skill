@@ -1,0 +1,265 @@
+/* Notifications column. It shares the page card: same margin, radius, and stroke. */
+
+.side-count {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 5px;
+  border-radius: var(--radius-circle);
+  background: var(--urgency-urgent);
+  color: var(--white);
+  font-size: var(--text-12);
+  font-weight: 400;
+  font-variant-numeric: var(--numeric);
+  line-height: 16px;
+}
+
+body.is-side-collapsed .side-count,
+body.is-side-settling .side-count,
+.side-item:hover > a .side-count,
+.side-item:focus-within > a .side-count {
+  display: none;
+}
+
+/* The keybind tip sits where this column opens. Hide it while the column is open. */
+body.is-inbox-open .side .tip {
+  display: none;
+}
+
+.notifications-side {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  flex: 0 0 385px;
+  width: 385px;
+  min-width: 0;
+  min-height: 0;
+  margin: calc(var(--space-8) - var(--space-2)) 0 calc(var(--space-8) - var(--space-2)) calc(var(--space-8) - var(--space-2));
+  padding: 6px;
+  overflow: hidden;
+  background: var(--sidebar-grey);
+  border-radius: calc(var(--radius-control) + var(--space-8)) 0 0 calc(var(--radius-control) + var(--space-8));
+  box-shadow: var(--stroke);
+  color: var(--black);
+  font-family: var(--font);
+  transition:
+    flex-basis var(--motion-panel) var(--ease-drawer),
+    width var(--motion-panel) var(--ease-drawer),
+    margin var(--motion-panel) var(--ease-drawer),
+    padding var(--motion-panel) var(--ease-drawer);
+}
+
+body:not(.is-inbox-open) .notifications-side {
+  flex-basis: 0;
+  width: 0;
+  margin: 0;
+  padding: 0;
+  border-radius: 0;
+  box-shadow: none;
+  pointer-events: none;
+}
+
+body.is-inbox-open .notes-page {
+  margin-left: 0;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.notice-head {
+  display: flex;
+  align-items: center;
+  flex: none;
+  height: 56px;
+  padding: 0 var(--space-16);
+  border-bottom: 1px solid var(--line);
+}
+
+.notice-head .chip {
+  margin-left: auto;
+  flex: none;
+  white-space: nowrap;
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  font-weight: 400;
+  line-height: 16px;
+}
+
+.notice-head .chip:disabled {
+  color: var(--black-25);
+  background: transparent;
+}
+
+.notice-head .chip:hover:not(:disabled),
+.notice-head .chip.is-hover:not(:disabled) {
+  background: var(--grey);
+}
+
+.notifications-side .page-filters .tabs-frame {
+  width: auto;
+  max-width: none;
+  margin-inline: 0;
+  background: transparent;
+}
+
+.notifications-side .page-filters .tabs {
+  padding-inline: var(--space-16);
+  background: transparent;
+}
+
+.notice-head h2 {
+  display: flex;
+  align-items: center;
+  height: 20px;
+  margin: 0;
+  color: var(--black);
+  font-size: var(--text-14);
+  font-weight: 400;
+  line-height: 20px;
+  text-wrap: var(--text-wrap-title);
+}
+
+.notice-sheet {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--white);
+  border: 1px solid var(--grey);
+  border-radius: calc(var(--radius-control) + var(--space-8)) var(--radius-control) var(--radius-control) calc(var(--radius-control) + var(--space-8));
+}
+
+.notifications-side .page-toolbar { flex: none; }
+
+.notice-scroll {
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+  background: transparent;
+  scrollbar-color: var(--black-25) var(--white);
+  scrollbar-width: thin;
+}
+
+.notice-list {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.notice-row {
+  display: grid;
+  grid-template-columns: 35px minmax(0, 1fr) auto;
+  column-gap: var(--space-12);
+  align-items: start;
+  width: 100%;
+  padding: var(--space-12) var(--space-16);
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  border-radius: 0;
+  background: transparent;
+  color: var(--black);
+  font: inherit;
+  text-align: left;
+  transition: none;
+}
+
+.notice-list > .notice-row:last-child {
+  border-bottom: 0;
+}
+
+.notice-row:hover,
+.notice-row[aria-selected="true"] {
+  background: var(--sidebar-grey);
+}
+
+.notice-who {
+  font-weight: 500;
+}
+
+.notice-copy {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.notice-title {
+  font-size: var(--text-14);
+  font-weight: 400;
+  line-height: 20px;
+}
+
+.notice-note {
+  margin-top: var(--space-4);
+  padding: var(--space-8) var(--space-12);
+  border-radius: var(--radius-control);
+  background: var(--sidebar-grey);
+  color: var(--black);
+  font-size: var(--text-14);
+  font-weight: 400;
+  line-height: 20px;
+}
+
+.notice-row:hover .notice-note,
+.notice-row[aria-selected="true"] .notice-note {
+  background: var(--grey);
+}
+
+.notice-end {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-4);
+  flex: none;
+}
+
+.notice-dot {
+  width: 8px;
+  height: 8px;
+  margin-top: 6px;
+  border-radius: var(--radius-circle);
+  background: var(--action);
+}
+
+.notice-row:not(.is-unread) .notice-dot {
+  visibility: hidden;
+}
+
+.notice-sub,
+.notice-time {
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  font-weight: 400;
+  line-height: 16px;
+}
+
+.notice-time {
+  font-variant-numeric: var(--numeric);
+  line-height: 20px;
+}
+
+html[data-theme="dark"] .notice-row:hover,
+html[data-theme="dark"] .notice-row[aria-selected="true"] {
+  background: var(--grey);
+}
+
+html[data-theme="dark"] .notice-note {
+  background: var(--grey);
+}
+
+html[data-theme="dark"] .notice-row:hover .notice-note,
+html[data-theme="dark"] .notice-row[aria-selected="true"] .notice-note {
+  background: var(--black-12);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .notifications-side {
+    transition: none;
+  }
+}

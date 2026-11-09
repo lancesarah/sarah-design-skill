@@ -394,7 +394,7 @@ html[data-theme="dark"] .schedule-field input { color-scheme: dark; }
   font-size: var(--text-12);
 }
 
-.activity-item .avatar { margin-top: 1px; }
+.activity-item .avatar { margin-top: 0; }
 
 .todo-activity .comment {
   display: grid;

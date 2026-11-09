@@ -2,7 +2,7 @@
 
 import { Button, DepartmentChip, Icon, OverlayMenu, SegmentedControl } from "@lance-live/gallery-ui";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { PageLayout } from "../page-layout";
+import { PageLayout, PageTitle } from "../page-layout";
 import {
   countLines,
   dollarsFromInput,
@@ -127,27 +127,12 @@ export function CountForm({
       className="sheet-page cash-page"
       bodyClassName="cash-shift-body"
       icon="card"
-      title={
-        <>
-          <button type="button" className="cash-back" onClick={onCancel}>
-            Cash & bank
-          </button>
-          <span className="cash-crumb-sep" aria-hidden="true">
-            /
-          </span>
-          {title}
-        </>
-      }
+      title={<PageTitle parent="Cash & bank" current={title} onBack={onCancel} />}
       actions={
-        <>
-          <Button variant="secondary" onClick={onCancel}>
-            <Icon name="chevron" size={14} className="cash-back-icon" />
-            Back
-          </Button>
-          <Button disabled={!location || !shift} onClick={() => location && shift && onPost({ locationId: location.id, shift, notes: notes.trim(), entry, total, expected })}>
-            Post count
-          </Button>
-        </>
+        <Button variant="secondary" onClick={onCancel}>
+          <Icon name="chevron" size={14} className="cash-back-icon" />
+          Back
+        </Button>
       }
     >
       <div className="cash-screen">
@@ -174,7 +159,7 @@ export function CountForm({
       <div className="cash-count-picks">
         <div className="cash-count-place">
           <LocationField locations={active} value={location.id} locked={Boolean(initial?.id)} onChange={chooseLocation} />
-          {location.department ? <DepartmentChip name={location.department} style={{ boxShadow: "none" }} /> : null}
+          {location.department ? <DepartmentChip name={location.department} plain /> : null}
         </div>
         <ShiftField shifts={shifts} value={shift} onChange={setShift} />
         <SegmentedControl
@@ -217,10 +202,13 @@ export function CountForm({
           ))}
           <div className="cash-col cash-col-notes">
             <span className="cash-col-k">Notes</span>
-            <textarea className="cash-add-input cash-count-notes" aria-label="Notes" value={notes} onChange={(event) => setNotes(event.target.value)} />
+            <textarea className="cash-add-input cash-count-notes text-well" aria-label="Notes" value={notes} onChange={(event) => setNotes(event.target.value)} />
           </div>
         </div>
       </section>
+      <Button className="cash-post" disabled={!location || !shift} onClick={() => location && shift && onPost({ locationId: location.id, shift, notes: notes.trim(), entry, total, expected })}>
+        Post count
+      </Button>
     </div>,
   );
 }

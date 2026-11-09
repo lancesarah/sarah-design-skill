@@ -49,6 +49,8 @@ These point at values already in use. A new page, a new row, a new menu, and a n
 | `--motion-hover` | `120ms` | The shared fill change |
 | `--motion-panel` | `400ms` | The detail panel entrance |
 | `--motion-panel-out` | `320ms` | The detail panel exit |
+| `--motion-grow` | `240ms` | A region growing open |
+| `--motion-grow-out` | `192ms` | That region collapsing. About 20% faster |
 | `--sk-pulse-dur` | `1000ms` | The table skeleton’s one pulse |
 | `--sk-pulse-count` | `1` | That pulse does not loop |
 | `--sk-pulse-min` | `0.5` | The middle of the pulse |
@@ -72,16 +74,9 @@ A resting fill uses that same step. On white, the fill is `--sidebar-grey`. On `
 
 ## Buttons
 
-A button changes its fill by one step. The label, the icon, and the hairline stay. Press is the scale in [polish.md](polish.md). It does not darken the fill. A disabled control does not scale and does not take a hover fill.
+A button changes its fill only. The label, the icon, and the hairline stay. Press is the scale in [polish.md](polish.md). It does not darken the fill. A disabled control does not scale and does not take a hover fill.
 
-| Button | Rest | Hover | What stays |
-| --- | --- | --- | --- |
-| Primary (`.btn`) | `--action`, white text | `--action-hover` in both themes | White text. No hairline. |
-| Secondary (`.btn-secondary`) | `--white`, `--black` text, `--stroke` | One step from the surface it sits on | Text and hairline. On the page that step is `--sidebar-grey` in light mode and `--grey` in dark mode. On a `--sidebar-grey` panel it is `--grey`. On a dark `--grey` panel it is `--black-12`. |
-| Danger fill (`.btn-danger`, `.btn-delete`) | `--destructive`, white text | `color-mix(in srgb, var(--destructive) 88%, black)` | White text. This is the only red. |
-| Danger line (`.btn-delete-line`) | White fill, `--destructive` text, `--stroke` | The neutral step, `--sidebar-grey` or `--grey` | The red text. |
-| Icon button that is not primary | Clear | The one step from its surface | The icon color. Sidebar icon buttons stay unfilled at rest. |
-| Filter chip (`.chip-filter`) | `--filter-chip-bg`, `--action` text | The same fill | The chip does not wash on hover. |
+The fill for each button is on that component in [components.md](components.md): Primary button, Secondary button, Tertiary button, Danger button, Icon button, Filter chip.
 
 A parent and its descendants are one hover region. Moving onto a chip, button, icon, or dropdown trigger inside that parent keeps the parent’s hover. The parent fill clears only when the pointer leaves the parent and everything inside it. The nested control keeps its own hover at the same time, one step past the parent, so a chip stays visible on a hovered row. A status pill on a hovered row is `--grey` in light mode and `--black-12` in dark mode. An off switch on a hovered secondary button steps to `--grey-up` only so the track does not match the button. `--grey-up` is not a text-chip hover.
 
@@ -157,7 +152,7 @@ The table frame is the 1px padding around the sheet. Light mode keeps `--grey`. 
 
 Search hover and focus are a 1px `--black-25` ring in light mode, including the shortcut key border. In dark mode that ring and that border are `--line`.
 
-`--black-25` is the quieter grey. Light mode keeps `#bfbfbf`. In dark mode it is halfway from `--black-50` toward `--sidebar-grey`, and it is not a copy of `--black-50`. Use it for unselected tab counts, the light search ring, scrollbars, and tooltip emphasis.
+`--black-25` is the quieter grey. Light mode keeps `#c3c3c3`. In dark mode it is halfway from `--black-50` toward `--sidebar-grey`, and it is not a copy of `--black-50`. Use it for unselected tab counts, the light search ring, scrollbars, and tooltip emphasis.
 
 The scrollbar is the thin sidebar scrollbar. `scrollbar-width` is `thin`, and the thumb is `--black-25`. The track matches the surface behind it. The department tabs do not use that system bar. Their thumb is the one in [patterns.md](patterns.md).
 
@@ -166,7 +161,7 @@ Sidebar icon buttons stay unfilled. The switch under Settings uses `--action` an
 ## Type
 
 - `--font`: Plus Jakarta Sans, weights 400 and 500. Plus Jakarta Sans is the UI face. Switzer stays on the dev switch so the two can be compared. Libre Baskerville is for editorial moments only, where the gallery already uses it.
-- Sizes: `--text-10`, `--text-12`, `--text-13`, `--text-14`, `--text-16`, `--text-20`, `--text-24`. `--text-13` is the table urgency chip, the department chip, the status label, and the name chip. Those same values in a detail panel are `--text-14` and weight 400. The gallery Typography section is the set used on notes and to-dos: record title 16/500, page title, body, and button 14/400, count 14/400 in `--text-muted`, place 14/500, chip 13/400, detail value 14/400, label 12/500 in `--text-muted`, note 12/400, meta 12/400 in `--text-muted`, filter 10/400. `--text-20` is a side title. `--text-24` is a lesson card title, weight 500, line-height 28px.
+- Sizes: `--text-10`, `--text-12`, `--text-13`, `--text-14`, `--text-16`, `--text-20`, `--text-24`. Which size a component uses is on that component in [components.md](components.md). The shared scale is in [SKILL.md](../SKILL.md).
 - `--font-smoothing`: `antialiased` on product pages.
 - `--text-wrap-title`: `balance` for headings. `--text-wrap-copy`: `pretty` for short copy.
 - `--numeric`: `tabular-nums` for counts and other figures that update.

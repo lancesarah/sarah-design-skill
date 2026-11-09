@@ -24,6 +24,8 @@ type ChipProps = {
   children?: ReactNode;
   /** Pins the button treatment for a gallery specimen. */
   state?: "hover" | "open";
+  /** Circle and name only. The tag is not a control and has no stroke. */
+  plain?: boolean;
 };
 
 type DepartmentChipProps = ChipProps &
@@ -113,12 +115,12 @@ function DepartmentButton({
 
 /** Gallery department tag. A button keeps the table type-chip hover: grey fill and chevron, including while the menu is open. */
 export const DepartmentChip = forwardRef<HTMLSpanElement | HTMLButtonElement, DepartmentChipProps>(function DepartmentChip(
-  { name, className, children, as = "span", style, state, ...rest },
+  { name, className, children, as = "span", style, state, plain, ...rest },
   ref,
 ) {
   const dept = DEPARTMENTS.find((item) => item.value === name)?.dept ?? name;
-  const classes = ["sds", "dept", className].filter(Boolean).join(" ");
-  if (as === "button") {
+  const classes = ["sds", "dept", plain ? "dept-plain" : "", className].filter(Boolean).join(" ");
+  if (as === "button" && !plain) {
     return (
       <DepartmentButton
         {...(rest as ButtonHTMLAttributes<HTMLButtonElement>)}
@@ -134,7 +136,7 @@ export const DepartmentChip = forwardRef<HTMLSpanElement | HTMLButtonElement, De
     );
   }
   return (
-    <span ref={ref as Ref<HTMLSpanElement>} className={classes} data-dept={dept} style={{ ...chipRing, ...style }} {...(rest as HTMLAttributes<HTMLSpanElement>)}>
+    <span ref={ref as Ref<HTMLSpanElement>} className={classes} data-dept={dept} style={plain ? style : { ...chipRing, ...style }} {...(rest as HTMLAttributes<HTMLSpanElement>)}>
       {name}
       {children}
     </span>

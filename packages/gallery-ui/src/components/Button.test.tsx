@@ -13,6 +13,9 @@ describe("Button", () => {
     const { rerender } = render(<Button variant="secondary">New</Button>);
     expect(screen.getByRole("button")).toHaveClass("btn-secondary");
 
+    rerender(<Button variant="tertiary">Required</Button>);
+    expect(screen.getByRole("button", { name: "Required" })).toHaveClass("btn-tertiary");
+
     rerender(<Button variant="danger">Delete</Button>);
     expect(screen.getByRole("button", { name: "Delete" })).toHaveClass("btn-danger");
 

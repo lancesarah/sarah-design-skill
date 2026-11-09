@@ -928,6 +928,7 @@ export function textColumn<T>(config: {
     title: config.title,
     text: size,
     textDisplay: config.textDisplay,
+    lines: 1,
     flex: size === "primary" || config.flex,
     minWidth: config.minWidth,
     labelInset: config.labelInset,

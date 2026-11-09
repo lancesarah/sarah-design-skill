@@ -32,6 +32,7 @@ export { PageHeader, Sidebar, SidebarItem, type SidebarGroup, type SidebarLink }
 export { DataTable, SheetTable, orderDataColumns, TEXT_PRIMARY_MIN, TEXT_PRIMARY_PREFERRED_MAX, TEXT_PRIMARY_PREFERRED_MIN, TEXT_SHORT_MIN, type DataColumn, type DataColumnRole, type DataSort, type DataTableProps, type DataTextDisplay, type DataTextSize, type SheetColumn } from "./components/DataTable";
 export {
   ASSIGNEE_PEOPLE,
+  CHIP_LABEL_INSET,
   AssigneeCell,
   AssignedDropdown,
   ChipDropdown,

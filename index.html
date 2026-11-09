@@ -86,10 +86,12 @@
         <div>
           <strong>Navigation</strong>
           <a href="#header">Header</a>
+          <a href="#page-layout">Page layout</a>
           <a href="#tabs">Primary tabs</a>
           <a href="#segments">Secondary tabs</a>
           <a href="#sidebar">Sidebar</a>
           <a href="#inset-card">Inset card</a>
+          <a href="#add-row">Add row</a>
         </div>
         <div>
           <strong>People</strong>
@@ -194,7 +196,6 @@
         <span class="frame"><span class="text-icon ref"><svg class="i" width="18" height="18"><use href="#i-share"/></svg>Share</span></span>
         <span class="frame"><span class="text-icon sm ref"><svg class="i" width="14" height="14"><use href="#i-share"/></svg>Share</span></span>
         <span class="frame"><span class="text-icon btn-delete ref"><svg class="i" width="14" height="14"><use href="#i-trash"/></svg>Delete</span></span>
-        <span class="frame"><span class="text-icon btn-delete btn-delete-line ref"><svg class="i" width="14" height="14"><use href="#i-trash"/></svg>Delete</span></span>
       </div>
     </section>
 
@@ -382,6 +383,7 @@
         <div class="col"><span class="k">Interactive</span><label class="field"><span>Text field title</span><input value="Example text" aria-label="Text field title"></label></div>
         <div class="col"><span class="k">Base</span><label class="field ref"><span>Text field title</span><input value="Example text" tabindex="-1"></label></div>
         <div class="col"><span class="k">Base</span><label class="field ref"><span>Text field title</span><textarea tabindex="-1">Example text</textarea></label></div>
+        <div class="col"><span class="k">Line</span><input class="line" placeholder="New step name..." aria-label="New step name"></div>
       </div>
     </section>
 
@@ -609,6 +611,39 @@
       </header>
     </section>
 
+    <section id="page-layout">
+      <h2>Page layout</h2>
+      <p class="note">PM, Readings, and Knowledge base use this stack. A page does not restyle the header, the tabs, or the filter row. The table header starts 40px below the title that names it.</p>
+      <div class="page-layout">
+        <header class="page-head">
+          <div class="page-title">
+            <span class="page-mark"><svg class="i" width="18" height="18"><use href="#i-todo"/></svg></span>
+            <h1>Readings</h1>
+            <p class="count">8</p>
+          </div>
+          <div class="head-actions">
+            <span class="btn btn-secondary"><svg class="i" width="14" height="14"><use href="#i-clock"/></svg>History</span>
+          </div>
+        </header>
+        <div class="tabs tabs-bar" role="tablist" aria-label="Which readings">
+          <button class="tab" type="button" role="tab" aria-selected="true">All <span class="count">8</span></button>
+          <button class="tab" type="button" role="tab">Out of range <span class="count">1</span></button>
+        </div>
+        <div class="filter-row">
+          <form class="search" role="search">
+            <svg class="i" width="18" height="18"><use href="#i-search"/></svg>
+            <input type="search" placeholder="Search readings" aria-label="Search readings">
+          </form>
+          <div class="drop">
+            <button class="trigger" type="button" aria-label="Filters">
+              <span class="pair"><svg class="i" width="14" height="14"><use href="#i-filter"/></svg></span>
+              <svg class="i" width="14" height="14"><use href="#i-chevron"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section id="inset-card">
       <h2>Inset card</h2>
       <p class="note">The title stays put. The page supplies the body. Open grows over 240ms and closes over 192ms.</p>
@@ -641,6 +676,18 @@
             </div>
           </article>
         </div>
+      </div>
+    </section>
+
+    <section id="add-row">
+      <h2>Add row</h2>
+      <p class="note">Adds another record of the same kind. New location, Add category, and Add source are this row. A submit beside a field stays a secondary button.</p>
+      <div class="col" style="width: 420px">
+        <button class="cash-new-location" type="button">
+          <svg class="cash-new-stroke" aria-hidden="true"><rect x="0.5" y="0.5" width="calc(100% - 1px)" height="calc(100% - 1px)" rx="9.5" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="9 8"></rect></svg>
+          <svg class="i" width="14" height="14"><use href="#i-plus"></use></svg>
+          New location
+        </button>
       </div>
     </section>
 

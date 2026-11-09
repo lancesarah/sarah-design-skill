@@ -1,5 +1,50 @@
-import type { HTMLAttributes, ReactNode } from "react";
+import { Fragment, type HTMLAttributes, type ReactNode } from "react";
 import { PageHeader, type IconName } from "@lance-live/gallery-ui";
+
+/** A page in the title. The last one is the page you are on. Earlier ones stay and go back. */
+export type TitlePage = { label: string; onClick?: () => void };
+
+export function PageTitle({
+  pages,
+  parent,
+  current,
+  before,
+  onBack,
+}: {
+  /** Full trail. Add a subpage by appending `{ label }`. Give earlier pages an onClick. */
+  pages?: TitlePage[];
+  parent?: string;
+  current?: string;
+  /** A crumb between the parent and the current page. It goes back one level. */
+  before?: { label: string; onClick: () => void };
+  onBack?: () => void;
+}) {
+  const trail: TitlePage[] = pages ?? [
+    { label: parent ?? "", onClick: onBack },
+    ...(before ? [before] : []),
+    { label: current ?? "" },
+  ];
+  const last = trail.length - 1;
+  return (
+    <>
+      {trail.map((page, index) => {
+        const currentPage = index === last || !page.onClick;
+        return (
+          <Fragment key={`${page.label}-${index}`}>
+            {index > 0 ? <span className="page-crumb" aria-hidden="true">/</span> : null}
+            {currentPage ? (
+              <span className="page-current">{page.label}</span>
+            ) : (
+              <button type="button" className="chip page-back" onClick={page.onClick}>
+                {page.label}
+              </button>
+            )}
+          </Fragment>
+        );
+      })}
+    </>
+  );
+}
 
 export function PageLayout({
   icon,

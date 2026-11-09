@@ -57,7 +57,11 @@ A table skeleton pulses once, then the values crossfade in. The pulse is `--sk-p
 
 A new table row grows from height 0 to its content over 200ms. The rows under it move down. `prefers-reduced-motion: reduce` inserts the row at full height. Creating a new item in [patterns.md](patterns.md) is the rule.
 
-An inset card opens in place. The title stays put. The body grows and fades in over 240ms on `--ease-out`. It closes over 192ms. The chevron turns over 160ms on `--ease-out`. `prefers-reduced-motion: reduce` snaps the body and the chevron. The measurements are in [components.md](components.md), Inset card.
+An inset card opens in place. The title stays put. The body grows and fades in over `--motion-grow` (240ms) on `--ease-out`. It closes over `--motion-grow-out` (192ms). The chevron turns over 160ms on `--ease-out`. `prefers-reduced-motion: reduce` snaps the body and the chevron. The measurements are in [components.md](components.md), Inset card.
+
+Anything else that grows or collapses uses that same pair. A disclosure, a form that opens under a record, a chart that swaps for a shorter one. The track is `grid-template-rows` from `0fr` to `1fr`. The inner box is `min-height: 0` and `overflow: hidden`. Opacity fades with the track. The node stays mounted until the close finishes. `prefers-reduced-motion: reduce` snaps.
+
+A region snaps when there is no from-height. Mounting or unmounting it in one render paints the full box. `height: auto` does not transition. A parent `gap` sits outside the box, so that space pops in one frame. Put the space inside the clip. Opacity alone, while the height changes in the same frame, still snaps. `display: none` and the `hidden` attribute remove it before the transition can run. Reduced motion snaps on purpose. A keyboard shortcut that this page says must snap still snaps.
 
 | What moves | Duration |
 | --- | --- |
@@ -105,7 +109,7 @@ Use that treatment the same way every time. A starred row, a selected tab, and a
 
 ## Roomier padding
 
-A tight screen is hard to scan. Give the page room. The padding around a title, and the space between that title, the tabs under it, and the content below, use the larger space steps: `--space-20` and `--space-25`. Do not pull those groups against each other.
+A tight screen is hard to scan. Give the page room. The padding around a title, and the space between that title, the tabs under it, and the content below, use the larger space steps: `--space-20` and `--space-25`. A title and the content it names keep at least 40px. Do not pull those groups against each other.
 
 That space is what makes the hierarchy. A title, a tab row, and a list stay separate groups. Do not close the gap to fit more on the screen.
 
@@ -144,6 +148,8 @@ A stroke the gallery already draws (`#i-plus`, `#i-check`, `#i-chevron`, `#i-clo
 Outline is the resting state except where the gallery already fills, such as the in-progress status. Color and opacity carry hover, selected, and disabled. Do not swap in a filled glyph for the active state. If a control swaps glyphs, keep both in the DOM. The entering icon goes from opacity `0`, scale `0.25`, and blur `4px` to opacity `1`, scale `1`, and blur `0`. The leaving icon reverses that. Duration is 300ms and bounce is `0`. With no motion library, use a CSS transition on those three properties and `cubic-bezier(0.2, 0, 0, 1)`. Do not add a library for the swap. Decorative icons are `aria-hidden`. Icon-only buttons keep an accessible name.
 
 An icon that shares a row with a title is centered on that title. Center the icon on the text, not on the top of the line box. A taller hit target stays centered on the title and does not drop or lift the glyph.
+
+A control that centers its contents uses equal padding on opposite sides. The leftover on each side is a whole pixel: `(height − line-height) / 2`. A 28px button with a 20px line uses `--space-4` on the top and the bottom. Do not add 2px to one side of that box. That shifts the group by 1px. Do not correct a centered glyph with a 1px `translate`, `top`, or `margin`. A circle is square. The avatar is 35×35. The large avatar is 46×46.
 
 A pill, chip, or tag on a text row follows the same rule. Its text lines up with the neighboring text. The box can be taller. Do not leave the glyphs high or low because the control is a pill. Align the content inside the chip to the title, not the outer chip. A chip that only appears on hover still puts that content on the title.
 

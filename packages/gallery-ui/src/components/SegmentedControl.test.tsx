@@ -57,6 +57,22 @@ describe("SegmentedControl", () => {
     expect(document.querySelector<HTMLElement>(".slide-pill")?.style.left).toBe("70px");
   });
 
+  it("shows a count as its own figure", () => {
+    render(
+      <SegmentedControl
+        aria-label="Source status"
+        value="active"
+        options={[
+          { value: "active", label: "Active", count: 5 },
+          { value: "inactive", label: "Inactive", count: 3 },
+        ]}
+      />,
+    );
+    const active = screen.getByRole("tab", { name: "Active5" });
+    expect(active.querySelector(".count")).toHaveTextContent("5");
+    expect(active).not.toHaveTextContent("(");
+  });
+
   it("warns in development when more than three views are passed", () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
     render(

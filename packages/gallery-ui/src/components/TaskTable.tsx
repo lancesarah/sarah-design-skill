@@ -266,7 +266,7 @@ function taskColumns(
     sortValue: (row) => (complaint ? row.title || row.note : row.note),
     render: (row) => <CopyCell row={row} complaint={complaint} menu={menu} places={places} items={items} titles={titles} onCopyChange={onCopyChange} />,
   };
-  return complaint ? [room, guest, todo, urgency, status, assignee, opened] : [status, room, todo, urgency, type, assignee, opened];
+  return complaint ? [room, guest, todo, status, urgency, assignee, opened] : [room, todo, status, urgency, type, assignee, opened];
 }
 
 function SheetGrid({
@@ -339,11 +339,10 @@ function SheetGrid({
 
 export function TaskTable({ hover = false, chips = [], rows, total, selectedId, onRowClick, onRowContextMenu, onDelete, deleteNoun, rowName, onAssigneeChange, onCopyChange, onRoomChange, layout = "todo", empty, placeOptions, itemOptions, titleOptions, roomOptions, enteringId }: TaskTableProps) {
   if (rows) {
-    const all = total ?? rows.length;
     return (
       <div className="sheet-list sheet-page" data-view="head">
         <div className="stage sheet-stage">
-          <SheetGrid rows={rows} total={all} selectedId={selectedId} onRowClick={onRowClick} onRowContextMenu={onRowContextMenu} onDelete={onDelete} deleteNoun={deleteNoun} rowName={rowName} onAssigneeChange={onAssigneeChange} onCopyChange={onCopyChange} onRoomChange={onRoomChange} layout={layout} empty={empty} placeOptions={placeOptions} itemOptions={itemOptions} titleOptions={titleOptions} roomOptions={roomOptions} enteringId={enteringId} />
+          <SheetGrid rows={rows} total={total} selectedId={selectedId} onRowClick={onRowClick} onRowContextMenu={onRowContextMenu} onDelete={onDelete} deleteNoun={deleteNoun} rowName={rowName} onAssigneeChange={onAssigneeChange} onCopyChange={onCopyChange} onRoomChange={onRoomChange} layout={layout} empty={empty} placeOptions={placeOptions} itemOptions={itemOptions} titleOptions={titleOptions} roomOptions={roomOptions} enteringId={enteringId} />
         </div>
       </div>
     );

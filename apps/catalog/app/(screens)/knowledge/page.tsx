@@ -4,6 +4,7 @@ import { Button, DataTable, DetailPanel, Icon, OverlayMenu, TITLE_TEXT_INSET, Ta
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { flushSync } from "react-dom";
 import { FilterMenu, RangeControl, SearchBox } from "../chrome";
+import { EditText } from "../edit-text";
 import { Glyph } from "../glyph";
 import { PageLayout } from "../page-layout";
 
@@ -137,14 +138,16 @@ function AnswerDetail({
       }
     >
       <div className="todo-side-intro">
-        <textarea
-          className="kb-question"
-          aria-label="Question"
-          rows={1}
-          placeholder="Question"
-          value={row.question}
-          onChange={(event) => onPatch({ question: event.target.value })}
-        />
+        <EditText fill>
+          <textarea
+            className="kb-question"
+            aria-label="Question"
+            rows={1}
+            placeholder="Question"
+            value={row.question}
+            onChange={(event) => onPatch({ question: event.target.value })}
+          />
+        </EditText>
         <div className="kb-status-row">
           <span className="status" style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
             <StatusMark status={row.status} />
@@ -158,14 +161,16 @@ function AnswerDetail({
       <div className="todo-side-rule" />
       <section className="kb-section">
         <h3 className="sheet-label">Answer</h3>
-        <textarea
-          className="kb-answer"
-          aria-label="Answer"
-          rows={4}
-          placeholder="New answer"
-          value={row.answer === "No answer yet." ? "" : row.answer}
-          onChange={(event) => onPatch({ answer: event.target.value })}
-        />
+        <EditText fill>
+          <textarea
+            className="kb-answer text-well"
+            aria-label="Answer"
+            rows={4}
+            placeholder="New answer"
+            value={row.answer === "No answer yet." ? "" : row.answer}
+            onChange={(event) => onPatch({ answer: event.target.value })}
+          />
+        </EditText>
         <p className="kb-help">Lance paraphrases this. It never reads it out verbatim.</p>
       </section>
       <div className="todo-side-rule" />
@@ -232,7 +237,7 @@ export default function KnowledgePage() {
   const [answers, setAnswers] = useState(STARTER);
   const [bucket, setBucket] = useState("all");
   const [query, setQuery] = useState("");
-  const [category, setCategory] = useState("");
+  const [categories, setCategories] = useState<string[]>([]);
   const [range, setRange] = useState("30d");
   const [selected, setSelected] = useState<string | null>(null);
   const [enteringId, setEnteringId] = useState<string | null>(null);
@@ -245,10 +250,10 @@ export default function KnowledgePage() {
       answers.filter(
         (row) =>
           (bucket === "all" || row.bucket === bucket || (bucket === "recommendations" && row.bucket === "review")) &&
-          (!category || row.category === category) &&
+          (categories.length === 0 || categories.includes(row.category)) &&
           `${row.question} ${row.answer} ${row.variants.join(" ")}`.toLowerCase().includes(query.trim().toLowerCase()),
       ),
-    [answers, bucket, category, query],
+    [answers, bucket, categories, query],
   );
   const open = answers.find((row) => row.id === selected) ?? null;
   if (open) retained.current = open;
@@ -283,7 +288,7 @@ export default function KnowledgePage() {
     const blank: Answer = { id, bucket: "review", status: "due", question: "", answer: "", category: "", asked: 0, variants: [] };
     setBucket("all");
     setQuery("");
-    setCategory("");
+    setCategories([]);
     setAnswers((list) => [blank, ...list]);
     setSelected(id);
     setEnteringId(id);
@@ -320,13 +325,13 @@ export default function KnowledgePage() {
       toolbar={
         <div className="filter-row page-toolbar">
           <SearchBox placeholder="Search answers" label="Search answers" value={query} onValueChange={setQuery} />
-          <FilterMenu value={category} onValueChange={setCategory} options={CATEGORIES} />
+          <FilterMenu value={categories} onValueChange={setCategories} options={CATEGORIES} />
           <div className="filter-chips">
-            {category ? (
-              <button className="chip chip-filter" type="button" onClick={() => setCategory("")}>
-                <span className="chip-k">Category</span>: {category} <Glyph name="plus" size={10} className="x" />
+            {categories.map((value) => (
+              <button key={value} className="chip chip-filter" type="button" onClick={() => setCategories((current) => current.filter((item) => item !== value))}>
+                <span className="chip-k">Category</span>: {value} <Glyph name="plus" size={10} className="x" />
               </button>
-            ) : null}
+            ))}
           </div>
           <RangeControl label="Activity window" value={range} onValueChange={setRange} />
         </div>

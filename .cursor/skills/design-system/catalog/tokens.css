@@ -115,6 +115,8 @@
   --motion-hover: 120ms;
   --motion-panel: 400ms;
   --motion-panel-out: 320ms;
+  --motion-grow: 240ms;
+  --motion-grow-out: 192ms;
   /* Table skeleton. One pulse, then the values crossfade in. */
   --sk-pulse-dur: 1000ms;
   --sk-pulse-count: 1;

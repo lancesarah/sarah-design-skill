@@ -4,12 +4,13 @@ import { OverlayMenu, SegmentedControl, Sidebar, type SidebarGroup, type Sidebar
 import { useRef, useState, type ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import { Glyph } from "./glyph";
+import { MESSAGE_COUNT } from "./messages";
 import { NOTICE_COUNT } from "./notifications";
 import { useHtmlSlide } from "./slide";
 
 const FIXED: SidebarLink[] = [
   { href: "/", icon: "home", label: "Home" },
-  { href: "/#sidebar", icon: "bubble", label: "Messages", tip: "Opt M" },
+  { href: "/#sidebar", icon: "bubble", label: "Messages", tip: "Opt M", count: MESSAGE_COUNT },
   { href: "/#sidebar", icon: "bell", label: "Notifications", tip: "Opt N", count: NOTICE_COUNT },
   { href: "/notes", icon: "doc", label: "Internal notes" },
 ];
@@ -73,20 +74,23 @@ const GROUPS: SidebarGroup[] = [
 export function WorkspaceSide({
   collapsed,
   onCollapsedChange,
-  inboxOpen,
+  inbox,
   onToggleInbox,
 }: {
   collapsed: boolean;
   onCollapsedChange: (collapsed: boolean) => void;
-  inboxOpen: boolean;
-  onToggleInbox: () => void;
+  inbox: "notifications" | "messages" | null;
+  onToggleInbox: (which: "notifications" | "messages") => void;
 }) {
   const pathname = usePathname();
   const mark = (link: SidebarLink): SidebarLink => {
     if (link.label === "Notifications") {
-      return { ...link, current: inboxOpen, onClick: onToggleInbox };
+      return { ...link, current: inbox === "notifications", onClick: () => onToggleInbox("notifications") };
     }
-    return { ...link, current: inboxOpen ? false : pathname === link.href };
+    if (link.label === "Messages") {
+      return { ...link, current: inbox === "messages", onClick: () => onToggleInbox("messages") };
+    }
+    return { ...link, current: inbox ? false : pathname === link.href };
   };
   return (
     <Sidebar

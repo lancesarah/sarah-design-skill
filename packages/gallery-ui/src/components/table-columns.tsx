@@ -647,12 +647,12 @@ function NamedAssignee({
     <>
       <button
         ref={choice.ref}
-        className="mini-pill"
+        className={["mini-pill", empty ? "is-empty" : ""].filter(Boolean).join(" ")}
         type="button"
         aria-label={label}
         aria-haspopup="menu"
         aria-expanded={choice.open}
-        style={{ width: "max-content", maxWidth: "100%", justifySelf: "start", gap: 6, height: 20, padding: "2px 4px", borderRadius: 4, background: empty ? "transparent" : "var(--sidebar-grey)", fontWeight: 400, color: empty ? "var(--black-50)" : undefined, ...style }}
+        style={{ width: "max-content", maxWidth: "100%", justifySelf: "start", gap: 6, height: 20, padding: "2px 4px", borderRadius: 4, fontWeight: 400, ...style }}
         onPointerDown={(event) => event.stopPropagation()}
         onMouseEnter={() => setHot(true)}
         onMouseLeave={() => setHot(false)}

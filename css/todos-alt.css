@@ -588,7 +588,7 @@ html[data-theme="dark"] .sheet-fade {
 .sheet:focus-within .sheet-status:hover,
 .sheet:focus-within .sheet-status[aria-expanded="true"],
 .sheet-line:hover .sheet-type:hover,
-.sheet:focus-within .sheet-type:hover { background: var(--grey); }
+.sheet:focus-within .sheet-type:hover { background: var(--sidebar-grey); }
 
 /* The row stays hovered while the pointer is on a chip. The chip takes the next step. */
 .sheet-chevron { opacity: 0; }
@@ -630,7 +630,7 @@ html[data-theme="dark"] .sheet-fade {
   border-radius: 4px;
   background: transparent;
   font-size: var(--text-16);
-  font-weight: 500;
+  font-weight: 400;
   line-height: 16px;
   text-align: left;
 }
@@ -676,7 +676,7 @@ html[data-theme="dark"] .sheet-fade {
   flex: none;
   color: var(--black);
   font-size: var(--text-14);
-  font-weight: 500;
+  font-weight: 400;
   line-height: 20px;
 }
 
@@ -720,7 +720,7 @@ html[data-theme="dark"] .sheet-fade {
 .sheet-title {
   height: 20px;
   font-size: var(--text-14);
-  font-weight: 500;
+  font-weight: 400;
   line-height: 20px;
   white-space: nowrap;
   overflow: hidden;
@@ -1218,7 +1218,7 @@ html[data-theme="dark"] .cal-day:hover:not(:disabled) { background: var(--grey);
 
 .sheet-title-full {
   font-size: var(--text-14);
-  font-weight: 500;
+  font-weight: 400;
   line-height: 20px;
 }
 
@@ -1849,6 +1849,9 @@ html[data-sheet-layout="chips"] .sheet-facts {
 .side-field:hover,
 .side-field[aria-expanded="true"] { background: var(--sidebar-grey); }
 
+.todo-side .mini-pill.is-empty:hover,
+.todo-side .mini-pill.is-empty[aria-expanded="true"] { background: var(--sidebar-grey); }
+
 .todo-side .side-field:not(.side-type):hover,
 .todo-side .side-field:not(.side-type)[aria-expanded="true"] { background: var(--sidebar-grey); }
 
@@ -1858,6 +1861,8 @@ html[data-theme="dark"] .todo-side .side-field:not(.side-type)[aria-expanded="tr
   background: var(--grey);
 }
 
+html[data-theme="dark"] .todo-side .mini-pill.is-empty:hover,
+html[data-theme="dark"] .todo-side .mini-pill.is-empty[aria-expanded="true"],
 html[data-theme="dark"] .todo-side .side-status:hover,
 html[data-theme="dark"] .todo-side .side-status[aria-expanded="true"],
 html[data-theme="dark"] .todo-side .note-more:hover,
@@ -2193,26 +2198,24 @@ html[data-theme="dark"] .side-type[aria-expanded="true"] {
   color: var(--black);
 }
 
-/* Opaque page fill, including while the row is hovered, so the row color does not show through. */
+/* The department chip: clear at rest, the lighter fill on hover, the ring either way. */
 .sheet-type[data-type],
 html[data-theme="dark"] .sheet-type[data-type],
 .sheet-line:hover .sheet-type[data-type],
 html[data-theme="dark"] .sheet-line:hover .sheet-type[data-type],
 .sheet:focus-within .sheet-type[data-type],
 html[data-theme="dark"] .sheet:focus-within .sheet-type[data-type] {
-  background: var(--white);
-  color: var(--text-muted);
+  background: transparent;
+  color: var(--black);
   box-shadow: 0 0 0 1px var(--black-12);
 }
-/* One step past the row hover. Light row hover is --sidebar-grey, so --grey.
-   Dark row hover is --grey, so --black-12. */
 .sheet-type[data-type]:hover,
 .sheet-type[data-type][aria-expanded="true"],
 .sheet-line:hover .sheet-type[data-type]:hover,
 .sheet-line:hover .sheet-type[data-type][aria-expanded="true"],
 .sheet:focus-within .sheet-type[data-type]:hover,
 .sheet:focus-within .sheet-type[data-type][aria-expanded="true"] {
-  background: var(--grey);
+  background: var(--sidebar-grey);
   color: var(--black);
   box-shadow: 0 0 0 1px var(--black-12);
 }
@@ -2222,14 +2225,9 @@ html[data-theme="dark"] .sheet-line:hover .sheet-type[data-type]:hover,
 html[data-theme="dark"] .sheet-line:hover .sheet-type[data-type][aria-expanded="true"],
 html[data-theme="dark"] .sheet:focus-within .sheet-type[data-type]:hover,
 html[data-theme="dark"] .sheet:focus-within .sheet-type[data-type][aria-expanded="true"] {
-  background: var(--black-12);
+  background: var(--grey);
   color: var(--black);
-  box-shadow: 0 0 0 1px var(--black-25);
-}
-/* The table type stays muted until hover. In the detail panel the label is black. */
-.todo-side .sheet-type[data-type],
-html[data-theme="dark"] .todo-side .sheet-type[data-type] {
-  color: var(--black);
+  box-shadow: 0 0 0 1px var(--black-12);
 }
 .sheet-type::before { margin-inline-end: 6px; }
 .sheet-type > .sheet-edit,

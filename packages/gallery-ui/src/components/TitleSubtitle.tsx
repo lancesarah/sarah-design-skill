@@ -16,7 +16,7 @@ const clip: CSSProperties = {
 function titleText(title: boolean): CSSProperties {
   return {
     fontSize: title ? "var(--text-16)" : "var(--text-14)",
-    fontWeight: 500,
+    fontWeight: 400,
     lineHeight: title ? "20px" : "16px",
     ...clip,
   };

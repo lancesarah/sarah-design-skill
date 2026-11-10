@@ -304,7 +304,7 @@ body.is-lance-collapsed .lance-side [data-lance-collapse]::after {
   overflow: hidden;
   background: var(--white);
   border-radius: calc(var(--radius-control) + var(--space-8));
-  box-shadow: var(--stroke);
+  box-shadow: 0 0 0 1px var(--black-12);
 }
 
 .notes-page .page-head {

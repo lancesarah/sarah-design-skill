@@ -2196,12 +2196,12 @@ html[data-theme="dark"] #table .sheet.is-open .sheet-line.is-hover .urgency-stan
 }
 button.dept:hover,
 button.dept[aria-expanded="true"] {
-  background: var(--grey);
+  background: var(--sidebar-grey);
   color: var(--black);
 }
 html[data-theme="dark"] button.dept:hover,
 html[data-theme="dark"] button.dept[aria-expanded="true"] {
-  background: var(--black-12);
+  background: var(--grey);
   box-shadow: 0 0 0 1px var(--black-25);
 }
 button.dept > .dept-chevron {

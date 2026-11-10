@@ -1,7 +1,7 @@
 "use client";
 
-import { Avatar, OverlayMenu, Tabs } from "@lance-live/gallery-ui";
-import { useMemo, useRef, useState } from "react";
+import { Avatar, Icon, OverlayMenu, Tabs } from "@lance-live/gallery-ui";
+import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import { SearchBox } from "./chrome";
 import { Glyph } from "./glyph";
 
@@ -43,13 +43,56 @@ const NOTICES: Notice[] = [
   { id: "408", group: "Hotel", title: "Room 408 added", status: "Unassigned", time: "6h", source: "Boards", read: true, who: "Mark", initials: "MJ" },
 ];
 
-function noticeVerb(status: NoticeStatus) {
-  if (status === "Assigned") return "assigned";
-  if (status === "Updated") return "updated";
-  return "opened";
+function noticeRoom(notice: Notice) {
+  if (notice.room) return notice.room;
+  const match = /^Room (\d+)\b/.exec(notice.title);
+  return match?.[1];
 }
 
 export const NOTICE_COUNT = NOTICES.length;
+
+function NoticeRow({ notice, selected, onSelect }: { notice: Notice; selected?: boolean; onSelect?: () => void }) {
+  const room = noticeRoom(notice);
+  return (
+    <button
+      type="button"
+      role="option"
+      className={[notice.read ? "notice-row" : "notice-row is-unread", room ? "is-room" : ""].filter(Boolean).join(" ")}
+      aria-selected={selected}
+      onClick={onSelect}
+    >
+      <Avatar initials={room ?? notice.initials} />
+      <span className="notice-copy">
+        <span className="notice-sub">{notice.source}</span>
+        <span className="notice-title">{notice.title}</span>
+        {notice.note ? <span className="notice-note">{notice.note}</span> : null}
+      </span>
+      <span className="notice-end">
+        <span className="notice-dot" aria-hidden="true" />
+        <time className="notice-time" dateTime={notice.time}>
+          {notice.time}
+        </time>
+      </span>
+    </button>
+  );
+}
+
+/** Split row heights into pages that each fill the budget. A row taller than the budget still gets a page. */
+function pageStarts(heights: number[], budget: number) {
+  const starts = [0];
+  let used = 0;
+  for (let index = 0; index < heights.length; index += 1) {
+    const height = heights[index];
+    const start = starts[starts.length - 1];
+    if (index > start && used + height > budget + 0.5) {
+      starts.push(index);
+      used = height;
+    } else {
+      used += height;
+    }
+  }
+  return starts;
+}
 
 export function NotificationsSide({ open }: { open: boolean }) {
   const [query, setQuery] = useState("");
@@ -59,6 +102,11 @@ export function NotificationsSide({ open }: { open: boolean }) {
   const [selected, setSelected] = useState<string | null>(null);
   const [notices, setNotices] = useState(NOTICES);
   const [box, setBox] = useState<"all" | "unread" | "read">("unread");
+  const [page, setPage] = useState(0);
+  const [starts, setStarts] = useState<number[]>([0]);
+  const sheetRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const measureRef = useRef<HTMLDivElement>(null);
 
   const scoped = useMemo(() => {
     const needle = query.trim().toLowerCase();
@@ -72,11 +120,49 @@ export function NotificationsSide({ open }: { open: boolean }) {
   const unreadCount = scoped.filter((notice) => !notice.read).length;
   const readCount = scoped.length - unreadCount;
   const visible = scoped.filter((notice) => (box === "all" ? true : box === "read" ? notice.read : !notice.read));
+  const visibleKey = visible.map((notice) => notice.id).join("|");
+  const pageCount = Math.max(1, starts.length);
+  const pageIndex = Math.min(page, pageCount - 1);
+  const pageFrom = starts[pageIndex] ?? 0;
+  const pageTo = starts[pageIndex + 1] ?? visible.length;
+  const pageItems = visible.slice(pageFrom, pageTo);
+
+  useLayoutEffect(() => {
+    if (!open) return;
+    const scroll = scrollRef.current;
+    const measure = measureRef.current;
+    const sheet = sheetRef.current;
+    if (!scroll || !measure || !sheet) return;
+
+    const apply = () => {
+      const rows = [...measure.querySelectorAll<HTMLElement>(".notice-row")];
+      const heights = rows.map((row) => row.getBoundingClientRect().height);
+      const pager = measure.querySelector<HTMLElement>(".notice-pages");
+      const pagerHeight = pager?.getBoundingClientRect().height ?? 0;
+      const shownPager = sheet.querySelector<HTMLElement>(":scope > .notice-pages")?.getBoundingClientRect().height ?? 0;
+      const full = scroll.clientHeight + shownPager;
+      if (full <= 0 || heights.length === 0) {
+        setStarts((current) => (current.length === 1 && current[0] === 0 ? current : [0]));
+        return;
+      }
+      const reserved = shownPager || pagerHeight;
+      let next = pageStarts(heights, full);
+      if (next.length > 1) next = pageStarts(heights, Math.max(0, full - reserved));
+      setStarts((current) => (current.length === next.length && current.every((start, index) => start === next[index]) ? current : next));
+      setPage((current) => Math.min(current, Math.max(0, next.length - 1)));
+    };
+
+    apply();
+    const observer = new ResizeObserver(apply);
+    observer.observe(scroll);
+    observer.observe(sheet);
+    return () => observer.disconnect();
+  }, [open, visibleKey]);
 
   const groups = useMemo(() => {
     const order: string[] = [];
     const byGroup = new Map<string, Notice[]>();
-    for (const notice of visible) {
+    for (const notice of pageItems) {
       const list = byGroup.get(notice.group);
       if (list) list.push(notice);
       else {
@@ -85,12 +171,17 @@ export function NotificationsSide({ open }: { open: boolean }) {
       }
     }
     return order.map((name) => ({ name, items: byGroup.get(name) ?? [] }));
-  }, [visible]);
+  }, [pageItems]);
 
   return (
     <aside className="notifications-side sds" aria-label="Notifications" aria-hidden={!open} inert={open ? undefined : true}>
       <header className="notice-head">
-        <h2>Notifications</h2>
+        <h2>
+          <span className="page-mark">
+            <Icon name="bell" size={18} />
+          </span>
+          Notifications
+        </h2>
         <button type="button" className="chip" disabled={notices.every((notice) => notice.read)} onClick={() => setNotices((current) => current.map((notice) => ({ ...notice, read: true })))}>
           Mark all as read
         </button>
@@ -99,7 +190,10 @@ export function NotificationsSide({ open }: { open: boolean }) {
         <Tabs
           label="Notifications"
           value={box}
-          onValueChange={(value) => setBox(value as "all" | "unread" | "read")}
+          onValueChange={(value) => {
+            setBox(value as "all" | "unread" | "read");
+            setPage(0);
+          }}
           items={[
             { value: "all", label: "All", count: scoped.length },
             { value: "unread", label: "Unread", count: unreadCount },
@@ -107,9 +201,21 @@ export function NotificationsSide({ open }: { open: boolean }) {
           ]}
         />
       </div>
-      <div className="notice-sheet">
+      <div className="notice-sheet" ref={sheetRef}>
+      <div className="notice-measure" ref={measureRef} aria-hidden="true" inert>
+        <div className="notice-list">
+          {visible.map((notice) => (
+            <NoticeRow key={notice.id} notice={notice} />
+          ))}
+        </div>
+        <div className="notice-pages">
+          <span className="cal-nav" />
+          <span className="notice-page" />
+          <span className="cal-nav" />
+        </div>
+      </div>
       <div className="page-toolbar">
-        <SearchBox placeholder="Search notifications" label="Search notifications" value={query} onValueChange={setQuery} />
+        <SearchBox placeholder="Search notifications" label="Search notifications" value={query} onValueChange={(value) => { setQuery(value); setPage(0); }} />
         <div className="drop">
           <button ref={filterRef} className="trigger" type="button" aria-expanded={filtersOpen} aria-haspopup="menu" aria-label="Filters" onClick={() => setFiltersOpen((next) => !next)}>
             <span className="pair">
@@ -126,7 +232,7 @@ export function NotificationsSide({ open }: { open: boolean }) {
                 type="button"
                 role="menuitemradio"
                 aria-checked={source === option}
-                onClick={() => setSource(option)}
+                onClick={() => { setSource(option); setPage(0); }}
               >
                 {option}
                 <Glyph name="check" className="check" />
@@ -135,40 +241,54 @@ export function NotificationsSide({ open }: { open: boolean }) {
           </OverlayMenu>
         </div>
       </div>
-      <div className="notice-scroll">
+      <div className="notice-scroll" ref={scrollRef}>
         {groups.map((group) => (
           <section key={group.name} aria-label={group.name}>
             <div className="notice-list" role="listbox" aria-label={group.name}>
               {group.items.map((notice) => (
-                <button
-                  key={notice.id}
-                  type="button"
-                  role="option"
-                  className={notice.read ? "notice-row" : "notice-row is-unread"}
-                  aria-selected={selected === notice.id}
-                  onClick={() => setSelected(notice.id)}
-                >
-                  <Avatar initials={notice.initials} />
-                  <span className="notice-copy">
-                    <span className="notice-sub">{notice.source}</span>
-                    <span className="notice-title">
-                      <span className="notice-who">{notice.who}</span> {noticeVerb(notice.status)} {notice.title}
-                      {notice.room ? ` in Room ${notice.room}` : ""}
-                    </span>
-                    {notice.note ? <span className="notice-note">{notice.note}</span> : null}
-                  </span>
-                  <span className="notice-end">
-                    <span className="notice-dot" aria-hidden="true" />
-                    <time className="notice-time" dateTime={notice.time}>
-                      {notice.time}
-                    </time>
-                  </span>
-                </button>
+                <NoticeRow key={notice.id} notice={notice} selected={selected === notice.id} onSelect={() => setSelected(notice.id)} />
               ))}
             </div>
           </section>
         ))}
       </div>
+      {pageCount > 1 ? (
+        <div className="notice-pages">
+          <button
+            type="button"
+            className="cal-nav"
+            data-cal-prev=""
+            aria-label="Previous page"
+            disabled={pageIndex === 0}
+            onClick={() => setPage(pageIndex - 1)}
+          >
+            <Glyph name="chevron" size={14} />
+          </button>
+          <div role="tablist" aria-label="Pages">
+            {Array.from({ length: pageCount }, (_, index) => (
+              <button
+                key={index}
+                type="button"
+                className="notice-page"
+                role="tab"
+                aria-label={`Page ${index + 1}`}
+                aria-selected={index === pageIndex}
+                onClick={() => setPage(index)}
+              />
+            ))}
+          </div>
+          <button
+            type="button"
+            className="cal-nav"
+            data-cal-next=""
+            aria-label="Next page"
+            disabled={pageIndex >= pageCount - 1}
+            onClick={() => setPage(pageIndex + 1)}
+          >
+            <Glyph name="chevron" size={14} />
+          </button>
+        </div>
+      ) : null}
       </div>
     </aside>
   );

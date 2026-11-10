@@ -568,8 +568,6 @@ html[data-theme="dark"] .cash-new-location:hover { background: var(--black-12); 
 .cash-card-name:focus-within button,
 .cash-bank-figure:focus-within .cash-bank-edit { opacity: 0; }
 
-.cash-card-id .dept-pick { background: var(--white); }
-
 .cash-card-bank {
   display: inline-grid;
   grid-template-columns: 1fr;

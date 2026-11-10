@@ -26,6 +26,14 @@ html[data-icon-ink="muted"] .i[data-icon-label] {
   color: var(--text-muted) !important;
 }
 
+html[data-icon-ink="muted"] :is(.danger, .btn-danger-light, .pm-editor-remove) .i[data-icon-label] {
+  color: var(--destructive) !important;
+}
+
+html[data-icon-ink="muted"] .urgency-urgent .i[data-icon-label] {
+  color: var(--urgency-urgent) !important;
+}
+
 .dev-switch {
   position: fixed;
   z-index: 20;

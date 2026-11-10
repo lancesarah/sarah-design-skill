@@ -53,6 +53,10 @@ export const icons = {
     "viewBox": "0 0 14 14",
     "body": "<circle cx=\"7\" cy=\"5\" r=\"2.2\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"var(--icon-stroke)\"/><path d=\"M3 11.5c.6-1.8 2-2.7 4-2.7s3.4.9 4 2.7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"var(--icon-stroke)\"/>"
   },
+  "users": {
+    "viewBox": "0 0 14 14",
+    "body": "<g transform=\"translate(1.000 13.000) scale(0.012500)\"><path d=\"M40-160v-112q0-34 17.5-62.5T104-378q62-31 126-46.5T360-440q66 0 130 15.5T616-378q29 15 46.5 43.5T680-272v112H40Zm720 0v-120q0-44-24.5-84.5T666-434q51 6 96 20.5t84 35.5q36 20 55 44.5t19 53.5v120H760ZM360-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47Zm400-160q0 66-47 113t-113 47q-11 0-28-2.5t-28-5.5q27-32 41.5-71t14.5-81q0-42-14.5-81T544-792q14-5 28-6.5t28-1.5q66 0 113 47t47 113ZM120-240h480v-32q0-11-5.5-20T580-306q-54-27-109-40.5T360-360q-56 0-111 13.5T140-306q-9 5-14.5 14t-5.5 20v32Zm240-320q33 0 56.5-23.5T440-640q0-33-23.5-56.5T360-720q-33 0-56.5 23.5T280-640q0 33 23.5 56.5T360-560Z\" fill=\"currentColor\"/></g>"
+  },
   "mic": {
     "viewBox": "0 0 16 16",
     "body": "<rect x=\"6\" y=\"2\" width=\"4\" height=\"7\" rx=\"2\" fill=\"none\" stroke=\"currentColor\"/><path d=\"M4 8a4 4 0 0 0 8 0M8 12v2\" fill=\"none\" stroke=\"currentColor\"/>"
@@ -76,6 +80,10 @@ export const icons = {
   "trash": {
     "viewBox": "0 0 18 18",
     "body": "<path d=\"M4.5 5.5h9M7 5.5V4h4v1.5M6 5.5l.5 8h5l.5-8\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"var(--icon-stroke)\"/>"
+  },
+  "archive": {
+    "viewBox": "0 0 14 14",
+    "body": "<g transform=\"translate(-0.333 14.333) scale(0.015278)\"><path d=\"m480-240 160-160-56-56-64 64v-168h-80v168l-64-64-56 56 160 160ZM200-640v440h560v-440H200Zm0 520q-33 0-56.5-23.5T120-200v-499q0-14 4.5-27t13.5-24l50-61q11-14 27.5-21.5T250-840h460q18 0 34.5 7.5T772-811l50 61q9 11 13.5 24t4.5 27v499q0 33-23.5 56.5T760-120H200Zm16-600h528l-34-40H250l-34 40Z\" fill=\"currentColor\"/></g>"
   },
   "edit": {
     "viewBox": "0 0 18 18",

@@ -1810,7 +1810,7 @@ html[data-theme="dark"] .pm-page .btn-secondary:is([aria-pressed="true"], [aria-
 .readings-page .pm-template-name {
   color: var(--black);
   font-size: var(--text-14);
-  font-weight: 500;
+  font-weight: 400;
   line-height: 20px;
 }
 
@@ -2287,4 +2287,12 @@ html[data-theme="dark"] .readings-editor .sheet-head { background: var(--grey); 
 
 html[data-icon-ink="muted"] .i[data-icon-label] {
   color: var(--text-muted) !important;
+}
+
+html[data-icon-ink="muted"] :is(.danger, .btn-danger-light, .pm-editor-remove) .i[data-icon-label] {
+  color: var(--destructive) !important;
+}
+
+html[data-icon-ink="muted"] .urgency-urgent .i[data-icon-label] {
+  color: var(--urgency-urgent) !important;
 }

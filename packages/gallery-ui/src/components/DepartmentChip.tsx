@@ -35,9 +35,9 @@ type DepartmentChipProps = ChipProps &
   );
 
 function useDepartmentFill() {
-  const [fill, setFill] = useState("var(--grey)");
+  const [fill, setFill] = useState("var(--sidebar-grey)");
   useEffect(() => {
-    const read = () => setFill(document.documentElement.dataset.theme === "dark" ? "var(--black-12)" : "var(--grey)");
+    const read = () => setFill(document.documentElement.dataset.theme === "dark" ? "var(--grey)" : "var(--sidebar-grey)");
     read();
     const observer = new MutationObserver(read);
     observer.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
@@ -113,7 +113,7 @@ function DepartmentButton({
   );
 }
 
-/** Gallery department tag. A button keeps the table type-chip hover: grey fill and chevron, including while the menu is open. */
+/** Gallery department tag. Hover is the lighter page step: sidebar grey, and grey in dark mode. */
 export const DepartmentChip = forwardRef<HTMLSpanElement | HTMLButtonElement, DepartmentChipProps>(function DepartmentChip(
   { name, className, children, as = "span", style, state, plain, ...rest },
   ref,

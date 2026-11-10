@@ -183,7 +183,7 @@ Sidebar icon buttons stay unfilled. The switch under Settings uses `--action` an
 ## Elevation and stroke
 
 - `--elevation-menu`: menus and popovers. It is the `--shadow-menu` value.
-- `--stroke`: 1px `--grey` ring.
+- `--stroke`: 1px `--grey` ring. The page card and the notifications column are one step darker, 1px `--black-12`. In dark mode that step is the dark `--black-12`.
 - `--outline-image`: 1px pure black at 10% opacity, inset on photographs. In dark mode it is pure white at 10% opacity, not the hairline and not a tinted grey.
 - `--icon-stroke`: `calc(1 / 0.95)`. Icons with class `i` are scaled to 0.95, and this keeps the painted stroke at `1`. New icons use the outlined Material glyph, fitted to Internal notes, including menu icons. See [polish.md](polish.md).
 - `--hit` / `--hit-touch`: 40px and 44px hit areas. The visible control stays its gallery size.

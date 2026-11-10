@@ -13,7 +13,7 @@ export function FontSwitch() {
   const [face, setFace] = useState<Face>("switzer");
   const [lines, setLines] = useState(true);
   const [underline, setUnderline] = useState(false);
-  const [greyIcons, setGreyIcons] = useState(false);
+  const [greyIcons, setGreyIcons] = useState(true);
   const trackRef = useRef<HTMLSpanElement>(null);
   const pillRef = useRef<HTMLSpanElement>(null);
   const ready = useRef(false);
@@ -29,7 +29,7 @@ export function FontSwitch() {
     const lineTabs = localStorage.getItem("tab-style") === "line";
     if (lineTabs) document.documentElement.dataset.tabStyle = "line";
     setUnderline(lineTabs);
-    const mutedIcons = localStorage.getItem("icon-ink") === "muted";
+    const mutedIcons = localStorage.getItem("icon-ink") !== "ink";
     if (mutedIcons) document.documentElement.dataset.iconInk = "muted";
     setGreyIcons(mutedIcons);
   }, []);
@@ -71,8 +71,9 @@ export function FontSwitch() {
       cancelAnimationFrame(frame);
       frame = requestAnimationFrame(() => {
         clear();
+        const keep = colorsThatStay();
         document.querySelectorAll("svg.i").forEach((svg) => {
-          if (!(svg instanceof SVGElement) || iconIsWhite(svg)) return;
+          if (!(svg instanceof SVGElement) || iconIsWhite(svg) || iconKeepsColor(svg, keep)) return;
           let node = svg.parentElement;
           while (node && node !== document.body) {
             if (hasVisibleLabel(node, svg)) {
@@ -172,6 +173,24 @@ export function FontSwitch() {
       </button>
     </div>
   );
+}
+
+function iconKeepsColor(icon: SVGElement, keep: Set<string>) {
+  if (icon.closest(".danger, .btn-danger-light, .pm-editor-remove, .urgency-urgent")) return true;
+  return keep.has(getComputedStyle(icon).color);
+}
+
+function colorsThatStay() {
+  const names = ["--destructive", "--urgency-urgent", "--urgency-high", "--urgency-low", "--action", "--tag-text", "--dept-housekeeping", "--dept-maintenance", "--dept-food", "--dept-sales", "--dept-management"];
+  const probe = document.createElement("span");
+  document.body.appendChild(probe);
+  const colors = new Set<string>();
+  for (const name of names) {
+    probe.style.color = `var(${name})`;
+    colors.add(getComputedStyle(probe).color);
+  }
+  probe.remove();
+  return colors;
 }
 
 function iconIsWhite(icon: SVGElement) {

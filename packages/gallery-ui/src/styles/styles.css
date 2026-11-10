@@ -420,7 +420,7 @@ button.sds:disabled {
 
 :where(.sds) .title-sub-chip {
   font-size: var(--text-14);
-  font-weight: 500;
+  font-weight: 400;
   line-height: 16px;
 }
 
@@ -447,7 +447,7 @@ button.sds:disabled {
   padding: 2px 4px;
   color: var(--black);
   font-size: var(--text-14);
-  font-weight: 500;
+  font-weight: 400;
   line-height: 16px;
 }
 

@@ -2194,12 +2194,12 @@ html[data-theme="dark"] :where(.sds) #table .sheet.is-open .sheet-line.is-hover 
 }
 :where(.sds) button.dept:hover,
 :where(.sds) button.dept[aria-expanded="true"] {
-  background: var(--grey);
+  background: var(--sidebar-grey);
   color: var(--black);
 }
 html[data-theme="dark"] :where(.sds) button.dept:hover,
 html[data-theme="dark"] :where(.sds) button.dept[aria-expanded="true"] {
-  background: var(--black-12);
+  background: var(--grey);
   box-shadow: 0 0 0 1px var(--black-25);
 }
 :where(.sds) button.dept > .dept-chevron {
@@ -2985,7 +2985,7 @@ html[data-theme="dark"] :where(.sds) .sheet-fade, html[data-theme="dark"] :where
 :where(.sds) .sheet:focus-within .sheet-status:hover, :where(.sds).sheet:focus-within .sheet-status:hover,
 :where(.sds) .sheet:focus-within .sheet-status[aria-expanded="true"], :where(.sds).sheet:focus-within .sheet-status[aria-expanded="true"],
 :where(.sds) .sheet-line:hover .sheet-type:hover, :where(.sds).sheet-line:hover .sheet-type:hover,
-:where(.sds) .sheet:focus-within .sheet-type:hover, :where(.sds).sheet:focus-within .sheet-type:hover { background: var(--grey); }
+:where(.sds) .sheet:focus-within .sheet-type:hover, :where(.sds).sheet:focus-within .sheet-type:hover { background: var(--sidebar-grey); }
 
 /* The row stays hovered while the pointer is on a chip. The chip takes the next step. */
 :where(.sds) .sheet-chevron, :where(.sds).sheet-chevron { opacity: 0; }
@@ -3027,7 +3027,7 @@ html[data-theme="dark"] :where(.sds) .sheet-fade, html[data-theme="dark"] :where
   border-radius: 4px;
   background: transparent;
   font-size: var(--text-16);
-  font-weight: 500;
+  font-weight: 400;
   line-height: 16px;
   text-align: left;
 }
@@ -3073,7 +3073,7 @@ html[data-theme="dark"] :where(.sds) .sheet-fade, html[data-theme="dark"] :where
   flex: none;
   color: var(--black);
   font-size: var(--text-14);
-  font-weight: 500;
+  font-weight: 400;
   line-height: 20px;
 }
 
@@ -3117,7 +3117,7 @@ html[data-theme="dark"] :where(.sds) .sheet-fade, html[data-theme="dark"] :where
 :where(.sds) .sheet-title, :where(.sds).sheet-title {
   height: 20px;
   font-size: var(--text-14);
-  font-weight: 500;
+  font-weight: 400;
   line-height: 20px;
   white-space: nowrap;
   overflow: hidden;
@@ -3615,7 +3615,7 @@ html[data-theme="dark"] :where(.sds) .cal-day:hover:not(:disabled), html[data-th
 
 :where(.sds) .sheet-title-full, :where(.sds).sheet-title-full {
   font-size: var(--text-14);
-  font-weight: 500;
+  font-weight: 400;
   line-height: 20px;
 }
 
@@ -4246,6 +4246,9 @@ html[data-sheet-layout="chips"] :where(.sds) .sheet-facts, html[data-sheet-layou
 :where(.sds) .side-field:hover, :where(.sds).side-field:hover,
 :where(.sds) .side-field[aria-expanded="true"], :where(.sds).side-field[aria-expanded="true"] { background: var(--sidebar-grey); }
 
+:where(.sds) .todo-side .mini-pill.is-empty:hover, :where(.sds).todo-side .mini-pill.is-empty:hover,
+:where(.sds) .todo-side .mini-pill.is-empty[aria-expanded="true"], :where(.sds).todo-side .mini-pill.is-empty[aria-expanded="true"] { background: var(--sidebar-grey); }
+
 :where(.sds) .todo-side .side-field:not(.side-type):hover, :where(.sds).todo-side .side-field:not(.side-type):hover,
 :where(.sds) .todo-side .side-field:not(.side-type)[aria-expanded="true"], :where(.sds).todo-side .side-field:not(.side-type)[aria-expanded="true"] { background: var(--sidebar-grey); }
 
@@ -4255,6 +4258,8 @@ html[data-theme="dark"] :where(.sds) .todo-side .side-field:not(.side-type)[aria
   background: var(--grey);
 }
 
+html[data-theme="dark"] :where(.sds) .todo-side .mini-pill.is-empty:hover, html[data-theme="dark"] :where(.sds).todo-side .mini-pill.is-empty:hover,
+html[data-theme="dark"] :where(.sds) .todo-side .mini-pill.is-empty[aria-expanded="true"], html[data-theme="dark"] :where(.sds).todo-side .mini-pill.is-empty[aria-expanded="true"],
 html[data-theme="dark"] :where(.sds) .todo-side .side-status:hover, html[data-theme="dark"] :where(.sds).todo-side .side-status:hover,
 html[data-theme="dark"] :where(.sds) .todo-side .side-status[aria-expanded="true"], html[data-theme="dark"] :where(.sds).todo-side .side-status[aria-expanded="true"],
 html[data-theme="dark"] :where(.sds) .todo-side .note-more:hover, html[data-theme="dark"] :where(.sds).todo-side .note-more:hover,
@@ -4590,26 +4595,24 @@ html[data-theme="dark"] :where(.sds) .side-type[aria-expanded="true"], html[data
   color: var(--black);
 }
 
-/* Opaque page fill, including while the row is hovered, so the row color does not show through. */
+/* The department chip: clear at rest, the lighter fill on hover, the ring either way. */
 :where(.sds) .sheet-type[data-type], :where(.sds).sheet-type[data-type],
 html[data-theme="dark"] :where(.sds) .sheet-type[data-type], html[data-theme="dark"] :where(.sds).sheet-type[data-type],
 :where(.sds) .sheet-line:hover .sheet-type[data-type], :where(.sds).sheet-line:hover .sheet-type[data-type],
 html[data-theme="dark"] :where(.sds) .sheet-line:hover .sheet-type[data-type], html[data-theme="dark"] :where(.sds).sheet-line:hover .sheet-type[data-type],
 :where(.sds) .sheet:focus-within .sheet-type[data-type], :where(.sds).sheet:focus-within .sheet-type[data-type],
 html[data-theme="dark"] :where(.sds) .sheet:focus-within .sheet-type[data-type], html[data-theme="dark"] :where(.sds).sheet:focus-within .sheet-type[data-type] {
-  background: var(--white);
-  color: var(--text-muted);
+  background: transparent;
+  color: var(--black);
   box-shadow: 0 0 0 1px var(--black-12);
 }
-/* One step past the row hover. Light row hover is --sidebar-grey, so --grey.
-   Dark row hover is --grey, so --black-12. */
 :where(.sds) .sheet-type[data-type]:hover, :where(.sds).sheet-type[data-type]:hover,
 :where(.sds) .sheet-type[data-type][aria-expanded="true"], :where(.sds).sheet-type[data-type][aria-expanded="true"],
 :where(.sds) .sheet-line:hover .sheet-type[data-type]:hover, :where(.sds).sheet-line:hover .sheet-type[data-type]:hover,
 :where(.sds) .sheet-line:hover .sheet-type[data-type][aria-expanded="true"], :where(.sds).sheet-line:hover .sheet-type[data-type][aria-expanded="true"],
 :where(.sds) .sheet:focus-within .sheet-type[data-type]:hover, :where(.sds).sheet:focus-within .sheet-type[data-type]:hover,
 :where(.sds) .sheet:focus-within .sheet-type[data-type][aria-expanded="true"], :where(.sds).sheet:focus-within .sheet-type[data-type][aria-expanded="true"] {
-  background: var(--grey);
+  background: var(--sidebar-grey);
   color: var(--black);
   box-shadow: 0 0 0 1px var(--black-12);
 }
@@ -4619,14 +4622,9 @@ html[data-theme="dark"] :where(.sds) .sheet-line:hover .sheet-type[data-type]:ho
 html[data-theme="dark"] :where(.sds) .sheet-line:hover .sheet-type[data-type][aria-expanded="true"], html[data-theme="dark"] :where(.sds).sheet-line:hover .sheet-type[data-type][aria-expanded="true"],
 html[data-theme="dark"] :where(.sds) .sheet:focus-within .sheet-type[data-type]:hover, html[data-theme="dark"] :where(.sds).sheet:focus-within .sheet-type[data-type]:hover,
 html[data-theme="dark"] :where(.sds) .sheet:focus-within .sheet-type[data-type][aria-expanded="true"], html[data-theme="dark"] :where(.sds).sheet:focus-within .sheet-type[data-type][aria-expanded="true"] {
-  background: var(--black-12);
+  background: var(--grey);
   color: var(--black);
-  box-shadow: 0 0 0 1px var(--black-25);
-}
-/* The table type stays muted until hover. In the detail panel the label is black. */
-:where(.sds) .todo-side .sheet-type[data-type], :where(.sds).todo-side .sheet-type[data-type],
-html[data-theme="dark"] :where(.sds) .todo-side .sheet-type[data-type], html[data-theme="dark"] :where(.sds).todo-side .sheet-type[data-type] {
-  color: var(--black);
+  box-shadow: 0 0 0 1px var(--black-12);
 }
 :where(.sds) .sheet-type::before, :where(.sds).sheet-type::before { margin-inline-end: 6px; }
 :where(.sds) .sheet-type > .sheet-edit, :where(.sds).sheet-type > .sheet-edit,

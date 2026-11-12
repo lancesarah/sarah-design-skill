@@ -291,3 +291,22 @@ export const INITIAL_COUNTS: CashCount[] = [
     entry: null,
   },
 ];
+
+export const LINE_GROUPS: Array<{ id: LineGroup; label: string }> = [
+  { id: "coins", label: "Coins" },
+  { id: "bills", label: "Bills" },
+  { id: "other", label: "Other" },
+];
+
+export function shiftFace(name: string) {
+  return name.replace(/ In$/, " in").replace(/ Out$/, " out");
+}
+
+export type PostedCount = {
+  locationId: string;
+  shift: string;
+  notes: string;
+  entry: Record<string, number>;
+  total: number;
+  expected: number;
+};

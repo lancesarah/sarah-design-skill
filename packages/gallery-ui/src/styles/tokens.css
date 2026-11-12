@@ -8,7 +8,8 @@
   --white: #ffffff;
   --black: #000000;
   --blue: #3593dd;
-  --blue-hover: #1f6ca9;
+  /* Hover is the blue mixed 88% with black, the same step the danger button takes. */
+  --blue-hover: #2f81c2;
   /* One red, from the confirmation button. 4.11:1 on white. */
   --red: #e34144;
 
@@ -62,6 +63,9 @@
   --switch-ov2: 0px;
 
   --shadow-menu: 0 4px 20px rgb(0 0 0 / 10%);
+  --shadow-card: 0 3px 7px rgb(0 0 0 / 4%);
+  /* The photo viewer's backdrop. Dark in both themes, so a photo reads the same in each. */
+  --scrim-photo: rgb(0 0 0 / 80%);
   --stroke: 0 0 0 1px var(--grey);
   /* Hairline. Matches --grey in light. Dark mode sets its own. */
   --line: var(--grey);
@@ -109,6 +113,14 @@
   --gap-inline: var(--space-8);
   --radius-card: var(--radius-control);
   --elevation-menu: var(--shadow-menu);
+  /* A popup's outer band, 2px past its stroke. Translucent white so it reads over the scrim. */
+  --ring-popup: 0 0 0 3px rgb(255 255 255 / 18%);
+  /* The same band on a menu, which sits on the page, not the scrim, so it darkens. */
+  --ring-menu: 0 0 0 3px rgb(0 0 0 / 2.5%);
+  /* Text on a photo. Stays white in dark mode, since the photo doesn't change. */
+  --on-image: #ffffff;
+  /* Ink on a light part of a photo, such as sky. Stays black in dark mode too. */
+  --on-image-ink: #000000;
   --menu-min: 132px;
   --menu-max: 240px;
   --motion-hover: 120ms;
@@ -152,6 +164,9 @@ html[data-theme="dark"] {
   --stroke: 0 0 0 1px var(--line);
   --outline-image: 1px solid rgb(255 255 255 / 10%);
   --shadow-menu: 0 4px 20px rgb(0 0 0 / 45%);
+  --ring-popup: 0 0 0 3px rgb(255 255 255 / 4%);
+  --ring-menu: 0 0 0 3px rgb(255 255 255 / 3%);
+  --shadow-card: 0 3px 7px rgb(0 0 0 / 25%);
   --button-fill: #FFFFFF;
   --button-text: #202020;
   --button-hover: #EEEEEE;

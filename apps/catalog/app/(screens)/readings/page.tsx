@@ -16,6 +16,7 @@ import { flushSync } from "react-dom";
 import { FilterMenu, SearchBox } from "../chrome";
 import { Glyph } from "../glyph";
 import { PageLayout, PageTitle } from "../page-layout";
+import { RecordEditor } from "./record-editor";
 import { SourceEditor, SourceEditorDialog } from "./source-editor";
 
 export type Measure = { id: string; name: string; unit: string; min?: number; max?: number; required?: boolean };
@@ -38,7 +39,7 @@ export type Source = {
   alerts: string[];
 };
 
-type Log = { id: string; sourceId: string; value: string; when: string; by: string; initials: string };
+type Log = { id: string; sourceId: string; value: string; when: string; by: string; initials: string; notes?: string };
 
 type Reading = { id: string; sourceId: string; measureId: string; value: number; when: string };
 
@@ -243,18 +244,6 @@ function measureCount(source: Source) {
   return `${count} ${count === 1 ? "measurement" : "measurements"}`;
 }
 
-function shownReading(raw: string) {
-  const numeric = Number(raw.replace(/,/g, ""));
-  return Number.isFinite(numeric) && /^-?[\d,]+(\.\d+)?$/.test(raw) ? numeric.toLocaleString("en-US") : raw;
-}
-
-function outsideRange(measure: Measure, raw: string) {
-  if (measure.min == null && measure.max == null) return false;
-  const numeric = Number(raw.replace(/,/g, ""));
-  if (!Number.isFinite(numeric)) return false;
-  return (measure.min != null && numeric < measure.min) || (measure.max != null && numeric > measure.max);
-}
-
 function ReadingStatus({ source }: { source: Source }) {
   if (!source.latest) {
     return (
@@ -322,125 +311,6 @@ function shiftPage(direction: "forward" | "back", update: () => void) {
       delete document.documentElement.dataset.pmShift;
     }
   });
-}
-
-function RecordForm({
-  source,
-  onSubmit,
-}: {
-  source: Source;
-  onSubmit: (value: string, when: Date, alerts: string[], entries: Entry[]) => void;
-}) {
-  const [draft, setDraft] = useState<Record<string, string>>({});
-  const [day, setDay] = useState<"today" | "yesterday" | "pick">("today");
-  const [picked, setPicked] = useState("");
-  const [notes, setNotes] = useState("");
-
-  function reset() {
-    setDraft({});
-    setDay("today");
-    setPicked("");
-    setNotes("");
-  }
-
-  function when() {
-    const now = new Date();
-    if (day === "yesterday") {
-      const date = new Date(now);
-      date.setDate(date.getDate() - 1);
-      return date;
-    }
-    if (day === "pick" && picked) {
-      const [year, month, date] = picked.split("-").map(Number);
-      const next = new Date(now);
-      next.setFullYear(year, month - 1, date);
-      return next;
-    }
-    return now;
-  }
-
-  return (
-    <form
-      className="readings-form"
-      onSubmit={(event) => {
-        event.preventDefault();
-        const filled = source.measures.flatMap((measure) => {
-          const raw = (draft[measure.id] ?? "").trim();
-          if (!raw) return [];
-          const shown = `${shownReading(raw)} ${measure.unit}`;
-          const numeric = Number(raw.replace(/,/g, ""));
-          return [{
-            measureId: measure.id,
-            shown,
-            value: Number.isFinite(numeric) ? numeric : null,
-            alert: outsideRange(measure, raw) ? `${measure.name} ${shown}` : null,
-          }];
-        });
-        if (filled.length === 0) return;
-        const summary = filled.map((item) => item.shown).join(", ");
-        reset();
-        onSubmit(
-          summary,
-          when(),
-          filled.flatMap((item) => item.alert ? [item.alert] : []),
-          filled.flatMap((item) => item.value == null ? [] : [{ measureId: item.measureId, value: item.value }]),
-        );
-      }}
-    >
-      <div className="readings-card">
-        <h2 className="readings-card-title">
-          Record reading
-          <span>{source.name}</span>
-        </h2>
-        <div className="readings-grid">
-          {source.measures.map((measure) => (
-            <label key={measure.id} className="readings-field">
-              <span className="sheet-label">{measure.name}</span>
-              <span className="readings-entry">
-                <input
-                  className="sds line"
-                  inputMode="decimal"
-                  aria-label={measure.name}
-                  value={draft[measure.id] ?? ""}
-                  onChange={(event) => setDraft((current) => ({ ...current, [measure.id]: event.target.value }))}
-                />
-                <span className="readings-unit">{measure.unit}</span>
-              </span>
-            </label>
-          ))}
-        </div>
-        <div className="readings-field">
-          <span className="sheet-label">Reading date</span>
-          <div className="readings-dates">
-            <Button variant={day === "today" ? "tertiary" : "secondary"} aria-pressed={day === "today"} type="button" onClick={() => setDay("today")}>
-              Today
-            </Button>
-            <Button variant={day === "yesterday" ? "tertiary" : "secondary"} aria-pressed={day === "yesterday"} type="button" onClick={() => setDay("yesterday")}>
-              Yesterday
-            </Button>
-            <input
-              className={day === "pick" && picked ? "sds line is-picked" : "sds line"}
-              type="date"
-              aria-label="Reading date"
-              value={picked}
-              onChange={(event) => {
-                setPicked(event.target.value);
-                setDay("pick");
-              }}
-            />
-          </div>
-        </div>
-        <label className="readings-field">
-          <span className="sheet-label">Notes (optional)</span>
-          <textarea className="text-well" rows={3} value={notes} placeholder="Anything to flag" onChange={(event) => setNotes(event.target.value)} />
-        </label>
-        <div className="readings-foot">
-          <Button variant="secondary" type="button" onClick={reset}>Cancel</Button>
-          <Button type="submit">Submit</Button>
-        </div>
-      </div>
-    </form>
-  );
 }
 
 function pointsFor(readings: Reading[], sourceId: string, measureId: string) {
@@ -711,12 +581,12 @@ function SourcePage({
   source,
   readings,
   onEdit,
-  onSubmit,
+  onRecord,
 }: {
   source: Source;
   readings: Reading[];
   onEdit: () => void;
-  onSubmit: (value: string, when: Date, alerts: string[], entries: Entry[]) => void;
+  onRecord: () => void;
 }) {
   const [measureId, setMeasureId] = useState(source.measures[0]?.id ?? "");
   const measure = source.measures.find((item) => item.id === measureId) ?? source.measures[0];
@@ -729,10 +599,16 @@ function SourcePage({
           <p className="pm-check-when">
             <span>{source.lastAt ? `Recorded ${source.lastAt}` : "Not recorded"}</span>
           </p>
-          <button type="button" className="pm-check-edit" onClick={onEdit}>
-            <Icon name="edit" size={18} />
-            Edit source
-          </button>
+          <div className="readings-check-actions">
+            <button type="button" className="pm-check-edit" onClick={onEdit}>
+              <Icon name="edit" size={18} />
+              Edit source
+            </button>
+            <Button onClick={onRecord}>
+              <Icon name="plus" size={14} />
+              Record reading
+            </Button>
+          </div>
         </div>
         <div className="pm-check-intro">
           <header className="pm-check-name">
@@ -752,11 +628,7 @@ function SourcePage({
         </div>
         <hr className="pm-check-rule" />
       </div>
-      <section className="pm-check-block">
-        <RecordForm source={source} onSubmit={onSubmit} />
-      </section>
       <section className="pm-check-block" aria-label="Last readings">
-        <hr className="pm-check-rule" />
         <p className="pm-list-k">Last readings</p>
         <div className="readings-stats">
           {source.measures.map((item) => {
@@ -807,6 +679,7 @@ export default function ReadingsPage() {
   const [fromHistory, setFromHistory] = useState(false);
   const [focusSourceId, setFocusSourceId] = useState<string | null>(null);
   const [editingSource, setEditingSource] = useState(false);
+  const [recordingId, setRecordingId] = useState<string | null>(null);
 
   const now = new Date();
   const days = range === "7d" ? 7 : range === "30d" ? 30 : 14;
@@ -834,10 +707,10 @@ export default function ReadingsPage() {
     setFocusSourceId(null);
   }, [focusSourceId, sources]);
 
-  function submit(source: Source, value: string, when: Date, alerts: string[], entries: Entry[]) {
+  function submit(source: Source, value: string, when: Date, alerts: string[], entries: Entry[], notes = "") {
     const stamp = formatWhen(when);
     setSources((current) => current.map((item) => item.id === source.id ? { ...item, latest: value, lastAt: stamp, alerts } : item));
-    setLogs((current) => [{ id: `log-${Date.now()}`, sourceId: source.id, value, when: stamp, by: "Sarah", initials: "SM" }, ...current]);
+    setLogs((current) => [{ id: `log-${Date.now()}`, sourceId: source.id, value, when: stamp, by: "Sarah", initials: "SM", notes: notes || undefined }, ...current]);
     if (entries.length > 0) {
       setReadings((current) => [
         ...current,
@@ -851,6 +724,8 @@ export default function ReadingsPage() {
       ]);
     }
   }
+
+  const recording = sources.find((source) => source.id === recordingId);
 
   const columns: Array<DataColumn<Source>> = [
     {
@@ -891,7 +766,10 @@ export default function ReadingsPage() {
       render: (row) => (
         <Button
           variant="secondary"
-          onClick={() => shiftPage("forward", () => { setOpenId(row.id); setView("source"); })}
+          onClick={(event) => {
+            event.stopPropagation();
+            setRecordingId(row.id);
+          }}
         >
           <Icon name="plus" size={14} />
           Record
@@ -927,8 +805,18 @@ export default function ReadingsPage() {
               source={source}
               readings={readings}
               onEdit={() => setEditingSource(true)}
-              onSubmit={(value, when, alerts, entries) => submit(source, value, when, alerts, entries)}
+              onRecord={() => setRecordingId(source.id)}
             />
+            {recordingId === source.id ? (
+              <RecordEditor
+                source={source}
+                onClose={() => setRecordingId(null)}
+                onSubmit={(value, when, alerts, entries, notes) => {
+                  submit(source, value, when, alerts, entries, notes);
+                  setRecordingId(null);
+                }}
+              />
+            ) : null}
             {editingSource ? (
               <SourceEditorDialog
                 source={source}
@@ -967,7 +855,7 @@ export default function ReadingsPage() {
       .filter((log) => {
         if (historySources.length > 0 && !historySources.includes(log.name)) return false;
         if (!historyWanted) return true;
-        return `${log.category} ${log.place} ${log.name} ${log.value} ${log.by}`.toLowerCase().includes(historyWanted);
+        return `${log.category} ${log.place} ${log.name} ${log.value} ${log.by} ${log.notes ?? ""}`.toLowerCase().includes(historyWanted);
       });
     const historyColumns: Array<DataColumn<(typeof rows)[number]>> = [
       {
@@ -1111,7 +999,7 @@ export default function ReadingsPage() {
             History
           </Button>
           <Button variant="secondary" onClick={() => shiftPage("forward", () => setView("edit"))}>
-            <Icon name="list" size={14} />
+            <Icon name="tune" size={14} />
             Edit readings
           </Button>
         </>
@@ -1182,6 +1070,17 @@ export default function ReadingsPage() {
           />
         </div>
       </div>
+      {recording ? (
+        <RecordEditor
+          key={recording.id}
+          source={recording}
+          onClose={() => setRecordingId(null)}
+          onSubmit={(value, when, alerts, entries, notes) => {
+            submit(recording, value, when, alerts, entries, notes);
+            setRecordingId(null);
+          }}
+        />
+      ) : null}
     </PageLayout>
   );
 }

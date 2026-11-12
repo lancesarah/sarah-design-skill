@@ -511,14 +511,19 @@ html[data-theme="dark"] .sheet-fade {
   color: var(--black);
 }
 
-.sheet-line .sheet-room,
 .sheet-line .sheet-title,
 .sheet-line .sheet-note {
-  cursor: pointer;
+  cursor: text;
+}
+
+.sheet-line input.sheet-room,
+input.todo-side-room {
+  cursor: text;
 }
 
 .sheet-line .sheet-title:focus,
-.sheet-line .sheet-note:focus {
+.sheet-line .sheet-note:focus,
+.sheet-line .sheet-room:focus {
   cursor: text;
 }
 
@@ -590,6 +595,15 @@ html[data-theme="dark"] .sheet-fade {
 .sheet-line:hover .sheet-type:hover,
 .sheet:focus-within .sheet-type:hover { background: var(--sidebar-grey); }
 
+/* A chip is 20px. The line box does not make it taller. Type stays the size the chip already had. */
+.sheet-chip {
+  box-sizing: border-box;
+  height: 20px;
+  min-height: 20px;
+  padding: 2px 4px;
+  line-height: 16px;
+}
+
 /* The row stays hovered while the pointer is on a chip. The chip takes the next step. */
 .sheet-chevron { opacity: 0; }
 :hover > .sheet-chevron,
@@ -622,25 +636,37 @@ html[data-theme="dark"] .sheet-fade {
   align-items: center;
   justify-self: start;
   position: relative;
-  top: -2px;
-  margin-top: 4px;
-  width: max-content;
+  top: 0;
+  margin: 0;
+  width: auto;
+  max-width: 100%;
   height: 20px;
-  padding: var(--space-2) var(--space-4);
-  border-radius: 4px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
   background: transparent;
   font-size: var(--text-16);
-  font-weight: 400;
-  line-height: 16px;
+  font-weight: 500;
+  font-variant-numeric: normal;
+  line-height: 20px;
   text-align: left;
 }
 
+input.sheet-room {
+  field-sizing: content;
+  width: auto;
+  min-width: 0;
+  outline: none;
+  box-shadow: none;
+}
+
 .sheet-room:hover,
-.sheet-room[aria-expanded="true"],
 .sheet-line:hover .sheet-room:hover,
-.sheet-line:hover .sheet-room[aria-expanded="true"],
-.sheet:focus-within .sheet-room:hover,
-.sheet:focus-within .sheet-room[aria-expanded="true"] { background: var(--grey); }
+.sheet:focus-within .sheet-room:hover { background: transparent; }
+
+input.sheet-room:focus {
+  box-shadow: inset 0 -1px 0 var(--black-25);
+}
 
 .sheet-room .sheet-edit { margin-inline-start: 0; }
 .sheet-room:hover .sheet-edit,
@@ -1373,7 +1399,7 @@ html[data-theme="dark"] .sheet-room[aria-expanded="true"],
 html[data-theme="dark"] .sheet-line:hover .sheet-room:hover,
 html[data-theme="dark"] .sheet-line:hover .sheet-room[aria-expanded="true"],
 html[data-theme="dark"] .sheet:focus-within .sheet-room:hover,
-html[data-theme="dark"] .sheet:focus-within .sheet-room[aria-expanded="true"] { background: var(--black-12); }
+html[data-theme="dark"] .sheet:focus-within .sheet-room[aria-expanded="true"] { background: transparent; }
 html[data-theme="dark"] .sheet-chip:hover,
 html[data-theme="dark"] .sheet-chip[aria-expanded="true"] { background: var(--grey); }
 html[data-theme="dark"] .sheet-line:hover .sheet-chip:hover,
@@ -1478,11 +1504,22 @@ html[data-theme="dark"] .sheet-who.is-empty[aria-expanded="true"] .avatar.mini {
   line-height: 48px;
   text-align: center;
   font-variant-numeric: var(--numeric);
-  cursor: pointer;
+  cursor: text;
 }
 .todo-side-room:hover,
-.todo-side-room[aria-expanded="true"] { background: var(--grey); }
+.todo-side-room[aria-expanded="true"],
+.todo-side-room:focus { background: var(--grey); }
 .todo-side-room.is-quiet { color: var(--black-50); }
+.todo-side-room.is-static { cursor: default; }
+.todo-side-room.is-static:hover { background: var(--sidebar-grey); }
+input.todo-side-room {
+  box-sizing: border-box;
+  display: inline-block;
+  min-width: 0;
+  max-width: 50px;
+  outline: none;
+}
+input.todo-side-room::placeholder { color: var(--black-50); }
 
 .todo-side-actions {
   display: inline-flex;
@@ -1501,11 +1538,12 @@ html[data-theme="dark"] .sheet-who.is-empty[aria-expanded="true"] .avatar.mini {
 .todo-side-actions .note-more[aria-expanded="true"]:not(:hover) { background: transparent; }
 
 .todo-side-scroll {
+  --side-scroll-top: 40px;
   display: flex;
   flex-direction: column;
   gap: 24px;
   min-height: 0;
-  padding: var(--space-16) var(--space-25) var(--space-25);
+  padding: var(--side-scroll-top) var(--space-25) var(--space-25);
   overflow: auto;
   scrollbar-color: var(--black-25) var(--white);
   scrollbar-width: thin;
@@ -1527,6 +1565,14 @@ html[data-theme="dark"] .sheet-who.is-empty[aria-expanded="true"] .avatar.mini {
 }
 
 .todo-side-title-row h2[hidden] { display: none; }
+
+/* The title and its description read as one block. */
+.todo-side-heading {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  width: 100%;
+}
 
 .todo-side-facts {
   display: flex;
@@ -1583,7 +1629,8 @@ html[data-theme="dark"] .sheet-who.is-empty[aria-expanded="true"] .avatar.mini {
   font-size: var(--text-16);
   line-height: 20px;
 }
-.todo-side-facts .side-field.is-empty { color: var(--black-50); }
+.todo-side-facts .side-field.is-empty,
+.todo-side .side-field.is-empty { color: var(--black-50); }
 
 .todo-side-title-row h2 {
   margin: 0;
@@ -1607,6 +1654,19 @@ html[data-theme="dark"] .sheet-who.is-empty[aria-expanded="true"] .avatar.mini {
   flex-direction: column;
   gap: var(--space-8);
 }
+
+/* A fact read in a view-only panel. */
+.todo-side-value {
+  margin: 0;
+  color: var(--black);
+  font-size: var(--text-14);
+  line-height: 20px;
+  overflow-wrap: anywhere;
+}
+.todo-side-value.is-quiet { color: var(--text-muted); }
+.todo-side-value.is-empty { color: var(--black-25); }
+.fact-row > .mini-pill,
+.fact-row > .dept { justify-self: start; }
 
 .edit-text {
   display: inline-flex;
@@ -1686,6 +1746,7 @@ html[data-theme="dark"] .text-well { background: var(--grey); }
 .edit-text:has([data-side-desc]) .edit-text-mark { display: none; }
 
 .todo-side-rule {
+  flex: none;
   height: 1px;
   margin-inline: calc(var(--space-25) * -1);
   background: var(--line);
@@ -1705,6 +1766,16 @@ html[data-theme="dark"] .text-well { background: var(--grey); }
   display: flex;
   flex-direction: column;
   gap: var(--space-16);
+}
+
+/* The line field is 32px and the menus are 20px. Titles stay on one pitch: 4px between fields, 10px where a field meets a menu. */
+.todo-side-meta > div:has(.line):has(+ div .line) {
+  margin-bottom: calc(var(--space-4) - var(--space-16));
+}
+
+.todo-side-meta > div:has(.line):not(:has(+ div .line)):not(:last-child),
+.todo-side-meta > div:not(:has(.line)):has(+ div .line) {
+  margin-bottom: calc(var(--space-10) - var(--space-16));
 }
 
 .todo-side-meta > div {
@@ -1728,6 +1799,7 @@ html[data-theme="dark"] .text-well { background: var(--grey); }
 .todo-side .activity-head { min-height: 0; }
 
 .todo-side-meta > .todo-side-photos { align-items: stretch; }
+.todo-side-meta > .fact-row:has(> .side-photos) { align-items: start; }
 
 .side-who,
 .side-status {
@@ -2010,8 +2082,8 @@ html[data-theme="dark"] .todo-side .side-photo-remove:hover {
 
 .side-photo,
 .side-photo-add {
-  width: 56px;
-  height: 56px;
+  width: var(--side-photo-size, 56px);
+  height: var(--side-photo-size, 56px);
   border-radius: var(--radius-control);
 }
 
@@ -2022,12 +2094,23 @@ html[data-theme="dark"] .todo-side .side-photo-remove:hover {
 
 .side-photo img {
   display: block;
-  width: 56px;
-  height: 56px;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
   border-radius: var(--radius-control);
   outline: var(--outline-image);
   outline-offset: -1px;
+}
+
+.side-photo-open {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-control);
+  background: none;
+  cursor: zoom-in;
 }
 
 .side-photo-remove {
@@ -2051,16 +2134,40 @@ html[data-theme="dark"] .todo-side .side-photo-remove:hover {
 .side-photo:focus-within .side-photo-remove { opacity: 1; }
 .side-photo-remove:hover { background: var(--sidebar-grey); }
 
+/* The one photo upload tile. A context sets only its size, through --side-photo-size. */
 .side-photo-add {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: 1px dashed var(--black-25);
-  background: var(--grey);
+  border: 0;
+  background: var(--sidebar-grey);
   color: var(--black-50);
+  transition: background-color 120ms ease;
 }
 
-.side-photo-add:hover { background: var(--black-12); }
+.side-photo-add-frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.side-photo-add-frame rect {
+  x: 0.5px;
+  y: 0.5px;
+  width: calc(100% - 1px);
+  height: calc(100% - 1px);
+  rx: calc(var(--radius-control) - 0.5px);
+  fill: none;
+  stroke: var(--black-25);
+  stroke-width: 1px;
+  stroke-dasharray: 3 2;
+}
+
+.side-photo-add:hover { background: var(--grey); }
 
 .todo-side .activity-list { gap: var(--space-14); }
 

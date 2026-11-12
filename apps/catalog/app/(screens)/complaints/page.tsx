@@ -4,26 +4,38 @@ import {
   ASSIGNEE_PEOPLE,
   ActivityFeed,
   Button,
+  ConfirmDialog,
+  DEPARTMENTS,
+  DepartmentChip,
   DetailPanel,
+  EditorDialog,
+  EditorField,
+  EditorFields,
+  EditorPill,
+  EditorPills,
+  FactRow,
   Icon,
-  OverlayMenu,
+  Person,
+  PlacePill,
+  RequiredToast,
+  RoomPill,
+  SideRoom,
+  Status,
   StatusCell,
   Tabs,
-  TaskAssignee,
   TaskTable,
-  TitleSubtitle,
-  TypeCell,
+  Urgency,
   UrgencyCell,
   captureClose,
+  taskMenuItem,
   type ActivityItem,
   type StatusValue,
   type TaskRow,
   type UrgencyValue,
 } from "@lance-live/gallery-ui";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { flushSync } from "react-dom";
 import { FilterMenu, SearchBox } from "../chrome";
-import { EditText } from "../edit-text";
 import { Glyph } from "../glyph";
 import { PageLayout } from "../page-layout";
 
@@ -113,111 +125,25 @@ const STARTER: Complaint[] = [
 const COMPLAINTS = ["Cleanliness", "Noise", "Maintenance", "Temperature", "Amenities", "Service", "Billing", "Other"] as const;
 const URGENCY: Record<string, string> = { urgent: "Urgent", high: "High", standard: "Standard", low: "Low" };
 const MOODS = ["Extremely upset", "Upset", "Neutral", "Happy", "Extremely happy"];
+const TYPES = DEPARTMENTS.map((item) => item.value);
+const STATUSES = [
+  { value: "open", label: "Open" },
+  { value: "progress", label: "In progress" },
+  { value: "complete", label: "Completed" },
+] as const;
+const URGENCIES = [
+  { value: "urgent", label: "Urgent" },
+  { value: "high", label: "High" },
+  { value: "standard", label: "Standard" },
+  { value: "low", label: "Low" },
+] as const;
 
-function SideLine({
-  label,
-  value,
-  placeholder,
-  inputMode,
-  onCommit,
-}: {
-  label: string;
-  value: string;
-  placeholder: string;
-  inputMode?: "email" | "tel";
-  onCommit: (value: string) => void;
-}) {
-  return (
-    <EditText>
-      <textarea
-        className="side-line"
-        aria-label={label}
-        placeholder={placeholder}
-        rows={1}
-        inputMode={inputMode}
-        defaultValue={value}
-        onChange={(event) => {
-          const clean = event.target.value.replace(/\n+/g, " ");
-          if (clean !== event.target.value) event.target.value = clean;
-        }}
-        onKeyDown={(event) => {
-          if (event.key === "Enter") {
-            event.preventDefault();
-            event.currentTarget.blur();
-          }
-        }}
-        onBlur={(event) => onCommit(event.target.value.trim())}
-      />
-    </EditText>
-  );
+function isAssigned(row: Complaint) {
+  return Boolean(row.assignee) && row.assignee !== "Unassigned";
 }
 
-function MoodField({
-  value,
-  open,
-  onToggle,
-  onChange,
-}: {
-  value: string;
-  open: boolean;
-  onToggle: () => void;
-  onChange: (value: string) => void;
-}) {
-  const ref = useRef<HTMLButtonElement>(null);
-  useEffect(() => {
-    if (!open) return;
-    const close = (event: PointerEvent) => {
-      const target = event.target;
-      if (!(target instanceof Node)) return;
-      if (ref.current?.contains(target)) return;
-      if (target instanceof Element && target.closest(".menu")) return;
-      onToggle();
-    };
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") onToggle();
-    };
-    document.addEventListener("pointerdown", close);
-    document.addEventListener("keydown", onKey);
-    return () => {
-      document.removeEventListener("pointerdown", close);
-      document.removeEventListener("keydown", onKey);
-    };
-  }, [open, onToggle]);
-  return (
-    <>
-      <button
-        ref={ref}
-        className={["side-field", value ? "" : "is-empty"].filter(Boolean).join(" ")}
-        type="button"
-        data-menu-kind="mood"
-        aria-haspopup="menu"
-        aria-expanded={open}
-        aria-label={value ? `Guest mood, ${value}` : "Guest mood"}
-        onClick={onToggle}
-      >
-        <span>{value || "Guest mood"}</span>
-        <Icon name="chevron" size={10} className="sheet-edit" />
-      </button>
-      <OverlayMenu open={open} anchorRef={ref} label="Guest mood">
-        {MOODS.map((mood) => (
-          <button
-            key={mood}
-            className="menu-item"
-            type="button"
-            role="menuitemradio"
-            aria-checked={mood === value}
-            onClick={() => {
-              onChange(mood);
-              onToggle();
-            }}
-          >
-            {mood}
-            <Icon name="check" size={14} className="check" />
-          </button>
-        ))}
-      </OverlayMenu>
-    </>
-  );
+function SideValue({ value }: { value: string }) {
+  return <span className={value ? "todo-side-value" : "todo-side-value is-quiet"}>{value || "–"}</span>;
 }
 
 function ComplaintDetail({
@@ -226,20 +152,16 @@ function ComplaintDetail({
   onClose,
   onExited,
   onDeleted,
-  onPatch,
+  onEdit,
 }: {
   row: Complaint;
   hidden: boolean;
   onClose: () => void;
   onExited: () => void;
   onDeleted: () => void;
-  onPatch: (patch: Partial<Complaint>) => void;
+  onEdit: () => void;
 }) {
-  const [field, setField] = useState<"status" | "urgency" | "type" | "mood" | null>(null);
-  const [status, setStatus] = useState(row.status);
-  const [urgency, setUrgency] = useState(row.urgency);
-  const [type, setType] = useState(row.type);
-  const toggle = (next: "status" | "urgency" | "type" | "mood") => setField((current) => (current === next ? null : next));
+  const title = [row.guest, row.title].filter(Boolean).join(" · ");
   return (
     <DetailPanel
       label="Complaint details"
@@ -249,6 +171,7 @@ function ComplaintDetail({
       onClose={onClose}
       onExited={onExited}
       onDeleted={onDeleted}
+      onEdit={onEdit}
       actions={
         <Button variant="secondary">
           <Icon name="calendar" size={14} />
@@ -257,114 +180,196 @@ function ComplaintDetail({
       }
     >
       <div className="todo-side-intro">
-        <button className={row.room ? "todo-side-room" : "todo-side-room is-quiet"} type="button" aria-label="Room">
-          {row.room || "—"}
-        </button>
-        <div className="todo-side-title-row">
-          <div className="todo-side-facts">
-            <input
-              className={row.guest ? "complaint-guest" : "complaint-guest is-empty"}
-              aria-label="Guest"
-              placeholder="Guest"
-              value={row.guest}
-              onChange={(event) => onPatch({ guest: event.target.value })}
-            />
-            <span className="sheet-dot" aria-hidden="true">·</span>
-            <TitleSubtitle
-              variant="dropdown"
-              size="title"
-              title={{
-                value: row.title,
-                placeholder: "Complaint",
-                options: row.title && !(COMPLAINTS as readonly string[]).includes(row.title) ? [row.title, ...COMPLAINTS] : COMPLAINTS,
-                onChange: (title) => onPatch({ title }),
-              }}
-              subtitle=""
-            />
+        <SideRoom value={row.room} readOnly />
+        <div className="todo-side-heading">
+          <div className="todo-side-title-row">
+            <h2>{title || "New complaint"}</h2>
+            <time>{row.opened}</time>
           </div>
-          <time>{row.opened}</time>
+          <p className={row.complaint ? "todo-side-value is-quiet" : "todo-side-value is-empty"}>{row.complaint || "No description"}</p>
         </div>
-      </div>
-      <div className="todo-side-desc">
-        <label className="sheet-label" htmlFor="side-desc">Description</label>
-        <EditText fill>
-          <textarea id="side-desc" className="text-well" data-side-desc rows={4} defaultValue={row.complaint} placeholder="Add a note" />
-        </EditText>
       </div>
       <div className="todo-side-rule" />
       <div className="todo-side-meta">
-        <div>
-          <span className="sheet-label">Phone</span>
-          <SideLine label="Phone" value={row.phone} placeholder="Empty" inputMode="tel" onCommit={(phone) => onPatch({ phone })} />
-        </div>
-        <div>
-          <span className="sheet-label">Email</span>
-          <SideLine label="Email" value={row.email} placeholder="Empty" inputMode="email" onCommit={(email) => onPatch({ email })} />
-        </div>
-        <div>
-          <span className="sheet-label">Loyalty #</span>
-          <SideLine label="Loyalty number" value={row.loyalty} placeholder="Empty" onCommit={(loyalty) => onPatch({ loyalty })} />
-        </div>
-        <div>
-          <span className="sheet-label">Guest mood</span>
-          <MoodField value={row.mood} open={field === "mood"} onToggle={() => toggle("mood")} onChange={(mood) => onPatch({ mood })} />
-        </div>
-        <div>
-          <span className="sheet-label">Type</span>
-          <TypeCell
-            value={type}
-            onChange={(value) => {
-              setType(value);
-              onPatch({ type: value });
-            }}
-            open={field === "type"}
-            onToggle={() => toggle("type")}
-          />
-        </div>
-        <div>
-          <span className="sheet-label">Assigned</span>
-          <TaskAssignee
-            named
-            name={row.assignee}
-            initials={row.initials}
-            style={{ background: "var(--sidebar-grey)" }}
-            onSelect={(value) => {
-              const person = ASSIGNEE_PEOPLE.find((item) => item.name === value);
-              onPatch({
-                assignee: value === "unassigned" ? "Unassigned" : value,
-                initials: value === "unassigned" ? "" : (person?.avatar ?? ""),
-              });
-            }}
-          />
-        </div>
-        <div>
-          <span className="sheet-label">Status</span>
-          <StatusCell
-            value={status}
-            onChange={(value) => {
-              setStatus(value);
-              onPatch({ status: value });
-            }}
-            open={field === "status"}
-            onToggle={() => toggle("status")}
-          />
-        </div>
-        <div>
-          <span className="sheet-label">Urgency</span>
-          <UrgencyCell
-            value={urgency}
-            onChange={(value) => {
-              setUrgency(value);
-              onPatch({ urgency: value });
-            }}
-            open={field === "urgency"}
-            onToggle={() => toggle("urgency")}
-          />
-        </div>
+        <FactRow label="Phone">
+          <SideValue value={row.phone} />
+        </FactRow>
+        <FactRow label="Email">
+          <SideValue value={row.email} />
+        </FactRow>
+        <FactRow label="Loyalty #">
+          <SideValue value={row.loyalty} />
+        </FactRow>
+        <FactRow label="Guest mood">
+          <SideValue value={row.mood} />
+        </FactRow>
+        <FactRow label="Type">{row.type ? <DepartmentChip name={row.type} /> : <SideValue value="" />}</FactRow>
+        <FactRow label="Assigned">
+          {isAssigned(row) ? <Person name={row.assignee} initials={row.initials} variant="pill" /> : <Person name="Unassigned" variant="unassigned" />}
+        </FactRow>
+        <FactRow label="Status">
+          <StatusCell value={row.status} editable={false} />
+        </FactRow>
+        <FactRow label="Urgency">
+          <UrgencyCell value={row.urgency} editable={false} />
+        </FactRow>
       </div>
       <div className="todo-side-rule" />
       <ActivityFeed className="todo-side-activity" items={row.activity} />
     </DetailPanel>
+  );
+}
+
+type Pick = "category" | "mood" | "type" | "assignee" | "status" | "urgency";
+
+/** The complaint popup. Guest details are text entries, the rest are pills that open menus. */
+function ComplaintEditor({
+  row,
+  creating = false,
+  onClose,
+  onSave,
+  onDelete,
+}: {
+  row: Complaint;
+  creating?: boolean;
+  onClose: () => void;
+  onSave: (next: Complaint) => void;
+  onDelete: () => void;
+}) {
+  const [draft, setDraft] = useState(row);
+  const [menu, setMenu] = useState<Pick | null>(null);
+  const [confirm, setConfirm] = useState(false);
+  const [tried, setTried] = useState(false);
+  const [toast, setToast] = useState(0);
+  const hideToast = useCallback(() => setToast(0), []);
+  const missing = { title: !draft.title, mood: !draft.mood, complaint: !draft.complaint.trim() };
+  const patch = (next: Partial<Complaint>) => setDraft((current) => ({ ...current, ...next }));
+  const toggle = (next: Pick) => setMenu((current) => (current === next ? null : next));
+  const pickMenu = (options: readonly { value: string; label: ReactNode }[], current: string, onPick: (value: string) => void) =>
+    options.map((option) =>
+      taskMenuItem(option.value, option.value === current, () => {
+        onPick(option.value);
+        setMenu(null);
+      }, option.label),
+    );
+  const contactField = (label: string, key: "guest" | "phone" | "email" | "loyalty", inputMode?: "tel" | "email") => (
+    <EditorField label={label} inputMode={inputMode} value={draft[key]} onChange={(value) => patch({ [key]: value })} />
+  );
+  const pick = (key: Pick, value: ReactNode, menuItems: ReactNode, quiet = false, invalid = false, icon?: "tag") => (
+    <EditorPill icon={icon} open={menu === key} onToggle={() => toggle(key)} value={value} quiet={quiet} invalid={tried && invalid} menu={menuItems} />
+  );
+  const categories = draft.title && !(COMPLAINTS as readonly string[]).includes(draft.title) ? [draft.title, ...COMPLAINTS] : COMPLAINTS;
+
+  return (
+    <>
+      <EditorDialog
+        kicker={creating ? "Create complaint" : "Edit complaint"}
+        layout="pills"
+        className="pm-page todo-editor"
+        title={draft.title}
+        titlePlaceholder="Complaint category"
+        subtitle={draft.complaint}
+        subtitlePlaceholder="Add a description"
+        onSubtitleChange={(complaint) => patch({ complaint })}
+        subtitleInvalid={tried && missing.complaint}
+        deleteLabel="Delete complaint"
+        onDelete={() => setConfirm(true)}
+        onClose={onClose}
+        onEscape={() => {
+          if (confirm) return true;
+          if (!menu) return false;
+          setMenu(null);
+          return true;
+        }}
+        footer={
+          <>
+            <Button variant="secondary">
+              <Icon name="calendar" size={14} />
+              Schedule for future
+            </Button>
+            <Button
+              onClick={() => {
+                if (missing.title || missing.mood || missing.complaint) {
+                  setTried(true);
+                  setToast(Date.now());
+                  return;
+                }
+                onSave(draft);
+              }}
+            >
+              Save complaint
+            </Button>
+          </>
+        }
+      >
+        <EditorFields>
+          {contactField("Guest name", "guest")}
+          {contactField("Phone", "phone", "tel")}
+          {contactField("Email", "email", "email")}
+          {contactField("Loyalty #", "loyalty")}
+        </EditorFields>
+        <EditorPills>
+          {pick(
+            "category",
+            draft.title || "Category",
+            pickMenu(categories.map((title) => ({ value: title, label: title })), draft.title, (title) => patch({ title })),
+            !draft.title,
+            missing.title,
+            "tag",
+          )}
+          <RoomPill lead={<PlacePill>Guestroom</PlacePill>} value={draft.room} onChange={(room) => patch({ room })} />
+          {pick(
+            "mood",
+            draft.mood || "Guest mood",
+            pickMenu(MOODS.map((mood) => ({ value: mood, label: mood })), draft.mood, (mood) => patch({ mood })),
+            !draft.mood,
+            missing.mood,
+          )}
+          {pick(
+            "type",
+            draft.type ? <DepartmentChip name={draft.type} plain /> : "Department",
+            pickMenu(TYPES.map((type) => ({ value: type, label: <DepartmentChip name={type} plain /> })), draft.type, (type) => patch({ type })),
+            !draft.type,
+          )}
+          {pick(
+            "assignee",
+            isAssigned(draft) ? <Person name={draft.assignee} initials={draft.initials} variant="pill" /> : <Person name="Unassigned" variant="unassigned" />,
+            pickMenu(
+              [
+                { value: "Unassigned", label: <Person name="Unassigned" variant="unassigned" /> },
+                ...ASSIGNEE_PEOPLE.map((person) => ({ value: person.name, label: <Person name={person.name} initials={person.avatar} variant="pill" /> })),
+              ],
+              isAssigned(draft) ? draft.assignee : "Unassigned",
+              (name) => {
+                const person = ASSIGNEE_PEOPLE.find((entry) => entry.name === name);
+                patch({ assignee: name, initials: person?.avatar ?? "" });
+              },
+            ),
+          )}
+          {pick(
+            "status",
+            <Status status={draft.status} />,
+            pickMenu(STATUSES.map((entry) => ({ value: entry.value, label: <Status status={entry.value} /> })), draft.status, (status) => patch({ status: status as StatusValue })),
+          )}
+          {pick(
+            "urgency",
+            <Urgency level={draft.urgency} />,
+            pickMenu(URGENCIES.map((entry) => ({ value: entry.value, label: <Urgency level={entry.value} /> })), draft.urgency, (urgency) => patch({ urgency: urgency as UrgencyValue })),
+          )}
+        </EditorPills>
+      </EditorDialog>
+      {toast ? <RequiredToast id={toast} onDone={hideToast} /> : null}
+      <ConfirmDialog
+        open={confirm}
+        name={draft.complaint.trim() || "Complaint"}
+        noun="complaint"
+        onCancel={() => setConfirm(false)}
+        onConfirm={() => {
+          setConfirm(false);
+          onDelete();
+        }}
+      />
+    </>
   );
 }
 
@@ -377,6 +382,7 @@ export default function ComplaintsPage() {
   const [enteringId, setEnteringId] = useState<string | null>(null);
   const [present, setPresent] = useState(false);
   const [hidden, setHidden] = useState(true);
+  const [editing, setEditing] = useState<{ id: string; creating: boolean } | null>(null);
   const retained = useRef<Complaint | null>(null);
   const visible = useMemo(
     () =>
@@ -451,7 +457,20 @@ export default function ComplaintsPage() {
     ]);
     setSelected(id);
     setEnteringId(id);
+    setEditing({ id, creating: true });
   }
+
+  function removeComplaint(id: string) {
+    const play = captureClose(document.querySelector(`[data-record="${CSS.escape(id)}"]`));
+    flushSync(() => {
+      setRecords((list) => list.filter((row) => row.id !== id));
+      setSelected((current) => (current === id ? null : current));
+      setEditing((current) => (current?.id === id ? null : current));
+    });
+    play();
+  }
+
+  const edited = editing ? records.find((row) => row.id === editing.id) ?? null : null;
 
   useEffect(() => {
     if (!present || !hidden || open) return;
@@ -510,16 +529,12 @@ export default function ComplaintsPage() {
           enteringId={enteringId}
           onRowClick={(row) => setSelected((current) => (current === row.id ? null : row.id))}
           onRowContextMenu={(row) => setSelected(row.id)}
-          onDelete={(row) => {
-            const play = captureClose(document.querySelector(`[data-record="${CSS.escape(row.id)}"]`));
-            flushSync(() => {
-              setRecords((list) => list.filter((item) => item.id !== row.id));
-              setSelected((current) => (current === row.id ? null : current));
-            });
-            play();
-          }}
+          onDelete={(row) => removeComplaint(row.id)}
           deleteNoun="complaint"
           rowName={(row) => row.description?.trim() || row.note.trim() || "Complaint"}
+          onRoomChange={(row, room) => {
+            setRecords((list) => list.map((item) => (item.id === row.id ? { ...item, room } : item)));
+          }}
           onCopyChange={(row, patch) => {
             setRecords((list) =>
               list.map((item) =>
@@ -542,21 +557,27 @@ export default function ComplaintsPage() {
             hidden={hidden}
             onClose={() => setSelected(null)}
             onExited={() => setPresent(false)}
+            onEdit={() => {
+              const id = retained.current?.id;
+              if (id) setEditing({ id, creating: false });
+            }}
             onDeleted={() => {
               const id = retained.current?.id;
-              if (!id) return;
-              const play = captureClose(document.querySelector(`[data-record="${CSS.escape(id)}"]`));
-              flushSync(() => {
-                setRecords((list) => list.filter((row) => row.id !== id));
-                setSelected(null);
-              });
-              play();
+              if (id) removeComplaint(id);
             }}
-            onPatch={(patch) => {
-              const id = retained.current?.id;
-              if (!id) return;
-              setRecords((list) => list.map((row) => (row.id === id ? { ...row, ...patch } : row)));
+          />
+        ) : null}
+        {edited ? (
+          <ComplaintEditor
+            key={`edit-${edited.id}`}
+            row={edited}
+            creating={editing?.creating}
+            onClose={() => setEditing(null)}
+            onSave={(next) => {
+              setRecords((list) => list.map((row) => (row.id === next.id ? next : row)));
+              setEditing(null);
             }}
+            onDelete={() => removeComplaint(edited.id)}
           />
         ) : null}
       </div>

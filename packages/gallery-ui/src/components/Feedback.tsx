@@ -14,10 +14,10 @@ function CompleteMark() {
   );
 }
 
-export function Status({ status }: { status: "open" | "progress" | "complete" }) {
+export function Status({ status, iconOnly = false }: { status: "open" | "progress" | "complete"; iconOnly?: boolean }) {
   const label = status === "open" ? "Open" : status === "progress" ? "In progress" : "Completed";
   return (
-    <span className="sds status">
+    <span className="sds status" {...(iconOnly ? { role: "img", "aria-label": label, title: label } : {})}>
       {status === "open" ? (
         <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
           <path d="M17 9a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z" fill="none" stroke="var(--urgency-high)" strokeWidth="2" />
@@ -38,7 +38,7 @@ export function Status({ status }: { status: "open" | "progress" | "complete" })
           />
         </svg>
       ) : null}
-      {label}
+      {iconOnly ? null : label}
     </span>
   );
 }

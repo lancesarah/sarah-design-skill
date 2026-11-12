@@ -2,8 +2,8 @@
 
 import { Icon, PageHeader } from "@lance-live/gallery-ui";
 import { useEffect, useRef } from "react";
-import { useChat } from "./chat-data";
-import { messageThread } from "./messages";
+import { continuesRun, useChat } from "./chat-data";
+import { MessageField, messageThread } from "./messages";
 
 export function ChatThread({ id }: { id: string }) {
   const thread = messageThread(id);
@@ -22,21 +22,29 @@ export function ChatThread({ id }: { id: string }) {
       <PageHeader mark="bubble" title={thread.title} actions={null} />
       <div className="chat-log" ref={logRef}>
         <div className="chat-log-body">
-          {lines.map((line) => (
-            <div className="comment-row" key={line.id}>
-              {line.photo ? (
-                <img className="avatar mini comment-photo" src={line.photo} alt="" />
-              ) : (
-                <span className="avatar mini comment-photo">{line.initials}</span>
-              )}
-              <span className="person-copy">
-                <span className="comment-meta">
-                  {line.name} <time>{line.time}</time>
+          {lines.map((line, index) => {
+            const prev = lines[index - 1];
+            const continued = Boolean(prev && continuesRun(prev, line));
+            return (
+              <div className={["comment-row", continued ? "is-continued" : ""].filter(Boolean).join(" ")} key={line.id}>
+                {continued ? (
+                  <span className="comment-photo" aria-hidden="true" />
+                ) : line.photo ? (
+                  <img className="avatar mini comment-photo" src={line.photo} alt="" />
+                ) : (
+                  <span className="avatar mini comment-photo">{line.initials}</span>
+                )}
+                <span className="person-copy">
+                  {continued ? null : (
+                    <span className="comment-meta">
+                      {line.name} <time dateTime={line.time}>{line.time}</time>
+                    </span>
+                  )}
+                  <p>{line.body}</p>
                 </span>
-                <p>{line.body}</p>
-              </span>
-            </div>
-          ))}
+              </div>
+            );
+          })}
         </div>
       </div>
       <form
@@ -50,12 +58,7 @@ export function ChatThread({ id }: { id: string }) {
           <button className="well" type="button" aria-label="Add">
             <Icon name="plus" size={16} />
           </button>
-          <input
-            aria-label="Write a message"
-            placeholder="Write a message..."
-            value={draft}
-            onChange={(event) => setDraft(event.target.value)}
-          />
+          <MessageField label="Write a message" value={draft} onValueChange={setDraft} onSubmit={send} />
         </span>
         <button className="well" type="submit" aria-label="Send">
           <Icon name="up" size={16} />

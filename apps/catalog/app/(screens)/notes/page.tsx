@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, ConfirmDialog, DEPARTMENTS, DepartmentChip, Icon, OverlayMenu, Tabs, ViewedMenu, captureClose, type Viewer } from "@lance-live/gallery-ui";
+import { Button, ConfirmDialog, DEPARTMENTS, DepartmentChip, Empty, Icon, OverlayMenu, Tabs, ViewedMenu, captureClose, type Viewer } from "@lance-live/gallery-ui";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { FilterMenu, ReplyForm, SearchBox } from "../chrome";
@@ -16,6 +16,17 @@ const PERSON = {
 
 const TITLE_PLACEHOLDER = "New note";
 const BODY_PLACEHOLDER = "Write a note...";
+
+/** The name sits above the photo. The tip is in the top layer, so the list does not clip it. */
+function placeAuthorTip(host: HTMLElement) {
+  const tip = host.querySelector<HTMLElement>(":scope > .tip");
+  if (!tip) return null;
+  const gap = Number.parseFloat(getComputedStyle(host).getPropertyValue("--tip-gap")) || 8;
+  const box = host.getBoundingClientRect();
+  tip.style.left = `${box.left + box.width / 2}px`;
+  tip.style.top = `${box.top - gap}px`;
+  return tip;
+}
 
 type Note = {
   id: string;
@@ -142,6 +153,7 @@ export default function NotesPage() {
   const menuAnchor = useRef<HTMLButtonElement>(null);
   const deptAnchor = useRef<HTMLButtonElement>(null);
   const titleRef = useRef<HTMLTextAreaElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
   const pendingFocus = useRef<string | null>(null);
   const [bodyFocused, setBodyFocused] = useState(false);
 
@@ -167,6 +179,56 @@ export default function NotesPage() {
   }, [visible, selected]);
 
   useEffect(() => {
+    const list = listRef.current;
+    if (!list) return;
+    let current: HTMLElement | null = null;
+    const show = (host: HTMLElement) => {
+      const tip = placeAuthorTip(host);
+      if (!tip) return;
+      current = host;
+      try {
+        if (!tip.matches(":popover-open")) tip.showPopover();
+      } catch {
+        // The tip can already be opening as the pointer crosses the photo.
+      }
+    };
+    const hide = (host: HTMLElement | null) => {
+      const tip = host?.querySelector<HTMLElement>(":scope > .tip");
+      try {
+        if (tip?.matches(":popover-open")) tip.hidePopover();
+      } catch {
+        // The tip can already be closed when the pointer leaves.
+      }
+      if (current === host) current = null;
+    };
+    const onOver = (event: PointerEvent) => {
+      const host = (event.target as Element | null)?.closest<HTMLElement>(".note-author");
+      if (!host || !list.contains(host) || host.contains(event.relatedTarget as Node)) return;
+      show(host);
+    };
+    const onOut = (event: PointerEvent) => {
+      const host = (event.target as Element | null)?.closest<HTMLElement>(".note-author");
+      if (!host || !list.contains(host) || host.contains(event.relatedTarget as Node)) return;
+      if (host.matches(":hover")) return;
+      hide(host);
+    };
+    const follow = () => {
+      if (current?.matches(":hover")) placeAuthorTip(current);
+    };
+    list.addEventListener("pointerover", onOver);
+    list.addEventListener("pointerout", onOut);
+    list.addEventListener("scroll", follow);
+    window.addEventListener("resize", follow);
+    return () => {
+      hide(current);
+      list.removeEventListener("pointerover", onOver);
+      list.removeEventListener("pointerout", onOut);
+      list.removeEventListener("scroll", follow);
+      window.removeEventListener("resize", follow);
+    };
+  }, []);
+
+  useEffect(() => {
     setBodyFocused(false);
   }, [open?.id]);
 
@@ -176,8 +238,7 @@ export default function NotesPage() {
     pendingFocus.current = null;
     const field = titleRef.current;
     field?.focus();
-    const length = field?.value.length ?? 0;
-    field?.setSelectionRange(length, length);
+    field?.select();
   }, [open]);
 
   useEffect(() => {
@@ -209,6 +270,15 @@ export default function NotesPage() {
   function updateNote(id: string, patch: Partial<Note>) {
     setRecords((current) => current.map((note) => (note.id === id ? { ...note, ...patch } : note)));
   }
+
+  // Home's plus lands here with ?new and starts a note. A frame later, so the list has painted.
+  const startedFromHome = useRef(false);
+  useEffect(() => {
+    if (startedFromHome.current || !new URLSearchParams(window.location.search).has("new")) return;
+    startedFromHome.current = true;
+    window.history.replaceState(null, "", window.location.pathname);
+    requestAnimationFrame(() => createNote());
+  }, []);
 
   function createNote() {
     const list = document.querySelector(".brief-list");
@@ -246,6 +316,7 @@ export default function NotesPage() {
     });
     if (list) revealNewCard(list, id, before);
     titleRef.current?.focus();
+    titleRef.current?.select();
   }
 
   function removeNote(id: string) {
@@ -308,7 +379,7 @@ export default function NotesPage() {
     >
       <div className="stage brief">
         <div className="scroll-fade list-fade">
-          <div className="brief-list" role="listbox" aria-label="Notes">
+          <div className="brief-list" role="listbox" aria-label="Notes" ref={listRef}>
             {visible.map((note) => {
               const untitled = Boolean(note.draft && !note.title.trim());
               const ready = Boolean(note.title.trim() || note.body.trim());
@@ -331,7 +402,7 @@ export default function NotesPage() {
               >
                 <span className={note.draft ? "note-avatar-slot tip-host note-author" : "tip-host note-author"}>
                   <img className={note.draft ? undefined : "note-avatar"} src={PERSON.src} alt="" />
-                  <span className="tip">{PERSON.name}</span>
+                  <span className="tip" popover="manual">{PERSON.name}</span>
                 </span>
                 <span className="note-copy">
                   <span className="note-line">
@@ -451,7 +522,7 @@ export default function NotesPage() {
                             setDeptOpen(false);
                           }}
                         >
-                          <DepartmentChip name={item.value} />
+                          <DepartmentChip name={item.value} plain />
                           <Icon name="check" size={14} className="check" />
                         </button>
                       ))}
@@ -507,7 +578,7 @@ export default function NotesPage() {
               </div>
             </article>
           ) : visible.length === 0 ? (
-            <p className="brief-empty">No notes</p>
+            <Empty icon="doc" title="No notes" />
           ) : null}
         </div>
       </div>

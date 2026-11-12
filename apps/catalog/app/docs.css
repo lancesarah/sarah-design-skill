@@ -1,3 +1,6 @@
+@import "../../../css/confirm-dialog.css";
+@import "../../../css/editor-dialog.css";
+
 .docs {
   min-height: 100vh;
   background: var(--sidebar-grey);
@@ -43,6 +46,19 @@
 .docs-nav {
   padding: var(--space-12) 0 var(--space-25);
   border-right: 1px solid var(--line);
+}
+
+.docs-search {
+  padding: 0 var(--space-12) var(--space-8);
+}
+
+.docs-search .search { width: 100%; }
+
+.docs-search-empty {
+  margin: var(--space-8) 0 0;
+  padding: 0 var(--space-12);
+  color: var(--text-muted);
+  font-size: var(--text-14);
 }
 
 .docs-group-btn,
@@ -146,12 +162,58 @@
 }
 
 .docs-tab {
-  margin-bottom: -1px;
+  appearance: none;
+  margin: 0 0 -1px;
   padding: var(--space-8) 0;
-  border-bottom: 2px solid var(--action);
-  color: var(--action);
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: none;
+  color: var(--text-muted);
+  font: inherit;
   font-size: var(--text-14);
   font-weight: 500;
+  cursor: pointer;
+  transition: color var(--motion-hover) ease;
+}
+
+.docs-tab:hover {
+  color: var(--black);
+}
+
+.docs-tab[aria-selected="true"] {
+  border-bottom-color: var(--action);
+  color: var(--action);
+}
+
+.docs-tab:focus-visible {
+  outline: 2px solid var(--action);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.docs-usage ul {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  margin: 0;
+  padding-left: 18px;
+  max-width: 68ch;
+  list-style: disc;
+  font-size: var(--text-14);
+  line-height: 1.55;
+}
+
+.docs-usage li::marker {
+  color: var(--black-25);
+}
+
+.docs-usage code {
+  padding: 1px 4px;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--black) 6%, transparent);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px;
+  white-space: nowrap;
 }
 
 .docs-examples {
@@ -165,7 +227,7 @@
   scroll-margin-top: 80px;
 }
 
-.docs-example h2 {
+.docs-example > h2 {
   margin: 0 0 var(--space-8);
   font-family: var(--font);
   font-size: var(--text-20);
@@ -173,7 +235,7 @@
   line-height: 1.3;
 }
 
-.docs-example p {
+.docs-example > p {
   margin: 0 0 var(--space-16);
   max-width: 68ch;
   color: var(--text-muted);
@@ -204,6 +266,16 @@
 
 .docs-stage:has(.drop [aria-expanded="true"]) {
   padding-bottom: 520px;
+}
+
+.docs-panel-frame {
+  position: relative;
+  height: 640px;
+  overflow: hidden;
+}
+
+.docs-panel-frame .todo-side {
+  top: 0;
 }
 
 .docs-stage #comment .comment-row {

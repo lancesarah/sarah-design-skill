@@ -6,6 +6,8 @@
 @import "../../../../css/complaints.css";
 @import "../../../../css/knowledge.css";
 @import "../../../../css/cash.css";
+@import "../../../../css/editor-dialog.css";
+@import "../../../../css/home.css";
 
 /* Every description and notes field is the same text well. */
 textarea.text-well,
@@ -39,6 +41,39 @@ body.app-shell .side-frame {
 .notes-page .page-head .head-actions > .btn,
 .notes-page .page-head .head-actions > .auto-assign {
   margin-left: 0;
+}
+
+/* A long page title stays one line. The PM actions drop their labels before the title disappears. */
+.pm-page .page-head { container-type: inline-size; }
+
+.pm-page .page-title { flex: 1 1 auto; }
+
+.pm-page .page-head h1:not(:has(.page-back)) {
+  flex: 0 1 auto;
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-wrap: nowrap;
+}
+
+.pm-page .page-head .count { flex: none; }
+
+.pm-page .head-actions { flex: none; }
+
+.pm-page .head-actions .pm-tool {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+@container (max-width: 480px) {
+  .pm-page .head-actions .pm-tool {
+    width: 28px;
+    min-width: 28px;
+    padding: 7px;
+    gap: 0;
+    font-size: 0;
+  }
 }
 
 .notes-page .page-toolbar,
@@ -297,13 +332,6 @@ html[data-pm-shift="back"]::view-transition-new(pm-body) {
   display: flex;
   flex-direction: column;
   min-width: 0;
-}
-
-.pm-page .pm-empty {
-  margin: 0;
-  color: var(--black-50);
-  font-size: var(--text-14);
-  line-height: 16px;
 }
 
 .pm-page .pm-sub,
@@ -937,7 +965,7 @@ html[data-theme="dark"] .pm-page .pm-area-row:hover { background: var(--grey); }
   opacity: 0.7;
 }
 
-.pm-page .pm-list.is-locked .kb-meter-fill {
+.pm-page .pm-list.is-locked .meter-fill {
   background: repeating-linear-gradient(
     90deg,
     color-mix(in srgb, var(--action) 40%, var(--white)) 0 var(--space-2),
@@ -961,7 +989,7 @@ html[data-theme="dark"] .pm-page .pm-area-row:hover { background: var(--grey); }
   padding: var(--space-16) var(--space-25) var(--space-16);
   background: var(--white);
   border-radius: var(--radius-card);
-  box-shadow: var(--stroke), var(--elevation-menu);
+  box-shadow: var(--stroke), var(--ring-popup), var(--elevation-menu);
 }
 
 .pm-page .pm-list .pm-resolve {
@@ -1198,90 +1226,8 @@ html[data-theme="dark"] .pm-page .pm-check-notes textarea { background: var(--gr
 .readings-page .pm-back-icon,
 .cash-back-icon { transform: rotate(90deg); }
 
-.pm-editor-page {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-16);
-  width: 100%;
-  min-height: 0;
-  flex: 1;
-  padding-inline: var(--space-25);
-  overflow: hidden;
-}
-
-.pm-page .pm-editor-head {
-  align-items: stretch;
-  gap: var(--space-25);
-}
-
-.pm-page .pm-editor-kicker {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-16);
-  min-height: 28px;
-}
-
-.pm-editor-kicker-actions {
-  display: flex;
-  align-items: center;
-  gap: var(--space-8);
-}
-
-.pm-editor-close {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  border-radius: var(--radius-control);
-  color: var(--black-50);
-}
-
-.pm-editor-close:hover {
-  background: var(--sidebar-grey);
-  color: var(--black);
-}
-
-html[data-theme="dark"] .pm-editor-close:hover { background: var(--grey); }
-
-.pm-editor-dialog {
-  position: fixed;
-  inset: 0;
-  z-index: 60;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--space-25);
-}
-
-.pm-editor-scrim {
-  position: absolute;
-  inset: 0;
-  border: 0;
-  background: color-mix(in srgb, var(--black) 40%, transparent);
-  animation: confirm-scrim 240ms var(--ease-out);
-}
-
-.pm-editor-pop {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
-  width: min(652px, 100%);
-  height: 90%;
-  min-height: 0;
-  max-height: 90%;
-  overflow: hidden;
-  padding-top: var(--space-25);
-  padding-bottom: var(--space-16);
-  border-radius: var(--radius-card);
-  background: var(--white);
-  box-shadow: var(--stroke), var(--elevation-menu);
-  animation: confirm-in 240ms var(--ease-out);
-}
-
-.pm-toast {
+.pm-toast,
+.page-toast {
   position: fixed;
   z-index: 90;
   top: var(--space-25);
@@ -1289,7 +1235,8 @@ html[data-theme="dark"] .pm-editor-close:hover { background: var(--grey); }
   animation: confirm-in 240ms var(--ease-out);
 }
 
-.pm-toast .toast {
+.pm-toast .toast,
+.page-toast .toast {
   width: max-content;
   max-width: min(440px, calc(100vw - var(--space-25) * 2));
   min-height: 41px;
@@ -1297,130 +1244,27 @@ html[data-theme="dark"] .pm-editor-close:hover { background: var(--grey); }
   padding: 10px 14px;
 }
 
-.pm-toast .toast > svg { flex: none; }
+.pm-toast .toast > svg,
+.page-toast .toast > svg { flex: none; }
 
-.pm-toast .toast > span:not(.when) {
+.pm-toast .toast > span:not(.when),
+.page-toast .toast > span:not(.when) {
   min-width: 0;
   line-height: 20px;
 }
 
 .pm-toast .toast .when,
-.pm-toast .toast-link {
+.pm-toast .toast-link,
+.page-toast .toast .when,
+.page-toast .toast-link {
   flex: none;
   white-space: nowrap;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .pm-toast { animation: none; }
+  .pm-toast,
+  .page-toast { animation: none; }
 }
-
-.pm-editor-foot {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: var(--space-16);
-  flex: none;
-  padding: var(--space-16) var(--space-25) 0;
-  border-top: 1px solid var(--line);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .pm-editor-scrim,
-  .pm-editor-pop { animation: none; }
-}
-
-.pm-page .pm-editor-kicker p {
-  font-size: var(--text-12);
-  line-height: 16px;
-}
-
-.pm-page .pm-editor-name {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  gap: var(--space-4);
-  min-width: 0;
-}
-
-.pm-editor-title {
-  width: 100%;
-  margin: 0;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  color: var(--black);
-  font: inherit;
-  font-size: var(--text-24);
-  font-weight: 500;
-  line-height: 28px;
-}
-
-.pm-editor-title:focus { outline: none; }
-.pm-editor-title::placeholder { color: var(--black-25); }
-
-.pm-editor-stack { gap: 30px; }
-
-.pm-editor {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0;
-  width: 100%;
-  flex: 1;
-  min-height: 0;
-}
-
-.pm-editor > .tabs-frame {
-  align-self: stretch;
-  width: calc(100% + var(--space-25) * 2);
-  max-width: none;
-  margin-inline: calc(var(--space-25) * -1);
-  background: var(--sidebar-grey);
-  --scroll-fade: var(--sidebar-grey);
-  border-bottom: 1px solid var(--line);
-}
-
-.pm-editor .tabs-scroll {
-  overflow: hidden;
-  scrollbar-width: none;
-}
-
-.pm-editor .tabs-scroll > .tabs,
-.pm-editor .tabs {
-  width: 100%;
-  min-width: 0;
-  margin: 0;
-  padding: 7px var(--space-25) var(--space-8);
-  background: var(--sidebar-grey);
-  border-radius: 0;
-  overflow: hidden;
-}
-
-.pm-editor .tabs .slide-pill { background: var(--grey); }
-
-html[data-theme="dark"] .pm-editor > .tabs-frame,
-html[data-theme="dark"] .pm-editor .tabs {
-  background: var(--grey);
-  --scroll-fade: var(--grey);
-}
-
-html[data-theme="dark"] .pm-editor .tabs .slide-pill { background: var(--black-12); }
-
-.pm-editor-stack {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  align-self: stretch;
-  width: 100%;
-  flex: 1;
-  min-height: 0;
-  margin-inline: -1px;
-  overflow: auto;
-  padding: var(--space-25) 1px;
-}
-
-.pm-editor-stack > * { flex-shrink: 0; }
 
 .pm-editor-field {
   display: flex;
@@ -1461,7 +1305,32 @@ html[data-theme="dark"] .pm-editor .tabs .slide-pill { background: var(--black-1
   text-align: left;
 }
 
-.pm-editor-pick .i { color: var(--text-muted); scale: 0.95; }
+.pm-editor-pick > .i,
+.pm-editor-pick-value > .i { color: var(--text-muted); scale: 0.95; }
+.pm-editor-pick.is-quiet /* A required choice left empty after a save attempt. */
+.pm-editor-pick.is-invalid { box-shadow: 0 0 0 1px color-mix(in srgb, var(--destructive) 40%, transparent); }
+
+.pm-editor-pick-value { color: var(--text-muted); }
+
+/* Edit to-do. A guestroom puts the room number beside the location. */
+.todo-editor-place.has-room {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-8);
+}
+.todo-editor .pm-editor-pick :is(.status, .urgency, .dept, .mini-pill) { font-size: var(--text-14); }
+/* The field is the box, so a value sits on its 10px inset with no chip padding or fill. */
+.todo-editor .pm-editor-pick :is(.urgency, .mini-pill) {
+  padding: 0;
+  background: transparent;
+}
+.todo-editor .pm-editor-pick .mini-pill { gap: var(--space-8); }
+.todo-editor .todo-side-photos {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+.todo-editor .side-photos { --side-photo-size: 87px; }
 
 .pm-editor-pick-value {
   display: inline-flex;
@@ -1691,7 +1560,8 @@ body.is-row-reordering { user-select: none; }
 
 .line:hover { box-shadow: 0 0 0 1px var(--black-12); }
 .line:focus { outline: none; box-shadow: 0 0 0 1px var(--black-25); }
-.line::placeholder { color: var(--text-muted); }
+.line::placeholder,
+.line:focus::placeholder { color: var(--text-muted); opacity: 1; }
 
 .pm-step-unit,
 .pm-step-bound {
@@ -1724,6 +1594,20 @@ body.is-row-reordering { user-select: none; }
   align-items: center;
   gap: var(--space-12);
 }
+
+/* The add row stays at the top. The list under it scrolls. With nothing in the list, the empty fills what is left and the panel does not scroll. */
+.editor-dialog-body:has(> .pm-editor-compose) { overflow: hidden; }
+
+.editor-dialog-body > .pm-editor-compose { flex: none; }
+
+.editor-dialog-body > .empty,
+.editor-dialog-body > .pm-editor-rows {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+}
+
+.editor-dialog-body > .empty { overflow: hidden; }
 
 .pm-editor-block .pm-editor-compose {
   padding: var(--space-16);
@@ -1859,92 +1743,6 @@ html[data-theme="dark"] .readings-editor .sheet-head { background: var(--grey); 
 
 .readings-editor .readings-step { height: 32px; }
 
-.readings-page .readings-form {
-  display: block;
-  grid-column: 1 / -1;
-  min-width: 0;
-  padding: 0 var(--space-12) var(--space-12);
-}
-
-.readings-card {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-16);
-  padding: var(--space-16);
-  border-radius: var(--radius-card);
-  background: var(--white);
-  box-shadow: var(--stroke);
-}
-
-.readings-card-title {
-  display: flex;
-  align-items: baseline;
-  gap: var(--space-8);
-  margin: 0;
-  color: var(--black);
-  font-size: var(--text-14);
-  font-weight: 500;
-  line-height: 20px;
-}
-
-.readings-card-title span {
-  color: var(--text-muted);
-  font-weight: 400;
-}
-
-.readings-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-16) var(--space-25);
-}
-
-@container sheet-lines (max-width: 640px) {
-  .readings-grid { grid-template-columns: 1fr; }
-}
-
-.readings-field {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-  min-width: 0;
-}
-
-.readings-entry { position: relative; display: block; }
-
-.readings-entry .line { width: 100%; padding-right: 64px; }
-
-.readings-unit {
-  position: absolute;
-  top: 0;
-  right: var(--space-10);
-  display: flex;
-  align-items: center;
-  height: 32px;
-  color: var(--text-muted);
-  font-size: var(--text-14);
-  line-height: 20px;
-  pointer-events: none;
-}
-
-.readings-dates {
-  display: flex;
-  align-items: center;
-  gap: var(--space-8);
-}
-
-.readings-dates .line {
-  width: 148px;
-  height: 28px;
-}
-
-.readings-dates .line.is-picked { background: var(--grey); }
-
-.readings-foot {
-  display: flex;
-  justify-content: flex-end;
-  gap: var(--space-8);
-}
-
 .readings-status {
   display: inline-flex;
   align-items: center;
@@ -1976,6 +1774,14 @@ html[data-theme="dark"] .readings-editor .sheet-head { background: var(--grey); 
 }
 
 .readings-status.is-warn .readings-mark { color: var(--urgency-urgent); }
+
+.readings-record-alert { color: var(--urgency-urgent); }
+
+.readings-check-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+}
 
 .readings-source {
   display: flex;
@@ -2066,8 +1872,6 @@ html[data-theme="dark"] .readings-editor .sheet-head { background: var(--grey); 
   grid-template-columns: minmax(0, 1fr) 96px;
   gap: var(--space-8);
 }
-
-.pm-check .readings-form { padding: 0; }
 
 .readings-stats {
   display: flex;
@@ -2295,4 +2099,70 @@ html[data-icon-ink="muted"] :is(.danger, .btn-danger-light, .pm-editor-remove) .
 
 html[data-icon-ink="muted"] .urgency-urgent .i[data-icon-label] {
   color: var(--urgency-urgent) !important;
+}
+
+html[data-icon-ink="muted"] :is(.editor-pill, .pm-editor-pick).is-invalid .i[data-icon-label] {
+  color: color-mix(in srgb, var(--destructive) 70%, var(--text-muted)) !important;
+}
+
+/* Lost and found detail uses the shared panel: title, notes well, then fact rows. */
+.lost-page .todo-side-title-row .edit-text {
+  flex: 1;
+  min-width: 0;
+  width: auto;
+}
+
+.lost-page .lost-title {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: none;
+  resize: none;
+  overflow: hidden;
+  field-sizing: content;
+  background: transparent;
+  color: var(--black);
+  font: inherit;
+  font-size: var(--text-16);
+  font-weight: 500;
+  line-height: 20px;
+}
+
+.lost-page .lost-title.is-empty,
+.lost-page .lost-title::placeholder,
+.lost-page .lost-title:focus::placeholder { color: var(--black-50); }
+
+.lost-page .req { color: var(--destructive); }
+
+.lost-page .lost-name,
+.lost-page .lost-room {
+  display: flex;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+.lost-page .lost-name { flex: 1; }
+
+.lost-page .lost-name .edit-text {
+  flex: 0 1 auto;
+  width: auto;
+  max-width: calc(100% - var(--space-10));
+}
+
+.lost-page .lost-name .req,
+.lost-page .lost-room .req { line-height: 20px; }
+
+.lost-page .lost-room {
+  align-items: center;
+  gap: var(--space-8);
+}
+.lost-page .lost-room .req { line-height: 1; }
+
+.lost-page .lost-photo {
+  display: block;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
 }

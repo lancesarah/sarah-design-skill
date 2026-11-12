@@ -3,16 +3,6 @@
 import { useState, type ReactNode } from "react";
 import { Icon } from "../icons";
 
-export function Meta({ label, value, layout = "stack" }: { label: string; value: string; layout?: "stack" | "pair" }) {
-  const classes = layout === "pair" ? "sds side-pair" : "sds stack-copy";
-  return (
-    <span className={classes}>
-      <span className="meta-k">{label}</span>
-      <span className="meta-v">{value}</span>
-    </span>
-  );
-}
-
 export type SearchFieldProps = {
   placeholder?: string;
   label?: string;
@@ -57,23 +47,6 @@ export function SearchField({
         </button>
       )}
     </form>
-  );
-}
-
-export function TextField({
-  label,
-  defaultValue = "Example text",
-  multiline = false,
-}: {
-  label: string;
-  defaultValue?: string;
-  multiline?: boolean;
-}) {
-  return (
-    <label className="sds field">
-      <span>{label}</span>
-      {multiline ? <textarea defaultValue={defaultValue} aria-label={label} /> : <input defaultValue={defaultValue} aria-label={label} />}
-    </label>
   );
 }
 

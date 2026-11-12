@@ -33,11 +33,11 @@ const typeRows: Array<[string, string, string, string]> = [
   ["31 Eligible enrollments", "Body", "14 / 400", "t-page"],
   ["New", "Button", "14 / 400", "t-page"],
   ["Guestroom", "Place", "14 / 500", "t-place"],
-  ["Housekeeping", "Chip", "13 / 500", "t-chip"],
+  ["Housekeeping", "Chip", "13 / 400", "t-chip"],
   ["Comments", "Label", "12 / 500", "t-label"],
   ["Requested Feathered Pillows.", "Note", "12 / 400", "t-note"],
   ["Showing 6 of 6", "Meta", "12 / 400", "t-note t-quiet t-num"],
-  ["Room", "Filter", "10 / 500", "t-filter"],
+  ["Room", "Filter", "10 / 400", "t-filter"],
 ];
 
 export function ColorSwatches() {

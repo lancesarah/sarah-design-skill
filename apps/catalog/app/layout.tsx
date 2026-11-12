@@ -30,7 +30,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async />
         <script
           dangerouslySetInnerHTML={{
-            __html: `try{if(localStorage.getItem("font")!=="jakarta")document.documentElement.dataset.font="switzer"}catch(e){}`,
+            __html: `try{if(localStorage.getItem("font")!=="jakarta")document.documentElement.dataset.font="switzer";if(localStorage.getItem("depth")==="on")document.documentElement.dataset.depth="on"}catch(e){}`,
           }}
         />
       </head>

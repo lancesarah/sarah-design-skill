@@ -33,10 +33,12 @@ function chipStyle(keepShadow = false): CSSProperties {
     gap: 0,
     width: "max-content",
     maxWidth: "100%",
-    height: "auto",
+    boxSizing: "border-box",
+    height: 20,
     minHeight: 20,
     margin: 0,
     padding: "2px 4px",
+    lineHeight: "16px",
     borderRadius: 4,
     ...(keepShadow ? {} : { boxShadow: "none" }),
     justifyContent: "flex-start",
@@ -298,33 +300,36 @@ export function StatusCell({
 export function RoomCell({
   value,
   defaultValue,
-  options,
-  open,
-  onToggle,
   onChange,
   editable = true,
 }: {
   value?: string;
   defaultValue?: string;
-  options: readonly string[];
+  /** Kept so existing callers still compile. The number is typed. */
+  options?: readonly string[];
   open?: boolean;
   onToggle?: () => void;
   onChange?: (value: string) => void;
   editable?: boolean;
 }) {
-  const current = value ?? defaultValue ?? "";
-  const choices = options.includes(current) || !current ? options : [current, ...options];
+  const controlled = value !== undefined;
+  const [inner, setInner] = useState(defaultValue ?? "");
+  const current = controlled ? (value ?? "") : inner;
+  const quiet = current ? "" : " cell-quiet";
+  if (!editable) return <span className={`sheet-room${quiet}`}>{current || "—"}</span>;
   return (
-    <ChipCell
-      value={value}
-      defaultValue={defaultValue}
-      options={choices}
-      open={open}
-      onToggle={onToggle}
-      onChange={onChange}
-      editable={editable}
-      className="sheet-room"
-      renderValue={(room) => <span>{room || "—"}</span>}
+    <input
+      className={`sheet-room${quiet}`}
+      aria-label="Room"
+      value={current}
+      placeholder="—"
+      onPointerDown={(event) => event.stopPropagation()}
+      onClick={(event) => event.stopPropagation()}
+      onChange={(event) => {
+        const next = event.target.value;
+        if (!controlled) setInner(next);
+        onChange?.(next);
+      }}
     />
   );
 }
@@ -392,7 +397,7 @@ export function TypeCell({
         const label = DEPARTMENTS.find((item) => item.value === name || item.dept === name)?.value;
         return <span style={label ? undefined : { color: "var(--black-50)" }}>{label || "Type"}</span>;
       }}
-      renderOption={(name) => <DepartmentChip name={name} />}
+      renderOption={(name) => <DepartmentChip name={name} plain />}
     />
   );
 }
@@ -785,18 +790,23 @@ export function roomColumn<T>(config: ColumnAccess<T> & { value: (row: T) => str
   return {
     id,
     title: config.title ?? "Room",
-    labelInset: CHIP_LABEL_INSET,
     sortable: config.sortable,
     sortValue: (row) => config.value(row),
-    minContent: <>{config.options.map((option) => <span key={option}>{measureChip(id, <span>{option}</span>, "sheet-room")}</span>)}</>,
+    minContent: (
+      <>
+        {config.options.map((option) => (
+          <span key={option} data-col={id} className="sheet-room">
+            {option}
+          </span>
+        ))}
+      </>
+    ),
     render: (row) => (
       <RoomCell
         value={config.onChange ? config.value(row) : undefined}
         defaultValue={config.value(row)}
-        options={config.options}
         editable={canEdit(config.editable, row)}
         onChange={config.onChange ? (next) => config.onChange?.(row, next) : undefined}
-        {...bindMenu(config.menu, config.rowId, id, row)}
       />
     ),
   };
@@ -909,7 +919,7 @@ export function textColumn<T>(config: {
   id: string;
   title: string;
   value: (row: T) => string;
-  /** Short text is 200px. A title or description is primary and grows from 320px. */
+  /** Short text is 160px. A title or description is primary and grows from 320px. */
   size?: DataTextSize;
   /** Replaces the shared default. The value is the full column, including both 12px paddings. */
   minWidth?: number;

@@ -1,14 +1,12 @@
 "use client";
 
-import { ASSIGNEE_PEOPLE, ActivityFeed, AssigneeCell, Button, DetailPanel, Icon, OverlayMenu, StatusCell, Tabs, TaskFact, TaskTable, TitleSubtitle, TypeCell, UrgencyCell, captureClose, taskMenuItem, type ActivityItem, type TaskRow } from "@lance-live/gallery-ui";
+import { ASSIGNEE_PEOPLE, ActivityFeed, Button, DepartmentChip, DetailPanel, FactRow, Icon, Person, PhotoThumb, PhotoViewer, SideRoom, StatusCell, Tabs, TaskTable, UrgencyCell, captureClose, type ActivityItem } from "@lance-live/gallery-ui";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { FilterMenu, SearchBox } from "../chrome";
-import { EditText } from "../edit-text";
 import { Glyph } from "../glyph";
 import { PageLayout } from "../page-layout";
-
-type Todo = TaskRow & { bucket: "open" | "scheduled" | "completed"; activity: ActivityItem[] };
+import { ITEMS, PLACES, ROOMS, TodoEditor, isAssigned, type Todo } from "./todo-editor";
 
 const PILLOWS: ActivityItem[] = [
   { kind: "comment", name: "Sarah", initials: "SM", time: "now", body: "asdfasdf" },
@@ -17,10 +15,6 @@ const PILLOWS: ActivityItem[] = [
   { kind: "status", name: "Manual", initials: "M", text: "created this to-do", time: "Oct 29, 4:22 PM" },
 ];
 
-const ROOMS = ["426", "244", "103", "436"];
-const PLACES = ["Guestroom", "Laundry", "Lobby", "Common area"];
-const ITEMS = ["Pillows", "Bedding", "Dryer", "Towels", "Climate"];
-
 const STARTER: Todo[] = [
   { id: "pillows", room: "426", note: "Requested feathered pillows", place: "Guestroom", item: "Pillows", type: "Housekeeping", urgency: "high", status: "open", bucket: "open", assignee: "Mark", initials: "MJ", opened: "now", activity: PILLOWS },
   { id: "dryer", room: "244", note: "Dryer in the laundry is loud", place: "Laundry", item: "Dryer", type: "Maintenance", urgency: "standard", status: "progress", bucket: "open", assignee: "Paul", initials: "PG", opened: "1h", activity: [{ kind: "status", name: "Sarah", initials: "SM", text: "created this to-do", time: "1h" }] },
@@ -28,100 +22,23 @@ const STARTER: Todo[] = [
   { id: "ac", room: "436", note: "Air conditioning is warm", place: "Guestroom", item: "Climate", type: "Maintenance", urgency: "urgent", status: "open", bucket: "open", assignee: "Boris", initials: "B", opened: "3h", activity: [{ kind: "status", name: "Sarah", initials: "SM", text: "created this to-do", time: "3h" }] },
 ];
 
-function TodoPhotos() {
-  const input = useRef<HTMLInputElement>(null);
-  const [photos, setPhotos] = useState<{ src: string; alt: string }[]>([]);
-  const photosRef = useRef(photos);
-  photosRef.current = photos;
-  useEffect(
-    () => () => {
-      for (const photo of photosRef.current) URL.revokeObjectURL(photo.src);
-    },
-    [],
-  );
-
-  return (
-    <div className="todo-side-photos">
-      <span className="sheet-label">Photos</span>
-      <div className="side-photos">
-        {photos.map((photo) => (
-          <figure className="side-photo" key={photo.src}>
-            <img src={photo.src} alt={photo.alt || "Photo"} />
-            <button
-              className="side-photo-remove"
-              type="button"
-              aria-label="Remove photo"
-              onClick={() => {
-                URL.revokeObjectURL(photo.src);
-                setPhotos((current) => current.filter((item) => item.src !== photo.src));
-              }}
-            >
-              <Icon name="close" size={10} />
-            </button>
-          </figure>
-        ))}
-        <button className="side-photo-add" type="button" aria-label="Add photo" onClick={() => input.current?.click()}>
-          <Icon name="camera" size={24} />
-        </button>
-      </div>
-      <input
-        ref={input}
-        type="file"
-        accept="image/*"
-        multiple
-        hidden
-        onChange={(event) => {
-          const files = [...(event.target.files ?? [])].filter((file) => file.type.startsWith("image/"));
-          setPhotos((current) => [...current, ...files.map((file) => ({ src: URL.createObjectURL(file), alt: file.name }))]);
-          event.target.value = "";
-        }}
-      />
-    </div>
-  );
-}
-
 function TodoDetail({
   todo,
   hidden,
   onClose,
   onExited,
   onDeleted,
-  onAssigneeChange,
-  onPatch,
+  onEdit,
 }: {
   todo: Todo;
   hidden: boolean;
   onClose: () => void;
   onExited: () => void;
   onDeleted: () => void;
-  onAssigneeChange?: (todo: Todo, value: string) => void;
-  onPatch?: (patch: { place?: string; item?: string; room?: string }) => void;
+  onEdit: () => void;
 }) {
-  const [field, setField] = useState<"status" | "urgency" | "type" | null>(null);
-  const [roomOpen, setRoomOpen] = useState(false);
-  const roomRef = useRef<HTMLButtonElement>(null);
-  const rooms = todo.room && !ROOMS.includes(todo.room) ? [todo.room, ...ROOMS] : ROOMS;
-  useEffect(() => {
-    if (!roomOpen) return;
-    const close = (event: PointerEvent) => {
-      const target = event.target as Node | null;
-      if (roomRef.current?.contains(target) || (target instanceof Element && target.closest(".menu"))) return;
-      setRoomOpen(false);
-    };
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setRoomOpen(false);
-    };
-    document.addEventListener("pointerdown", close);
-    document.addEventListener("keydown", onKey);
-    return () => {
-      document.removeEventListener("pointerdown", close);
-      document.removeEventListener("keydown", onKey);
-    };
-  }, [roomOpen]);
-  const [status, setStatus] = useState(todo.status);
-  const [urgency, setUrgency] = useState(todo.urgency);
-  const [type, setType] = useState(todo.type);
-  const toggle = (next: "status" | "urgency" | "type") => setField((current) => (current === next ? null : next));
+  const title = todo.title || [todo.place, todo.item].filter(Boolean).join(" · ");
+  const [viewing, setViewing] = useState<number | null>(null);
   return (
     <DetailPanel
       label="To-do details"
@@ -131,79 +48,56 @@ function TodoDetail({
       onClose={onClose}
       onExited={onExited}
       onDeleted={onDeleted}
+      onEdit={onEdit}
       actions={
-        <button className="btn btn-secondary" type="button">
-          <Glyph name="calendar" />
+        <Button variant="secondary">
+          <Icon name="calendar" size={14} />
           Schedule for future
-        </button>
+        </Button>
       }
     >
         <div className="todo-side-intro">
-          <button
-            ref={roomRef}
-            className={todo.room ? "todo-side-room" : "todo-side-room is-quiet"}
-            type="button"
-            aria-label="Room"
-            aria-haspopup="menu"
-            aria-expanded={roomOpen}
-            onClick={() => setRoomOpen((open) => !open)}
-          >
-            {todo.room || "—"}
-          </button>
-          <OverlayMenu open={roomOpen} anchorRef={roomRef} label="Room" onPointerDown={(event) => event.stopPropagation()}>
-            {rooms.map((room) => taskMenuItem(room, room === todo.room, () => {
-              onPatch?.({ room });
-              setRoomOpen(false);
-            }, room))}
-          </OverlayMenu>
-          <div className="todo-side-title-row">
-            <div className="todo-side-facts">
-              <TitleSubtitle
-                variant="dropdown"
-                size="title"
-                title={[
-                  { value: todo.place ?? "", placeholder: "Location", options: PLACES, onChange: (value) => onPatch?.({ place: value }) },
-                  { value: todo.item ?? "", placeholder: "Item", options: ITEMS, onChange: (value) => onPatch?.({ item: value }) },
-                ]}
-                subtitle=""
-              />
+          <SideRoom value={todo.room} readOnly />
+          <div className="todo-side-heading">
+            <div className="todo-side-title-row">
+              <h2>{title || "New to-do"}</h2>
+              <time>{todo.opened}</time>
             </div>
-            <time>{todo.opened}</time>
+            <p className={todo.note ? "todo-side-value is-quiet" : "todo-side-value is-empty"}>{todo.note || "No description"}</p>
           </div>
-        </div>
-        <div className="todo-side-desc">
-          <label className="sheet-label" htmlFor="side-desc">Description</label>
-          <EditText fill>
-            <textarea id="side-desc" className="text-well" data-side-desc rows={4} defaultValue={todo.note} placeholder="Add a note" />
-          </EditText>
         </div>
         <div className="todo-side-rule" />
         <div className="todo-side-meta">
-          <div className="meta-location">
-            <span className="sheet-label">Location</span>
-            <TaskFact empty={!todo.place}>{todo.place || "Location"}</TaskFact>
-          </div>
-          <div className="meta-item">
-            <span className="sheet-label">Item</span>
-            <TaskFact empty={!todo.item}>{todo.item || "Item"}</TaskFact>
-          </div>
-          <div className="meta-type">
-            <span className="sheet-label">Type</span>
-            <TypeCell value={type} onChange={setType} open={field === "type"} onToggle={() => toggle("type")} />
-          </div>
-          <div className="meta-assigned">
-            <span className="sheet-label">Assigned</span>
-            <AssigneeCell name={todo.assignee} initials={todo.initials} named onSelect={(value) => onAssigneeChange?.(todo, value)} />
-          </div>
-          <div className="meta-status">
-            <span className="sheet-label">Status</span>
-            <StatusCell value={status} onChange={setStatus} open={field === "status"} onToggle={() => toggle("status")} />
-          </div>
-          <div className="meta-urgency">
-            <span className="sheet-label">Urgency</span>
-            <UrgencyCell value={urgency} onChange={setUrgency} open={field === "urgency"} onToggle={() => toggle("urgency")} />
-          </div>
-          <TodoPhotos />
+          <FactRow label="Location">
+            <span className={todo.place ? "todo-side-value" : "todo-side-value is-quiet"}>{todo.place || "–"}</span>
+          </FactRow>
+          <FactRow label="Item">
+            <span className={todo.item ? "todo-side-value" : "todo-side-value is-quiet"}>{todo.item || "–"}</span>
+          </FactRow>
+          <FactRow label="Type">
+            <DepartmentChip name={todo.type} />
+          </FactRow>
+          <FactRow label="Assigned">
+            {isAssigned(todo) ? <Person name={todo.assignee} initials={todo.initials} variant="pill" /> : <Person name="Unassigned" variant="unassigned" />}
+          </FactRow>
+          <FactRow label="Status">
+            <StatusCell value={todo.status} editable={false} />
+          </FactRow>
+          <FactRow label="Urgency">
+            <UrgencyCell value={todo.urgency} editable={false} />
+          </FactRow>
+          {todo.photos?.length ? (
+            <FactRow label="Photos">
+              <div className="side-photos">
+                {todo.photos.map((photo, index) => (
+                  <figure className="side-photo" key={photo.src}>
+                    <PhotoThumb photo={photo} onOpen={() => setViewing(index)} />
+                  </figure>
+                ))}
+              </div>
+              {viewing !== null ? <PhotoViewer photos={todo.photos} index={viewing} onIndex={setViewing} onClose={() => setViewing(null)} /> : null}
+            </FactRow>
+          ) : null}
         </div>
         <div className="todo-side-rule" />
         <ActivityFeed className="todo-side-activity" items={todo.activity} />
@@ -221,6 +115,7 @@ export default function TodosPage() {
   const [enteringId, setEnteringId] = useState<string | null>(null);
   const [present, setPresent] = useState(false);
   const [hidden, setHidden] = useState(true);
+  const [editing, setEditing] = useState<{ id: string; creating: boolean } | null>(null);
   const retained = useRef<Todo | null>(null);
 
   const visible = useMemo(
@@ -276,7 +171,20 @@ export default function TodosPage() {
     setTodos((list) => [blank, ...list]);
     setSelected(id);
     setEnteringId(id);
+    setEditing({ id, creating: true });
   }
+
+  function removeTodo(id: string) {
+    const play = captureClose(document.querySelector(`[data-record="${CSS.escape(id)}"]`));
+    flushSync(() => {
+      setTodos((list) => list.filter((todo) => todo.id !== id));
+      setSelected((current) => (current === id ? null : current));
+      setEditing((current) => (current?.id === id ? null : current));
+    });
+    play();
+  }
+
+  const edited = editing ? todos.find((todo) => todo.id === editing.id) ?? null : null;
 
   useEffect(() => {
     if (!present || !hidden || open) return;
@@ -352,14 +260,7 @@ export default function TodosPage() {
             }}
             onRowClick={(row) => setSelected((current) => (current === row.id ? null : row.id))}
             onRowContextMenu={(row) => setSelected(row.id)}
-            onDelete={(row) => {
-              const play = captureClose(document.querySelector(`[data-record="${CSS.escape(row.id)}"]`));
-              flushSync(() => {
-                setTodos((list) => list.filter((todo) => todo.id !== row.id));
-                setSelected((current) => (current === row.id ? null : current));
-              });
-              play();
-            }}
+            onDelete={(row) => removeTodo(row.id)}
             deleteNoun="to-do"
             rowName={(row) => row.note.trim() || "To-do"}
             onCopyChange={(row, patch) => {
@@ -384,31 +285,27 @@ export default function TodosPage() {
             hidden={hidden}
             onClose={() => setSelected(null)}
             onExited={() => setPresent(false)}
-            onPatch={(patch) => {
+            onEdit={() => {
               const id = retained.current?.id;
-              if (!id) return;
-              setTodos((list) => list.map((item) => (item.id === id ? { ...item, ...patch } : item)));
-            }}
-            onAssigneeChange={(todo, value) => {
-              const person = ASSIGNEE_PEOPLE.find((item) => item.name === value);
-              setTodos((list) =>
-                list.map((item) =>
-                  item.id === todo.id
-                    ? { ...item, assignee: value === "unassigned" ? "Unassigned" : value, initials: value === "unassigned" ? "" : (person?.avatar ?? item.initials) }
-                    : item,
-                ),
-              );
+              if (id) setEditing({ id, creating: false });
             }}
             onDeleted={() => {
               const id = retained.current?.id;
-              if (!id) return;
-              const play = captureClose(document.querySelector(`[data-record="${CSS.escape(id)}"]`));
-              flushSync(() => {
-                setTodos((list) => list.filter((todo) => todo.id !== id));
-                setSelected(null);
-              });
-              play();
+              if (id) removeTodo(id);
             }}
+          />
+        ) : null}
+        {edited ? (
+          <TodoEditor
+            key={`edit-${edited.id}`}
+            todo={edited}
+            creating={editing?.creating}
+            onClose={() => setEditing(null)}
+            onSave={(next) => {
+              setTodos((list) => list.map((todo) => (todo.id === next.id ? next : todo)));
+              setEditing(null);
+            }}
+            onDelete={() => removeTodo(edited.id)}
           />
         ) : null}
       </div>

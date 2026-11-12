@@ -75,24 +75,6 @@
   font-variant-numeric: var(--numeric);
 }
 
-.kb-meter {
-  height: 42px;
-  background: repeating-linear-gradient(
-    90deg,
-    var(--black-12) 0 var(--space-2),
-    transparent var(--space-2) var(--space-4)
-  );
-}
-
-.kb-meter-fill {
-  height: 100%;
-  background: repeating-linear-gradient(
-    90deg,
-    var(--action) 0 var(--space-2),
-    transparent var(--space-2) var(--space-4)
-  );
-}
-
 .kb-health-rule {
   width: 1px;
   background: var(--line);

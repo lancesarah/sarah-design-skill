@@ -124,7 +124,7 @@ body.app-shell .kb-select[aria-checked="mixed"] {
   color: var(--black);
 }
 
-body.app-shell .kb-meter-fill {
+body.app-shell .meter-fill {
   background: var(--black);
 }
 

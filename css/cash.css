@@ -208,40 +208,6 @@
   border-bottom: 1px solid var(--line);
 }
 
-.cash-meta-item {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--space-4);
-  min-width: 0;
-}
-
-.cash-meta-value {
-  display: flex;
-  align-items: center;
-  min-height: 32px;
-  font-size: var(--text-14);
-  line-height: 20px;
-}
-
-.cash-select {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-8);
-  height: 32px;
-  padding: 0 var(--space-8);
-  border-radius: var(--radius-control);
-  background: var(--white);
-  box-shadow: var(--stroke);
-  color: var(--black);
-  font-size: var(--text-14);
-}
-
-.cash-select:hover,
-.cash-select[aria-expanded="true"] { background: var(--sidebar-grey); }
-
-.cash-select .i { color: var(--text-muted); }
-
 .cash-blocks {
   display: flex;
   flex-direction: column;
@@ -644,42 +610,6 @@ html[data-theme="dark"] .cash-new-location:hover { background: var(--black-12); 
   line-height: 16px;
 }
 
-
-.cash-count {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-25);
-  width: min(100%, 820px);
-  margin-inline: auto;
-  padding-top: var(--space-16);
-}
-
-.cash-count > .cash-post {
-  align-self: flex-start;
-  margin-top: var(--space-8);
-}
-
-.cash-count-picks {
-  display: flex;
-  align-items: flex-end;
-  gap: 50px;
-}
-
-.cash-count-place {
-  display: grid;
-  grid-template-columns: max-content max-content;
-  column-gap: var(--space-8);
-  row-gap: var(--space-4);
-  align-items: center;
-}
-
-.cash-count-place > .drop,
-.cash-count-place > .cash-meta-item { display: contents; }
-
-.cash-count-place .sheet-label { grid-column: 1 / -1; }
-
-.cash-count-place > .dept { margin: 0; box-shadow: none; }
-
 .cash-count-mode {
   width: max-content;
   flex: none;
@@ -690,148 +620,6 @@ html[data-theme="dark"] .cash-new-location:hover { background: var(--black-12); 
   width: max-content;
   min-width: 0;
 }
-
-.cash-count-sum {
-  display: flex;
-  align-items: baseline;
-  gap: var(--space-4);
-  color: var(--black);
-  font-size: 30px;
-  line-height: 40px;
-  font-variant-numeric: var(--numeric);
-}
-
-.cash-count-sum.is-quiet { color: var(--black-25); }
-
-.cash-count-ref {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-4) var(--space-16);
-  color: var(--text-muted);
-  font-size: var(--text-12);
-  line-height: 16px;
-  font-variant-numeric: var(--numeric);
-}
-
-.cash-count-ref .is-over { color: var(--status-complete); }
-.cash-count-ref .is-short { color: var(--destructive); }
-
-.cash-count-line {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-12);
-  width: 100%;
-  min-height: 48px;
-  padding: 8px 8px 8px 12px;
-  border-radius: 0;
-}
-
-.cash-count-line::after {
-  content: "";
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  height: 1px;
-  background: var(--line);
-  pointer-events: none;
-}
-
-.cash-count-line.is-active {
-  background: var(--sidebar-grey);
-  border-radius: 8px;
-}
-
-.cash-count-line.is-active::after { content: none; }
-
-.cash-count-copy {
-  display: flex;
-  align-items: baseline;
-  gap: var(--space-8);
-  min-width: 0;
-}
-
-.cash-count-copy > span:first-child {
-  overflow: hidden;
-  color: var(--black-50);
-  font-size: var(--text-14);
-  font-weight: 400;
-  line-height: 20px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.cash-count-line.is-active .cash-count-copy > span:first-child {
-  color: var(--black);
-  font-weight: 500;
-}
-
-.cash-count-line.has-value .cash-count-copy > span:first-child { color: var(--black); }
-
-.cash-count-line .cash-qty {
-  width: 28px;
-  flex: none;
-  height: 32px;
-  padding: 0;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-  box-shadow: none;
-  color: var(--black-50);
-  font-size: var(--text-14);
-  text-align: right;
-}
-
-.cash-count-line .cash-qty::placeholder { color: var(--black-50); }
-
-.cash-count-line.is-active .cash-qty,
-.cash-count-line.has-value .cash-qty {
-  width: 64px;
-  padding: 0 8px;
-}
-
-.cash-count-line.is-active .cash-qty {
-  border: 1px solid var(--grey);
-  border-radius: var(--radius-control);
-  background: var(--white);
-  color: var(--black);
-}
-
-.cash-count-line.is-active .cash-qty::placeholder { color: var(--black); }
-.cash-count-line.has-value .cash-qty { color: var(--black); }
-
-.cash-count-line .cash-qty:hover,
-.cash-count-line .cash-qty:focus {
-  outline: none;
-  box-shadow: none;
-}
-
-.cash-col-notes {
-  align-self: stretch;
-  display: flex;
-  flex-direction: column;
-}
-
-.cash-count-notes.cash-add-input {
-  flex: none;
-  width: 100%;
-  height: 96px;
-  min-height: 96px;
-  margin-top: 0;
-  padding: var(--space-10);
-  field-sizing: auto;
-  border-radius: var(--radius-control);
-  background: var(--sidebar-grey);
-  color: var(--black);
-  font-size: var(--text-14);
-  line-height: 20px;
-  white-space: pre-wrap;
-  resize: vertical;
-}
-
-.cash-count-notes.cash-add-input:hover { box-shadow: 0 0 0 1px var(--black-12); }
 
 .cash-bank-figure {
   display: flex;
@@ -970,31 +758,7 @@ html[data-theme="dark"] .cash-new-location:hover { background: var(--black-12); 
 
 .cash-col-add .cash-col-list { margin-top: 18px; }
 
-.cash-add-input {
-  width: min(100%, 180px);
-  height: 32px;
-  padding: 0 var(--space-8);
-  border-radius: var(--radius-control);
-  background: var(--sidebar-grey);
-  color: var(--black);
-  font-size: var(--text-14);
-}
-
-.cash-add-input:focus { outline: none; box-shadow: 0 0 0 1px var(--black-25); }
-.cash-add-input::placeholder { color: var(--text-muted); }
-
-html[data-theme="dark"] .cash-select:hover,
-html[data-theme="dark"] .cash-select[aria-expanded="true"] { background: var(--grey); }
-
-html[data-theme="dark"] .cash-qty,
-html[data-theme="dark"] .cash-add-input { background: var(--grey); }
-
-html[data-theme="dark"] .cash-count-line .cash-qty { background: transparent; }
-
-html[data-theme="dark"] .cash-count-line.is-active .cash-qty {
-  border-color: var(--line);
-  background: var(--white);
-}
+html[data-theme="dark"] .cash-qty { background: var(--grey); }
 
 html[data-theme="dark"] .inset-card-tools > button:hover,
 html[data-theme="dark"] .inset-card-tools > .cash-more[aria-expanded="true"] { background: var(--grey); }
@@ -1118,4 +882,23 @@ html[data-cash-shift="back"]::view-transition-new(cash-body) {
   .inset-card-chevron .i,
   .inset-card-clip,
   .cash-card-bank { transition: none; }
+}
+
+/* New count in the pill editor: the lines sit in three columns, coins, bills, and other. */
+.cash-count-editor .cash-editor-lines {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-16);
+}
+.cash-count-editor .editor-pills { align-items: center; }
+.cash-count-editor .cash-count-mode { margin-left: auto; }
+.cash-count-editor .cash-editor-col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+  min-width: 0;
+}
+
+@media (max-width: 560px) {
+  .cash-count-editor .cash-editor-lines { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }

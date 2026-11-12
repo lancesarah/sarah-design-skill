@@ -9,11 +9,13 @@ export type CheckboxProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, "onCha
   onCheckedChange?: (checked: boolean) => void;
   /** Paints the gallery hover specimen without a pointer. */
   state?: "hover";
+  /** The large box, for a row picked from a list of people. The box sits alone at the end of that row. */
+  size?: "lg";
   children?: ReactNode;
 };
 
 export const Checkbox = forwardRef<HTMLButtonElement, CheckboxProps>(function Checkbox(
-  { checked, defaultChecked = false, onCheckedChange, state, className, children, disabled, onClick, type = "button", ...rest },
+  { checked, defaultChecked = false, onCheckedChange, state, size, className, children, disabled, onClick, type = "button", ...rest },
   ref,
 ) {
   const [internal, setInternal] = useState(defaultChecked);
@@ -26,7 +28,7 @@ export const Checkbox = forwardRef<HTMLButtonElement, CheckboxProps>(function Ch
       role="checkbox"
       aria-checked={on}
       disabled={disabled}
-      className={["sds", "check", state === "hover" && !disabled ? "is-hover" : "", className].filter(Boolean).join(" ")}
+      className={["sds", "check", size === "lg" ? "check-lg" : "", state === "hover" && !disabled ? "is-hover" : "", className].filter(Boolean).join(" ")}
       onClick={(event) => {
         onClick?.(event);
         if (event.defaultPrevented || disabled) return;
@@ -36,7 +38,7 @@ export const Checkbox = forwardRef<HTMLButtonElement, CheckboxProps>(function Ch
       }}
       {...rest}
     >
-      <span className="check-box">{on ? <Icon name="check" size={10} /> : null}</span>
+      <span className="check-box">{on ? <Icon name="check" size={size === "lg" ? 12 : 10} /> : null}</span>
       {children}
     </button>
   );

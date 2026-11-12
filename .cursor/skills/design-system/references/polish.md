@@ -127,23 +127,15 @@ Visible control sizes stay on the gallery component. Where a control is smaller 
 
 ## Icons
 
-Every new icon follows the internal notes icon. Sidebar, menu, and button glyphs share its line weight, rounded corners, and size, and each one keeps its own shape. The fit is not limited to the sidebar.
+Every icon is one line construction, the one `#i-calendar` and `#i-camera` use. Sidebar, menu, field, and button glyphs share its line weight, round ends, and size, and each one keeps its own shape.
 
-Pull the glyph from [Material Symbols](https://fonts.google.com/icons). Use the outlined glyph, the stroke look, not the filled one. Use the SVG on the 960 grid (`viewBox="0 -960 960 960"`). Keep the path. Do not redraw the silhouette, and do not stretch it into another icon's box. The sidebar toggle (`#i-sidebar`) is a wide 11×10 frame; other glyphs do not inherit that frame.
+- Sprite symbol in `apps/catalog/public/icons.svg`, `viewBox="0 0 14 14"`. Draw on that grid. Do not use another viewBox, and do not fit a path from a 24 or 960 grid with a transform.
+- Wrap the drawing in `<g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" style="stroke-width: var(--icon-stroke)">`. Every line has round ends and round joins.
+- The glyph sits in about 1.5 to 12.5 on both axes, centered on (7, 7). Its longest side is about 11. A wide glyph keeps that longest side, so it reads at the same size as the icons beside it.
+- Corners on a box are rounded, about 1.2 to 1.4. Color is `currentColor`. Do not set a hex.
+- Only a mark that is a dot is solid: the dots and grip, the dot in info, alert, and warn, and the pushed state of `#i-pin-filled`. Do not build an icon from a filled Material shape.
 
-`#i-doc` (Internal notes) is the reference, including the page-title mark and any icon added to a menu. Fit every new icon the same way:
-
-- Sprite symbol, `viewBox="0 0 14 14"`, drawn at 18×18.
-- Longest side of the glyph box is 11, centered on (7, 7). A wide glyph, such as the link chain, stays in that same icon. Do not grow the icon so its short side matches Share and Delete. That chain becomes about twice as wide as the icons beside it.
-- `s = 11 / max(width, height)`, `tx = 7 - centerX * s`, `ty = 7 - centerY * s`.
-- Wrap the path in `<g transform="translate(tx ty) scale(s)">`. Scale applies first.
-- Color is `currentColor`. Do not set a hex on the path.
-
-Weight and corners match `#i-doc`. A ring stays `fill="currentColor"`. Drop a trailing subpath that has no area. Do not switch it to the filled glyph, and do not add a second stroke on top of the ring. Some outlined glyphs are a solid shape, not a ring. The outward arrow is one. Keep that path and fit it. Do not swap in a different Material icon to get a ring.
-
-Icons added together use that one construction. Copy a symbol that already exists in the page sprite. Do not trace one glyph from a screenshot and hand-draw the next with its own caps, joins, or box. Share and Delete in one menu are both this outlined fit. The `<svg>` uses the size of the icons already in that menu. Delete in the note menu is 14×14, so Share there is 14×14. The 18×18 drawing is the default control, not a reason to upsize one glyph. A symbol used in two places is one glyph. Refitting `#i-share` also changes the Sales nav icon.
-
-A stroke the gallery already draws (`#i-plus`, `#i-check`, `#i-chevron`, `#i-close`, the search mark) stays that stroke: `fill="none"`, `stroke="currentColor"`, `stroke-linecap="round"`, `stroke-linejoin="round"`, and `stroke-width: var(--icon-stroke)`. Copy it. Do not add a new action icon to that stroke list.
+Icons added together use that one construction. Copy a symbol that already exists in the sprite. The `<svg>` uses the size of the icons already beside it: 14 in a field, a menu, or a dense row, 18 in a control or a tile. The stroke grows with the drawn size, so do not upsize one glyph in a row. A symbol used in two places is one glyph. Redrawing `#i-share` also changes the Sales nav icon. `index.html` repeats some symbols, and the gallery build lets it win, so a redraw goes in both files.
 
 Outline is the resting state except where the gallery already fills, such as the in-progress status. Color and opacity carry hover, selected, and disabled. Do not swap in a filled glyph for the active state. If a control swaps glyphs, keep both in the DOM. The entering icon goes from opacity `0`, scale `0.25`, and blur `4px` to opacity `1`, scale `1`, and blur `0`. The leaving icon reverses that. Duration is 300ms and bounce is `0`. With no motion library, use a CSS transition on those three properties and `cubic-bezier(0.2, 0, 0, 1)`. Do not add a library for the swap. Decorative icons are `aria-hidden`. Icon-only buttons keep an accessible name.
 

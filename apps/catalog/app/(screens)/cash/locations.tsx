@@ -187,7 +187,7 @@ function LocationCard({
               <input
                 ref={nameRef}
                 aria-label="Name"
-                placeholder="Name"
+                placeholder="Front desk drawer"
                 value={location.name}
                 onChange={(event) => onChange((current) => ({ ...current, name: event.target.value }))}
               />
@@ -229,7 +229,7 @@ function LocationCard({
                     department.setOpen(false);
                   }}
                 >
-                  <DepartmentChip name={item.value} />
+                  <DepartmentChip name={item.value} plain />
                   <Icon name="check" size={14} className="check" />
                 </button>
               ))}
@@ -303,7 +303,7 @@ function LocationCard({
             ))}
             <AddColumn
               label="Add custom shift"
-              placeholder="Shift"
+              placeholder="Morning"
               items={customShifts}
               face={(shift) => shift.name}
               onToggle={(shift) =>
@@ -344,7 +344,7 @@ function LocationCard({
             ))}
             <AddColumn<CashLine>
               label="Add custom line"
-              placeholder="Line"
+              placeholder="Petty cash"
               items={[]}
               face={(line) => line.label}
               onToggle={() => undefined}

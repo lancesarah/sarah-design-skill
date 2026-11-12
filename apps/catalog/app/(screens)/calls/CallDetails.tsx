@@ -1,6 +1,6 @@
 "use client";
 
-import { ConfirmDialog, DepartmentChip, DetailPanel, Icon, OverlayMenu, captureClose, type MenuPoint } from "@lance-live/gallery-ui";
+import { ConfirmDialog, DepartmentChip, DetailPanel, FactRow, Icon, OverlayMenu, captureClose, type MenuPoint } from "@lance-live/gallery-ui";
 import { useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { ReplyForm } from "../chrome";
@@ -353,12 +353,12 @@ export function CallDetails({
       </section>
       <section className="call-block">
         <h3 className="sheet-label">Summary</h3>
-        <p className="call-summary-full text-well">{call.summary}</p>
+        <p className="call-summary-full">{call.summary}</p>
       </section>
       <div className="todo-side-rule" />
       <section className="call-block">
         <h3 className="sheet-label">Key moment</h3>
-        <p className="call-key text-well">{call.key}</p>
+        <p className="call-key">{call.key}</p>
       </section>
       <div className="todo-side-rule" />
       <section className="call-transcript">
@@ -396,39 +396,32 @@ export function CallDetails({
       <section className="call-block call-properties">
         <h3 className="sheet-label">Properties</h3>
         <div className="todo-side-meta">
-          <div>
-            <span className="sheet-label">Outcome</span>
+          <FactRow label="Outcome">
             <ResolutionChip
               resolution={resolution}
               expanded={resolutionOpen && anchorRef.current?.dataset.slot === "outcome"}
               slot="outcome"
               onClick={(node) => openMenu("resolution", node)}
             />
-          </div>
-          <div>
-            <span className="sheet-label">{transferred ? "Transferred to" : "Department"}</span>
+          </FactRow>
+          <FactRow label={transferred ? "Transferred to" : "Department"}>
             <DepartmentChip className="call-dept" name={deptLabel(call.dept)} plain />
-          </div>
-          <div>
-            <span className="sheet-label">Type</span>
+          </FactRow>
+          <FactRow label="Type">
             <span className="call-prop">{call.type}</span>
-          </div>
-          <div>
-            <span className="sheet-label">Sentiment</span>
+          </FactRow>
+          <FactRow label="Sentiment">
             <span className="call-prop">{call.sentiment}</span>
-          </div>
-          <div>
-            <span className="sheet-label">CSAT</span>
+          </FactRow>
+          <FactRow label="CSAT">
             <span className="call-prop" data-figure>{call.csat}</span>
-          </div>
-          <div>
-            <span className="sheet-label">Duration</span>
+          </FactRow>
+          <FactRow label="Duration">
             <span className="call-prop" data-figure>{durationLabel(call.duration)}</span>
-          </div>
-          <div>
-            <span className="sheet-label">Origin</span>
+          </FactRow>
+          <FactRow label="Origin">
             <span className="call-prop">{call.origin}</span>
-          </div>
+          </FactRow>
         </div>
       </section>
       <div className="todo-side-rule" />
@@ -524,7 +517,7 @@ export function CallDetails({
                     onDepartment(item.value);
                   }}
                 >
-                  <span className="dept" data-dept={item.value}>{item.label}</span>
+                  <span className="dept dept-plain" data-dept={item.value}>{item.label}</span>
                   <Glyph name="check" className="check" />
                 </button>
               ))

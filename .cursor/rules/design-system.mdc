@@ -1,0 +1,29 @@
+---
+description: Every UI change follows the design-system skill and passes the design check
+globs: apps/**/*.tsx,apps/**/*.css,packages/gallery-ui/src/**/*.tsx,packages/gallery-ui/src/**/*.css,css/**/*.css
+alwaysApply: false
+---
+
+# Design system
+
+Before editing a screen, component, or style, read `.cursor/skills/design-system/SKILL.md`, then the section in `references/components.md` for every component you touch or add. The gallery's Usage tab is built from those sections, so they are the rules people see.
+
+- Use the gallery component as it is (`@lance-live/gallery-ui`). Do not restyle it to fit a screen.
+- Pick the component by its When and When not lines. If none fits, say so before inventing one.
+- Colors come from `tokens.css` roles. No hex, `rgb()`, or `hsl()` outside the token files.
+- A header button always has an icon. A header holds one primary at most.
+- A danger press opens `ConfirmDialog` first, or hands off to a parent that does.
+
+After the change, run:
+
+```bash
+npm run check:design
+```
+
+Fix what it reports. A line that must break a rule gets a `design-check: allow` comment with the reason:
+
+```css
+/* design-check: allow — the photo outline is pure black, see --outline-image */
+```
+
+When a rule changes, edit the skill, not `docs-usage.ts`. Then run `npm run usage` to rebuild the Usage tab.

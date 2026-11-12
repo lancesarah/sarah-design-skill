@@ -1,6 +1,8 @@
 "use client";
 
+import { SearchField } from "@lance-live/gallery-ui";
 import { useEffect, useState } from "react";
+import { DocsContext, type DocsView } from "./docs-example";
 import { GallerySections } from "./gallery";
 import { Specimens, ThemeToggle } from "./specimens";
 
@@ -47,20 +49,33 @@ const NAV: Group[] = [
       {
         label: "Fields",
         items: [
-          { id: "titles", label: "Title and subtitle" },
           { id: "search", label: "Search" },
           { id: "checkbox", label: "Checkbox" },
-          { id: "fields", label: "Text field" },
+          { id: "switch", label: "Switch" },
         ],
       },
       {
         label: "People",
         items: [
+          { id: "avatar", label: "Avatar" },
           { id: "profile", label: "Profile" },
           { id: "lance", label: "Lance" },
           { id: "lance-side", label: "Lance sidebar" },
           { id: "messaging", label: "Messaging" },
           { id: "comment", label: "Comment" },
+          { id: "message", label: "Message" },
+          { id: "message-group", label: "Message group" },
+          { id: "day", label: "Day" },
+          { id: "typing", label: "Typing" },
+          { id: "resolved", label: "Resolved" },
+          { id: "ticket", label: "Ticket" },
+          { id: "ticket-note", label: "Ticket note" },
+          { id: "empty", label: "Empty" },
+          { id: "meter", label: "Meter" },
+          { id: "widget", label: "Widget" },
+          { id: "widget-list", label: "Widget list" },
+          { id: "widget-row", label: "Widget row" },
+          { id: "todos-widget", label: "To-dos widget" },
           { id: "activity", label: "Activity" },
         ],
       },
@@ -75,7 +90,18 @@ const NAV: Group[] = [
       },
       {
         label: "Data",
-        items: [{ id: "datatable", label: "Data table" }],
+        items: [
+          { id: "datatable", label: "Data table" },
+          { id: "task-table", label: "To-do table" },
+        ],
+      },
+      {
+        label: "Surfaces",
+        items: [
+          { id: "detail-panel", label: "Detail panel" },
+          { id: "editor", label: "Editor popup" },
+          { id: "pill-editor", label: "Pill editor" },
+        ],
       },
       {
         label: "Navigation",
@@ -116,6 +142,20 @@ export function DocsShell() {
   const [open, setOpen] = useState<Record<string, boolean>>({ foundations: true, components: true });
   const [contents, setContents] = useState<{ id: string; label: string }[]>([]);
   const [current, setCurrent] = useState<string | undefined>();
+  const [view, setView] = useState<DocsView>("examples");
+  const [query, setQuery] = useState("");
+  const needle = query.trim().toLowerCase();
+  const nav = needle
+    ? NAV.map((group) => ({
+        ...group,
+        categories: group.categories
+          .map((category) => ({
+            ...category,
+            items: (category.label ?? "").toLowerCase().includes(needle) ? category.items : category.items.filter((item) => item.label.toLowerCase().includes(needle)),
+          }))
+          .filter((category) => category.items.length),
+      })).filter((group) => group.categories.length)
+    : NAV;
 
   useEffect(() => {
     const apply = () => {
@@ -146,7 +186,7 @@ export function DocsShell() {
     }
     document.getElementById(section)?.scrollIntoView();
     setCurrent(section);
-  }, [page, section]);
+  }, [page, section, view]);
 
   useEffect(() => {
     const nodes = [...document.querySelectorAll<HTMLElement>("[data-example]")];
@@ -162,7 +202,7 @@ export function DocsShell() {
     );
     nodes.forEach((node) => observer.observe(node));
     return () => observer.disconnect();
-  }, [page, section]);
+  }, [page, section, view]);
 
   return (
     <div className="docs">
@@ -174,8 +214,21 @@ export function DocsShell() {
       </header>
       <div className="docs-body">
         <nav className="docs-nav" aria-label="Components">
-          {NAV.map((group) => (
-            <div className="docs-group" data-open={open[group.id] ? "true" : "false"} key={group.id}>
+          {/* Enter opens the first match. A search shows every group that matches, open or not. */}
+          <div
+            className="docs-search"
+            onKeyDown={(event) => {
+              if (event.key === "Enter") {
+                const first = nav[0]?.categories[0]?.items[0];
+                if (first) window.location.hash = first.id;
+              }
+            }}
+          >
+            <SearchField placeholder="Search components" onValueChange={setQuery} />
+          </div>
+          {needle && !nav.length ? <p className="docs-search-empty">No components match.</p> : null}
+          {nav.map((group) => (
+            <div className="docs-group" data-open={needle || open[group.id] ? "true" : "false"} key={group.id}>
               <button
                 className="docs-group-btn"
                 type="button"
@@ -185,7 +238,7 @@ export function DocsShell() {
                 <Chevron />
                 {group.label}
               </button>
-              {open[group.id]
+              {needle || open[group.id]
                 ? group.categories.map((category) => (
                     <div key={category.label ?? group.id}>
                       {category.label ? <div className="docs-cat">{category.label}</div> : null}
@@ -201,8 +254,21 @@ export function DocsShell() {
           ))}
         </nav>
         <main className="docs-main" id="docs-main">
-          <Specimens page={page} />
-          <GallerySections page={page} />
+          <DocsContext.Provider
+            value={{
+              page,
+              view,
+              setView: (next) => {
+                if (next === view) return;
+                history.replaceState(null, "", `#${page}`);
+                setSection(undefined);
+                setView(next);
+              },
+            }}
+          >
+            <Specimens page={page} />
+            <GallerySections page={page} />
+          </DocsContext.Provider>
         </main>
         <aside className="docs-contents">
           <h2>Contents</h2>

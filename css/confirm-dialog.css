@@ -1,0 +1,41 @@
+/* The modal around Delete confirmation. The editor popup reuses its scrim and card motion. */
+.confirm-dialog {
+  position: fixed;
+  inset: 0;
+  width: max-content;
+  height: fit-content;
+  max-width: calc(100% - 32px);
+  max-height: calc(100% - 32px);
+  margin: auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  overflow: visible;
+}
+.confirm-dialog::backdrop {
+  background: color-mix(in srgb, var(--black) 40%, transparent);
+  animation: confirm-scrim 240ms var(--ease-out);
+}
+.confirm-dialog[open] .confirm { animation: confirm-in 240ms var(--ease-out); }
+.confirm-dialog.is-closing::backdrop { animation: confirm-scrim-out 192ms var(--ease-out) forwards; }
+.confirm-dialog.is-closing .confirm { animation: confirm-out 192ms var(--ease-out) forwards; }
+@keyframes confirm-scrim {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes confirm-scrim-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+@keyframes confirm-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes confirm-out {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(8px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .confirm-dialog::backdrop,
+  .confirm-dialog .confirm { animation: none; }
+}

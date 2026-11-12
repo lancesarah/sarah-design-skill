@@ -1,12 +1,85 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Icon } from "../icons";
 
-export function Avatar({ initials, size = "md", empty = false }: { initials?: string; size?: "md" | "mini" | "lg"; empty?: boolean }) {
+/** Centers the name above the picture. The tip is in the top layer, so a scrolling list does not clip it. */
+function placeNameTip(host: HTMLElement) {
+  const tip = host.querySelector<HTMLElement>(":scope > .tip");
+  if (!tip) return null;
+  const gap = Number.parseFloat(getComputedStyle(host).getPropertyValue("--tip-gap")) || 8;
+  const box = host.getBoundingClientRect();
+  tip.style.position = "fixed";
+  tip.style.left = `${box.left + box.width / 2}px`;
+  tip.style.top = `${box.top - gap}px`;
+  tip.style.transform = "translate(-50%, -100%)";
+  return tip;
+}
+
+export function Avatar({
+  initials,
+  size = "md",
+  empty = false,
+  name,
+  photo,
+  className,
+  children,
+}: {
+  initials?: string;
+  size?: "md" | "mini" | "lg";
+  empty?: boolean;
+  /** The person's name, as a tooltip. Leave it off when that name is already written beside the picture. */
+  name?: string;
+  /** A portrait, shown in the circle in place of the initials. */
+  photo?: string;
+  className?: string;
+  /** A mark that sits on the picture, such as the verified check. */
+  children?: ReactNode;
+}) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const [hovered, setHovered] = useState(false);
+
+  useEffect(() => {
+    const host = ref.current;
+    if (!hovered || !host) return;
+    const place = () => placeNameTip(host);
+    const tip = place();
+    if (!tip) return;
+    try {
+      if (!tip.matches(":popover-open")) tip.showPopover();
+    } catch {
+      // The tip can already be opening as the pointer crosses the picture.
+    }
+    window.addEventListener("scroll", place, true);
+    window.addEventListener("resize", place);
+    return () => {
+      window.removeEventListener("scroll", place, true);
+      window.removeEventListener("resize", place);
+      try {
+        if (tip.matches(":popover-open")) tip.hidePopover();
+      } catch {
+        // The tip can already be closed when the pointer leaves.
+      }
+    };
+  }, [hovered]);
+
+  const classes = ["sds", "avatar", size === "md" ? "" : size, empty ? "is-empty" : "", photo ? "is-photo" : "", name ? "tip-host" : "", className].filter(Boolean).join(" ");
+  const face = photo ? <img src={photo} alt="" /> : empty ? null : initials;
+  if (!name) {
+    return (
+      <span className={classes} aria-hidden="true">
+        {face}
+        {children}
+      </span>
+    );
+  }
   return (
-    <span className={["sds", "avatar", size === "md" ? "" : size, empty ? "is-empty" : ""].filter(Boolean).join(" ")} aria-hidden="true">
-      {empty ? null : initials}
+    <span ref={ref} className={classes} role="img" aria-label={name} onPointerEnter={() => setHovered(true)} onPointerLeave={() => setHovered(false)}>
+      {face}
+      {children}
+      <span className="tip" popover="manual" aria-hidden="true">
+        {name}
+      </span>
     </span>
   );
 }
@@ -159,8 +232,8 @@ export function LancePanel() {
       </header>
       <div className="lance-home">
         <span className="lance-logo" aria-hidden="true">
-          <svg width="16" height="16" viewBox="0 0 16 16">
-            <path fill="currentColor" d="M2 2h5v12H2zM2 9h12v5H2z" />
+          <svg width="16" height="16" viewBox="0 0 185 185">
+            <path fill="currentColor" d="M0 0H39V146H185V185H39A39 39 0 0 1 0 146ZM53 0H92V93H185V132H92A39 39 0 0 1 53 93ZM106 0H145V40H185V79H145A39 39 0 0 1 106 40Z" />
           </svg>
         </span>
         <p className="lance-hello">How can I help you today?</p>

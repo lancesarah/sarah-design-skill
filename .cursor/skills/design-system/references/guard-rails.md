@@ -52,9 +52,9 @@ See Urgency in [components.md](components.md).
 
 ## One icon construction
 
-A new icon follows the Internal notes construction in [polish.md](polish.md). That includes menu icons. Copy a symbol that already exists in the sprite. Icons in one menu share that construction. Do not trace one glyph from a screenshot and hand-draw the next with different caps, joins, or a different box.
+Every icon is the line construction in [polish.md](polish.md), the one `#i-calendar` and `#i-camera` use: a 14 grid, a `--icon-stroke` line, and round ends and joins. That includes menu and field icons. Copy a symbol that already exists in the sprite. Do not mix in a filled Material shape, and do not hand-draw the next glyph with different caps, joins, or a different box.
 
-Forced by: "why are the share and delete icons so different? they should follow the style guide."
+Forced by: "why are the share and delete icons so different? they should follow the style guide." and "for all icons can you match the camera/calendar formatting? make this change everywhere"
 
 ## The more menu on right-click
 

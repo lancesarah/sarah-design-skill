@@ -18,7 +18,7 @@ import { flushSync } from "react-dom";
 import { FilterMenu, SearchBox } from "../chrome";
 import { Glyph } from "../glyph";
 import { PageLayout } from "../page-layout";
-import { CountForm } from "./count-form";
+import { CountEditor } from "./count-editor";
 import { LocationsEditor } from "./locations";
 import {
   INITIAL_COUNTS,
@@ -33,12 +33,10 @@ import {
   varianceOf,
   type CashCount,
   type CashLocation,
+  type PostedCount,
 } from "./model";
 
-type View =
-  | { name: "list" }
-  | { name: "locations" }
-  | { name: "count"; count: CashCount | null };
+type View = { name: "list" } | { name: "locations" };
 
 const RANGES = [
   { value: "anytime", label: "Anytime" },
@@ -114,6 +112,8 @@ export default function CashPage() {
   const [enteringId, setEnteringId] = useState<string | null>(null);
   const [sort, setSort] = useState<DataSort | null>(null);
   const [pinnedIds, setPinnedIds] = useState<string[]>([]);
+  const [counting, setCounting] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const retained = useRef<CashCount | null>(null);
 
   const shiftOptions = useMemo(() => sortShifts([...new Set(counts.map((count) => count.shift))]), [counts]);
@@ -209,36 +209,27 @@ export default function CashPage() {
     );
   }
 
-  if (view.name === "count") {
-    const editing = view.count;
-    return (
-      <CountForm
-        locations={locations}
-        initial={editing}
-        onCancel={() => shiftCash("back", () => setView({ name: "list" }))}
-        onPost={(posted) => {
-          const id = editing?.id ?? `count-${Date.now()}`;
-          const keep = Boolean(editing && !editing.entry && Object.keys(posted.entry).length === 0);
-          const next: CashCount = {
-            id,
-            locationId: posted.locationId,
-            shift: posted.shift,
-            by: editing?.by ?? "Sarah",
-            initials: editing?.initials ?? "SM",
-            when: editing?.when ?? formatWhen(new Date()),
-            notes: posted.notes,
-            expected: editing && keep ? editing.expected : posted.expected,
-            entry: editing && keep ? null : posted.entry,
-            total: editing && keep ? editing.total : posted.total,
-          };
-          setCounts((list) => (editing ? list.map((item) => (item.id === id ? next : item)) : [next, ...list]));
-          setEnteringId(editing ? null : id);
-          setSelectedId(id);
-          shiftCash("back", () => setView({ name: "list" }));
-        }}
-      />
-    );
+  function postCount(posted: PostedCount, editing: CashCount | null) {
+    const id = editing?.id ?? `count-${Date.now()}`;
+    const keep = Boolean(editing && !editing.entry && Object.keys(posted.entry).length === 0);
+    const next: CashCount = {
+      id,
+      locationId: posted.locationId,
+      shift: posted.shift,
+      by: editing?.by ?? "Sarah",
+      initials: editing?.initials ?? "SM",
+      when: editing?.when ?? formatWhen(new Date()),
+      notes: posted.notes,
+      expected: editing && keep ? editing.expected : posted.expected,
+      entry: editing && keep ? null : posted.entry,
+      total: editing && keep ? editing.total : posted.total,
+    };
+    setCounts((list) => (editing ? list.map((item) => (item.id === id ? next : item)) : [next, ...list]));
+    setEnteringId(editing ? null : id);
+    setSelectedId(id);
   }
+
+  const editing = counts.find((count) => count.id === editingId) ?? null;
 
   return (
     <PageLayout
@@ -257,10 +248,13 @@ export default function CashPage() {
         view.name === "list" ? (
           <>
             <Button variant="secondary" onClick={() => shiftCash("forward", () => setView({ name: "locations" }))}>
-              <Icon name="pin" size={14} />
+              <Icon name="tune" size={14} />
               Manage locations
             </Button>
-            <Button disabled={!active} onClick={() => shiftCash("forward", () => setView({ name: "count", count: null }))}>
+            <Button
+              disabled={!active}
+              onClick={() => setCounting(true)}
+            >
               <Icon name="plus-bold" size={14} />
               New count
             </Button>
@@ -351,8 +345,34 @@ export default function CashPage() {
           hidden={hidden}
           onClose={() => setSelectedId(null)}
           onExited={() => setPresent(false)}
-          onEdit={() => shiftCash("forward", () => setView({ name: "count", count: sideCount }))}
+          onEdit={() => setEditingId(sideCount.id)}
           onDeleted={() => remove(sideCount)}
+        />
+      ) : null}
+      {counting ? (
+        <CountEditor
+          locations={locations}
+          onClose={() => setCounting(false)}
+          onPost={(posted) => {
+            postCount(posted, null);
+            setCounting(false);
+          }}
+        />
+      ) : null}
+      {editing ? (
+        <CountEditor
+          key={editing.id}
+          locations={locations}
+          initial={editing}
+          onClose={() => setEditingId(null)}
+          onPost={(posted) => {
+            postCount(posted, editing);
+            setEditingId(null);
+          }}
+          onDelete={() => {
+            setEditingId(null);
+            remove(editing);
+          }}
         />
       ) : null}
     </PageLayout>
@@ -433,11 +453,7 @@ function CountSide({
       onClose={onClose}
       onExited={onExited}
       onDeleted={onDeleted}
-      actions={
-        <Button variant="secondary" onClick={onEdit}>
-          Edit
-        </Button>
-      }
+      onEdit={onEdit}
     >
       <div className="cash-side-head">
         <div className="todo-side-intro">

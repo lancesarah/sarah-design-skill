@@ -4,16 +4,15 @@ import {
   Button,
   ConfirmDialog,
   DataTable,
+  EditorDialog,
   Icon,
   OverlayMenu,
-  Tabs,
   ThemeSwitch,
   TITLE_TEXT_INSET,
   taskMenuItem,
   type DataColumn,
 } from "@lance-live/gallery-ui";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { createPortal } from "react-dom";
 import { FilterMenu, SearchBox } from "../chrome";
 import { Glyph } from "../glyph";
 import type { Measure, Source } from "./page";
@@ -70,7 +69,7 @@ function MeasureName({ value, onChange }: { value: string; onChange: (value: str
       className="pm-editor-line"
       rows={1}
       aria-label="Measurement"
-      placeholder="Measurement"
+      placeholder="Boiler pressure"
       value={value}
       onChange={(event) => onChange(event.target.value)}
       onKeyDown={(event) => {
@@ -149,8 +148,6 @@ function SourceDialog({
   const titleRef = useRef<HTMLInputElement>(null);
   const kindRef = useRef<HTMLButtonElement>(null);
   const dueRef = useRef<HTMLButtonElement>(null);
-  const closeRef = useRef(onClose);
-  closeRef.current = onClose;
   const name = source.name.trim() || "Source";
   const cadence = source.perDay === 1 ? "Once a day" : `${source.perDay} a day`;
 
@@ -160,298 +157,266 @@ function SourceDialog({
   }, [source.id]);
 
   useEffect(() => {
-    const previous = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    function onKey(event: KeyboardEvent) {
-      if (event.key !== "Escape" || pending) return;
-      if (menu) {
-        setMenu(null);
-        return;
-      }
-      closeRef.current();
-    }
     function onPointerDown(event: Event) {
       const target = event.target;
       if (!(target instanceof Element)) return;
       if (target.closest(".menu, .pm-editor-pick, .readings-due-drop")) return;
       setMenu(null);
     }
-    document.addEventListener("keydown", onKey);
     document.addEventListener("pointerdown", onPointerDown);
-    return () => {
-      document.body.style.overflow = previous;
-      document.removeEventListener("keydown", onKey);
-      document.removeEventListener("pointerdown", onPointerDown);
-    };
-  }, [menu, pending]);
+    return () => document.removeEventListener("pointerdown", onPointerDown);
+  }, []);
 
-  return createPortal(
-    <div className="pm-editor-dialog" role="dialog" aria-modal="true" aria-label="Edit source">
-      <button type="button" className="pm-editor-scrim" aria-label="Close" onClick={() => closeRef.current()} />
-      <div className="pm-editor-pop pm-page readings-editor">
-        <div className="pm-editor-page">
-          <header className="pm-check-name pm-editor-head">
-            <div className="pm-editor-kicker">
-              <p>Edit source</p>
-              <div className="pm-editor-kicker-actions">
-                <Button variant="danger-light" className="pm-editor-delete" onClick={() => setPending({ noun: "source", name, run: onDelete })}>
-                  <Icon name="trash" size={14} />
-                  Delete source
-                </Button>
-                <button type="button" className="pm-editor-close" aria-label="Close" onClick={() => closeRef.current()}>
-                  <Icon name="close" size={14} />
-                </button>
-              </div>
-            </div>
-            <div className="pm-editor-name">
+  return (
+    <>
+      <EditorDialog
+        kicker="Edit source"
+        className="pm-page readings-editor"
+        title={source.name}
+        titlePlaceholder="Boiler 2"
+        titleRef={titleRef}
+        onTitleChange={(value) => patch(source.id, (item) => ({ ...item, name: value }))}
+        subtitle={<>{source.kind} · {cadence}</>}
+        deleteLabel="Delete source"
+        onDelete={() => setPending({ noun: "source", name, run: onDelete })}
+        onClose={onClose}
+        onEscape={() => {
+          if (pending) return true;
+          if (!menu) return false;
+          setMenu(null);
+          return true;
+        }}
+        tabs={{
+          label: "Source",
+          value: tab,
+          onValueChange: setTab,
+          items: [
+            { value: "details", label: "Details" },
+            { value: "measurements", label: "Measurements", count: source.measures.length },
+          ],
+        }}
+        footer={<Button onClick={onClose}>Save source</Button>}
+      >
+        {tab === "details" ? (
+          <>
+            <label className="pm-editor-field">
+              <span className="sheet-label">Name</span>
               <input
-                ref={titleRef}
-                className="pm-editor-title"
+                className="pm-editor-input"
                 aria-label="Name"
                 value={source.name}
-                placeholder="Source name"
+                placeholder="Boiler 2"
                 onChange={(event) => patch(source.id, (item) => ({ ...item, name: event.target.value }))}
               />
-              <p>{source.kind} · {cadence}</p>
-            </div>
-          </header>
-          <div className="pm-editor">
-            <Tabs
-              label="Source"
-              value={tab}
-              onValueChange={setTab}
-              items={[
-                { value: "details", label: "Details" },
-                { value: "measurements", label: "Measurements", count: source.measures.length },
-              ]}
-            />
-            {tab === "details" ? (
-              <div className="pm-editor-stack">
-                <label className="pm-editor-field">
-                  <span className="sheet-label">Name</span>
-                  <input
-                    className="pm-editor-input"
-                    aria-label="Name"
-                    value={source.name}
-                    placeholder="Source name"
-                    onChange={(event) => patch(source.id, (item) => ({ ...item, name: event.target.value }))}
-                  />
-                </label>
-                <div className="pm-editor-pair">
-                  <div className="pm-editor-field">
-                    <span className="sheet-label">Type</span>
-                    <button
-                      ref={kindRef}
-                      type="button"
-                      className="pm-editor-input pm-editor-pick"
-                      aria-haspopup="menu"
-                      aria-expanded={menu === "kind"}
-                      onClick={() => setMenu((current) => (current === "kind" ? null : "kind"))}
-                    >
-                      <span className="pm-editor-pick-value">
-                        <Icon name="home" size={14} />
-                        <span>{source.kind}</span>
-                      </span>
-                      <Icon name="chevron" size={14} />
-                    </button>
-                    <OverlayMenu open={menu === "kind"} anchorRef={kindRef} label="Type" onPointerDown={(event) => event.stopPropagation()}>
-                      {KINDS.map((kind) => taskMenuItem(kind, kind === source.kind, () => {
-                        patch(source.id, (item) => ({ ...item, kind }));
-                        setMenu(null);
-                      }, kind))}
-                    </OverlayMenu>
-                  </div>
-                  <div className="pm-editor-field">
-                    <span className="sheet-label">Readings per day</span>
-                    <div className="readings-step">
-                      <Button
-                        variant="secondary"
-                        icon
-                        aria-label="Fewer readings"
-                        disabled={source.perDay <= 1}
-                        onClick={() => patch(source.id, (item) => withPerDay(item, item.perDay - 1))}
-                      >
-                        <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true">
-                          <path d="M2.5 7h9" fill="none" stroke="currentColor" strokeWidth="var(--icon-stroke)" />
-                        </svg>
-                      </Button>
-                      <b>{source.perDay}</b>
-                      <Button
-                        variant="secondary"
-                        icon
-                        aria-label="More readings"
-                        onClick={() => patch(source.id, (item) => withPerDay(item, item.perDay + 1))}
-                      >
-                        <Icon name="plus" size={14} />
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-                {source.perDay > 1 ? (
-                  <div className="pm-editor-field">
-                    <span className="sheet-label">Due by</span>
-                    <div className="readings-due">
-                      {dueList(source).map((time, index) => {
-                        const id = dueMenuId(index);
-                        return (
-                          <div key={id} className="readings-due-item">
-                            <span>Reading {index + 1}</span>
-                            <Button
-                              variant="secondary"
-                              className="readings-deadline-drop readings-due-drop"
-                              aria-label={`Reading ${index + 1} due by`}
-                              aria-haspopup="menu"
-                              aria-expanded={menu === id}
-                              onClick={(event) => {
-                                dueRef.current = event.currentTarget;
-                                setMenu((current) => (current === id ? null : id));
-                              }}
-                            >
-                              <span>{time}</span>
-                              <Icon name="chevron" size={14} />
-                            </Button>
-                          </div>
-                        );
-                      })}
-                    </div>
-                    <OverlayMenu open={parseDue(menu) != null} anchorRef={dueRef} label="Due by" onPointerDown={(event) => event.stopPropagation()}>
-                      {DUE_TIMES.map((time) => {
-                        const index = parseDue(menu);
-                        const selected = index != null && dueList(source)[index] === time;
-                        return (
-                          <button
-                            key={time}
-                            type="button"
-                            className="menu-item"
-                            role="menuitemradio"
-                            aria-checked={selected}
-                            onClick={() => {
-                              if (index == null) return;
-                              const next = dueList(source);
-                              next[index] = time;
-                              patch(source.id, (item) => ({ ...item, dueBy: next }));
-                              setMenu(null);
-                            }}
-                          >
-                            {time}
-                            <Icon name="check" size={14} className="check" />
-                          </button>
-                        );
-                      })}
-                    </OverlayMenu>
-                  </div>
-                ) : null}
+            </label>
+            <div className="pm-editor-pair">
+              <div className="pm-editor-field">
+                <span className="sheet-label">Type</span>
+                <button
+                  ref={kindRef}
+                  type="button"
+                  className="pm-editor-input pm-editor-pick"
+                  aria-haspopup="menu"
+                  aria-expanded={menu === "kind"}
+                  onClick={() => setMenu((current) => (current === "kind" ? null : "kind"))}
+                >
+                  <span className="pm-editor-pick-value">
+                    <Icon name="home" size={14} />
+                    <span>{source.kind}</span>
+                  </span>
+                  <Icon name="chevron" size={14} />
+                </button>
+                <OverlayMenu open={menu === "kind"} anchorRef={kindRef} label="Type" onPointerDown={(event) => event.stopPropagation()}>
+                  {KINDS.map((kind) => taskMenuItem(kind, kind === source.kind, () => {
+                    patch(source.id, (item) => ({ ...item, kind }));
+                    setMenu(null);
+                  }, kind))}
+                </OverlayMenu>
               </div>
-            ) : (
-              <div className="pm-editor-stack">
-                <section className="pm-editor-block" aria-label="Measurements">
-                  <DataTable
-                    rows={source.measures}
-                    empty="No measurements. Add one for this source."
-                    interactive
-                    columns={[{
-                      id: "measurement",
-                      title: "Measurement",
-                      text: "primary",
-                      flex: true,
-                      lines: 2,
-                      render: (measure) => (
-                        <div className="pm-editor-row-body">
-                          <div className="pm-step-top">
-                            <MeasureName
-                              value={measure.name}
-                              onChange={(name) => patchMeasure(source.id, measure.id, (item) => ({ ...item, name }))}
-                            />
-                            <div className="pm-step-tools">
-                              <Button
-                                variant={measure.required ? "tertiary" : "secondary"}
-                                aria-pressed={measure.required === true}
-                                onClick={() => patchMeasure(source.id, measure.id, (item) => ({ ...item, required: !item.required }))}
-                              >
-                                {measure.required ? "Required" : "Optional"}
-                              </Button>
-                              <button
-                                type="button"
-                                className="pm-editor-remove"
-                                aria-label={`Remove ${measure.name || "measurement"}`}
-                                onClick={() => {
-                                  const previous = source.measures;
-                                  setPending({
-                                    noun: "measurement",
-                                    name: measure.name.trim() || "Untitled measurement",
-                                    run: () => patch(source.id, (item) => ({
-                                      ...item,
-                                      measures: previous.filter((entry) => entry.id !== measure.id),
-                                    })),
-                                  });
-                                }}
-                              >
-                                <Icon name="trash" size={14} />
-                              </button>
-                            </div>
-                          </div>
-                          <div className="pm-step-range">
-                            <input
-                              className="sds line pm-step-unit"
-                              aria-label="Unit"
-                              placeholder="Unit (°F, psi)"
-                              value={measure.unit}
-                              onChange={(event) => patchMeasure(source.id, measure.id, (item) => ({ ...item, unit: event.target.value }))}
-                            />
-                            <input
-                              className="sds line pm-step-bound"
-                              aria-label="Minimum"
-                              placeholder="Min"
-                              inputMode="decimal"
-                              value={boundText(measure.min)}
-                              onChange={(event) => patchMeasure(source.id, measure.id, (item) => ({ ...item, min: boundValue(event.target.value) }))}
-                            />
-                            <span aria-hidden="true">–</span>
-                            <input
-                              className="sds line pm-step-bound"
-                              aria-label="Maximum"
-                              placeholder="Max"
-                              inputMode="decimal"
-                              value={boundText(measure.max)}
-                              onChange={(event) => patchMeasure(source.id, measure.id, (item) => ({ ...item, max: boundValue(event.target.value) }))}
-                            />
-                            <span className="pm-step-range-note">expected range (optional)</span>
-                          </div>
-                        </div>
-                      ),
-                    }]}
-                  />
-                  <form
-                    className="pm-editor-compose"
-                    onSubmit={(event) => {
-                      event.preventDefault();
-                      const next = draft.trim();
-                      if (!next) return;
-                      patch(source.id, (item) => ({
-                        ...item,
-                        measures: [...item.measures, { id: `measure-${Date.now()}`, name: next, unit: "" }],
-                      }));
-                      setDraft("");
-                    }}
+              <div className="pm-editor-field">
+                <span className="sheet-label">Readings per day</span>
+                <div className="readings-step">
+                  <Button
+                    variant="secondary"
+                    icon
+                    aria-label="Fewer readings"
+                    disabled={source.perDay <= 1}
+                    onClick={() => patch(source.id, (item) => withPerDay(item, item.perDay - 1))}
                   >
-                    <input
-                      className="sds line"
-                      value={draft}
-                      placeholder="New measurement..."
-                      aria-label="New measurement"
-                      onChange={(event) => setDraft(event.target.value)}
-                    />
-                    <Button variant="secondary" type="submit">Add</Button>
-                  </form>
-                </section>
+                    <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true">
+                      <path d="M2.5 7h9" fill="none" stroke="currentColor" strokeWidth="var(--icon-stroke)" />
+                    </svg>
+                  </Button>
+                  <b>{source.perDay}</b>
+                  <Button
+                    variant="secondary"
+                    icon
+                    aria-label="More readings"
+                    onClick={() => patch(source.id, (item) => withPerDay(item, item.perDay + 1))}
+                  >
+                    <Icon name="plus" size={14} />
+                  </Button>
+                </div>
               </div>
-            )}
-          </div>
-        </div>
-        <div className="pm-editor-foot">
-          <Button onClick={() => closeRef.current()}>Save</Button>
-        </div>
-      </div>
+            </div>
+            {source.perDay > 1 ? (
+              <div className="pm-editor-field">
+                <span className="sheet-label">Due by</span>
+                <div className="readings-due">
+                  {dueList(source).map((time, index) => {
+                    const id = dueMenuId(index);
+                    return (
+                      <div key={id} className="readings-due-item">
+                        <span>Reading {index + 1}</span>
+                        <Button
+                          variant="secondary"
+                          className="readings-deadline-drop readings-due-drop"
+                          aria-label={`Reading ${index + 1} due by`}
+                          aria-haspopup="menu"
+                          aria-expanded={menu === id}
+                          onClick={(event) => {
+                            dueRef.current = event.currentTarget;
+                            setMenu((current) => (current === id ? null : id));
+                          }}
+                        >
+                          <span>{time}</span>
+                          <Icon name="chevron" size={14} />
+                        </Button>
+                      </div>
+                    );
+                  })}
+                </div>
+                <OverlayMenu open={parseDue(menu) != null} anchorRef={dueRef} label="Due by" onPointerDown={(event) => event.stopPropagation()}>
+                  {DUE_TIMES.map((time) => {
+                    const index = parseDue(menu);
+                    const selected = index != null && dueList(source)[index] === time;
+                    return (
+                      <button
+                        key={time}
+                        type="button"
+                        className="menu-item"
+                        role="menuitemradio"
+                        aria-checked={selected}
+                        onClick={() => {
+                          if (index == null) return;
+                          const next = dueList(source);
+                          next[index] = time;
+                          patch(source.id, (item) => ({ ...item, dueBy: next }));
+                          setMenu(null);
+                        }}
+                      >
+                        {time}
+                        <Icon name="check" size={14} className="check" />
+                      </button>
+                    );
+                  })}
+                </OverlayMenu>
+              </div>
+            ) : null}
+          </>
+        ) : (
+          <section className="pm-editor-block" aria-label="Measurements">
+            <DataTable
+              rows={source.measures}
+              empty="No measurements. Add one for this source."
+              interactive
+              columns={[{
+                id: "measurement",
+                title: "Measurement",
+                text: "primary",
+                flex: true,
+                lines: 2,
+                render: (measure) => (
+                  <div className="pm-editor-row-body">
+                    <div className="pm-step-top">
+                      <MeasureName
+                        value={measure.name}
+                        onChange={(name) => patchMeasure(source.id, measure.id, (item) => ({ ...item, name }))}
+                      />
+                      <div className="pm-step-tools">
+                        <Button
+                          variant={measure.required ? "tertiary" : "secondary"}
+                          aria-pressed={measure.required === true}
+                          onClick={() => patchMeasure(source.id, measure.id, (item) => ({ ...item, required: !item.required }))}
+                        >
+                          {measure.required ? "Required" : "Optional"}
+                        </Button>
+                        <button
+                          type="button"
+                          className="pm-editor-remove"
+                          aria-label={`Remove ${measure.name || "measurement"}`}
+                          onClick={() => {
+                            const previous = source.measures;
+                            setPending({
+                              noun: "measurement",
+                              name: measure.name.trim() || "Untitled measurement",
+                              run: () => patch(source.id, (item) => ({
+                                ...item,
+                                measures: previous.filter((entry) => entry.id !== measure.id),
+                              })),
+                            });
+                          }}
+                        >
+                          <Icon name="trash" size={14} />
+                        </button>
+                      </div>
+                    </div>
+                    <div className="pm-step-range">
+                      <input
+                        className="sds line pm-step-unit"
+                        aria-label="Unit"
+                        placeholder="°F"
+                        value={measure.unit}
+                        onChange={(event) => patchMeasure(source.id, measure.id, (item) => ({ ...item, unit: event.target.value }))}
+                      />
+                      <input
+                        className="sds line pm-step-bound"
+                        aria-label="Minimum"
+                        placeholder="68"
+                        inputMode="decimal"
+                        value={boundText(measure.min)}
+                        onChange={(event) => patchMeasure(source.id, measure.id, (item) => ({ ...item, min: boundValue(event.target.value) }))}
+                      />
+                      <span aria-hidden="true">–</span>
+                      <input
+                        className="sds line pm-step-bound"
+                        aria-label="Maximum"
+                        placeholder="76"
+                        inputMode="decimal"
+                        value={boundText(measure.max)}
+                        onChange={(event) => patchMeasure(source.id, measure.id, (item) => ({ ...item, max: boundValue(event.target.value) }))}
+                      />
+                      <span className="pm-step-range-note">expected range (optional)</span>
+                    </div>
+                  </div>
+                ),
+              }]}
+            />
+            <form
+              className="pm-editor-compose"
+              onSubmit={(event) => {
+                event.preventDefault();
+                const next = draft.trim();
+                if (!next) return;
+                patch(source.id, (item) => ({
+                  ...item,
+                  measures: [...item.measures, { id: `measure-${Date.now()}`, name: next, unit: "" }],
+                }));
+                setDraft("");
+              }}
+            >
+              <input
+                className="sds line"
+                value={draft}
+                placeholder="Boiler pressure"
+                aria-label="New measurement"
+                onChange={(event) => setDraft(event.target.value)}
+              />
+              <Button variant="secondary" type="submit">Add</Button>
+            </form>
+          </section>
+        )}
+      </EditorDialog>
       <ConfirmDialog
         open={pending != null}
         name={pending?.name ?? name}
@@ -463,8 +428,7 @@ function SourceDialog({
           current?.run();
         }}
       />
-    </div>,
-    document.body,
+    </>
   );
 }
 

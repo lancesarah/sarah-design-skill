@@ -152,10 +152,17 @@ button.sds:active:not(:disabled) {
   border-radius: 6px;
   color: var(--black-50);
   font: inherit;
+  /* A segment is one line. A label of two words does not wrap inside its measured width. */
+  white-space: nowrap;
   background: none;
   border: 0;
   appearance: none;
   cursor: pointer;
+}
+
+/* The label is a box, so the control sees it change size and sizes the segment to it again. An inline span reports no size. */
+.sds.segmented .segment > .slide-content {
+  display: inline-block;
 }
 
 .sds.segmented .segment[aria-selected="true"] {
@@ -349,6 +356,11 @@ html[data-theme="dark"] .sds.btn-danger:active {
 
 button.sds:disabled {
   cursor: default;
+}
+
+/* Disabled is the same button, faded. */
+.sds.btn:disabled {
+  opacity: 0.6;
 }
 
 /* An open filter menu is taken out of flow. Keep room for the list and the submenu beside it. */
@@ -626,6 +638,32 @@ button.sds.view-pick[aria-expanded="true"] .meta-chevron {
   padding: 0;
 }
 
+/* A photo in the avatar. The circle keeps its size. The photo edge stands in for the border and the fill. */
+.sds.avatar.is-photo {
+  position: relative;
+  border: 0;
+  outline: var(--outline-image);
+  outline-offset: -1px;
+  background: transparent;
+}
+
+.sds.avatar.is-photo > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  object-fit: cover;
+}
+
+html[data-theme="dark"] .sds.avatar.is-photo > img {
+  clip-path: inset(1px round 50%);
+}
+
+/* A picture with a name tooltip is still a picture. Its ring follows the row with no fade. */
+.sds.avatar.tip-host {
+  transition: none;
+}
+
 .sds.activity-feed {
   display: flex;
   flex-direction: column;
@@ -764,6 +802,13 @@ button.sds.view-pick[aria-expanded="true"] .meta-chevron {
   background: var(--white);
   box-shadow: var(--stroke);
   color: var(--white);
+}
+
+/* Large. 18px box, 5px radius, for a row picked from a list of people. */
+.sds.check.check-lg .check-box {
+  width: 18px;
+  height: 18px;
+  border-radius: 5px;
 }
 
 .sds.check:hover:not(:disabled) .check-box,

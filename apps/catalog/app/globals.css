@@ -5,6 +5,19 @@
 @import "@lance-live/gallery-ui/styles.css" layer(gallery-ui);
 @import "tailwindcss/utilities.css" layer(utilities);
 
+input:not([type]),
+input[type="text"],
+input[type="search"],
+input[type="email"],
+input[type="password"],
+input[type="url"],
+input[type="tel"],
+input[type="number"],
+textarea,
+[contenteditable="true"] {
+  cursor: text;
+}
+
 body {
   margin: 0;
   background: var(--sidebar-grey);
@@ -32,6 +45,18 @@ html[data-icon-ink="muted"] :is(.danger, .btn-danger-light, .pm-editor-remove) .
 
 html[data-icon-ink="muted"] .urgency-urgent .i[data-icon-label] {
   color: var(--urgency-urgent) !important;
+}
+
+html[data-icon-ink="muted"] .side-links a[aria-current="page"] .i[data-icon-label] {
+  color: var(--black) !important;
+}
+
+html[data-icon-ink="muted"] .home-page .page-mark .i[data-icon-label] {
+  color: var(--on-image-ink) !important;
+}
+
+html[data-text-ink="soft"]:not([data-theme="dark"]) [data-soft-ink] {
+  color: #3D3D3D !important;
 }
 
 .dev-switch {
@@ -108,6 +133,104 @@ html[data-sheet-lines="off"] .sheet-fade {
   border-inline: 0;
 }
 
+/* Dev preview. Depth. Light comes from above, and only a thing that takes a press is lit.
+   - The primary: lighter at the top, its own edge, and a lighter line one pixel inside that edge.
+     That line fades toward the bottom, the way the fill does.
+   - A filled danger button: the light and the edge. The inner line stays with the one primary.
+   - A white, stroked control or card that takes a press: the smallest drop under its hairline.
+   - A department chip with its ring is a control: the same drop, in a table, a menu, a filter, and a panel.
+     The plain label, the circle and the name with no ring, stays flat.
+   - The center card is the one surface that does not take a press and is still lit. It is the page, raised
+     off the grey chrome: its ring, and the same drop under it.
+   - Flat: a grey fill (tertiary, filter chip, tab, row), a field or well, and a card that only groups.
+   - A menu, a toast, and a popup keep --elevation-menu. A press sets the drop down. Disabled is flat.
+   Nothing changes size, and every hairline stays where it was. */
+html[data-depth="on"] {
+  --depth-sheen: linear-gradient(to bottom, rgb(255 255 255 / 14%), rgb(0 0 0 / 6%));
+  --depth-edge: inset 0 0 0 1px rgb(0 0 0 / 14%);
+  --depth-rim: linear-gradient(to bottom, rgb(255 255 255 / 32%), rgb(255 255 255 / 8%));
+  --depth-drop: 0 1px 2px rgb(0 0 0 / 8%);
+}
+
+html[data-depth="on"][data-theme="dark"] {
+  --depth-drop: 0 1px 2px rgb(0 0 0 / 40%);
+}
+
+html[data-depth="on"] .btn:not(.btn-secondary, .btn-tertiary, .btn-danger, .btn-danger-light, :disabled) {
+  background-image: var(--depth-sheen);
+  box-shadow: var(--depth-edge), var(--depth-drop);
+}
+
+/* The primary's inner line. A shadow cannot fade, so the line is its own layer: a 1px ring, one pixel
+   inside the edge, lightest at the top and fading toward the bottom with the fill.
+   The button holds it in place. :where keeps that at zero weight, so a page that positions a button still wins. */
+:where(html[data-depth="on"] .btn:not(.btn-secondary, .btn-tertiary, .btn-danger, .btn-danger-light, :disabled)) {
+  position: relative;
+}
+
+html[data-depth="on"] .btn:not(.btn-secondary, .btn-tertiary, .btn-danger, .btn-danger-light, :disabled)::after {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  padding: 1px;
+  border-radius: calc(var(--radius-control) - 1px);
+  background: var(--depth-rim);
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+html[data-depth="on"] .btn.btn-danger:not(:disabled) {
+  background-image: var(--depth-sheen);
+  box-shadow: var(--depth-edge), var(--depth-drop);
+}
+
+html[data-depth="on"] :is(.btn-secondary, .filter, .trigger),
+html[data-depth="on"] .segmented .slide-pill,
+html[data-depth="on"] .segmented:not(.has-slide) > .segment[aria-selected="true"],
+html[data-depth="on"] .notice-row.is-support,
+html[data-depth="on"] .pm-page :is(.pm-room, .pm-area-row) {
+  box-shadow: var(--stroke), var(--depth-drop);
+}
+
+/* A vacant room draws its own darker edge. Keep it, and add the drop. */
+html[data-depth="on"] .pm-page .pm-room.is-vacant {
+  box-shadow: 0 0 0 1px var(--black-12), var(--depth-drop);
+}
+
+html[data-depth="on"][data-theme="dark"] .pm-page .pm-room.is-vacant {
+  box-shadow: 0 0 0 1px var(--black-25), var(--depth-drop);
+}
+
+/* The dark segment pill has no hairline. It takes the drop alone. */
+html[data-depth="on"][data-theme="dark"] .segmented .slide-pill {
+  box-shadow: var(--depth-drop);
+}
+
+/* The center card. Its ring is 1px --black-12 in both themes. Print keeps its own flat page. */
+@media screen {
+  html[data-depth="on"] .notes-page {
+    box-shadow: 0 0 0 1px var(--black-12), var(--depth-drop);
+  }
+}
+
+/* A widget is a white card on the page, lifted like the center card: its own hairline stays, and the drop sits under it. */
+html[data-depth="on"] .widget {
+  box-shadow: var(--depth-drop);
+}
+
+/* The department chip. Its ring is 1px --black-12 in every state and both themes, and the component sets
+   that ring inline, so this needs !important. The ring is repeated here and the drop is added under it. */
+html[data-depth="on"] :is(.sds.dept, .menu .dept):not(.dept-plain, .dept-sizer),
+html[data-depth="on"] .sheet-type[data-type] {
+  box-shadow: 0 0 0 1px var(--black-12), var(--depth-drop) !important;
+}
+
+/* Pressed or disabled, the drop is gone. The hairline and the scale stay as they were. */
+html[data-depth="on"] :is(.btn, .filter, .trigger, .notice-row.is-support, .pm-room, .pm-area-row, button.dept, .sheet-type):is(:active, :disabled) {
+  --depth-drop: 0 0 0 0 transparent;
+}
+
 /* Dev preview. Pill tabs keep their box. The fill becomes an underline. */
 html[data-tab-style="line"] .tabs .slide-pill {
   opacity: 0;
@@ -170,11 +293,11 @@ html[data-tab-style="line"] .page-filters .tab[aria-selected="true"]::after {
   bottom: -8px;
 }
 
-html[data-tab-style="line"] .pm-editor > .tabs-frame {
+html[data-tab-style="line"] .editor-dialog-main > .tabs-frame {
   align-self: stretch;
 }
 
-html[data-tab-style="line"] .pm-editor .tabs {
+html[data-tab-style="line"] .editor-dialog-main .tabs {
   width: 100%;
 }
 

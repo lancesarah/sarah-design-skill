@@ -356,6 +356,8 @@ section { scroll-margin-top: 24px; }
   color: var(--white);
 }
 .btn:hover, .btn.is-hover { background: var(--action-hover); }
+/* Disabled is the same button, faded. */
+.btn:disabled { opacity: 0.6; }
 .btn-icon { width: 28px; padding: 7px; }
 .btn-secondary { background: var(--white); color: var(--black); box-shadow: var(--stroke); }
 .btn-secondary:hover, .btn-secondary.is-hover { background: var(--sidebar-grey); }
@@ -384,8 +386,10 @@ section { scroll-margin-top: 24px; }
 }
 .chip.chip-filter:has(svg) { padding: 2px 5px; }
 .chip-filter:hover, .chip-filter.is-hover { background: var(--filter-chip-bg); }
+/* The name, the colon, and the value read as one phrase. Only the remove mark stands apart. */
+.chip.chip-filter { gap: 0; }
 .chip-filter .chip-k { font-weight: 400; }
-.chip-filter .x { transform: rotate(45deg); }
+.chip-filter .x { margin-left: 6px; transform: rotate(45deg); }
 
 .fit-label { display: inline-grid; justify-items: start; text-align: start; }
 .fit-label > * { grid-area: 1 / 1; }

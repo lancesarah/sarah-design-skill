@@ -9,7 +9,7 @@ import { NOTICE_COUNT } from "./notifications";
 import { useHtmlSlide } from "./slide";
 
 const FIXED: SidebarLink[] = [
-  { href: "/", icon: "home", label: "Home" },
+  { href: "/home", icon: "home", label: "Home" },
   { href: "/#sidebar", icon: "bubble", label: "Messages", tip: "Opt M", count: MESSAGE_COUNT },
   { href: "/#sidebar", icon: "bell", label: "Notifications", tip: "Opt N", count: NOTICE_COUNT },
   { href: "/notes", icon: "doc", label: "Internal notes" },
@@ -45,6 +45,7 @@ const GROUPS: SidebarGroup[] = [
       { href: "/todos", icon: "clipboard", label: "To-Dos" },
       { href: "/complaints", icon: "alert", label: "Complaints" },
       { href: "/#sidebar", icon: "calendar", label: "Schedule" },
+      { href: "/lost-found", icon: "tag", label: "Lost & found" },
       { href: "/cash", icon: "card", label: "Cash & bank" },
     ],
   },
@@ -137,8 +138,8 @@ export function LanceSide({ collapsed, onCollapsedChange }: { collapsed: boolean
       </header>
       <div className="lance-home">
         <span className="lance-logo" aria-hidden="true">
-          <svg width="16" height="16" viewBox="0 0 16 16">
-            <path fill="currentColor" d="M2 2h5v12H2zM2 9h12v5H2z" />
+          <svg width="16" height="16" viewBox="0 0 185 185">
+            <path fill="currentColor" d="M0 0H39V146H185V185H39A39 39 0 0 1 0 146ZM53 0H92V93H185V132H92A39 39 0 0 1 53 93ZM106 0H145V40H185V79H145A39 39 0 0 1 106 40Z" />
           </svg>
         </span>
         <p className="lance-hello">How can I help you today?</p>

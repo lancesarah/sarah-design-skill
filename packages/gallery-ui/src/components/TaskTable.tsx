@@ -152,7 +152,7 @@ function GuestField({ value, onChange }: { value: string; onChange?: (value: str
     <input
       className="sheet-guest"
       aria-label="Guest"
-      placeholder="Guest"
+      placeholder="Noah Berg"
       value={text}
       onPointerDown={(event) => event.stopPropagation()}
       onClick={(event) => event.stopPropagation()}
@@ -200,12 +200,26 @@ function CopyCell({
         }}
         subtitle={row.description || ""}
         subtitleLabel="Detail"
-        subtitlePlaceholder="Add a note"
+        subtitlePlaceholder="Bathroom faucet will not shut off."
         onSubtitleChange={onCopyChange ? (value) => onCopyChange(row, { description: value }) : undefined}
       />
     );
   }
-  // An empty to-do reads Location and Item. Filled rows keep the chosen values.
+  if (row.title) {
+    return (
+      <TitleSubtitle
+        variant="editable"
+        title={row.title}
+        titleLabel="Title"
+        onTitleChange={onCopyChange ? (value) => onCopyChange(row, { title: value }) : undefined}
+        subtitle={row.note}
+        subtitleLabel="Note"
+        subtitlePlaceholder="Requested feathered pillows"
+        onSubtitleChange={onCopyChange ? (value) => onCopyChange(row, { note: value }) : undefined}
+      />
+    );
+  }
+  // Without a title, a to-do reads Location and Item. Filled rows keep the chosen values.
   const place = row.place ?? "";
   const item = row.item ?? "";
   const parts: TitleDropdownValue[] = [
@@ -218,7 +232,7 @@ function CopyCell({
       title={parts}
       subtitle={row.note}
       subtitleLabel="Note"
-      subtitlePlaceholder="Add a note"
+      subtitlePlaceholder="Requested feathered pillows"
       onSubtitleChange={onCopyChange ? (value) => onCopyChange(row, { note: value }) : undefined}
     />
   );

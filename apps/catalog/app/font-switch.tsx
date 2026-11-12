@@ -14,6 +14,9 @@ export function FontSwitch() {
   const [lines, setLines] = useState(true);
   const [underline, setUnderline] = useState(false);
   const [greyIcons, setGreyIcons] = useState(true);
+  const [softInk, setSoftInk] = useState(false);
+  const [depth, setDepth] = useState(false);
+  const [pills, setPills] = useState(true);
   const trackRef = useRef<HTMLSpanElement>(null);
   const pillRef = useRef<HTMLSpanElement>(null);
   const ready = useRef(false);
@@ -32,7 +35,40 @@ export function FontSwitch() {
     const mutedIcons = localStorage.getItem("icon-ink") !== "ink";
     if (mutedIcons) document.documentElement.dataset.iconInk = "muted";
     setGreyIcons(mutedIcons);
+    const soft = localStorage.getItem("text-ink") === "soft";
+    if (soft) document.documentElement.dataset.textInk = "soft";
+    setSoftInk(soft);
+    const raised = localStorage.getItem("depth") === "on";
+    if (raised) document.documentElement.dataset.depth = "on";
+    setDepth(raised);
+    const pillEditor = localStorage.getItem("editor-style") !== "fields";
+    if (!pillEditor) document.documentElement.dataset.editorStyle = "fields";
+    setPills(pillEditor);
   }, []);
+
+  function togglePills() {
+    const next = !pills;
+    setPills(next);
+    if (next) delete document.documentElement.dataset.editorStyle;
+    else document.documentElement.dataset.editorStyle = "fields";
+    try {
+      localStorage.setItem("editor-style", next ? "pills" : "fields");
+    } catch {
+      /* storage can be blocked; the attribute still switches the page */
+    }
+  }
+
+  function toggleDepth() {
+    const next = !depth;
+    setDepth(next);
+    if (next) document.documentElement.dataset.depth = "on";
+    else delete document.documentElement.dataset.depth;
+    try {
+      localStorage.setItem("depth", next ? "on" : "off");
+    } catch {
+      /* storage can be blocked; the attribute still switches the page */
+    }
+  }
 
   function toggleUnderline() {
     const next = !underline;
@@ -41,6 +77,18 @@ export function FontSwitch() {
     else delete document.documentElement.dataset.tabStyle;
     try {
       localStorage.setItem("tab-style", next ? "line" : "pill");
+    } catch {
+      /* storage can be blocked; the attribute still switches the page */
+    }
+  }
+
+  function toggleSoftInk() {
+    const next = !softInk;
+    setSoftInk(next);
+    if (next) document.documentElement.dataset.textInk = "soft";
+    else delete document.documentElement.dataset.textInk;
+    try {
+      localStorage.setItem("text-ink", next ? "soft" : "black");
     } catch {
       /* storage can be blocked; the attribute still switches the page */
     }
@@ -95,6 +143,46 @@ export function FontSwitch() {
       clear();
     };
   }, [greyIcons]);
+
+  useEffect(() => {
+    const clear = () => {
+      document.querySelectorAll("[data-soft-ink]").forEach((el) => el.removeAttribute("data-soft-ink"));
+    };
+    if (!softInk) {
+      clear();
+      return;
+    }
+    const apply = () => {
+      clear();
+      document.querySelectorAll("body *").forEach((el) => {
+        if (!(el instanceof HTMLElement) || el.closest(".dev-switch, .measure-chrome")) return;
+        if (isBlack(getComputedStyle(el).color)) el.setAttribute("data-soft-ink", "");
+      });
+    };
+    let queued = false;
+    const schedule = () => {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(() => {
+        queued = false;
+        apply();
+      });
+    };
+    apply();
+    const ignored = (node: Node) => node instanceof Element && node.matches("script, .dev-switch, .measure-chrome, next-route-announcer");
+    const observer = new MutationObserver((records) => {
+      const relevant = records.some((record) => {
+        if (record.target !== document.body) return true;
+        return [...record.addedNodes].some((node) => !ignored(node));
+      });
+      if (relevant) schedule();
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+    return () => {
+      observer.disconnect();
+      clear();
+    };
+  }, [softInk]);
 
   function toggleLines() {
     const next = !lines;
@@ -171,6 +259,15 @@ export function FontSwitch() {
       <button type="button" aria-pressed={greyIcons} onClick={toggleGreyIcons}>
         Grey icons
       </button>
+      <button type="button" aria-pressed={softInk} onClick={toggleSoftInk}>
+        Soft black
+      </button>
+      <button type="button" aria-pressed={depth} onClick={toggleDepth}>
+        Depth
+      </button>
+      <button type="button" aria-pressed={pills} onClick={togglePills}>
+        Pill editor
+      </button>
     </div>
   );
 }
@@ -205,6 +302,12 @@ function isWhite(color: string) {
   const match = color.match(/rgba?\(\s*(\d+)[\s,]+(\d+)[\s,]+(\d+)/);
   if (!match) return false;
   return Number(match[1]) >= 250 && Number(match[2]) >= 250 && Number(match[3]) >= 250;
+}
+
+function isBlack(color: string) {
+  const match = color.match(/rgba?\(\s*(\d+)[\s,]+(\d+)[\s,]+(\d+)/);
+  if (!match) return false;
+  return match[1] === "0" && match[2] === "0" && match[3] === "0";
 }
 
 function hasVisibleLabel(el: HTMLElement, icon: Element) {

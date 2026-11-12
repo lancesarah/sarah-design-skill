@@ -110,6 +110,10 @@
   --gap-inline: var(--space-8);
   --radius-card: var(--radius-control);
   --elevation-menu: var(--shadow-menu);
+  /* A popup's outer band, 2px past its stroke. Translucent white so it reads over the scrim. */
+  --ring-popup: 0 0 0 3px rgb(255 255 255 / 18%);
+  /* The same band on a menu, which sits on the page, not the scrim, so it darkens. */
+  --ring-menu: 0 0 0 3px rgb(0 0 0 / 2.5%);
   --menu-min: 132px;
   --menu-max: 240px;
   --motion-hover: 120ms;
@@ -153,6 +157,8 @@ html[data-theme="dark"] {
   --stroke: 0 0 0 1px var(--line);
   --outline-image: 1px solid rgb(255 255 255 / 10%);
   --shadow-menu: 0 4px 20px rgb(0 0 0 / 45%);
+  --ring-popup: 0 0 0 3px rgb(255 255 255 / 4%);
+  --ring-menu: 0 0 0 3px rgb(255 255 255 / 3%);
   --button-fill: #FFFFFF;
   --button-text: #202020;
   --button-hover: #EEEEEE;

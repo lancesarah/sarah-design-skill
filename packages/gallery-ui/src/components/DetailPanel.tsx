@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useRef, useState, type ReactNode, type TransitionEvent } from "react";
 import { Icon } from "../icons";
+import { Button } from "./Button";
 import { ConfirmDialog } from "./ConfirmDialog";
 import { OverlayMenu, type MenuPoint } from "./OverlayMenu";
 
@@ -12,11 +13,14 @@ export function DetailPanel({
   onClose,
   onExited,
   actions,
+  onEdit,
   children,
   name,
   noun = "record",
   onDeleted,
   menuAt,
+  /** A new record puts the cursor in the first text field. Menus stay closed. */
+  focusText = false,
 }: {
   label: string;
   hidden?: boolean;
@@ -25,6 +29,8 @@ export function DetailPanel({
   onExited?: () => void;
   /** Extra controls in the right-hand group, ahead of the options menu. */
   actions?: ReactNode;
+  /** Shows Edit after the actions. The panel stays view-only and the editor popup does the editing. */
+  onEdit?: () => void;
   children: ReactNode;
   /** The named thing in the delete confirmation. */
   name?: string;
@@ -32,6 +38,7 @@ export function DetailPanel({
   onDeleted?: () => void;
   /** Opens this panel's more menu at the pointer. Same menu as the three-dot control. */
   menuAt?: MenuPoint | null;
+  focusText?: boolean;
 }) {
   const panelRef = useRef<HTMLElement>(null);
   const moreAnchor = useRef<HTMLButtonElement>(null);
@@ -47,6 +54,25 @@ export function DetailPanel({
     setMore(false);
     setPoint(null);
   }, [hidden]);
+
+  useEffect(() => {
+    if (hidden || !focusText) return;
+    const frame = requestAnimationFrame(() => {
+      const root = panelRef.current?.querySelector(".todo-side-scroll");
+      if (!root) return;
+      const fields = root.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>("textarea, input");
+      for (const field of fields) {
+        if (field instanceof HTMLInputElement) {
+          const type = field.type;
+          if (type === "hidden" || type === "file" || type === "checkbox" || type === "radio" || type === "button" || type === "submit") continue;
+        }
+        if (field.disabled || field.closest("[hidden]")) continue;
+        field.focus({ preventScroll: true });
+        return;
+      }
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [hidden, focusText]);
 
   useEffect(() => {
     if (!menuAt || hidden || menuAt.token === openedMenu.current) return;
@@ -76,7 +102,7 @@ export function DetailPanel({
       if (!(target instanceof Element)) return;
       if (panelRef.current?.contains(target)) return;
       // Menus render outside the panel, and a row click chooses the next record.
-      if (target.closest(".menu, .sheet-line, .confirm-dialog")) return;
+      if (target.closest(".menu, .sheet-line, .confirm-dialog, .editor-dialog, .photo-viewer")) return;
       onClose();
     };
     document.addEventListener("pointerdown", close);
@@ -120,6 +146,12 @@ export function DetailPanel({
         ) : null}
         <span className="todo-side-actions">
           {actions}
+          {onEdit ? (
+            <Button variant="secondary" onClick={onEdit}>
+              <Icon name="edit" size={14} />
+              Edit
+            </Button>
+          ) : null}
           <span className="drop">
             <button
               ref={moreAnchor}

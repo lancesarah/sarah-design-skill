@@ -1,6 +1,6 @@
 "use client";
 
-import { Avatar, Icon, OverlayMenu, Tabs } from "@lance-live/gallery-ui";
+import { Avatar, Empty, Icon, OverlayMenu, Tabs } from "@lance-live/gallery-ui";
 import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import { SearchBox } from "./chrome";
 import { Glyph } from "./glyph";
@@ -242,7 +242,11 @@ export function NotificationsSide({ open }: { open: boolean }) {
         </div>
       </div>
       <div className="notice-scroll" ref={scrollRef}>
-        {groups.map((group) => (
+        {visible.length === 0 ? (
+          <Empty icon={query.trim() || source !== "All" ? "search" : "bell"} title={box === "unread" && !query.trim() && source === "All" ? "No unread notifications" : box === "read" && !query.trim() && source === "All" ? "No read notifications" : "No notifications"}>
+            {query.trim() || source !== "All" ? "Try another search or filter." : null}
+          </Empty>
+        ) : groups.map((group) => (
           <section key={group.name} aria-label={group.name}>
             <div className="notice-list" role="listbox" aria-label={group.name}>
               {group.items.map((notice) => (

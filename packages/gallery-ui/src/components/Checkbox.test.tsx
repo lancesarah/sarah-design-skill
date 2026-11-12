@@ -43,4 +43,15 @@ describe("Checkbox", () => {
     expect(box).toBeDisabled();
     expect(box).not.toHaveClass("is-hover");
   });
+
+  it("draws the large box with a larger check", () => {
+    render(
+      <Checkbox size="lg" checked>
+        Robin
+      </Checkbox>,
+    );
+    const box = screen.getByRole("checkbox", { name: "Robin" });
+    expect(box).toHaveClass("check-lg");
+    expect(box.querySelector(".check-box svg")).toHaveAttribute("width", "12");
+  });
 });

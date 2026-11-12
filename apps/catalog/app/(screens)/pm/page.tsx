@@ -10,10 +10,14 @@ import {
   DataTable,
   AssigneeCell,
   DetailPanel,
+  EditorDialog,
+  FactRow,
+  Empty,
   Icon,
   OverlayMenu,
   Person,
   Tabs,
+  Meter,
   Status,
   StatusCell,
   TITLE_TEXT_INSET,
@@ -32,6 +36,7 @@ import { createPortal, flushSync } from "react-dom";
 import { FilterMenu, SearchBox } from "../chrome";
 import { Glyph } from "../glyph";
 import { EditText } from "../edit-text";
+import { EditorPick } from "../editor-pick";
 import { PageLayout, PageTitle, type TitlePage } from "../page-layout";
 
 type Cadence = "weekly" | "monthly" | "quarterly" | "semiannual" | "annual";
@@ -287,6 +292,8 @@ type HistoryRow = {
   id: string;
   name: string;
   place: string;
+  /** Set when the check was done in one guestroom. */
+  room?: string;
   cadence: string;
   assignee: string;
   initials: string;
@@ -297,8 +304,8 @@ type HistoryRow = {
 
 /** Completions inside the seven days ending Nov 6. The average of these minutes is 52. */
 const RECENT: HistoryRow[] = [
-  { id: "recent-shower", name: "Shower door PM", place: "Guestrooms", cadence: "Quarterly", assignee: "Sarah", initials: "SM", completed: "Nov 5", minutes: 40, notes: "Door sweep is worn on 214." },
-  { id: "recent-carpet", name: "Carpet cleaning", place: "Guestrooms", cadence: "Quarterly", assignee: "Paul", initials: "PG", completed: "Nov 4", minutes: 48 },
+  { id: "recent-shower", name: "Shower door PM", place: "Guestrooms", room: "214", cadence: "Quarterly", assignee: "Sarah", initials: "SM", completed: "Nov 5", minutes: 40, notes: "Door sweep is worn on 214." },
+  { id: "recent-carpet", name: "Carpet cleaning", place: "Guestrooms", room: "318", cadence: "Quarterly", assignee: "Paul", initials: "PG", completed: "Nov 4", minutes: 48 },
   { id: "recent-blow", name: "Boiler blowdown", place: "Mechanical", cadence: "Weekly", assignee: "Sarah", initials: "SM", completed: "Nov 2", minutes: 55, notes: "Sight glass was cloudy. Logged and cleared." },
   { id: "recent-ext", name: "Fire extinguisher inspection", place: "Corridors", cadence: "Monthly", assignee: "Boris", initials: "B", completed: "Oct 31", minutes: 62, notes: "One tag is missing in the west corridor." },
   { id: "recent-lift", name: "ADA pool lift review", place: "Pool", cadence: "Weekly", assignee: "Paul", initials: "PG", completed: "Oct 30", minutes: 70 },
@@ -571,12 +578,10 @@ function TemplateDetail({
       </div>
       <div className="todo-side-rule" />
       <div className="todo-side-meta">
-        <div>
-          <span className="sheet-label">Location</span>
+        <FactRow label="Location">
           <PlaceCell value={template.place} open={field === "place"} onToggle={() => toggle("place")} onChange={(place) => onPatch({ place })} />
-        </div>
-        <div>
-          <span className="sheet-label">Assigned</span>
+        </FactRow>
+        <FactRow label="Assigned">
           {template.crew ? (
             <CrewAssign
               named
@@ -588,24 +593,21 @@ function TemplateDetail({
           ) : (
             <TaskAssignee named name={template.assignee} initials={template.initials} style={{ background: "var(--sidebar-grey)" }} onSelect={(value) => onPatch(assignPatch(value))} />
           )}
-        </div>
-        <div>
-          <span className="sheet-label">Status</span>
+        </FactRow>
+        <FactRow label="Status">
           <StatusCell
             value={template.status}
             open={field === "status"}
             onToggle={() => toggle("status")}
             onChange={(status) => onPatch(statusPatch(template, status))}
           />
-        </div>
-        <div>
-          <span className="sheet-label">This cycle</span>
+        </FactRow>
+        <FactRow label="This cycle">
           <CountMark done={template.cycleDone} total={template.cycleTotal} className="sheet-when" />
-        </div>
-        <div>
-          <span className="sheet-label">Due</span>
+        </FactRow>
+        <FactRow label="Due">
           <span className="sheet-when" style={{ fontVariantNumeric: "var(--numeric)" }}>{template.due}</span>
-        </div>
+        </FactRow>
       </div>
       <div className="todo-side-rule" />
       <ActivityFeed className="todo-side-activity" items={template.activity} />
@@ -963,9 +965,7 @@ function Checklist({ groups, locked, idle, onChange, onNeedTimer }: { groups: Ch
           <span>Checklist progress</span>
           <span>{done} of {total} done · {percent}%</span>
         </div>
-        <div className="kb-meter" role="img" aria-label={`${done} of ${total} done`}>
-          <div className="kb-meter-fill" style={{ width: `${percent}%` }} />
-        </div>
+        <Meter value={done} max={total} label={`${done} of ${total} done`} />
       </div>
       <p className="pm-list-k">Checklist</p>
       {groups.map((group) => {
@@ -1081,7 +1081,7 @@ function useRowDrag(
           line.className = "pm-editor-drop";
           line.hidden = true;
           list.append(line);
-          (root.closest(".pm-editor-dialog") ?? document.body).append(ghost);
+          (root.closest(".editor-dialog") ?? document.body).append(ghost);
           document.body.classList.add("is-row-reordering");
           item.classList.add("is-dragging");
           drag = { ghost, line, originLeft: box.left, originTop: box.top, before: null };
@@ -1153,48 +1153,6 @@ function StepName({ value, label, onChange }: { value: string; label: string; on
   );
 }
 
-function EditorPick({
-  open,
-  onToggle,
-  value,
-  menu,
-  chip,
-  icon,
-  variant = "secondary",
-}: {
-  open: boolean;
-  onToggle: () => void;
-  value: string;
-  menu: ReactNode;
-  chip?: boolean;
-  icon?: "calendar" | "home";
-  variant?: "secondary" | "tertiary";
-}) {
-  const ref = useRef<HTMLButtonElement>(null);
-  const trigger = chip ? (
-    <Button ref={ref} variant={variant} aria-haspopup="menu" aria-expanded={open} onClick={onToggle}>
-      <span>{value}</span>
-      <Icon name="chevron" size={14} />
-    </Button>
-  ) : (
-    <button ref={ref} type="button" className="pm-editor-input pm-editor-pick" aria-haspopup="menu" aria-expanded={open} onClick={onToggle}>
-      <span className="pm-editor-pick-value">
-        {icon ? <Icon name={icon} size={14} /> : null}
-        <span>{value}</span>
-      </span>
-      <Icon name="chevron" size={14} />
-    </button>
-  );
-  return (
-    <>
-      {trigger}
-      <OverlayMenu open={open} anchorRef={ref} onPointerDown={(event) => event.stopPropagation()}>
-        {menu}
-      </OverlayMenu>
-    </>
-  );
-}
-
 function groupsOf(template: Template): CheckGroup[] {
   return template.checklist ?? CHECKLISTS[template.id] ?? [];
 }
@@ -1206,6 +1164,7 @@ function TemplateEditor({
   onDelete,
   onRestore,
   onNotice,
+  selectTitle,
 }: {
   template: Template;
   onClose: () => void;
@@ -1213,10 +1172,13 @@ function TemplateEditor({
   onDelete: () => void;
   onRestore: () => void;
   onNotice: (notice: { message: string; action?: string | null; onAction?: () => void }) => void;
+  selectTitle?: boolean;
 }) {
   const [tab, setTab] = useState("details");
   const [menu, setMenu] = useState<string | null>(null);
   const [pending, setPending] = useState<{ noun: string; name: string; run: () => void; undo?: () => void } | null>(null);
+  const titleRef = useRef<HTMLInputElement>(null);
+  const titleStarted = useRef(false);
   const [titleFocusId, setTitleFocusId] = useState<string | null>(null);
   const [stepDraft, setStepDraft] = useState<Record<string, string>>({});
   const [areaName, setAreaName] = useState("");
@@ -1237,6 +1199,14 @@ function TemplateEditor({
   }
 
   const stepsRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!selectTitle || titleStarted.current) return;
+    titleStarted.current = true;
+    const field = titleRef.current;
+    field?.focus();
+    field?.select();
+  }, [selectTitle]);
 
   useEffect(() => {
     if (!titleFocusId || !stepsRef.current) return;
@@ -1267,363 +1237,331 @@ function TemplateEditor({
     }));
   }
 
-  const closeRef = useRef(onClose);
-  closeRef.current = onClose;
-
-  useEffect(() => {
-    const previous = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    function onKey(event: KeyboardEvent) {
-      if (event.key !== "Escape" || pending) return;
-      if (menu) {
-        setMenu(null);
-        return;
-      }
-      closeRef.current();
-    }
-    window.addEventListener("keydown", onKey);
-    return () => {
-      document.body.style.overflow = previous;
-      window.removeEventListener("keydown", onKey);
-    };
-  }, [pending, menu]);
-
-  return createPortal(
-    <div className="pm-editor-dialog" role="dialog" aria-modal="true" aria-label="Edit template">
-      <button type="button" className="pm-editor-scrim" aria-label="Close" onClick={() => closeRef.current()} />
-      <div className="pm-editor-pop pm-page">
-        <div className="pm-editor-page">
-          <header className="pm-check-name pm-editor-head">
-            <div className="pm-editor-kicker">
-              <p>Edit template</p>
-              <div className="pm-editor-kicker-actions">
-                <Button variant="danger-light" className="pm-editor-delete" onClick={() => setPending({ noun: "template", name, run: () => onDelete(), undo: () => onRestore() })}>
-                  <Icon name="trash" size={14} />
-                  Delete template
-                </Button>
-                <button type="button" className="pm-editor-close" aria-label="Close" onClick={() => closeRef.current()}>
-                  <Icon name="close" size={14} />
-                </button>
-              </div>
-            </div>
-            <div className="pm-editor-name">
+  return (
+    <>
+      <EditorDialog
+        kicker={selectTitle ? "Create template" : "Edit template"}
+        className="pm-page"
+        title={template.name}
+        titlePlaceholder="Template name"
+        titleRef={titleRef}
+        onTitleChange={(value) => onPatch({ name: value })}
+        subtitle={<>{cadenceLabel(template.cadence)} · {template.place || "Location"}</>}
+        deleteLabel="Delete template"
+        onDelete={() => setPending({ noun: "template", name, run: () => onDelete(), undo: () => onRestore() })}
+        onClose={onClose}
+        onEscape={() => {
+          if (pending) return true;
+          if (!menu) return false;
+          setMenu(null);
+          return true;
+        }}
+        tabs={{
+          label: "Template",
+          value: tab,
+          onValueChange: setTab,
+          items: [
+            { value: "details", label: "Details" },
+            { value: "steps", label: "Steps", count: stepCount },
+            { value: "areas", label: "Areas", count: areas.length },
+          ],
+        }}
+        bodyRef={stepsRef}
+        footer={<Button onClick={() => { onNotice({ message: "Template saved" }); onClose(); }}>Save template</Button>}
+      >
+        {tab === "details" ? (
+          <>
+            <label className="pm-editor-field">
+              <span className="sheet-label">Name</span>
               <input
-                className="pm-editor-title"
+                className="pm-editor-input"
                 aria-label="Name"
                 value={template.name}
                 placeholder="Template name"
                 onChange={(event) => onPatch({ name: event.target.value })}
               />
-              <p>{cadenceLabel(template.cadence)} · {template.place || "Location"}</p>
-            </div>
-          </header>
-          <div className="pm-editor">
-          <Tabs
-            label="Template"
-            value={tab}
-            onValueChange={setTab}
-            items={[
-              { value: "details", label: "Details" },
-              { value: "steps", label: "Steps", count: stepCount },
-              { value: "areas", label: "Areas", count: areas.length },
-            ]}
-          />
-          {tab === "details" ? (
-            <div className="pm-editor-stack">
-              <label className="pm-editor-field">
-                <span className="sheet-label">Name</span>
-                <input
-                  className="pm-editor-input"
-                  aria-label="Name"
-                  value={template.name}
-                  placeholder="Template name"
-                  onChange={(event) => onPatch({ name: event.target.value })}
+            </label>
+            <label className="pm-editor-field">
+              <span className="sheet-label">Description (optional)</span>
+              <textarea
+                className="text-well"
+                rows={4}
+                value={template.note}
+                placeholder="What this check covers"
+                onChange={(event) => onPatch({ note: event.target.value })}
+              />
+            </label>
+            <div>
+            <div className="pm-editor-pair">
+              <div className="pm-editor-field">
+                <span className="sheet-label">Frequency</span>
+                <EditorPick
+                  icon="calendar"
+                  open={menu === "cadence"}
+                  onToggle={() => setMenu((current) => (current === "cadence" ? null : "cadence"))}
+                  value={cadenceLabel(template.cadence)}
+                  menu={CADENCES.map((item) =>
+                    taskMenuItem(item.label, item.value === template.cadence, () => {
+                      onPatch({ cadence: item.value });
+                      setMenu(null);
+                    }, item.value),
+                  )}
                 />
-              </label>
-              <label className="pm-editor-field">
-                <span className="sheet-label">Description (optional)</span>
-                <textarea
-                  className="text-well"
-                  rows={4}
-                  value={template.note}
-                  placeholder="What this check covers"
-                  onChange={(event) => onPatch({ note: event.target.value })}
-                />
-              </label>
-              <div>
-              <div className="pm-editor-pair">
-                <div className="pm-editor-field">
-                  <span className="sheet-label">Frequency</span>
-                  <EditorPick
-                    icon="calendar"
-                    open={menu === "cadence"}
-                    onToggle={() => setMenu((current) => (current === "cadence" ? null : "cadence"))}
-                    value={cadenceLabel(template.cadence)}
-                    menu={CADENCES.map((item) =>
-                      taskMenuItem(item.label, item.value === template.cadence, () => {
-                        onPatch({ cadence: item.value });
-                        setMenu(null);
-                      }, item.value),
-                    )}
-                  />
-                </div>
-                <div className="pm-editor-field">
-                  <span className="sheet-label">Type</span>
-                  <EditorPick
-                    icon="home"
-                    open={menu === "place"}
-                    onToggle={() => setMenu((current) => (current === "place" ? null : "place"))}
-                    value={template.place || "Location"}
-                    menu={(template.place && !PLACES.includes(template.place) ? [template.place, ...PLACES] : PLACES).map((place) =>
-                      taskMenuItem(place, place === template.place, () => {
-                        onPatch({ place });
-                        setMenu(null);
-                      }, place),
-                    )}
-                  />
-                </div>
               </div>
+              <div className="pm-editor-field">
+                <span className="sheet-label">Type</span>
+                <EditorPick
+                  icon="location"
+                  open={menu === "place"}
+                  onToggle={() => setMenu((current) => (current === "place" ? null : "place"))}
+                  value={template.place || "Location"}
+                  menu={(template.place && !PLACES.includes(template.place) ? [template.place, ...PLACES] : PLACES).map((place) =>
+                    taskMenuItem(place, place === template.place, () => {
+                      onPatch({ place });
+                      setMenu(null);
+                    }, place),
+                  )}
+                />
               </div>
             </div>
-          ) : null}
-          {tab === "steps" ? (
-            <div className="pm-editor-stack" ref={stepsRef}>
-              {groups.map((group) => (
-                <section key={group.id} className="pm-editor-block" data-group-id={group.id} aria-label={group.title}>
-                  <div className="pm-editor-block-head">
-                    <button type="button" className="pm-editor-grip" data-group-drag aria-label={`Reorder ${group.title}`}>
-                      <Icon name="grip" size={14} />
+            </div>
+          </>
+        ) : null}
+        {tab === "steps" ? (
+          <>
+            {groups.map((group) => (
+              <section key={group.id} className="pm-editor-block" data-group-id={group.id} aria-label={group.title}>
+                <div className="pm-editor-block-head">
+                  <button type="button" className="pm-editor-grip" data-group-drag aria-label={`Reorder ${group.title}`}>
+                    <Icon name="grip" size={14} />
+                  </button>
+                  <input
+                    className="pm-editor-cat"
+                    aria-label="Category"
+                    placeholder="Category"
+                    value={group.title}
+                    onChange={(event) => writeGroups(groups.map((entry) => entry.id === group.id ? { ...entry, title: event.target.value } : entry))}
+                  />
+                  <span>{group.items.length} {group.items.length === 1 ? "step" : "steps"}</span>
+                  <div className="pm-editor-block-tools">
+                    <button type="button" className="pm-editor-remove" aria-label={`Remove ${group.title}`} onClick={() => {
+                      const previous = groups;
+                      setPending({
+                        noun: "category",
+                        name: group.title.trim() || "Untitled category",
+                        run: () => writeGroups(previous.filter((entry) => entry.id !== group.id)),
+                        undo: () => writeGroups(previous),
+                      });
+                    }}>
+                      <Icon name="trash" size={14} />
                     </button>
-                    <input
-                      className="pm-editor-cat"
-                      aria-label="Category"
-                      placeholder="Category"
-                      value={group.title}
-                      onChange={(event) => writeGroups(groups.map((entry) => entry.id === group.id ? { ...entry, title: event.target.value } : entry))}
-                    />
-                    <span>{group.items.length} {group.items.length === 1 ? "step" : "steps"}</span>
-                    <div className="pm-editor-block-tools">
-                      <button type="button" className="pm-editor-remove" aria-label={`Remove ${group.title}`} onClick={() => {
-                        const previous = groups;
-                        setPending({
-                          noun: "category",
-                          name: group.title.trim() || "Untitled category",
-                          run: () => writeGroups(previous.filter((entry) => entry.id !== group.id)),
-                          undo: () => writeGroups(previous),
-                        });
-                      }}>
-                        <Icon name="trash" size={14} />
-                      </button>
-                    </div>
                   </div>
-                  <ul className="pm-editor-rows" data-group={group.id}>
-                    {group.items.map((item) => {
-                      const areaKey = `area:${group.id}:${item.id}`;
-                      const responseKey = `response:${group.id}:${item.id}`;
-                      const areaName = areas.find((area) => area.id === item.areaId)?.name;
-                      const reading = item.response === "reading";
-                      return (
-                        <li key={item.id} data-step-id={item.id} className={reading ? "is-reading" : undefined}>
-                          <button type="button" className="pm-editor-grip" data-step-drag aria-label={`Reorder ${item.label}`}>
-                            <Icon name="grip" size={14} />
-                          </button>
-                          <div className="pm-editor-row-body">
-                          <div className="pm-step-top">
-                          <StepName
-                            value={item.label}
-                            label="Step"
-                            onChange={(label) => patchItem(group.id, item.id, { label })}
-                          />
-                          <div className="pm-step-tools">
-                            {areas.length > 0 ? (
-                              <EditorPick
-                                chip
-                                open={menu === areaKey}
-                                onToggle={() => setMenu((current) => (current === areaKey ? null : areaKey))}
-                                value={areaName ?? "All areas"}
-                                menu={[
-                                  taskMenuItem("all", !item.areaId, () => {
-                                    patchItem(group.id, item.id, { areaId: undefined });
-                                    setMenu(null);
-                                  }, "All areas"),
-                                  ...areas.map((area) => taskMenuItem(area.id, area.id === item.areaId, () => {
-                                    patchItem(group.id, item.id, { areaId: area.id });
-                                    setMenu(null);
-                                  }, area.name)),
-                                ]}
-                              />
-                            ) : null}
-                            <Button
-                              variant={item.required ? "tertiary" : "secondary"}
-                              aria-pressed={item.required === true}
-                              onClick={() => patchItem(group.id, item.id, { required: !item.required })}
-                            >
-                              {item.required ? "Required" : "Optional"}
-                            </Button>
+                </div>
+                <ul className="pm-editor-rows" data-group={group.id}>
+                  {group.items.map((item) => {
+                    const areaKey = `area:${group.id}:${item.id}`;
+                    const responseKey = `response:${group.id}:${item.id}`;
+                    const areaName = areas.find((area) => area.id === item.areaId)?.name;
+                    const reading = item.response === "reading";
+                    return (
+                      <li key={item.id} data-step-id={item.id} className={reading ? "is-reading" : undefined}>
+                        <button type="button" className="pm-editor-grip" data-step-drag aria-label={`Reorder ${item.label}`}>
+                          <Icon name="grip" size={14} />
+                        </button>
+                        <div className="pm-editor-row-body">
+                        <div className="pm-step-top">
+                        <StepName
+                          value={item.label}
+                          label="Step"
+                          onChange={(label) => patchItem(group.id, item.id, { label })}
+                        />
+                        <div className="pm-step-tools">
+                          {areas.length > 0 ? (
                             <EditorPick
                               chip
-                              variant={reading ? "tertiary" : "secondary"}
-                              open={menu === responseKey}
-                              onToggle={() => setMenu((current) => (current === responseKey ? null : responseKey))}
-                              value={responseLabel(item.response)}
-                              menu={RESPONSES.map((option) => taskMenuItem(option.value, (item.response ?? "check") === option.value, () => {
-                                patchItem(group.id, item.id, { response: option.value });
-                                setMenu(null);
-                              }, option.label))}
+                              open={menu === areaKey}
+                              onToggle={() => setMenu((current) => (current === areaKey ? null : areaKey))}
+                              value={areaName ?? "All areas"}
+                              menu={[
+                                taskMenuItem("all", !item.areaId, () => {
+                                  patchItem(group.id, item.id, { areaId: undefined });
+                                  setMenu(null);
+                                }, "All areas"),
+                                ...areas.map((area) => taskMenuItem(area.id, area.id === item.areaId, () => {
+                                  patchItem(group.id, item.id, { areaId: area.id });
+                                  setMenu(null);
+                                }, area.name)),
+                              ]}
                             />
-                            <button
-                              type="button"
-                              className="pm-editor-remove"
-                              aria-label={`Remove ${item.label}`}
-                              onClick={() => {
-                                const previous = groups;
-                                setPending({
-                                  noun: "step",
-                                  name: item.label.trim() || "Untitled step",
-                                  run: () => writeGroups(previous.map((entry) => entry.id !== group.id ? entry : {
-                                    ...entry,
-                                    items: entry.items.filter((step) => step.id !== item.id),
-                                  })),
-                                  undo: () => writeGroups(previous),
-                                });
-                              }}
-                            >
-                              <Icon name="trash" size={14} />
-                            </button>
-                          </div>
-                          </div>
-                          {reading ? (
-                            <div className="pm-step-range">
-                              <input
-                                className="sds line pm-step-unit"
-                                aria-label="Unit"
-                                placeholder="Unit (°F, psi)"
-                                value={item.unit ?? ""}
-                                onChange={(event) => patchItem(group.id, item.id, { unit: event.target.value })}
-                              />
-                              <input
-                                className="sds line pm-step-bound"
-                                aria-label="Minimum"
-                                placeholder="Min"
-                                value={item.min ?? ""}
-                                onChange={(event) => patchItem(group.id, item.id, { min: event.target.value })}
-                              />
-                              <span aria-hidden="true">–</span>
-                              <input
-                                className="sds line pm-step-bound"
-                                aria-label="Maximum"
-                                placeholder="Max"
-                                value={item.max ?? ""}
-                                onChange={(event) => patchItem(group.id, item.id, { max: event.target.value })}
-                              />
-                              <span className="pm-step-range-note">expected range (optional)</span>
-                            </div>
                           ) : null}
+                          <Button
+                            variant={item.required ? "tertiary" : "secondary"}
+                            aria-pressed={item.required === true}
+                            onClick={() => patchItem(group.id, item.id, { required: !item.required })}
+                          >
+                            {item.required ? "Required" : "Optional"}
+                          </Button>
+                          <EditorPick
+                            chip
+                            variant={reading ? "tertiary" : "secondary"}
+                            open={menu === responseKey}
+                            onToggle={() => setMenu((current) => (current === responseKey ? null : responseKey))}
+                            value={responseLabel(item.response)}
+                            menu={RESPONSES.map((option) => taskMenuItem(option.value, (item.response ?? "check") === option.value, () => {
+                              patchItem(group.id, item.id, { response: option.value });
+                              setMenu(null);
+                            }, option.label))}
+                          />
+                          <button
+                            type="button"
+                            className="pm-editor-remove"
+                            aria-label={`Remove ${item.label}`}
+                            onClick={() => {
+                              const previous = groups;
+                              setPending({
+                                noun: "step",
+                                name: item.label.trim() || "Untitled step",
+                                run: () => writeGroups(previous.map((entry) => entry.id !== group.id ? entry : {
+                                  ...entry,
+                                  items: entry.items.filter((step) => step.id !== item.id),
+                                })),
+                                undo: () => writeGroups(previous),
+                              });
+                            }}
+                          >
+                            <Icon name="trash" size={14} />
+                          </button>
+                        </div>
+                        </div>
+                        {reading ? (
+                          <div className="pm-step-range">
+                            <input
+                              className="sds line pm-step-unit"
+                              aria-label="Unit"
+                              placeholder="Unit (°F, psi)"
+                              value={item.unit ?? ""}
+                              onChange={(event) => patchItem(group.id, item.id, { unit: event.target.value })}
+                            />
+                            <input
+                              className="sds line pm-step-bound"
+                              aria-label="Minimum"
+                              placeholder="Min"
+                              value={item.min ?? ""}
+                              onChange={(event) => patchItem(group.id, item.id, { min: event.target.value })}
+                            />
+                            <span aria-hidden="true">–</span>
+                            <input
+                              className="sds line pm-step-bound"
+                              aria-label="Maximum"
+                              placeholder="Max"
+                              value={item.max ?? ""}
+                              onChange={(event) => patchItem(group.id, item.id, { max: event.target.value })}
+                            />
+                            <span className="pm-step-range-note">expected range (optional)</span>
                           </div>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                  <form
-                    className="pm-editor-compose"
-                    onSubmit={(event) => {
-                      event.preventDefault();
-                      const label = (stepDraft[group.id] ?? "").trim();
-                      if (!label) return;
-                      writeGroups(groups.map((entry) => entry.id !== group.id ? entry : {
-                        ...entry,
-                        items: [...entry.items, { id: `${group.id}-${Date.now()}`, label, state: "none", response: "check" }],
-                      }));
-                      setStepDraft((current) => ({ ...current, [group.id]: "" }));
-                    }}
-                  >
-                    <input
-                      className="sds line"
-                      value={stepDraft[group.id] ?? ""}
-                      placeholder="New step name..."
-                      aria-label={`New step in ${group.title}`}
-                      onChange={(event) => setStepDraft((current) => ({ ...current, [group.id]: event.target.value }))}
-                    />
-                    <Button variant="secondary" type="submit">Add</Button>
-                  </form>
-                </section>
-              ))}
-              <button type="button" className="cash-new-location" onClick={addCategory}>
-                <svg className="cash-new-stroke" aria-hidden="true">
-                  <rect x="0.5" y="0.5" width="calc(100% - 1px)" height="calc(100% - 1px)" rx="9.5" fill="none" stroke="currentColor" strokeWidth="1" strokeDasharray="9 8" />
-                </svg>
-                <Icon name="plus" size={14} />
-                Add category
-              </button>
-            </div>
-          ) : null}
-          {tab === "areas" ? (
-            <div className="pm-editor-stack">
-              {areas.length === 0 ? (
-                <p className="pm-empty">No areas. Add one when this check covers more than one place.</p>
-              ) : (
-                <ul className="pm-editor-rows">
-                  {areas.map((area) => (
-                    <li key={area.id}>
-                      <span className="pm-editor-area">
-                        <span>{area.name}</span>
-                        {area.place ? <span>{area.place}</span> : null}
-                      </span>
-                      <button
-                        type="button"
-                        className="pm-editor-remove"
-                        aria-label={`Remove ${area.name}`}
-                        onClick={() => {
-                          const previous = areas;
-                          setPending({
-                            noun: "area",
-                            name: area.name.trim() || "Untitled area",
-                            run: () => onPatch({ areas: previous.filter((entry) => entry.id !== area.id) }),
-                            undo: () => onPatch({ areas: previous }),
-                          });
-                        }}
-                      >
-                        <Icon name="trash" size={14} />
-                      </button>
-                    </li>
-                  ))}
+                        ) : null}
+                        </div>
+                      </li>
+                    );
+                  })}
                 </ul>
-              )}
-              <form
-                className="pm-editor-compose"
-                onSubmit={(event) => {
-                  event.preventDefault();
-                  const next = areaName.trim();
-                  if (!next) return;
-                  onPatch({ areas: [...areas, { id: `area-${Date.now()}`, name: next, place: areaPlace.trim() }] });
-                  setAreaName("");
-                  setAreaPlace("");
-                }}
-              >
-                <input
-                  className="sds line"
-                  value={areaName}
-                  placeholder="Area name"
-                  aria-label="Area name"
-                  onChange={(event) => setAreaName(event.target.value)}
-                />
-                <input
-                  className="sds line"
-                  value={areaPlace}
-                  placeholder="Location (optional)"
-                  aria-label="Location"
-                  onChange={(event) => setAreaPlace(event.target.value)}
-                />
-                <Button variant="secondary" type="submit">Add</Button>
-              </form>
-            </div>
-          ) : null}
-          </div>
-        </div>
-        <div className="pm-editor-foot">
-          <Button onClick={() => { onNotice({ message: "Template saved" }); closeRef.current(); }}>Save</Button>
-        </div>
-      </div>
+                <form
+                  className="pm-editor-compose"
+                  onSubmit={(event) => {
+                    event.preventDefault();
+                    const label = (stepDraft[group.id] ?? "").trim();
+                    if (!label) return;
+                    writeGroups(groups.map((entry) => entry.id !== group.id ? entry : {
+                      ...entry,
+                      items: [...entry.items, { id: `${group.id}-${Date.now()}`, label, state: "none", response: "check" }],
+                    }));
+                    setStepDraft((current) => ({ ...current, [group.id]: "" }));
+                  }}
+                >
+                  <input
+                    className="sds line"
+                    value={stepDraft[group.id] ?? ""}
+                    placeholder="New step name..."
+                    aria-label={`New step in ${group.title}`}
+                    onChange={(event) => setStepDraft((current) => ({ ...current, [group.id]: event.target.value }))}
+                  />
+                  <Button variant="secondary" type="submit">Add</Button>
+                </form>
+              </section>
+            ))}
+            <button type="button" className="cash-new-location" onClick={addCategory}>
+              <svg className="cash-new-stroke" aria-hidden="true">
+                <rect x="0.5" y="0.5" width="calc(100% - 1px)" height="calc(100% - 1px)" rx="9.5" fill="none" stroke="currentColor" strokeWidth="1" strokeDasharray="9 8" />
+              </svg>
+              <Icon name="plus" size={14} />
+              Add category
+            </button>
+          </>
+        ) : null}
+        {tab === "areas" ? (
+          <>
+            <form
+              className="pm-editor-compose"
+              onSubmit={(event) => {
+                event.preventDefault();
+                const next = areaName.trim();
+                if (!next) return;
+                onPatch({ areas: [...areas, { id: `area-${Date.now()}`, name: next, place: areaPlace.trim() }] });
+                setAreaName("");
+                setAreaPlace("");
+              }}
+            >
+              <input
+                className="sds line"
+                value={areaName}
+                placeholder="Area name"
+                aria-label="Area name"
+                onChange={(event) => setAreaName(event.target.value)}
+              />
+              <input
+                className="sds line"
+                value={areaPlace}
+                placeholder="Location (optional)"
+                aria-label="Location"
+                onChange={(event) => setAreaPlace(event.target.value)}
+              />
+              <Button variant="secondary" type="submit">Add</Button>
+            </form>
+            {areas.length === 0 ? (
+              <Empty icon="wrench" title="No areas">
+                Add one when this check covers more than one place.
+              </Empty>
+            ) : (
+              <ul className="pm-editor-rows">
+                {areas.map((area) => (
+                  <li key={area.id}>
+                    <span className="pm-editor-area">
+                      <span>{area.name}</span>
+                      {area.place ? <span>{area.place}</span> : null}
+                    </span>
+                    <button
+                      type="button"
+                      className="pm-editor-remove"
+                      aria-label={`Remove ${area.name}`}
+                      onClick={() => {
+                        const previous = areas;
+                        setPending({
+                          noun: "area",
+                          name: area.name.trim() || "Untitled area",
+                          run: () => onPatch({ areas: previous.filter((entry) => entry.id !== area.id) }),
+                          undo: () => onPatch({ areas: previous }),
+                        });
+                      }}
+                    >
+                      <Icon name="trash" size={14} />
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </>
+        ) : null}
+      </EditorDialog>
       <ConfirmDialog
         open={pending != null}
         name={pending?.name ?? name}
@@ -1642,8 +1580,7 @@ function TemplateEditor({
           });
         }}
       />
-    </div>,
-    document.body,
+    </>
   );
 }
 
@@ -1710,7 +1647,7 @@ function CheckHeading({
           </span>
           {area ? (
             <span className="pm-check-range">
-              <Icon name="home" size={14} />
+              <Icon name="location" size={14} />
               {area.name}
             </span>
           ) : null}
@@ -1808,9 +1745,11 @@ function AreasPage({
               </div>
             ) : null}
             {areas.length === 0 ? (
-              <p className="pm-empty">No areas yet. Add them from Edit template.</p>
+              <Empty icon="wrench" title="No areas yet">
+                Add them from Edit template.
+              </Empty>
             ) : visible.length === 0 ? (
-              <p className="pm-empty">Nothing to show</p>
+              <Empty icon="search" title="Nothing to show" />
             ) : rooms ? (
               <ul className="pm-room-grid">
                 {[...visible].sort((a, b) => Number((a.status ?? "open") === "complete") - Number((b.status ?? "open") === "complete")).map((area) => {
@@ -2038,9 +1977,13 @@ function CheckPage({
   );
 }
 
+function historyTitle(row: HistoryRow) {
+  return row.room ? `Room ${row.room} · ${row.name}` : row.name;
+}
+
 function downloadHistory(rows: HistoryRow[]) {
   const header = ["Check", "Location", "Cadence", "Done by", "Date", "Time"];
-  const body = rows.map((row) => [row.name, row.place, row.cadence, row.assignee, row.completed, durationLabel(row.minutes)]);
+  const body = rows.map((row) => [historyTitle(row), row.place, row.cadence, row.assignee, row.completed, durationLabel(row.minutes)]);
   const csv = [header, ...body]
     .map((line) => line.map((cell) => `"${cell.replaceAll('"', '""')}"`).join(","))
     .join("\n");
@@ -2059,7 +2002,7 @@ function HistoryPage({ rows, onBack, onOpen }: { rows: HistoryRow[]; onBack: () 
     if (cadences.length > 0 && !cadences.includes(row.cadence)) return false;
     const q = query.trim().toLowerCase();
     if (!q) return true;
-    return `${row.name} ${row.place} ${row.cadence} ${row.assignee} ${row.notes ?? ""}`.toLowerCase().includes(q);
+    return `${historyTitle(row)} ${row.place} ${row.cadence} ${row.assignee} ${row.notes ?? ""}`.toLowerCase().includes(q);
   });
   const columns: Array<DataColumn<HistoryRow>> = [
     {
@@ -2069,7 +2012,7 @@ function HistoryPage({ rows, onBack, onOpen }: { rows: HistoryRow[]; onBack: () 
       flex: true,
       lines: 1,
       labelInset: TITLE_TEXT_INSET,
-      render: (row) => <span className="title-sub-field">{row.name}</span>,
+      render: (row) => <span className="title-sub-field">{historyTitle(row)}</span>,
     },
     { id: "place", title: "Location", render: (row) => <span className="pm-fact pm-template-meta">{row.place}</span> },
     { id: "cadence", title: "Cadence", render: (row) => <span className="pm-fact pm-template-meta">{row.cadence}</span> },
@@ -2088,6 +2031,7 @@ function HistoryPage({ rows, onBack, onOpen }: { rows: HistoryRow[]; onBack: () 
     },
     { id: "completed", title: "Date", render: (row) => <span className="sheet-when" style={{ fontVariantNumeric: "var(--numeric)" }}>{row.completed}</span> },
     { id: "time", title: "Time", render: (row) => <span className="sheet-when">{durationLabel(row.minutes)}</span> },
+    { id: "status", title: "Status", role: "status", render: () => <Status status="complete" iconOnly /> },
   ];
   return (
     <PageLayout className="sheet-page pm-page" data-view="head" icon="wrench" title={<BackTitle parent="Preventive maintenance" current="History" onBack={onBack} />} count={visible.length} actions={<BackButton onBack={onBack} />}>
@@ -2237,6 +2181,7 @@ export default function PreventiveMaintenancePage() {
     setAreaStatuses([]);
   }
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [nameId, setNameId] = useState<string | null>(null);
   const [pickedId, setPickedId] = useState<string | null>(null);
   const [areaId, setAreaId] = useState<string | null>(null);
   const [fromHistory, setFromHistory] = useState(false);
@@ -2264,7 +2209,7 @@ export default function PreventiveMaintenancePage() {
     const onPointerDown = (event: PointerEvent) => {
       const target = event.target;
       if (!(target instanceof Element)) return;
-      if (target.closest(".sheet.is-open, .pm-editor-pop")) return;
+      if (target.closest(".sheet.is-open, .editor-dialog-card")) return;
       setPickedId(null);
     };
     document.addEventListener("pointerdown", onPointerDown);
@@ -2368,6 +2313,7 @@ export default function PreventiveMaintenancePage() {
     };
     setTemplates((list) => [blank, ...list]);
     setEditingId(id);
+    setNameId(id);
     setPickedId(id);
     setEnteringId(id);
   }
@@ -2429,7 +2375,11 @@ export default function PreventiveMaintenancePage() {
       {editing ? (
         <TemplateEditor
           template={editing}
-          onClose={() => setEditingId(null)}
+          selectTitle={nameId === editing.id}
+          onClose={() => {
+            setEditingId(null);
+            setNameId(null);
+          }}
           onPatch={(next) => patch(editing.id, next)}
           onDelete={() => {
             remove(editing);
@@ -2658,12 +2608,12 @@ export default function PreventiveMaintenancePage() {
       bodyClassName="pm-shift-body"
       actions={
         <>
-          <Button variant="secondary" onClick={() => { setSelected(null); setView("history"); }}>
+          <Button className="pm-tool" variant="secondary" onClick={() => { setSelected(null); setView("history"); }}>
             <Icon name="clock" size={14} />
             History
           </Button>
-          <Button variant="secondary" onClick={() => { setSelected(null); setView("templates"); }}>
-            <Icon name="list" size={14} />
+          <Button className="pm-tool" variant="secondary" onClick={() => { setSelected(null); setView("templates"); }}>
+            <Icon name="tune" size={14} />
             Manage templates
           </Button>
         </>
@@ -2718,7 +2668,7 @@ export default function PreventiveMaintenancePage() {
           </div>
         </section>
         <div className="sheet-work pm-boards">
-          {sections.length === 0 ? <p className="pm-empty">Nothing to show</p> : sections.map((group) => (
+          {sections.length === 0 ? <Empty icon="wrench" title="Nothing to show" /> : sections.map((group) => (
             <section key={group.id} className="pm-section" aria-label={group.title}>
               <h2 className="sheet-group">
                 {group.title}

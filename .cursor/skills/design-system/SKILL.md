@@ -27,7 +27,7 @@ When the project you are editing already contains those live files, the live fil
 ## Operating posture
 
 - **Smallest change that fixes it.** A follow-up on a selected control stays on that control. Leave the row, the fields beside it, and the header alone.
-- **Reuse before inventing.** Copy the closest gallery component and its class. A control that is not named yet still uses this system. A new component needs a reason, and then a labeled section in the gallery.
+- **Reuse before inventing.** Read that component's section in [components.md](references/components.md) before using it. Its When and When not lines pick the component. Copy the closest gallery component and its class. A control that is not named yet still uses this system. A new component needs a reason, and then a labeled section in the gallery.
 - **Do not restyle.** A component that already exists is used as it is. Copy its class. Do not change its size, fill, padding, radius, icon, or label to match a screenshot or to fit a new screen. If a corresponding component is already in the gallery, there is no second version of it. See [guard-rails.md](references/guard-rails.md).
 - **Remove before adding.** Borders, containers, separators, icons, and labels the content does not need. A screen with one action does not get a card. A long record does not put every section in a matching fill.
 - **Match the neighbour.** Siblings share height, padding, radius, text size, and ink. An unmatched sibling is a bug. A header label sits on its own column.

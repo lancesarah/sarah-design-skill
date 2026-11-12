@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { createContext, useContext, useState, type ReactNode } from "react";
+import { USAGE } from "./docs-usage";
 
 const KEYWORDS = new Set(["import", "from", "export", "default", "return", "const", "function"]);
 
@@ -25,15 +26,66 @@ function highlight(line: string) {
   });
 }
 
+export type DocsView = "examples" | "usage";
+
+export const DocsContext = createContext<{ page: string; view: DocsView; setView: (view: DocsView) => void }>({
+  page: "",
+  view: "examples",
+  setView: () => {},
+});
+
+function inline(text: string) {
+  return text.split(/(`[^`]+`)/).map((part, index) =>
+    part.startsWith("`") ? <code key={index}>{part.slice(1, -1)}</code> : part,
+  );
+}
+
+function UsageList({ id, title, items }: { id: string; title: string; items: string[] }) {
+  if (!items.length) return null;
+  return (
+    <section className="docs-example docs-usage" id={id} data-example={title}>
+      <h2>{title}</h2>
+      <ul>
+        {items.map((item) => (
+          <li key={item}>{inline(item)}</li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
 export function DocPage({ title, description, children }: { title: string; description: string; children: ReactNode }) {
+  const { page, view, setView } = useContext(DocsContext);
+  const usage = USAGE[page];
+  const showUsage = view === "usage" && usage;
+  const tab = (value: DocsView, label: string) => (
+    <button
+      className="docs-tab"
+      type="button"
+      role="tab"
+      aria-selected={(value === "usage") === Boolean(showUsage)}
+      onClick={() => setView(value)}
+    >
+      {label}
+    </button>
+  );
   return (
     <article className="docs-article">
       <h1>{title}</h1>
       <p className="docs-lead">{description}</p>
-      <div className="docs-tabs">
-        <span className="docs-tab">Examples</span>
+      <div className="docs-tabs" role="tablist" aria-label="View">
+        {tab("examples", "Examples")}
+        {usage ? tab("usage", "Usage") : null}
       </div>
-      <div className="docs-examples">{children}</div>
+      {showUsage ? (
+        <div className="docs-examples">
+          <UsageList id="usage-when" title="When to use" items={usage.when} />
+          <UsageList id="usage-when-not" title="When not to use" items={usage.whenNot} />
+          <UsageList id="usage-rules" title="Rules" items={usage.rules} />
+        </div>
+      ) : (
+        <div className="docs-examples">{children}</div>
+      )}
     </article>
   );
 }

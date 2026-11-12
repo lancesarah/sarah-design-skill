@@ -1,3 +1,5 @@
+@import "./confirm-dialog.css";
+
 /* Composition only. Visual rules stay in gallery.css.
    Libre Baskerville is gallery-only and never used on a built page. */
 
@@ -384,6 +386,8 @@ body.is-lance-collapsed .lance-side [data-lance-collapse]::after {
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
+  text-wrap: nowrap;
   color: var(--black);
 }
 
@@ -469,6 +473,10 @@ body.is-lance-collapsed .lance-side [data-lance-collapse]::after {
 .brief-list .note-author .tip,
 .brief-list .note-author .tip:popover-open {
   position: fixed;
+  top: auto;
+  right: auto;
+  bottom: auto;
+  left: auto;
   z-index: 80;
   transform: translate(-50%, -100%);
 }
@@ -540,14 +548,11 @@ html[data-theme="dark"] .brief-list button[aria-selected="true"] { background: v
   font-weight: 500;
 }
 
-.brief-meta,
-.brief-empty {
+.brief-meta {
   margin: 0;
   color: var(--black-50);
   font-size: 14px;
 }
-
-.brief-empty { padding-left: var(--space-20); }
 
 .brief-body { margin: 0; max-width: 62ch; }
 
@@ -672,6 +677,27 @@ html[data-theme="dark"] .brief-list button[aria-selected="true"] { background: v
   width: auto;
   min-height: 0;
   gap: 0;
+}
+
+/* The page card has --space-2 of padding. The tab band and the note rows reach its edge, like the header.
+   That padding goes back inside them, so the tabs and the photos stay where they were. */
+.notes-page[data-view="top"] .tabs-frame,
+.notes-page[data-view="top"] .list-fade {
+  margin-left: calc(var(--space-2) * -1);
+}
+
+/* The frame is capped at its column. Let it keep its right edge on the column line. */
+.notes-page[data-view="top"] .tabs-frame {
+  width: calc(100% + var(--space-2));
+  max-width: none;
+}
+
+.notes-page[data-view="top"] .page-filters .tabs {
+  padding-left: calc(var(--space-16) + var(--space-2));
+}
+
+.notes-page[data-view="top"] .brief-list button {
+  padding-left: calc(var(--space-14) + var(--space-2));
 }
 
 .notes-page[data-view="top"] .brief-title { font-size: 14px; }
@@ -1150,47 +1176,6 @@ html[data-theme="dark"] .note-more[aria-expanded="true"] { background: var(--gre
 .notes-page[data-view="top"] .note-title {
   font-size: var(--text-20);
   line-height: 1;
-}
-
-.confirm-dialog {
-  position: fixed;
-  inset: 0;
-  width: max-content;
-  height: fit-content;
-  max-width: calc(100% - 32px);
-  max-height: calc(100% - 32px);
-  margin: auto;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  overflow: visible;
-}
-.confirm-dialog::backdrop {
-  background: color-mix(in srgb, var(--black) 40%, transparent);
-  animation: confirm-scrim 240ms var(--ease-out);
-}
-.confirm-dialog[open] .confirm { animation: confirm-in 240ms var(--ease-out); }
-.confirm-dialog.is-closing::backdrop { animation: confirm-scrim-out 192ms var(--ease-out) forwards; }
-.confirm-dialog.is-closing .confirm { animation: confirm-out 192ms var(--ease-out) forwards; }
-@keyframes confirm-scrim {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-@keyframes confirm-scrim-out {
-  from { opacity: 1; }
-  to { opacity: 0; }
-}
-@keyframes confirm-in {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-@keyframes confirm-out {
-  from { opacity: 1; transform: translateY(0); }
-  to { opacity: 0; transform: translateY(8px); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .confirm-dialog::backdrop,
-  .confirm-dialog .confirm { animation: none; }
 }
 
 .dev-switch {

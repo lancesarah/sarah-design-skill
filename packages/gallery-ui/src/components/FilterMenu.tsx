@@ -60,7 +60,7 @@ function CompleteMark() {
 }
 
 function OptionBody({ field, value }: { field: FilterField; value: string }) {
-  if (field === "Type") return <DepartmentChip name={value} />;
+  if (field === "Type") return <DepartmentChip name={value} plain />;
   if (field === "Status") {
     return (
       <>

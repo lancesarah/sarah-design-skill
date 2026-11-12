@@ -18,7 +18,7 @@ Color, type, and spacing are gallery specimens. They are not components. Header,
 - When: the one action that creates or commits on that view.
 - When not: a second action, a filter, a fact, or the confirming delete. A page that only views leaves that corner empty.
 - Default: `.btn`.
-- States: rest is `--action` with white text. Hover is `--action-hover` in both themes. One per surface. No hairline. Nothing else on that surface uses this fill. Press scales the whole control to `0.98` and does not darken the fill. Disabled does not scale and does not take a hover fill. A button is 28px, line-height 20px, padding `--space-4` 6px. An icon in the button uses that same padding. The label and the icon are centered. Side padding is equal.
+- States: rest is `--action` with white text. Hover is `--action-hover` in both themes. One per surface. No hairline. Nothing else on that surface uses this fill. Press scales the whole control to `0.98` and does not darken the fill. Disabled is the same button at 60% opacity. It does not scale and does not take a hover fill. A button is 28px, line-height 20px, padding `--space-4` 6px. An icon in the button uses that same padding. The label and the icon are centered. Side padding is equal.
 
 ## Secondary button
 
@@ -45,6 +45,13 @@ Forced by: “instead of the inverted button can you make it like a tertiary but
 
 Forced by: the step trash icons were grey. Then, “destructive items should always be RED.” Then, “on any destructive action, you need the popup.”
 
+## Chip
+
+- When: a compact action or value inline with other content, a label with or without an icon.
+- When not: a department, an urgency, a status, or a person. Each has its own component. A chosen filter is the filter chip.
+- Default: `Chip`.
+- States: rest, hover, and pressed. A chip hugs its label and does not reserve width for every option it might show. A longer value widens the chip, and the chips beside it move with it. A chip outside a menu is 13 / 400. Inside a menu it is `--text-14`.
+
 ## Filter chip
 
 - When: a chosen filter, on the filter row.
@@ -59,6 +66,8 @@ Forced by: the step trash icons were grey. Then, “destructive items should alw
 - Default: `.check`, unchecked. The label is the row name, `--text-14`, `--black`.
 - States: the box is 14px with a 4px radius. Unchecked is `--white` and `--stroke`. Hover fills the box one step, `--sidebar-grey` in light mode and `--grey` in dark mode. Checked is `--action` with a white check and no stroke. Checked hover is `--action-hover`. Press scales the whole row to `0.98`. Disabled does not scale and does not take the hover fill.
 
+Large is the same box at 18px, with a 5px radius and a 12px check. It is for a row picked from a list of people, where the box sits alone at the end of the row. That is the checkbox's `size="lg"`. A picked row in that list is tinted `--filter-chip-bg`, and hover does not add a second step.
+
 ## Switch
 
 - When: a setting that is on or off, such as dark mode.
@@ -70,12 +79,12 @@ Forced by: the step trash icons were grey. Then, “destructive items should alw
 
 - When: a department or a type is named.
 - When not: an urgency, a status, or a person.
-- Default: the dot. Black label, an 8px circle in the department color, a clear chip, and a 1px `--black-12` ring. The same chip is used in a menu.
+- Default: the dot. Black label, an 8px circle in the department color, a clear chip, and a 1px `--black-12` ring. A menu option is the plain tag (`plain`): the dot and the label, with no ring.
 - States: rest hugs the label. The fill rests clear and the `--black-12` ring stays. Hover and an open menu show the chevron and fill `--sidebar-grey`, and `--grey` in dark mode. The ring stays. The same chip is used in a note, a table, a menu, a filter, and the side panel. Color mode keeps the department fill.
 
 The base is the dot: a black label, an 8px circle in the department color, a clear chip, and a 1px `--black-12` ring. Height 20px. Radius 4px. The colored fill is the other mode. Front desk’s circle stays `--tag-text`. The list card and the open note use this same tag. At rest the chip hugs the label. It does not keep a gap for a chevron that is hidden. On hover and when the menu is open, the chevron appears after the label, in the chip’s 4px gap, and the chip widens to fit it. It does not cover the word. That extra width does not move the items beside the chip.
 
-The department tag is one chip. It rests clear, with `--black` text and a 1px `--black-12` ring. Hover and an open menu fill `--sidebar-grey` in light mode and `--grey` in dark mode. The ring stays. That drawing is the same in a note, a table, a menu, a filter, and the side panel. Color mode keeps the department fill in both themes.
+The department tag is one chip. It rests clear, with `--black` text and a 1px `--black-12` ring. Hover and an open menu fill `--sidebar-grey` in light mode and `--grey` in dark mode. The ring stays. That drawing is the same in a note, a table, a filter, and the side panel. A menu option, and a value inside an editor field, is the plain tag with no ring. Color mode keeps the department fill in both themes.
 
 A type uses this chip every time it is named. The menu and the filter list every department: Front desk, Housekeeping, Maintenance, Food & Beverage, Sales, and Management. Front desk uses `--tag-text` on `--tag-bg`. Housekeeping uses `--dept-housekeeping` on `--dept-housekeeping-bg`. Maintenance uses `--dept-maintenance` on `--dept-maintenance-bg`. Food & Beverage uses `--dept-food` on `--dept-food-bg`. Sales uses `--dept-sales` on `--dept-sales-bg`. Management uses `--dept-management` on `--dept-management-bg`. The fill stays on hover and while the menu is open in color mode, except in a menu. In a menu the type is the dot, not the colored pill. The label is `--black`. On the table the chip hugs that label. It is not stretched to the longest department. A filled chip uses `2px 4px` padding, a 20px height, and a 4px radius. A table cell and a menu drop that fill, so the word lines up with the column. A filter chip keeps the filled box. Every department keeps the `--black-12` ring. The fill rests clear. Hover and an open menu fill `--sidebar-grey`, and `--grey` in dark mode. The ring stays.
 
@@ -86,9 +95,18 @@ A type uses this chip every time it is named. The menu and the filter list every
 - Default: `.mini-pill` with `.avatar.mini` and the name. A name with a role is `.person`.
 - States: named and unassigned. A compact name is `.mini-pill` with `.avatar.mini` and the name, in a menu, a filter, a chip, the side panel, an activity line, and a sentence. Unassigned is that avatar with no initials: clear at rest, 1px dashed `--black-50`. On a control, hover and an open menu fill the pill with `--sidebar-grey`. In dark mode that fill is `--grey`. The dashed avatar stays. A named person keeps the solid `--black-12` stroke and the `--sidebar-grey` fill. The Assigned column is not this pill. It is on Table.
 
+A profile picture, initials or a photo, shows the person's name in a tooltip on hover, centered above the picture, only when the picture stands alone. That is the avatar's `name`. When the name is already written beside the picture, the tooltip is not there. A photo is the avatar's `photo`. It fills the same circle, and the photo edge stands in for the border and the fill. The named pill and a name with a role do not repeat the name in a tooltip.
+
 Picking a person is a dropdown of people who already exist. Adding a person is Settings, opened from the account gear. The name is typed there.
 
 Forced by: “Picking a person should ALWAYS be a drop down. Adding a person is through settings, not from this.”
+
+## Avatar
+
+- When: the picture of a person, their photo or their initials in a ringed circle. The Assigned column of a table is the initials in a 35×35 avatar.
+- When not: a person named in a menu, a filter, a chip, or the side panel. That is the miniature name pill in Person. A decorative icon or a page mark.
+- Default: `Avatar`.
+- States: named, photo, and unassigned. A named avatar keeps a solid 1px `--black-12` ring and the `--sidebar-grey` fill. A photo fills the same circle with the `--outline-image` inset, which stands in for the ring and the fill. Unassigned is clear, with a 1px dashed `--black-50` stroke. A picture that stands alone shows the name in a tooltip on hover, centered above it. When the name is written beside it, there is no tooltip. Row hover does not change the photo in light mode. In dark mode a named photo is `--grey`, then `--grey-up` when its row or chip is hovered.
 
 ## Urgency
 
@@ -142,21 +160,21 @@ Forced by: “on any destructive action, you need the popup. Whether it's a tras
 - Default: `.field`.
 - States: the input is `--white`, `--text-14`, height 32px, padding `0 var(--space-10)`, radius `--radius-control`, and `--stroke`. Hover darkens the stroke to `--black-12`. Focus uses `--black-25` and does not fill.
 
-Every one-line input box is 32px. A labeled field and a line field share that height, that padding, and that radius. A quantity, a date, a unit, a minimum, and a maximum are this box. A description or a notes field is the text well. Phone, email, and loyalty on a complaint stay the fact row. Search stays the search field.
+Every one-line input box is 32px. A labeled field and a line field share that height, that padding, and that radius. A quantity, a date, a unit, a minimum, and a maximum are this box. A description or a notes field is the text well. A typed fact in a detail panel is this box inside the fact row. Search stays the search field.
 
 ## Line field
 
 - When: one line is typed and the label is the placeholder. A new step, a unit, a minimum, a maximum, a category name.
 - When not: a labeled value. That is Field. A list search. A paragraph under a title. That is the text well.
 - Default: `.line`.
-- States: rest is `--white`, `--text-14`, height 32px, padding `0 var(--space-10)`, radius `--radius-control`, and `--stroke`. The placeholder is `--text-muted`. Hover darkens the stroke to `--black-12`. Focus uses `--black-25`. The fill does not change.
+- States: rest is `--white`, `--text-14`, height 32px, padding `0 var(--space-10)`, radius `--radius-control`, and `--stroke`. The placeholder is `--text-muted`. Hover darkens the stroke to `--black-12`. Focus uses `--black-25` and keeps that grey placeholder until there is text. The fill does not change.
 
 A line field is the same 32px box as Field. The placeholder is the label. It stays one line, and it stays the same height as the field beside it.
 
 ## Text well
 
 - When: a section title sits over a description or notes. The knowledge answer is the specimen: the label "Answer", then the filled field.
-- When not: a one-line input. That is Field or Line field. A search field. The body of a note on the notes page, and a note that is only read. Phone, email, and loyalty stay the fact row. A person, a room, a department, and an urgency stay dropdowns.
+- When not: a one-line input. That is Field or Line field. A search field. The body of a note on the notes page, and a note that is only read. A typed fact in a detail panel is the line field inside the fact row. A person, a room, a department, and an urgency stay dropdowns.
 - Default: a `.sheet-label`, then `.text-well`. An optional line under the field, such as the answer help, is `--text-12` and `--text-muted`.
 - States: rest is `--sidebar-grey`, `--black` text, `--text-14`, line-height 20px, padding `--space-10`, radius `--radius-control`, height 96px. The label is the sheet label, `--text-12` and weight 500 in `--black-50`, `--space-4` above the field. Hover is a 1px `--black-12` ring. Focus is a 1px `--black-25` ring. The fill does not change. There is no pencil. Dark mode uses `--grey`. A well that sits on a surface that is already that fill takes the next step: `--white` in light, `--black-12` in dark.
 
@@ -169,12 +187,26 @@ Every editable description and notes field is this box. A complaint description,
 - Default: clear, not primary.
 - States: rest is clear. Hover is one step from the surface. Press scales the whole control. Sidebar icon buttons stay unfilled at rest.
 
+## Text button
+
+- When: a quiet action that should not compete with the page: a label, an icon, and no fill until hover. A tool in a row, or a secondary action inside content.
+- When not: the main action on a view. That is the primary button. A button in the header with no icon.
+- Default: `TextIcon`. Label, small, and delete.
+- States: rest is clear. Hover fills one step from the surface it sits on. The label, the icon, and the gap do not move on hover. Press scales the whole control to `0.98`. The delete variant stays `--destructive` at rest and on hover, and opens Delete confirmation first.
+
 ## Lance composer
 
 - When: the field is the Lance chat.
 - When not: a reply under comments. That is the message composer.
 - Default: the Lance composer.
 - States: add, the mode control, the microphone, and an empty send arrow hover with `--grey`. The send arrow stays grey when the field is empty, including on hover. It turns `--action`, with white text, only when the field has text. The microphone stays `--action` only while it is on.
+
+## Lance panel
+
+- When: the assistant sits beside the page, so the person can keep working on it.
+- When not: a reply on a record. That is the message composer. A record opening beside the table. That is the detail panel.
+- Default: `LancePanel`.
+- States: open. The panel uses the Lance composer as it is. It is not restyled for the panel. The chat stays darker than the page, the same as the nav. The send arrow stays grey until there is text.
 
 ## Message composer
 
@@ -200,14 +232,14 @@ Every editable description and notes field is this box. A complaint description,
 ## Tabs
 
 - When: a list is split into primary categories, including the department bar.
-- When not: up to three views of one list. That is segments.
+- When not: a filter, or a toggle between two or three modes. That is segments.
 - Default: `.tab` on the page.
 - States: on white, selected and hover use `--sidebar-grey`. On a `--sidebar-grey` bar, that step is `--grey`. A selected name is `--black` and its count is `--black-50`. An unselected name is `--black-50` and its count is `--black-25`.
 
 ## Segments
 
-- When: one list has up to three views. The gallery heading is 3 max.
-- When not: the department bar, or more than three views.
+- When: switching between two or three modes that are different, such as a filter or a toggle between views of the same content. Three at most.
+- When not: the main switch for a page or its primary categories. That is tabs. Not the department bar, or more than three modes.
 - Default: `.segmented`, with one segment selected.
 - States: selected is `--white` with `--stroke` and `--black` text, and it does not take the unselected hover. Unselected hover is `--grey` and the label stays `--black-50`.
 
@@ -240,30 +272,31 @@ A title and the table it names start 40px apart, measured to the table header. T
 ## Detail panel
 
 - When: a record opens beside the table.
-- When not: a subpage, or a popup. Edit template is the editor popup.
+- When not: a subpage, or a popup. Edit template and Edit to-do are the editor popup.
 - Default: the gallery detail panel.
-- States: closed, open, entering, and leaving.
+- States: closed, open, entering, and leaving. Editable, or view-only with Edit.
 
 The panel is 392px and sits over the right of the table. The table keeps its width. It does not shrink to sit beside the panel. Entering is `--motion-panel` (400ms) on `--ease-drawer`. Leaving is `--motion-panel-out` (320ms). Reduced motion skips the slide. A page does not restyle the width, the header, or the slide.
 
-Every page uses the same header. The back button sits on the left and closes the panel. The right-hand group holds any page action, then the more button. The more button is clear at rest. Its grey fill shows only while the pointer is on it. Its menu is Delete only, and it opens again after it closes. A right-click on the panel opens that same menu. The body is the page’s fields. A description or notes field is the text well, 96px. A one-line input box is the field, 32px. Phone, email, and loyalty stay the fact row.
+Every page uses the same header. The back button sits on the left and closes the panel. The right-hand group holds any page action, then Edit on a view-only panel, then the more button. Edit is a secondary button with the edit icon, set with `onEdit`. The more button is clear at rest. Its grey fill shows only while the pointer is on it. Its menu is Delete only, and it opens again after it closes. A right-click on the panel opens that same menu. The body is the page’s fields. A description or notes field is the text well, 96px. A typed fact is the line field inside the fact row: one line, 32px, placeholder Empty. Phone, email, loyalty, and where an item is stored use it.
 
 Editable text in the panel shows a pencil on hover. The pencil is the edit icon, 14px, in `--black-50`. It sits after the text on the first line. The text does not move when it appears. Clicking the field removes the pencil. The table does not show this pencil. A text well does not show it either. The field is already a box.
 
 The body stacks its sections 24px apart. The scroll padding is `--space-16` on top and `--space-25` on the sides and the bottom. A rule between sections is 1px `--line` and runs the full width of the panel, through that side padding. A section label is `--text-12`, weight 500, and `--black-50`. A fact row is a 70px label and the value, `--space-16` apart, at least 20px tall, in `--text-14`. In dark mode the detail uses `--grey`.
 
-On a to-do, the panel opens and closes from the task row. The side title is the location and item chips, empty or filled. An empty title is Location and Item, not the word “To-do”. The title chips use the task row’s box and the same hover. In the side panel, guest mood, type, assigned, status, and urgency share one type: `--font`, `--text-14`, weight 400, and a 16px line-height. The control is 20px tall, with padding `2px 4px` and a 4px radius. The status icon is 16px so the word stays on that line. Table chips stay 13px. A menu option stays `--text-14`. The assignee keeps the miniature avatar, the name, and a `--sidebar-grey` fill. Hover and an open menu keep that fill and show the down chevron. Unassigned is clear at rest. Hover and an open menu use that same `--sidebar-grey` fill, and `--grey` in dark mode. Status keeps its icon and label and has no fill at rest. Type is the department chip. It rests clear with the `--black-12` ring. Hover and an open menu fill `--sidebar-grey`, and `--grey` in dark mode. The ring stays. The room uses the task row’s room control. Location and Item are dropdowns. At rest they are the value with no fill. Hover and an open menu show a `--sidebar-grey` pill and a down chevron after the value. The room, title, and date use `--space-16`. The Description label is `--text-12`. The note under it is `--text-14`. Activity stacks its heading and reply `--space-8` apart. The reply field is `--text-14`. Guest mood, phone, email, and a page’s other facts use this same panel. They do not get a second header or a second width.
+A view-only panel reads its facts and keeps Activity live. Edit opens the editor popup for that record. Nothing else in the body edits. The room is the static square. A typed fact, such as the description, location, or item, is plain `--text-14` text (`.todo-side-value`). An empty one is a quiet dash. The description sits 4px under the title with no label, in `--text-muted` (`.todo-side-heading`). The panel body starts 40px below the header actions. An empty one reads No description in `--black-25`. Type, status, and urgency are their chips with `editable={false}`. The assignee is the person pill, or Unassigned. None of them show a chevron or a pencil.
+
+On a to-do, the panel opens and closes from the task row. It is view-only: Schedule for future, then Edit. The side title is the typed title, or the location and item as text, joined by a middle dot. An empty one is New to-do. The table's To-do cell shows a typed title as text, and without one it shows the Location and Item chips. A new to-do opens the editor popup with the name selected. The rules below are for a panel that edits in place, such as a complaint. The side title is the location and item chips, empty or filled. An empty title is Location and Item, not the word “To-do”. The title chips use the task row’s box and the same hover. In the side panel, guest mood, type, assigned, status, and urgency share one type: `--font`, `--text-14`, weight 400, and a 16px line-height. The control is 20px tall, with padding `2px 4px` and a 4px radius. The status icon is 16px so the word stays on that line. Table chips stay 13px. A menu option stays `--text-14`. The assignee keeps the miniature avatar, the name, and a `--sidebar-grey` fill. Hover and an open menu keep that fill and show the down chevron. Unassigned is clear at rest. Hover and an open menu use that same `--sidebar-grey` fill, and `--grey` in dark mode. Status keeps its icon and label and has no fill at rest. Type is the department chip. It rests clear with the `--black-12` ring. Hover and an open menu fill `--sidebar-grey`, and `--grey` in dark mode. The ring stays. The room uses the task row’s room control. Location and Item are dropdowns. At rest they are the value with no fill. Hover and an open menu show a `--sidebar-grey` pill and a down chevron after the value. The room, title, and date use `--space-16`. The Description label is `--text-12`. The note under it is `--text-14`. Activity stacks its heading and reply `--space-8` apart. The reply field is `--text-14`. Guest mood, phone, email, and a page’s other facts use this same panel. They do not get a second header or a second width.
 
 ## Room
 
-- When: a room is chosen.
-- When not: a number the person types.
-- Default: a dropdown of rooms that already exist.
-- States: the chosen room, or the quiet dash when it is empty.
+- When: a room number on a to-do.
+- Default: the number is typed. In the detail it is the 50px square. On the row it is plain text, `--text-16`, weight 500, line-height 20px, with no padding and no chip fill.
+- States: the number, or the quiet dash when it is empty. Focus underlines the row field with `inset 0 -1px 0 var(--black-25)`.
 
-The number is not typed on the row, in the side panel, or anywhere else a room is chosen. The number is 16px and weight 500, the same size on the row and in the detail panel. An empty room is a quiet dash. It does not say Room.
+The square stays 50px and `--sidebar-grey`. The number, in the square and on the row, is `--text-16` and weight 500. Clicking it edits the number there. On the row, clicking the number types it in place. An empty room is a quiet dash. It does not say Room.
 
-Forced by: “room will always be a drop down.”
+Forced by: “room will always be a drop down.” Then the number is typed: “clicking on it edits the text,” and the row is a text entry too.
 
 ## Lesson card
 
@@ -336,10 +369,37 @@ Forced by: Delete sat inside the type and frequency card. Then, “the cards gro
 
 ## Editor popup
 
-- When: Edit template. It opens over the check. It is not a subpage.
+- When: Edit template, and Edit to-do from the to-do panel. It opens over the page. It is not a subpage.
+- When not: a record that opens beside the table. That is the detail panel. A full subpage, or a delete confirmation.
 - Dismiss: the corner close, the scrim, and Escape. Save is the primary, at the bottom right. Delete is the light danger button and opens the confirm first.
+- The kicker says the action and the item: Create to-do for a new record, Edit to-do for one that exists. Create template and Edit template follow the same rule.
+- Save names the item too: Save to-do, Save template, Save source. Never a bare Save.
+- Divider: a 1px `--line` runs edge to edge under the header, with or without tabs. With tabs it is the bottom of the tab bar. Without tabs the shell draws it. The pill editor is the one exception: it has no divider. See Pill editor.
+
+The fields are the `pm-editor-*` set: a label over a 32px input, and dropdowns as `EditorPick` (`(screens)/editor-pick.tsx`), two to a row in `.pm-editor-pair`. The photo upload is one tile everywhere (`.side-photo-add`): `--sidebar-grey`, a 1px dashed `--black-25` stroke drawn by `PhotoAddFrame` (3px dashes, 2px gaps, since a CSS border can't set either), `--radius-control`, hover `--grey`, and the 18px camera in `--black-50`. A context sets only its size, with `--side-photo-size` (56px by default, 87px in an editor popup). A location, in a field or beside a name, uses the `location` pin icon, not the house. The body stacks its rows 25px apart (`--space-25`) in every editor popup. The rule under the header has 10px above and below it, and the body pads 12px top and bottom. An unset dropdown shows its placeholder, muted. Edit to-do has no tabs. Its footer is Schedule for future, a secondary button with the calendar icon, then Save. The title is an editable text entry. Its placeholder is To-do title, in `--black-25`. A new to-do focuses it. The description is an editable line 10px under it (`onSubtitleChange`; `.editor-dialog-name` stacks its lines 10px apart), in `--text-muted`, with Add a description as its placeholder. It grows with its text. The body has no Description field. The body is Location, with the `location` pin icon, and Item, with the `tag` icon, then Department and Assigned, then Urgency and Status, then Photo. Status shows the Status component, icon and label, in the field and in its menu. Department, Assigned, and Urgency show their components the same way. The field is already the box, so a value inside it has no ring, chip padding, or fill: the department tag is `plain`, and the urgency and person pill lose their padding and fill. Every value starts on the field's 10px inset. An icon and its label are 6px apart, and the avatar and the name 8px, so a status label and a name line up. A Guestroom adds Room number beside Location, in the same column, `--space-8` apart. The header does not repeat the room. Any other location hides the room field. The photo tile is 87px, `--sidebar-grey`, with no dashed border. Its edits are a draft. Save writes them. Close drops them.
 
 Width is `652px`, or the screen when that is narrower. Height starts at `554px`, the Details tab. Areas uses that same height. The box grows when the content is taller than `554px`. It stops at the viewport, inside `--space-25` of the scrim.
+
+## Pill editor
+
+- When: creating or editing one record that is a title, a description, and a few choices from lists that already exist, such as a to-do, a complaint, or a found item. Complaints, Lost & found, Cash counts, new and edited, and a new reading use it. To-dos use it when the Dev bar's Pill editor switch is on.
+- When not: a record with steps, tabs, a table of values, or a long answer. Template, Readings source, and Knowledge use the editor popup's fields or the page. A record that opens beside the table is the detail panel.
+- Default: `EditorDialog` with `layout="pills"`, and an `EditorPills` body.
+- States: rest, a pill hovered or open, a placeholder pill, and a required pill left empty after Save.
+
+The shell is the editor popup's. The card fits its content and does not keep the 554px height. There is no divider under the header. The body pads `--space-16` on top and twice that below, and stacks its sections 40px apart.
+
+Every choice is one `EditorPill`: 28px tall, padding `0 var(--space-10)`, `--radius-control`, `--white` with `--stroke`, `--text-14`. Hover and an open menu fill `--sidebar-grey`. Its menu is the gallery menu, with `taskMenuItem` rows. A leading icon is 14px in `--text-muted`, 6px from the value. An unset pill shows its placeholder, muted: Location, Item, Category. The pills flow in one wrapping line, `--space-8` apart. `EditorPillRow` starts a new line when a pair belongs together, such as status and urgency.
+
+A value inside a pill is its component, at `--text-14`, with no ring, padding, or fill of its own: the department tag is `plain`, and the urgency and person pill lose their padding and fill. Status keeps its icon and label.
+
+A Guestroom puts the room number in a grey track behind the location pill (`RoomPill`). The track slides out when Guestroom is chosen and folds away for any other place. Where the place cannot change, the lead is `PlacePill`. The room field hugs its placeholder, Room, and grows with the number. Once Guestroom is chosen the room is required: left empty after Save, the grey track takes the red ring and a faint red tint, and Room turns red (`RoomPill` `invalid`). The red is on the track, not a second box inside it.
+
+A typed fact that is not a choice, such as a guest's phone or email, is an `EditorField` in `EditorFields`: a 12px `--black-50` label over the 32px field, two to a row, `--space-16` apart, above the pills. A Cash count is the one place with many: its line amounts sit below the pills in three columns, coins, bills, and other. Its title is the counted total, read-only, and the line above it is the expected amount and the variance, once a location is set. Location starts on its placeholder unless there is only one. Editing a count keeps its location, as a fixed `PlacePill`, and its shift, notes, and line amounts. Its kicker is Edit count, Save count replaces Post count, and it can delete the count. Count or Amount is not a pill: it is the segmented control, at the end of the pill line.
+
+Photos are the camera `PhotoPill`, a 28px square at the left of the footer. Added photos show above the pills as 56px thumbnails (`EditorPhotos`). A thumbnail opens the viewer. Its corner removes it.
+
+Save names the item, and checks the required pills first. A required pill left empty turns red, and `RequiredToast` says “Please fill out all required fields.” above the card. The record is not saved. Delete is the light danger button in the header and opens the confirm first. Edits are a draft until Save.
 
 ## Inset card
 
@@ -374,6 +434,130 @@ The row is the width of the list it adds to. On a subpage that width is 820px. I
 
 A comment is the gallery comment. The row is at least 49px. The photo is 21px. The name and the time are 12px, and the time is `--text-muted`. The body is 14px. The photo and the text sit 10px apart. The more button is 28px and shows on hover. A reply under the comments is the message composer.
 
+## Activity
+
+- When: the thread of comments and status changes on a record, newest first.
+- When not: a conversation. That is Message and Message group. A single remark. That is Comment.
+- Default: `ActivityFeed`.
+- States: a thread that starts with a comment, and one that is only status. A comment in the thread is Comment. A person on a status line is the miniature name pill. The heading and the reply stack `--space-8` apart. The reply field is `--text-14`, and it is the message composer.
+
+## Message
+
+- When: one line in a conversation.
+- When not: a remark under a record. That is the comment. The field under the thread is Messaging.
+- Default: `Message`. Incoming, and you.
+- States: incoming and you. A single line is rounded on every corner.
+
+The name and the time sit above the bubble, 4px clear of it. Both are 12px, weight 400, `--text-muted`. Incoming is left, with a 35px photo. Yours is right, with no photo, and the name reads You. A yours bubble stops where the other person's picture starts: its widest left edge lines up with that picture. The bubble is 32px on one line, side padding `--space-10`, radius `--radius-card`. Incoming is `--sidebar-grey`. Yours is `--action`, with white text. A longer line grows. The words wrap inside the column.
+
+## Message group
+
+- When: the same person sends again inside two minutes.
+- When not: a new person, a new day, or a ticket between the lines. Those start a new message.
+- Default: `MessageGroup`.
+- States: incoming and you.
+
+The first line carries the name. The rest sit `--space-2` under it and have no second name. Every bubble stays rounded, except the last. That one squares the bottom corner on that person's side: bottom-left for someone else, bottom-right for you.
+
+## Day
+
+- When: the day changes in a conversation.
+- When not: beside the name. The clock for that day sits on this line.
+- Default: `Day`.
+- States: one.
+
+A hairline, the label, a hairline. The label is 12px `--text-muted`. It reads like Today 9:25 AM.
+
+## Typing
+
+- When: the other person is writing and the line has not arrived.
+- When not: after the line is there.
+- Default: `Typing`.
+- States: one. Reduced motion holds the dots still.
+
+Three dots in the same bubble as a message, with that person's photo.
+
+## Resolved
+
+- When: a conversation with Gavin is finished.
+- When not: a department thread, or a conversation that is still open. Those keep the reply field.
+- Default: `Resolved`.
+- States: one.
+
+The reply field is gone. The note is 12px `--text-muted`, centered on `--sidebar-grey`. Start a new chat is tertiary. Reopen to reply is secondary.
+
+## Ticket
+
+- When: the ticket itself sits inside its conversation.
+- When not: the list of tickets. That row opens this record.
+- Default: `Ticket`.
+- States: steps that have happened, and the one that has not.
+
+White, with the stroke, where a message is a grey bubble. The title is 14px weight 500. The number and the kind are 12px `--text-muted`. Finished steps use the complete mark. A step with no time is an empty ring.
+
+## Ticket note
+
+- When: an open ticket needs a short reminder under the header.
+- When not: the full record. That is the ticket.
+- Default: `TicketNote`.
+- States: open, in progress, and completed. Dismiss fades it out.
+
+The number, the title, and the status. The close sits in the top corner. It floats over the conversation. On the gallery page it sits in the flow.
+
+## Empty
+
+- When: a page or a list has nothing to show.
+- When not: a table. A table keeps its own one-line empty.
+- Default: `Empty`.
+- States: a title and a line, and the same thing with one action under them.
+
+The mark is 18px in `--text-muted`. The title is 16px weight 500. The line is 14px weight 400 in `--text-muted`. The gap inside the group is `--space-4`. The action sits `--space-16` below the group. It is centered, and it fills the space it is given.
+
+## Meter
+
+- When: how far along something is, such as a score out of a total, a checklist, or rooms cleaned today.
+- When not: a loader. That is the table skeleton. A count alone. That is a number.
+- Default: `Meter`, with `value`, `max`, and a `label` that says the figures.
+- States: a fill, and a fill with an end part.
+
+A 42px bar of 2px ticks every 4px. The done part is `--action` over `--black-12`. An end part, such as rooms on DND, takes the right end in `--black-50`. It spans the whole bar and is clipped, so its ticks line up with the ones under it. The bar is one image to a screen reader, and `label` is what it reads.
+
+## Widget
+
+- When: a dashboard shows a few records from a longer list, and a way to the rest.
+- When not: the list itself. That is Table. One record. That is Section card.
+- Default: `Widget`, holding a `WidgetList`. `WidgetEmpty` holds an `Empty` when there is nothing to show.
+- States: rows and a more link, rows only, and empty.
+
+One card: a 1px `--grey` border, a 10px radius, and a `--sidebar-grey` head over a `--white` list. The head is a 16px icon in `--text-muted`, `--space-8` from the title, the same gap as a Lance suggestion. The title is 14px weight 400, the count in `--text-muted`, and one action on the right. The action is a plus that starts a new record, as a `TextIcon` or a link with the `text-icon sm` class. The head is 52px, the height of a row. With the Depth switch on, the card takes the drop under its hairline.
+
+## Widget list
+
+- When: the rows inside a `Widget`.
+- When not: a list on its own on a page. That is a Table, or a note card list.
+- Default: `WidgetList`, holding `WidgetRow` items and `WidgetMore` last.
+- States: rows, and rows with a more link.
+
+The list sits 2px in from the card, like a menu, with no gap between rows. A widget shows a few rows, three or four, and `WidgetMore` says how many wait behind it, such as "+ 5 more". The more link is 52px, 14px in muted ink, and sits at the bottom of the card. Its hover is `--sidebar-grey`, and its text turns `--black`.
+
+## Widget row
+
+- When: one record in a `WidgetList`.
+- When not: a table row. That is the task row.
+- Default: `WidgetRow`, with `lead`, `title`, `subtitle`, `meta`, and `trail`.
+- States: a status and a person, an avatar and a muted preview, and rest and hover.
+
+A row is 52px and two lines. Padding is `6px 14px` with a 4px radius and a 10px gap, like a menu item. Its hover is `--sidebar-grey`, with no fade. The lead is at least 18px wide: a status, or an avatar. The title is 14px weight 500, and the subtitle is 14px weight 400 under it. When the second line previews the record, such as a note's first line, pass `subtitleTone="muted"`: it steps down to 13px in `--text-muted` so the title leads. The meta is 12px in `--text-muted` on the first line's right. The trail is a chip on the second line's right, such as a person. A row with no subtitle and no trail is one line, 36px tall, such as a DND room. The more link under those rows is 36px too. A chip or an avatar in a row is `--sidebar-grey` and takes `--grey` on the row hover, one step past it, so it does not blend in. Dark mode steps `--grey` to `--black-12`. A row and the more link render `a`. Pass `as` to use the app's link.
+
+## To-dos widget
+
+- When: Home shows open to-dos at a glance.
+- When not: the to-do list. That is the To-Dos page.
+- Default: `TodosWidget`, built from `Widget`, `WidgetList`, `WidgetRow`, and `WidgetMore`.
+- States: four rows and a more link, and empty.
+
+Open to-dos, most urgent first, four at a time. A row is the status, the room or else the place, the item, the age, and who has it, or Unassigned. The plus opens the editor to create a to-do, assigned to the person signed in. Every row and the more link go to the To-Dos page.
+
 ## Table
 
 - When: records line up in columns, with a filter row and a task row.
@@ -382,6 +566,8 @@ A comment is the gallery comment. The row is at least 49px. The photo is 21px. T
 - States: the frame, the column widths, and the count when a control can hide a row. Hovering a cell highlights the whole row. A row’s states are the task row block. The filter’s states are the filter row block.
 
 A new table copies that section. It does not invent a second row, chip, or filter.
+
+A table chip is 20px tall. Padding is 2px 4px and the radius is 4px. The height does not grow with the line box. The label keeps the size that chip already uses. A location or an item is 14px. A chip in the side panel is 20px as well.
 
 The list variant is the checklist. It is this table. It keeps the rows and the columns, and it leaves off the column header, the column rules, the row wash, and the Showing count. The group header stays on the list.
 
@@ -408,6 +594,10 @@ The resize handle sits on the right edge of each header. The hit area is 12px wi
 Plain text in a row is `--text-muted`. One column is `--black`: the name, the column a person reads to tell one row from the next. A second text column is `--black` only when that name is not enough to tell the rows apart. Mark that one with `ink: "strong"`. A person stays the person component, in `--black`, and this ink step does not restyle it. A status, a chip, a switch, and an urgency keep their own color. This is text only.
 
 One column names the record and takes the leftover width, so the row reaches the frame. On the to-do table that column is To-do. When a page has no title column, choose one from the job of the page: the column a person reads to tell one row from the next. A status, a time, a total, a person, and a department stay as wide as their values. Mark the chosen column so it grows. Use `flex` when the cell is a short name. Use `text: "primary"` when the cell is a title or a description. Double-click the line to return that column to its usual width. The width stays on this page. The columns resize with the pane. The table scrolls sideways when those minimums do not fit. A cell does not paint on top of the next column. The title, the note under it, and the column header start on the same line. The frame ends at the last row and keeps its rounded corners. It scrolls only when the rows pass the space above the count, or the bottom of the frame when there is no count. When a search, a filter, a tab, or another control can hide a row, the count sits under the frame, at the left. It is `--text-12` `--text-muted`, sits `--space-8` under the frame, and reads Showing N of M. M is the full set before those controls. When every row is always on screen, that line is left off.
+
+When the table is created, add the column minimums up against the pane it sits in. If the sideways scroll is more than 200px, one short column, hide the least important column and measure again, until the leftover scroll is 200px or less. A sliver under 200px still scrolls. The table does not drop a column for that, and it does not squeeze a remaining column under its minimum to keep the extra one. The least important column is the one the row can lose and still be told apart. It is not the column that names the record, it is not the column the page is for, and it is not a time. A time stays. A second copy of a fact already on the row, and a note that is not the record, go first. Hide one column at a time.
+
+Forced by: “when creating a table, if a table has to scroll pretty far, pick the least important column and hide it.”
 
 While the rows are still loading, the same table shows the skeleton in the Loading state of that section. A table whose rows are already in hand shows them. Opening that page again does not play the skeleton. The bars are the wait, and they start when the rows arrive.
 

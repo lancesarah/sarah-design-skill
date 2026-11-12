@@ -1,0 +1,434 @@
+/* Home: a photo behind the greeting and the top of Lance's patterns, then four tiles. */
+/* The photo runs edge to edge, so the body steps past the page's 2px inset and hides its scrollbar. */
+/* The header floats on the photo. The body slides up under it, past the page's top inset too. */
+.notes-page.home-page .page-head {
+  position: relative;
+  z-index: 1;
+  border-bottom-color: transparent;
+  pointer-events: none;
+}
+.notes-page.home-page .page-head > * { pointer-events: auto; }
+/* The mark sits on the sky, so it stays black in both themes. */
+.notes-page.home-page .page-head .page-mark,
+.notes-page.home-page .page-head .page-mark .i { color: var(--on-image-ink); }
+.home-page .home-body {
+  position: relative;
+  min-height: 0;
+  margin: calc(-60px - var(--space-2)) calc(var(--space-2) * -1) 0;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+.home-page .home-body::-webkit-scrollbar { display: none; }
+.home-band {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 422px;
+  background: var(--grey) url("/images/home-dunes.jpg") center 62% / cover no-repeat;
+}
+.home-content {
+  container: home / inline-size;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-25);
+  padding: 242px max(var(--space-16), calc((100% - 1040px) / 2)) 80px;
+}
+
+/* Sits 16px over the card, tighter than the page's 25px gap. */
+.home-hello {
+  margin-bottom: calc(var(--space-16) - var(--space-25));
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-25);
+}
+.home-hello h1 {
+  margin: 0;
+  color: var(--on-image);
+  font-size: var(--text-24);
+  font-weight: 400;
+  line-height: 32px;
+}
+.home-hello p {
+  margin: 0;
+  color: color-mix(in srgb, var(--on-image) 72%, transparent);
+  font-size: var(--text-14);
+  line-height: 20px;
+}
+/* Lance's pattern is one section card. The Actions pane takes one step from it. */
+.home-lance-stack {
+  --home-lance-side: var(--sidebar-grey);
+  position: relative;
+  isolation: isolate;
+  container-type: inline-size;
+}
+.home-lance {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(280px, 2fr);
+  grid-template-rows: 48px auto;
+  border-radius: var(--radius-card);
+  background: var(--white);
+  box-shadow: var(--stroke), var(--shadow-card);
+}
+/* More patterns wait under this one. */
+.home-lance-stack.has-more { margin-bottom: var(--space-16); }
+.home-lance-stack.has-more::before {
+  content: "";
+  position: absolute;
+  inset: var(--space-16) var(--space-20) calc(var(--space-16) * -1);
+  z-index: 0;
+  border-radius: var(--radius-card);
+  /* The Actions grey lines up with the card in front. Its column is the wider of 280px and 2fr of 5. */
+  background: linear-gradient(to left, var(--home-lance-side) calc(max(280px, 40cqw) - var(--space-20)), var(--white) 0);
+  box-shadow: var(--stroke), var(--shadow-card);
+}
+.home-lance-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  padding: 0 var(--space-16) 0 var(--space-25);
+  border-bottom: 1px solid var(--line);
+}
+.home-lance-head.is-actions,
+.home-lance-actions { background: var(--home-lance-side); }
+.home-lance-head.is-actions { border-top-right-radius: var(--radius-card); }
+.home-lance-actions { border-bottom-right-radius: var(--radius-card); }
+.home-lance-label {
+  color: var(--text-muted);
+  font-size: var(--text-14);
+  line-height: 20px;
+}
+.home-lance-tools {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-left: auto;
+}
+/* Room for the widest count, so the arrows hold still while paging. */
+.home-counter {
+  min-width: calc(var(--digits, 1) * 2ch + 3ch);
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  line-height: 16px;
+  text-align: center;
+}
+.home-prev .i { transform: rotate(90deg); }
+.home-next .i { transform: rotate(-90deg); }
+
+.home-lance-pattern {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--space-25);
+  min-height: 184px;
+  padding: var(--space-25);
+}
+.home-lance-marks {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+/* The pattern's topic. */
+.home-insight {
+  display: inline-flex;
+  color: var(--black);
+}
+.home-feedback {
+  display: flex;
+  gap: var(--space-4);
+  margin-left: auto;
+}
+/* The feedback thumbs use the pin's icon chip. */
+.home-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  padding: 2px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--black-50);
+  cursor: pointer;
+  transition: background-color var(--motion-hover) ease, color var(--motion-hover) ease;
+}
+.home-chip:hover { background: var(--black-12); color: var(--black); }
+.home-feedback .home-chip[aria-pressed="true"] { background: var(--black-12); color: var(--black); }
+.home-lance-copy h2 {
+  margin: 0;
+  font-size: var(--text-16);
+  font-weight: 500;
+  line-height: 24px;
+}
+.home-lance-copy p {
+  max-width: 70ch;
+  margin: var(--space-4) 0 0;
+  color: var(--text-muted);
+  font-size: var(--text-14);
+  line-height: 20px;
+  text-wrap: pretty;
+}
+.home-lance-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding: var(--space-25);
+}
+.home-lance-actions .home-lance-do { margin-top: var(--space-12); }
+
+/* Paging shuffles the deck. The card that leaves is a copy laid over the stack.
+   Next and dismiss draw it on top. Next sinks it into the slot behind, dismiss lifts it off.
+   Previous draws it underneath and sinks it, while the new card settles from above.
+   The new card's own move runs in home/page.tsx. */
+.home-lance { transform-origin: 50% 100%; }
+.home-lance.is-ghost {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 2;
+  pointer-events: none;
+  animation: home-deal-back 400ms var(--ease-in-out) both;
+}
+.home-lance.is-ghost[data-dir="prev"] { z-index: 0; }
+.home-lance.is-ghost[data-dir="dismiss"] { animation-name: home-deal-off; }
+@keyframes home-deal-back {
+  to {
+    opacity: 0;
+    transform: translateY(var(--space-16)) scale(0.96);
+  }
+}
+@keyframes home-deal-off {
+  to {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .home-lance.is-ghost { animation: home-deal-fade 160ms ease both; }
+  @keyframes home-deal-fade { to { opacity: 0; } }
+}
+
+.home-tiles {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-8);
+}
+@container home (max-width: 760px) {
+  .home-tiles { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* A widget's summary: one figure leads, its totals sit beside it, a meter runs underneath. Housekeeping and Knowledge health share it. */
+.home-summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) max-content;
+  align-items: end;
+  gap: var(--space-16);
+  padding: var(--space-16);
+  border-bottom: 1px solid var(--grey);
+}
+.home-summary-hero {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+.home-summary-figure {
+  color: var(--black);
+  font-size: var(--text-24);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  font-variant-numeric: var(--numeric);
+}
+.home-summary-of { color: var(--black-25); }
+.home-summary-label {
+  margin-top: var(--space-8);
+  color: var(--text-muted);
+  font-size: var(--text-14);
+  line-height: 20px;
+}
+/* Clean fills in blue, left stays light grey, DND takes the end in the meter's darker grey. */
+.home-summary-meter { grid-column: 1 / -1; }
+.home-summary-key.is-dnd { background: var(--black-50); }
+.home-summary-stats {
+  display: flex;
+  gap: var(--space-25);
+  margin: 0;
+}
+/* The figure leads and its label sits under it. The markup keeps label then figure, so a screen reader still reads "Clean, 52". */
+.home-summary-stats > div {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: var(--space-2);
+}
+.home-summary-stats dt {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  line-height: 16px;
+}
+.home-summary-stats dd {
+  margin: 0;
+  color: var(--black);
+  font-size: var(--text-16);
+  font-weight: 500;
+  line-height: 24px;
+  font-variant-numeric: var(--numeric);
+}
+.home-summary-key {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+}
+.home-summary-key.is-clean { background: var(--action); }
+/* Room numbers run three or four digits; a fixed slot keeps the moons in one column. */
+.home-dnd-room {
+  min-width: 4ch;
+  font-size: var(--text-14);
+  font-weight: 500;
+  line-height: 20px;
+  font-variant-numeric: var(--numeric);
+}
+.home-dnd-state {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-8);
+  color: var(--text-muted);
+  font-weight: 400;
+}
+.home-dnd-state .mini-pill { color: var(--black); }
+.home-dnd-check {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  margin: 0;
+}
+.home-dnd-check svg { flex-shrink: 0; }
+.home-dnd-check-copy {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  color: var(--black);
+  font-size: var(--text-14);
+  font-weight: 500;
+  line-height: 20px;
+}
+.home-dnd-check-sub {
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  font-weight: 400;
+  line-height: 16px;
+}
+.home-summary-cta {
+  margin-top: auto;
+  padding: var(--space-16);
+}
+.home-hk-person-left {
+  color: var(--black);
+  font-size: var(--text-14);
+  font-weight: 500;
+  font-variant-numeric: var(--numeric);
+}
+.home-tile {
+  min-height: 230px;
+  padding: var(--space-16);
+  border-radius: var(--radius-card);
+  background: var(--sidebar-grey);
+}
+.home-section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-8);
+  min-height: 28px;
+}
+.home-section-head h2 {
+  margin: 0;
+  font-size: var(--text-14);
+  font-weight: 500;
+  line-height: 20px;
+}
+.home-section-head a.text-icon { color: var(--black); text-decoration: none; }
+.home-section-head a.text-icon:hover { background: var(--grey); }
+.home-count {
+  margin-left: var(--space-4);
+  color: var(--text-muted);
+  font-weight: 400;
+  font-variant-numeric: var(--numeric);
+}
+
+.home-list {
+  display: flex;
+  flex-direction: column;
+  margin: var(--space-16) calc(var(--space-8) * -1) 0;
+  padding: 0;
+  list-style: none;
+}
+.home-row {
+  display: grid;
+  align-items: center;
+  gap: var(--space-12);
+  min-height: 52px;
+  padding: var(--space-8);
+  border-radius: var(--radius-control);
+  color: var(--black);
+  text-decoration: none;
+}
+.home-row:hover { background: var(--grey); }
+.home-row:focus-visible { outline: 2px solid var(--action); outline-offset: -2px; }
+.home-tile :is(.mini-pill, .avatar:not(.is-empty)) { background: var(--grey); }
+.home-row:hover :is(.mini-pill, .avatar:not(.is-empty)) { background: var(--black-12); }
+.home-row-copy {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+.home-row-title,
+.home-row-meta {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.home-row-title { font-size: var(--text-14); line-height: 20px; }
+.home-row-meta { color: var(--text-muted); font-size: var(--text-12); line-height: 16px; }
+.home-dot { color: var(--black-25); }
+.home-time {
+  align-self: start;
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  line-height: 20px;
+}
+.home-room {
+  font-size: var(--text-16);
+  font-weight: 500;
+  line-height: 20px;
+  font-variant-numeric: var(--numeric);
+}
+.home-room:empty::before { content: "–"; color: var(--black-25); }
+
+.home-line { grid-template-columns: minmax(0, 1fr) auto; }
+.home-complaint { grid-template-columns: 44px minmax(0, 1fr) auto; }
+
+html[data-theme="dark"] .home-tile { background: var(--grey); }
+html[data-theme="dark"] .home-lance-stack { --home-lance-side: var(--grey); }
+html[data-theme="dark"] .home-row:hover { background: var(--black-12); }
+html[data-theme="dark"] .home-tile :is(.mini-pill, .avatar:not(.is-empty)) { background: var(--black-12); }
+html[data-theme="dark"] .home-row:hover :is(.mini-pill, .avatar:not(.is-empty)) { background: var(--grey-up); }
+
+@media (max-width: 900px) {
+  .home-lance,
+  .home-tiles { grid-template-columns: minmax(0, 1fr); }
+  .home-lance { grid-template-rows: 48px auto 48px auto; }
+  .home-lance-head.is-actions { grid-row: 3; border-top-right-radius: 0; }
+  .home-lance-pattern { grid-row: 2; }
+  .home-lance-actions { border-bottom-left-radius: var(--radius-card); }
+  /* Actions sit at the bottom here, so the card behind is all grey. */
+  .home-lance-stack.has-more::before { background: var(--home-lance-side); }
+}

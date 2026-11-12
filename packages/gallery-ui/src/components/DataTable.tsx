@@ -13,7 +13,7 @@ export const DATA_TABLE_PAD = 12;
  * Full column width, including the 12px clearance on each side.
  * Short text stays this wide. It does not grow to fit an input or the longest value.
  */
-export const TEXT_SHORT_MIN = 200;
+export const TEXT_SHORT_MIN = 160;
 
 /**
  * Full column width for a title, subtitle, or description, including the 12px clearance on each side.
@@ -73,7 +73,7 @@ export type DataColumn<T> = {
   /** Plain text is muted. "strong" is the rare second black text column, used only when the name is not enough to tell the rows apart. A person is not this. */
   ink?: "strong";
   /**
-   * Text sizing. "short" is a 200px column. "primary" is a title or description:
+   * Text sizing. "short" is a 160px column. "primary" is a title or description:
    * at least 320px, growing with leftover space. The field fills that column.
    * It does not shrink to the words. Overrides belong on minWidth.
    */

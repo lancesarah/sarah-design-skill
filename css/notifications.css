@@ -104,6 +104,18 @@ body.is-inbox-open .notes-page {
   margin-left: auto;
 }
 
+.notice-head .notice-tools .drop {
+  position: relative;
+  display: inline-flex;
+  flex-direction: row;
+  gap: 0;
+}
+
+.notice-head .side-icon[aria-expanded="true"],
+.thread-banner .side-icon[aria-expanded="true"] {
+  background: var(--grey);
+}
+
 .notice-head .chip {
   margin-left: auto;
   flex: none;
@@ -284,6 +296,12 @@ body.is-inbox-open .notes-page {
   border-radius: var(--radius-control);
 }
 
+/* A group chat and a direct message are the same row. The group picture already fills 60px, and the direct row matches it. */
+.notifications-side[aria-label="Messages"] .notice-scroll .notice-row:not(.is-support),
+.notifications-side[aria-label="Messages"] .notice-measure .notice-row:not(.is-support) {
+  height: 60px;
+}
+
 .notice-row .avatar[data-dept="Front desk"],
 .thread-mark[data-dept="Front desk"] { color: var(--tag-text); background: var(--tag-bg); }
 .notice-row .avatar[data-dept="Housekeeping"],
@@ -341,7 +359,7 @@ html[data-theme="dark"] .notice-row[aria-selected="true"] .avatar {
 }
 
 .notice-row.is-support .person-title {
-  gap: 0;
+  gap: var(--space-2);
 }
 
 .notice-row .avatar.is-photo {
@@ -395,9 +413,17 @@ html[data-theme="dark"] .notice-row[aria-selected="true"] .avatar-verified {
 }
 
 .notice-title {
+  min-width: 0;
+  overflow: hidden;
   font-size: var(--text-14);
   font-weight: 400;
   line-height: 16px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.notice-title + .notice-sub {
+  margin-top: var(--space-2);
 }
 
 .notice-note {
@@ -490,7 +516,7 @@ html[data-theme="dark"] .notice-row[aria-selected="true"] .notice-note {
 .chat-thread .chat-log-body {
   display: flex;
   flex-direction: column;
-  gap: var(--space-16);
+  gap: calc(var(--space-16) + var(--space-2));
   margin-top: auto;
   padding: var(--space-25) var(--space-16) var(--space-16);
 }
@@ -504,6 +530,7 @@ html[data-theme="dark"] .notice-row[aria-selected="true"] .notice-note {
 }
 
 .chat-thread .comment-photo {
+  flex: none;
   width: 21px;
   height: 21px;
   font-size: 9px;
@@ -520,7 +547,9 @@ html[data-theme="dark"] .notice-row[aria-selected="true"] .notice-note {
 }
 
 .chat-thread .comment-meta {
+  color: var(--text-muted);
   font-size: var(--text-12);
+  font-weight: 400;
   line-height: 16px;
 }
 
@@ -528,6 +557,11 @@ html[data-theme="dark"] .notice-row[aria-selected="true"] .notice-note {
   margin-left: var(--space-8);
   color: var(--text-muted);
   font-weight: 400;
+}
+
+/* A follow-up inside two minutes keeps the column and drops the header. The gap closes to 2px. */
+.chat-thread .comment-row.is-continued {
+  margin-top: calc(var(--space-2) - (var(--space-16) + var(--space-2)));
 }
 
 .chat-thread .comment-row p {
@@ -542,7 +576,8 @@ html[data-theme="dark"] .notice-row[aria-selected="true"] .notice-note {
 }
 
 /* A thread in the messages column. The name sits in the sheet. Expand opens it on the page. */
-.notice-head .thread-back {
+.notice-head .thread-back,
+.thread-banner .thread-back {
   flex: none;
   padding: 0;
   border: 0;
@@ -552,9 +587,11 @@ html[data-theme="dark"] .notice-row[aria-selected="true"] .notice-note {
   cursor: pointer;
 }
 
-.notice-head .thread-back:hover { background: var(--grey); }
+.notice-head .thread-back:hover,
+.thread-banner .thread-back:hover { background: var(--grey); }
 
-html[data-theme="dark"] .notice-head .thread-back:hover { background: var(--black-12); }
+html[data-theme="dark"] .notice-head .thread-back:hover,
+html[data-theme="dark"] .thread-banner .thread-back:hover { background: var(--black-12); }
 
 .thread-back .i { transform: rotate(90deg); }
 
@@ -563,7 +600,7 @@ html[data-theme="dark"] .notice-head .thread-back:hover { background: var(--blac
   flex: none;
   align-items: center;
   gap: var(--space-8);
-  padding: var(--space-10) var(--space-12);
+  padding: var(--space-10) calc(var(--space-10) + var(--space-8));
   border-bottom: 1px solid var(--line);
 }
 
@@ -582,6 +619,7 @@ html[data-theme="dark"] .notice-head .thread-back:hover { background: var(--blac
 }
 
 button.thread-banner-main { cursor: pointer; }
+button.thread-banner-main:active:not(:disabled) { scale: 1; }
 
 .thread-banner:has(> button.thread-banner-main):hover { background: var(--sidebar-grey); }
 
@@ -593,48 +631,145 @@ html[data-theme="dark"] .thread-banner:has(> button.thread-banner-main):hover { 
 
 .thread-hero {
   display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: var(--space-12);
-  padding: calc(var(--space-25) + var(--space-25)) calc(var(--space-12) + var(--space-12)) var(--space-25);
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--space-25);
+  padding: calc(var(--space-20) + var(--space-20)) calc(var(--space-12) + var(--space-12)) var(--space-25);
   border-bottom: 1px solid var(--line);
 }
 
 .thread-hero-id {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
+  gap: var(--space-12);
   min-width: 0;
 }
 
-.thread-hero .thread-mark.is-room,
+.thread-hero .thread-mark.is-room {
+  width: 56px;
+  height: 56px;
+}
+
 .thread-hero .thread-mark.is-photo,
 .thread-hero > .avatar {
-  width: 64px;
-  height: 64px;
+  width: 48px;
+  height: 48px;
 }
 
 .thread-hero .thread-mark.is-photo img {
-  width: 64px;
-  height: 64px;
+  width: 48px;
+  height: 48px;
 }
 
 .thread-hero-copy {
   display: flex;
+  flex: 1;
   flex-direction: column;
   align-items: flex-start;
   gap: var(--space-4);
-  margin-top: var(--space-12);
+  min-width: 0;
+}
+
+.thread-rename {
+  position: relative;
+}
+
+.thread-rename .line {
+  padding-right: calc(32px + var(--space-4));
+}
+
+.thread-rename-edit {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 0;
+  background: transparent;
+  color: var(--text-muted);
+}
+
+.thread-icon-tools {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-8);
+}
+
+.thread-hero-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.thread-swatches {
+  display: flex;
+  gap: var(--space-4);
+}
+
+.thread-swatch {
+  width: var(--space-12);
+  height: var(--space-12);
+  border-radius: var(--radius-circle);
+  background: var(--tag-text);
+}
+
+.thread-swatch[data-dept="Housekeeping"] { background: var(--dept-housekeeping); }
+.thread-swatch[data-dept="Maintenance"] { background: var(--dept-maintenance); }
+.thread-swatch[data-dept="Food & Beverage"] { background: var(--dept-food); }
+.thread-swatch[data-dept="Sales"] { background: var(--dept-sales); }
+.thread-swatch[data-dept="Management"] { background: var(--dept-management); }
+.thread-swatch.is-grey { background: var(--black-50); }
+
+.thread-swatch[aria-pressed="true"] {
+  box-shadow: 0 0 0 2px var(--bg-surface), 0 0 0 3px var(--black);
 }
 
 .thread-hero-title {
+  max-width: 100%;
+  overflow: hidden;
   color: var(--black);
   font-size: var(--text-16);
   font-weight: 500;
   line-height: 20px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .thread-hero .btn { flex-shrink: 0; }
+
+/* Full screen has room for the name and the icon controls on one line. */
+.messages-board .thread-hero {
+  display: grid;
+  grid-template-columns: 268px auto;
+  justify-content: start;
+  align-items: center;
+  column-gap: var(--space-25);
+  row-gap: var(--space-25);
+}
+
+.messages-board .thread-hero-id,
+.messages-board .thread-hero-actions { grid-column: 1 / -1; }
+
+.messages-board .thread-icon-tools {
+  flex-direction: row;
+  align-items: center;
+  gap: var(--space-25);
+}
+
+.messages-board .thread-icon-tools .btn { order: -1; }
+
+.messages-board .thread-banner > .btn {
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+/* The detail body uses the subpage measure. The header stays the full width of the page. */
+.messages-board .thread-sheet:has(.thread-hero) .thread-log {
+  width: min(820px, 100%);
+  margin-inline: auto;
+}
 
 .thread-people {
   margin: 0 var(--space-12) var(--space-16);
@@ -665,6 +800,59 @@ html[data-theme="dark"] .thread-person:hover { background: var(--grey); }
   height: 35px;
   border: 1px solid var(--black-12);
 }
+
+/* A new message. Search, then who it can go to. The people picked sit under the search as chips. With no filter button beside it, the search runs to the same edge as the rows and the button below. */
+.notifications-side .notice-sheet .page-toolbar:not(:has(> .drop)) .search { grid-column: 1 / -1; }
+
+.notifications-side .page-toolbar > .filter-chips {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  margin-top: 0;
+}
+
+.compose-group { padding-top: var(--space-4); }
+
+.compose-group + .compose-group { padding-top: var(--space-16); }
+
+.compose-group:last-child { padding-bottom: var(--space-12); }
+
+.compose-group .sheet-label {
+  margin: 0;
+  padding: 0 var(--space-16) var(--space-8);
+  font-weight: 500;
+}
+
+/* A row to pick is the checkbox. Its parts sit on the message list's columns, so the picture lines up with the rows above and the box sits where the time does. */
+.notifications-side .notice-row.check {
+  display: grid;
+  column-gap: var(--space-12);
+}
+
+.notice-row.check .check-box {
+  grid-column: 3;
+  grid-row: 1;
+}
+
+/* A picked row takes the chip's blue, so the row and its chip above read as one choice. Hover does not add a second step, and the picture drops its ring so it sits on the tint. */
+.notice-row.check[aria-checked="true"],
+.notice-row.check[aria-checked="true"]:hover {
+  background: var(--filter-chip-bg);
+}
+
+.notice-row.check[aria-checked="true"] .avatar,
+.notice-row.check[aria-checked="true"]:hover .avatar {
+  box-shadow: none;
+}
+
+/* The one action on the sheet. A 1px line separates it from the list, across the full width. */
+.compose-foot {
+  display: flex;
+  flex: none;
+  padding: var(--space-12) var(--space-16);
+  border-top: 1px solid var(--line);
+}
+
+.compose-foot .btn { flex: 1; }
 
 .thread-mark.is-photo {
   position: relative;
@@ -722,6 +910,77 @@ html[data-theme="dark"] .thread-person:hover { background: var(--grey); }
   min-height: 0;
 }
 
+/* A small note under the header. It floats over the conversation, so a message disappears at the card's own bottom edge. */
+.ticket-overview {
+  position: absolute;
+  top: var(--space-12);
+  right: var(--space-12);
+  left: var(--space-12);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-8);
+  padding: var(--space-12) calc(var(--space-12) + 28px) var(--space-12) var(--space-12);
+  border-radius: var(--radius-card);
+  background: var(--white);
+  box-shadow: var(--stroke), 0 6px 8px -4px rgb(0 0 0 / 16%);
+  opacity: 1;
+  transition: opacity var(--motion-grow-out) var(--ease-out);
+}
+
+.ticket-overview.is-leaving {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Fills the strip above the card with the sheet color, so nothing shows there before it reaches the card. */
+.ticket-overview::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  right: calc(var(--space-12) * -1);
+  bottom: calc(100% + 1px);
+  left: calc(var(--space-12) * -1);
+  height: var(--space-12);
+  background: var(--white);
+}
+
+html[data-theme="dark"] .ticket-overview {
+  box-shadow: var(--stroke), 0 6px 8px -4px rgb(0 0 0 / 50%);
+}
+
+.ticket-overview-dismiss {
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-4);
+}
+
+.ticket-overview-copy {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.ticket-overview-k {
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  font-variant-numeric: var(--numeric);
+  line-height: 16px;
+}
+
+.ticket-overview-title {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--black);
+  font-size: var(--text-14);
+  font-weight: 500;
+  line-height: 20px;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
 .thread-log {
   display: flex;
   flex: 1;
@@ -736,9 +995,21 @@ html[data-theme="dark"] .thread-person:hover { background: var(--grey); }
 .thread-log-body {
   display: flex;
   flex-direction: column;
-  gap: var(--space-12);
   margin-top: auto;
   padding: var(--space-16) var(--space-12);
+}
+
+.thread-log-body > * + * {
+  margin-top: var(--space-14);
+}
+
+/* The card floats, so the log starts underneath it and the first line begins just below the card. */
+.thread-sheet:has(.ticket-overview) .thread-log-body {
+  padding-top: var(--ticket-overview-space, var(--space-16));
+}
+
+.thread-sheet:has(.ticket-overview.is-leaving) .thread-log-body {
+  transition: padding-top var(--motion-grow-out) var(--ease-out);
 }
 
 .thread-day {
@@ -772,7 +1043,8 @@ html[data-theme="dark"] .thread-person:hover { background: var(--grey); }
   height: 35px;
 }
 
-.thread-line > .avatar:not(img) {
+/* Initials get the ring. A photo keeps its own edge. */
+.thread-line > .avatar:not(img):not(.is-photo) {
   border: 1px solid var(--black-12);
 }
 
@@ -783,70 +1055,213 @@ html[data-theme="dark"] .thread-person:hover { background: var(--grey); }
   outline-offset: -1px;
 }
 
-.thread-copy { min-width: 0; }
-
-.thread-bubble {
-  width: fit-content;
-  max-width: 100%;
-  padding: var(--space-10) var(--space-12);
-  border-radius: var(--radius-card);
-  background: var(--sidebar-grey);
-  color: var(--black);
+.thread-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
 }
 
-.thread-bubble .who {
-  display: block;
-  font-size: var(--text-14);
-  font-weight: 500;
-  line-height: 16px;
-}
-
-.thread-bubble p {
-  margin: var(--space-2) 0 0;
-  overflow-wrap: break-word;
-  font-size: var(--text-14);
-  font-weight: 400;
-  line-height: 20px;
-}
-
-.thread-copy time {
-  display: block;
-  margin-top: var(--space-4);
+.thread-copy .who {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-8);
+  margin-bottom: var(--space-4);
   color: var(--text-muted);
   font-size: var(--text-12);
   font-weight: 400;
   line-height: 16px;
 }
 
-.thread-sheet > .msg.is-fill {
+.thread-copy .who time {
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  font-weight: 400;
+  line-height: 16px;
+}
+
+/* One line is the 32px field: padding only on the sides, text centered in the height. The fill stays the bubble's own. A longer message grows past 32px. */
+.thread-bubble {
+  display: flex;
+  align-items: center;
+  width: fit-content;
+  max-width: 100%;
+  min-width: 0;
+  min-height: 32px;
+  padding: calc((32px - 20px) / 2) var(--space-10);
+  border-radius: var(--radius-card);
+  background: var(--sidebar-grey);
+  color: var(--black);
+}
+
+.thread-bubble p {
+  min-width: 0;
+  margin: 0;
+  overflow-wrap: anywhere;
+  font-size: var(--text-14);
+  font-weight: 400;
+  line-height: 20px;
+}
+
+.typing-dots {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  height: 20px;
+}
+
+.typing-dots span {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-circle);
+  background: var(--text-muted);
+  animation: typing-dot 1s var(--ease-in-out) infinite;
+}
+
+.typing-dots span:nth-child(2) { animation-delay: 150ms; }
+.typing-dots span:nth-child(3) { animation-delay: 300ms; }
+
+@keyframes typing-dot {
+  0%, 80%, 100% { opacity: 0.35; }
+  40% { opacity: 1; }
+}
+
+/* Same person, inside two minutes: 2px apart, no second header. Every bubble stays at 6px. Only the last one squares the bottom corner on that person's side. */
+.thread-line.is-continued { margin-top: var(--space-2); }
+
+.thread-line.is-continued .thread-copy { grid-column: 2; }
+
+.thread-line.is-latest .thread-bubble {
+  border-radius: var(--radius-card) var(--radius-card) var(--radius-card) 0;
+}
+
+/* A ticket has two people: Gavin on the left, and you on the right. Yours has no picture, and it uses the one blue, with the primary button's white text. */
+.thread-line.is-you {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.thread-line.is-you .thread-copy {
+  align-items: flex-end;
+  width: 100%;
+  min-width: 0;
+  /* No picture on this side, so the bubble stops where the other person's picture starts. */
+  max-width: calc(100% - 35px - var(--space-8));
+}
+
+.thread-line.is-you .thread-bubble {
+  background: var(--action);
+  color: var(--white);
+}
+
+.thread-line.is-you.is-latest .thread-bubble {
+  border-radius: var(--radius-card) var(--radius-card) 0 var(--radius-card);
+}
+
+html[data-theme="dark"] .thread-line.is-you .thread-bubble {
+  color: var(--button-fill);
+}
+
+.thread-sheet > .msg.is-fill,
+.chat-thread > .msg.is-fill {
   flex: none;
   width: auto;
+  height: auto;
+  min-height: 38px;
+  align-items: flex-end;
+}
+
+.thread-sheet > .msg.is-fill {
   margin: 0 var(--space-12) var(--space-12);
 }
 
+.thread-sheet > .msg.is-fill > .lead,
+.chat-thread > .msg.is-fill > .lead {
+  align-items: flex-end;
+}
+
+/* The composer starts as one line and grows as the words wrap. Enter still sends. */
+.thread-sheet > .msg.is-fill textarea,
+.chat-thread > .msg.is-fill textarea {
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  min-height: 30px;
+  margin: 0;
+  padding: 5px 0;
+  border: 0;
+  resize: none;
+  overflow: hidden;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: var(--text-14);
+  line-height: 20px;
+  outline: none;
+}
+
+.thread-sheet > .msg.is-fill.has-value textarea,
+.chat-thread > .msg.is-fill.has-value textarea {
+  color: var(--black);
+}
+
+.thread-sheet > .msg.is-fill textarea::placeholder,
+.chat-thread > .msg.is-fill textarea::placeholder {
+  color: var(--black-50);
+}
+
+/* A resolved ticket has no reply field. The note and the two actions sit centered on a grey ground, one step lighter than the grey button. */
+.ticket-resolved {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-12);
+  padding: var(--space-16);
+  background: var(--sidebar-grey);
+  text-align: center;
+}
+
+html[data-theme="dark"] .ticket-resolved { background: var(--grey); }
+
+.ticket-resolved p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  font-weight: 400;
+  line-height: 16px;
+}
+
+.ticket-resolved-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-8);
+}
+
+/* In dark mode the section is already the grey the button uses, so the button takes the next step. */
+html[data-theme="dark"] .ticket-resolved .btn-tertiary { background: var(--black-12); }
+
+/* The two views of the list on the left, the one creating action on the right. The row shares the tickets' inline inset. */
 .ticket-bar {
   display: flex;
   flex: none;
-  justify-content: flex-end;
-  padding: var(--space-12) var(--space-12) 0;
-}
-
-.ticket-new {
-  display: inline-flex;
   align-items: center;
-  gap: var(--space-4);
-  height: 28px;
-  padding: 0 var(--space-8);
-  border: 0;
-  border-radius: var(--radius-control);
-  background: transparent;
-  color: var(--black);
-  font: inherit;
-  font-size: var(--text-14);
-  cursor: pointer;
+  justify-content: space-between;
+  gap: var(--space-8);
+  padding: var(--space-12) var(--space-10);
 }
 
-.ticket-new:hover { background: var(--sidebar-grey); }
+/* Segments hug their two labels, the way the cash entry mode does. */
+.ticket-scope {
+  flex: none;
+  width: max-content;
+}
+
+.ticket-scope .segment-track {
+  width: max-content;
+  min-width: 0;
+}
 
 .ticket-log {
   flex: 1;
@@ -855,31 +1270,36 @@ html[data-theme="dark"] .thread-person:hover { background: var(--grey); }
   padding-bottom: var(--space-16);
 }
 
-.ticket-log .sheet-label {
-  margin: 0;
-  padding: var(--space-16) var(--space-16) var(--space-8);
-  font-weight: 500;
-}
-
-.ticket-log .sheet-label span {
-  margin-left: var(--space-8);
-  font-weight: 400;
-}
-
+/* A ticket row opens its ticket. Hover is the message list's row hover: one step from the panel, with no fade. */
 .ticket-row {
   display: flex;
   align-items: center;
   gap: var(--space-12);
+  width: 100%;
   padding: var(--space-12) var(--space-16);
-  border-top: 1px solid var(--line);
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--black);
+  font: inherit;
+  text-align: left;
+  transition: none;
 }
 
-.ticket-who {
+.ticket-row:hover {
+  background: var(--sidebar-grey);
+}
+
+html[data-theme="dark"] .ticket-row:hover {
+  background: var(--grey);
+}
+
+/* The person who filed the ticket, at the message list's avatar size. */
+.ticket-row .avatar {
   flex: none;
   width: 35px;
   height: 35px;
   border: 1px solid var(--black-12);
-  color: var(--text-muted);
 }
 
 .ticket-copy {
@@ -891,29 +1311,28 @@ html[data-theme="dark"] .thread-person:hover { background: var(--grey); }
 }
 
 .ticket-title {
-  display: flex;
-  align-items: center;
-  gap: var(--space-8);
-  min-width: 0;
-  color: var(--black);
-  font-size: var(--text-14);
-  font-weight: 500;
-  line-height: 20px;
-}
-
-.ticket-title > span:last-child {
   min-width: 0;
   overflow: hidden;
+  color: var(--black);
+  font-size: var(--text-14);
+  font-weight: 400;
+  line-height: 20px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.ticket-dot {
-  flex: none;
-  width: 6px;
-  height: 6px;
-  border-radius: var(--radius-circle);
-  background: var(--black);
+/* Unread and the time are the message list's own end column, on the right. A ticket has three lines, so the column runs the row's full height: the dot beside the title, the time beside the email. */
+.ticket-row .notice-end {
+  align-self: stretch;
+  justify-content: space-between;
+}
+
+.ticket-row .notice-time {
+  line-height: 16px;
+}
+
+.ticket-row:not(.is-unread) .notice-dot {
+  visibility: hidden;
 }
 
 .ticket-meta {
@@ -921,9 +1340,18 @@ html[data-theme="dark"] .thread-person:hover { background: var(--grey); }
   align-items: center;
   gap: var(--space-8);
   min-width: 0;
+  /* The row keeps the height it had with the 18px status symbol. */
+  min-height: 18px;
   color: var(--text-muted);
   font-size: var(--text-12);
   line-height: 16px;
+}
+
+/* The ticket list only. The status symbol is 14px here so it sits inside the 16px meta line. Status itself is unchanged. */
+.ticket-meta .status svg {
+  flex: none;
+  width: 14px;
+  height: 14px;
 }
 
 .ticket-mail {
@@ -935,6 +1363,77 @@ html[data-theme="dark"] .thread-person:hover { background: var(--grey); }
   white-space: nowrap;
 }
 
+/* The ticket inside its conversation. It is the one record there, so it is the section card: white with the stroke, where a message is a grey bubble. It spans the log, since no one person said it. */
+.ticket-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+  padding: var(--space-16);
+  border-radius: var(--radius-card);
+  background: var(--white);
+  box-shadow: var(--stroke);
+}
+
+/* The open ticket's title wraps. In the list it stays one line. */
+.ticket-card-title {
+  color: var(--black);
+  font-size: var(--text-14);
+  font-weight: 500;
+  line-height: 20px;
+  overflow-wrap: break-word;
+}
+
+/* The steps run down one line, the way a log does: the mark, the words, and the time at the far side. */
+.ticket-steps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ticket-steps li {
+  position: relative;
+  display: grid;
+  grid-template-columns: 14px minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: var(--space-8);
+  color: var(--text-muted);
+  font-size: var(--text-14);
+  line-height: 20px;
+}
+
+/* The rail joins the centre of one mark to the centre of the next. The mark covers its own middle. */
+.ticket-steps li:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 6.5px;
+  width: 1px;
+  height: calc(100% + var(--space-12));
+  background: var(--black-12);
+}
+
+.ticket-steps svg {
+  position: relative;
+  flex: none;
+  background: var(--white);
+  border-radius: var(--radius-circle);
+  color: var(--black-25);
+}
+
+.ticket-steps .is-done { color: var(--black); }
+
+.ticket-steps .is-done svg { color: var(--status-complete); }
+
+.ticket-steps time {
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  font-variant-numeric: var(--numeric);
+  line-height: 16px;
+}
+
 .ticket-go {
   display: inline-flex;
   flex: none;
@@ -942,8 +1441,6 @@ html[data-theme="dark"] .thread-person:hover { background: var(--grey); }
 }
 
 .ticket-go .i { transform: rotate(-90deg); }
-
-html[data-theme="dark"] .ticket-new:hover { background: var(--grey); }
 
 html[data-theme="dark"] .thread-detail-head .avatar:not([data-dept]):not(.is-photo) { background: var(--black-12); }
 
@@ -956,7 +1453,80 @@ html[data-theme="dark"] .thread-line > img.avatar {
 
 @media (prefers-reduced-motion: reduce) {
   .notifications-side,
-  .notes-page {
+  .notes-page,
+  .ticket-overview,
+  .thread-sheet:has(.ticket-overview.is-leaving) .thread-log-body {
     transition: none;
   }
+
+  .typing-dots span { animation: none; }
 }
+
+/* Full screen: the header line belongs to the conversation page, not the messages column. */
+body.is-messages-full .notifications-side .notice-head {
+  width: 385px;
+  min-width: 385px;
+  margin-inline: -6px;
+  padding-inline: 12px;
+}
+
+body.is-messages-full .messages-board {
+  position: relative;
+}
+
+body.is-messages-full .messages-board::before {
+  content: "";
+  position: absolute;
+  z-index: 3;
+  top: 61px;
+  right: 0;
+  left: 0;
+  height: 1px;
+  background: var(--line);
+  pointer-events: none;
+}
+
+body.is-messages-full .messages-board .thread-banner {
+  border-bottom-color: transparent;
+}
+
+/* The ticket note sits under the header line, with the same gap it keeps from the top of the column. */
+body.is-messages-full .messages-board .ticket-overview {
+  top: calc(61px + var(--space-12));
+}
+
+body.is-messages-full .messages-board .thread-sheet:has(.ticket-overview) .thread-log-body {
+  padding-top: calc(var(--ticket-overview-space, var(--space-16)) + 61px);
+}
+
+body.is-messages-full .messages-board .thread-sheet:has(.ticket-overview.is-leaving) .thread-log-body {
+  padding-top: var(--ticket-overview-space, var(--space-16));
+}
+
+/* The ticket record lines up with Gavin's bubbles, past his picture. */
+body.is-messages-full .messages-board .ticket-card {
+  margin-left: calc(35px + var(--space-8));
+}
+
+/* The open conversation fills the page. The messages column beside it is unchanged. */
+.messages-board {
+  padding: 0;
+}
+
+.messages-board > .messages-pane {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.messages-board > .notice-sheet,
+.messages-board > .messages-pane > .notice-sheet {
+  flex: 1;
+  min-height: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+

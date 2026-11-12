@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, DataTable, DetailPanel, Icon, OverlayMenu, TITLE_TEXT_INSET, Tabs, captureClose, dateColumn, taskMenuItem, textColumn, type DataColumn } from "@lance-live/gallery-ui";
+import { Button, DataTable, DetailPanel, FactRow, Icon, Meter, OverlayMenu, TITLE_TEXT_INSET, Tabs, captureClose, dateColumn, taskMenuItem, textColumn, type DataColumn } from "@lance-live/gallery-ui";
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { flushSync } from "react-dom";
 import { FilterMenu, RangeControl, SearchBox } from "../chrome";
@@ -95,6 +95,7 @@ function AnswerDetail({
   onExited,
   onPatch,
   onDeleted,
+  selectTitle,
 }: {
   row: Answer;
   hidden: boolean;
@@ -102,6 +103,7 @@ function AnswerDetail({
   onExited: () => void;
   onPatch: (patch: Partial<Answer>) => void;
   onDeleted: () => void;
+  selectTitle?: boolean;
 }) {
   const [draft, setDraft] = useState("");
   const [categoryOpen, setCategoryOpen] = useState(false);
@@ -124,6 +126,7 @@ function AnswerDetail({
     <DetailPanel
       label="Answer"
       hidden={hidden}
+      focusText={selectTitle}
       name={row.question || "Question"}
       noun="question"
       onClose={onClose}
@@ -206,8 +209,7 @@ function AnswerDetail({
       </section>
       <div className="todo-side-rule" />
       <div className="todo-side-meta">
-        <div>
-          <span className="sheet-label">Category</span>
+        <FactRow label="Category">
           <button
             ref={categoryRef}
             className={row.category ? "side-field" : "side-field is-empty"}
@@ -227,7 +229,7 @@ function AnswerDetail({
               }, option),
             )}
           </OverlayMenu>
-        </div>
+        </FactRow>
       </div>
     </DetailPanel>
   );
@@ -350,9 +352,7 @@ export default function KnowledgePage() {
             </p>
             <span className="urgency urgency-urgent">Needs work</span>
           </div>
-          <div className="kb-meter" role="img" aria-label="41 out of 80">
-            <div className="kb-meter-fill" style={{ width: `${(41 / 80) * 100}%` }} />
-          </div>
+          <Meter value={41} max={80} label="41 out of 80" />
         </div>
         <div className="kb-health-rule" aria-hidden="true" />
         <div className="kb-health-questions">
@@ -409,6 +409,7 @@ export default function KnowledgePage() {
           key={retained.current.id}
           row={retained.current}
           hidden={hidden}
+          selectTitle={!hidden && retained.current.id === enteringId}
           onClose={() => setSelected(null)}
           onExited={() => setPresent(false)}
           onPatch={(next) => {

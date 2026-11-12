@@ -3,9 +3,8 @@
 import { useLayoutEffect, useState, type ReactNode } from "react";
 import { FontSwitch } from "../font-switch";
 import { LanceSide, WorkspaceSide } from "./chrome";
-import { ChatThread } from "./chat";
 import { ChatProvider } from "./chat-data";
-import { MessagesSide, messageThread } from "./messages";
+import { MessagesBoard, MessagesSide } from "./messages";
 import { NotificationsSide } from "./notifications";
 import { usePageLimits } from "./page-limits";
 
@@ -14,6 +13,12 @@ export function AppShell({ children }: { children: ReactNode }) {
   const [inbox, setInbox] = useState<"notifications" | "messages" | null>(null);
   const [threadId, setThreadId] = useState<string | null>(null);
   const [expanded, setExpanded] = useState(false);
+  const [ticketId, setTicketId] = useState<string | null>(null);
+  const [freshChat, setFreshChat] = useState(false);
+  const [freshKey, setFreshKey] = useState(0);
+  const [deletedId, setDeletedId] = useState<string | null>(null);
+  const [detailsFor, setDetailsFor] = useState<string | null>(null);
+  const [conversationActions, setConversationActions] = useState<{ resolve: () => void } | null>(null);
 
   useLayoutEffect(() => {
     document.body.classList.add("app-shell");
@@ -22,16 +27,22 @@ export function AppShell({ children }: { children: ReactNode }) {
       document.body.classList.remove("is-side-collapsed");
       document.body.classList.remove("is-lance-collapsed");
       document.body.classList.remove("is-inbox-open");
+      document.body.classList.remove("is-messages-full");
     };
   }, []);
 
   useLayoutEffect(() => {
     document.body.classList.toggle("is-inbox-open", inbox !== null);
+    document.body.classList.toggle("is-messages-full", inbox === "messages" && expanded);
     if (inbox !== "messages") {
       setThreadId(null);
       setExpanded(false);
+      setTicketId(null);
+      setFreshChat(false);
+      setDeletedId(null);
+      setDetailsFor(null);
     }
-  }, [inbox]);
+  }, [inbox, expanded]);
 
   return (
     <>
@@ -46,13 +57,25 @@ export function AppShell({ children }: { children: ReactNode }) {
         open={inbox === "messages"}
         openId={threadId}
         expanded={expanded}
-        onOpen={setThreadId}
-        onBack={() => { setThreadId(null); setExpanded(false); }}
+        ticketId={ticketId}
+        onTicketId={setTicketId}
+        freshChat={freshChat}
+        onFreshChat={setFreshChat}
+        conversationActions={conversationActions}
+        bindActions={setConversationActions}
+        deletedId={deletedId}
+        onDeletedId={setDeletedId}
+        detailsFor={detailsFor}
+        onDetails={setDetailsFor}
+        onOpen={(id) => { setThreadId(id); setDetailsFor((current) => (current === id ? current : null)); }}
+        onBack={() => { setThreadId(null); setTicketId(null); setFreshChat(false); setDeletedId(null); setDetailsFor(null); }}
         onExpand={() => setExpanded(true)}
         onCollapse={() => setExpanded(false)}
       />
       <NotificationsSide open={inbox === "notifications"} />
-      {inbox === "messages" && expanded && threadId && !messageThread(threadId)?.support ? <ChatThread id={threadId} /> : children}
+      {inbox === "messages" && expanded ? (
+        <MessagesBoard openId={threadId} ticketId={ticketId} deletedId={deletedId} detailsFor={detailsFor} onDetails={setDetailsFor} fresh={freshChat} freshKey={freshKey} onReplace={() => setFreshKey((key) => key + 1)} onNew={() => { setThreadId("gavin"); setTicketId(null); setFreshChat(true); setDeletedId(null); setDetailsFor(null); }} bindActions={setConversationActions} />
+      ) : children}
       </ChatProvider>
       <LanceSide collapsed={lanceCollapsed} onCollapsedChange={chooseLance} />
       <FontSwitch />

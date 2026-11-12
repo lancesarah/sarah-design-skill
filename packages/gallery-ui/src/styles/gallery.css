@@ -62,6 +62,19 @@
 }
 
 :where(.sds) button { cursor: pointer; }
+
+:where(.sds) input:not([type]),
+:where(.sds) input[type="text"],
+:where(.sds) input[type="search"],
+:where(.sds) input[type="email"],
+:where(.sds) input[type="password"],
+:where(.sds) input[type="url"],
+:where(.sds) input[type="tel"],
+:where(.sds) input[type="number"],
+:where(.sds) textarea,
+:where(.sds) [contenteditable="true"], :where(.sds)[contenteditable="true"] {
+  cursor: text;
+}
 :where(.sds) button:active:not(:disabled) { scale: 0.98; }
 :where(.sds) button.sheet-line:active:not(:disabled) { scale: 1; }
 @media (prefers-reduced-motion: reduce) {
@@ -357,6 +370,8 @@ html.is-keys :where(.sds) * {
   color: var(--white);
 }
 :where(.sds) .btn:hover, :where(.sds).btn:hover, :where(.sds) .btn.is-hover, :where(.sds).btn.is-hover { background: var(--action-hover); }
+/* Disabled is the same button, faded. */
+:where(.sds) .btn:disabled, :where(.sds).btn:disabled { opacity: 0.6; }
 :where(.sds) .btn-icon, :where(.sds).btn-icon { width: 28px; padding: 7px; }
 :where(.sds) .btn-secondary, :where(.sds).btn-secondary { background: var(--white); color: var(--black); box-shadow: var(--stroke); }
 :where(.sds) .btn-secondary:hover, :where(.sds).btn-secondary:hover, :where(.sds) .btn-secondary.is-hover, :where(.sds).btn-secondary.is-hover, :where(.sds) .btn-secondary[aria-pressed="true"], :where(.sds).btn-secondary[aria-pressed="true"], :where(.sds) .btn-secondary[aria-expanded="true"], :where(.sds).btn-secondary[aria-expanded="true"] { background: var(--sidebar-grey); }
@@ -385,8 +400,10 @@ html.is-keys :where(.sds) * {
 }
 :where(.sds) .chip.chip-filter:has(svg), :where(.sds).chip.chip-filter:has(svg) { padding: 2px 5px; }
 :where(.sds) .chip-filter:hover, :where(.sds).chip-filter:hover, :where(.sds) .chip-filter.is-hover, :where(.sds).chip-filter.is-hover { background: var(--filter-chip-bg); }
+/* The name, the colon, and the value read as one phrase. Only the remove mark stands apart. */
+:where(.sds) .chip.chip-filter, :where(.sds).chip.chip-filter { gap: 0; }
 :where(.sds) .chip-filter .chip-k, :where(.sds).chip-filter .chip-k { font-weight: 400; }
-:where(.sds) .chip-filter .x, :where(.sds).chip-filter .x { transform: rotate(45deg); }
+:where(.sds) .chip-filter .x, :where(.sds).chip-filter .x { margin-left: 6px; transform: rotate(45deg); }
 
 :where(.sds) .fit-label, :where(.sds).fit-label { display: inline-grid; justify-items: start; text-align: start; }
 :where(.sds) .fit-label > *, :where(.sds).fit-label > * { grid-area: 1 / 1; }
@@ -429,7 +446,7 @@ html.is-keys :where(.sds) * {
   padding: 2px;
   background: var(--white);
   border-radius: 6px;
-  box-shadow: var(--stroke), var(--shadow-menu);
+  box-shadow: var(--stroke), var(--ring-menu), var(--shadow-menu);
 }
 :where(.sds) .menu[hidden], :where(.sds).menu[hidden] { display: none; }
 :where(.sds) .menu-item, :where(.sds).menu-item, :where(.sds) .menu-search, :where(.sds).menu-search {
@@ -821,7 +838,7 @@ html.is-tip-open :where(.sds) .tip-host:not(.is-tip-source):is(:hover, :focus-vi
   padding: 20px;
   background: var(--white);
   border-radius: 6px;
-  box-shadow: var(--stroke), var(--shadow-menu);
+  box-shadow: var(--stroke), var(--ring-popup), var(--shadow-menu);
 }
 :where(.sds) .confirm strong, :where(.sds).confirm strong { font-size: 14px; font-weight: 500; line-height: normal; }
 :where(.sds) .confirm p, :where(.sds).confirm p { margin: 0; color: var(--black-50); font-size: 12px; font-weight: 400; line-height: normal; }
@@ -1933,7 +1950,7 @@ html[data-theme="dark"] :where(.sds) .side-search kbd, html[data-theme="dark"] :
   line-height: 16px;
 }
 
-/* The department tag is the dot: a colored circle beside black text. The same chip is used in a menu. */
+/* The department tag is the dot: a colored circle beside black text. A menu option is the plain tag, with no ring. */
 :where(.sds) .menu .dept, :where(.sds).menu .dept,
 :where(.sds) .menu .dept[data-dept], :where(.sds).menu .dept[data-dept],
 :where(.sds) #department .dept, :where(.sds)#department .dept,
@@ -2185,8 +2202,9 @@ html[data-theme="dark"] :where(.sds) #table .sheet.is-open .sheet-line.is-hover 
   color: var(--black);
   box-shadow: inset 0 0 0 0.5px var(--black-12), 0 0 0 0.5px var(--black-12);
 }
-/* A label: the circle and the name, with no stroke and no control. */
-:where(.sds) .dept.dept-plain, :where(.sds).dept.dept-plain {
+/* A label: the circle and the name, with no stroke and no control. [data-dept] outranks `.menu .dept[data-dept]`. */
+:where(.sds) .dept.dept-plain, :where(.sds).dept.dept-plain,
+:where(.sds) .dept.dept-plain[data-dept], :where(.sds).dept.dept-plain[data-dept] {
   height: auto;
   padding: 0;
   background: transparent;
@@ -2396,6 +2414,548 @@ html[data-theme="dark"] :where(.sds) button.dept[aria-expanded="true"] {
 :where(.sds) .cash-new-location:hover, :where(.sds).cash-new-location:hover { background: var(--grey); }
 
 html[data-theme="dark"] :where(.sds) .cash-new-location:hover, html[data-theme="dark"] :where(.sds).cash-new-location:hover { background: var(--black-12); }
+
+/* Message, Message group, Day, Typing, Resolved, Ticket, and Ticket note.
+   The conversation in the messages panel uses these same classes. */
+
+:where(.sds) .message-frame, :where(.sds).message-frame {
+  width: 360px;
+  max-width: 100%;
+}
+
+:where(.sds) .message-frame:has(.empty), :where(.sds).message-frame:has(.empty) {
+  display: flex;
+  height: 280px;
+}
+
+:where(.sds) .thread-log-body, :where(.sds).thread-log-body {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-16) var(--space-12);
+}
+
+:where(.sds) .thread-log-body > * + *, :where(.sds).thread-log-body > * + * {
+  margin-top: var(--space-14);
+}
+
+:where(.sds) .thread-day, :where(.sds).thread-day {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  font-weight: 400;
+  line-height: 16px;
+}
+
+:where(.sds) .thread-day::before, :where(.sds).thread-day::before,
+:where(.sds) .thread-day::after, :where(.sds).thread-day::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+
+:where(.sds) .thread-line, :where(.sds).thread-line {
+  display: grid;
+  grid-template-columns: 35px minmax(0, 1fr);
+  column-gap: var(--space-8);
+  align-items: start;
+}
+
+:where(.sds) .thread-line > .avatar, :where(.sds).thread-line > .avatar,
+:where(.sds) .thread-line > img.avatar, :where(.sds).thread-line > img.avatar {
+  width: 35px;
+  height: 35px;
+}
+
+:where(.sds) .thread-line > .avatar:not(img):not(.is-photo), :where(.sds).thread-line > .avatar:not(img):not(.is-photo) {
+  border: 1px solid var(--black-12);
+}
+
+:where(.sds) .thread-line > img.avatar, :where(.sds).thread-line > img.avatar {
+  border-radius: var(--radius-circle);
+  object-fit: cover;
+  outline: var(--outline-image);
+  outline-offset: -1px;
+}
+
+:where(.sds) .thread-copy, :where(.sds).thread-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+:where(.sds) .thread-copy .who, :where(.sds).thread-copy .who {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-8);
+  margin-bottom: var(--space-4);
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  font-weight: 400;
+  line-height: 16px;
+}
+
+:where(.sds) .thread-copy .who time, :where(.sds).thread-copy .who time {
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  font-weight: 400;
+  line-height: 16px;
+}
+
+:where(.sds) .thread-bubble, :where(.sds).thread-bubble {
+  display: flex;
+  align-items: center;
+  width: fit-content;
+  max-width: 100%;
+  min-width: 0;
+  min-height: 32px;
+  padding: calc((32px - 20px) / 2) var(--space-10);
+  border-radius: var(--radius-card);
+  background: var(--sidebar-grey);
+  color: var(--black);
+}
+
+:where(.sds) .thread-bubble p, :where(.sds).thread-bubble p {
+  min-width: 0;
+  margin: 0;
+  overflow-wrap: anywhere;
+  font-size: var(--text-14);
+  font-weight: 400;
+  line-height: 20px;
+}
+
+:where(.sds) .typing-dots, :where(.sds).typing-dots {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  height: 20px;
+}
+
+:where(.sds) .typing-dots span, :where(.sds).typing-dots span {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-circle);
+  background: var(--text-muted);
+  animation: typing-dot 1s var(--ease-in-out) infinite;
+}
+
+:where(.sds) .typing-dots span:nth-child(2), :where(.sds).typing-dots span:nth-child(2) { animation-delay: 150ms; }
+:where(.sds) .typing-dots span:nth-child(3), :where(.sds).typing-dots span:nth-child(3) { animation-delay: 300ms; }
+
+@keyframes typing-dot {
+  0%, 80%, 100% { opacity: 0.35; }
+  40% { opacity: 1; }
+}
+
+:where(.sds) .thread-line.is-continued, :where(.sds).thread-line.is-continued { margin-top: var(--space-2); }
+
+:where(.sds) .thread-line.is-continued .thread-copy, :where(.sds).thread-line.is-continued .thread-copy { grid-column: 2; }
+
+:where(.sds) .thread-line.is-latest .thread-bubble, :where(.sds).thread-line.is-latest .thread-bubble {
+  border-radius: var(--radius-card) var(--radius-card) var(--radius-card) 0;
+}
+
+:where(.sds) .thread-line.is-you, :where(.sds).thread-line.is-you {
+  display: flex;
+  justify-content: flex-end;
+}
+
+:where(.sds) .thread-line.is-you .thread-copy, :where(.sds).thread-line.is-you .thread-copy {
+  align-items: flex-end;
+  width: 100%;
+  min-width: 0;
+  /* No picture on this side, so the bubble stops where the other person's picture starts. */
+  max-width: calc(100% - 35px - var(--space-8));
+}
+
+:where(.sds) .thread-line.is-you .thread-bubble, :where(.sds).thread-line.is-you .thread-bubble {
+  background: var(--action);
+  color: var(--white);
+}
+
+:where(.sds) .thread-line.is-you.is-latest .thread-bubble, :where(.sds).thread-line.is-you.is-latest .thread-bubble {
+  border-radius: var(--radius-card) var(--radius-card) 0 var(--radius-card);
+}
+
+html[data-theme="dark"] :where(.sds) .thread-bubble, html[data-theme="dark"] :where(.sds).thread-bubble { background: var(--grey); }
+
+html[data-theme="dark"] :where(.sds) .thread-line.is-you .thread-bubble, html[data-theme="dark"] :where(.sds).thread-line.is-you .thread-bubble { color: var(--button-fill); }
+
+html[data-theme="dark"] :where(.sds) .thread-line > img.avatar, html[data-theme="dark"] :where(.sds).thread-line > img.avatar {
+  clip-path: inset(1px round 50%);
+}
+
+:where(.sds) .ticket-resolved, :where(.sds).ticket-resolved {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-12);
+  width: 360px;
+  max-width: 100%;
+  padding: var(--space-16);
+  background: var(--sidebar-grey);
+  text-align: center;
+}
+
+html[data-theme="dark"] :where(.sds) .ticket-resolved, html[data-theme="dark"] :where(.sds).ticket-resolved { background: var(--grey); }
+
+:where(.sds) .ticket-resolved p, :where(.sds).ticket-resolved p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  font-weight: 400;
+  line-height: 16px;
+}
+
+:where(.sds) .ticket-resolved-actions, :where(.sds).ticket-resolved-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-8);
+}
+
+html[data-theme="dark"] :where(.sds) .ticket-resolved .btn-tertiary, html[data-theme="dark"] :where(.sds).ticket-resolved .btn-tertiary { background: var(--black-12); }
+
+:where(.sds) .ticket-card, :where(.sds).ticket-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+  width: 360px;
+  max-width: 100%;
+  padding: var(--space-16);
+  border-radius: var(--radius-card);
+  background: var(--white);
+  box-shadow: var(--stroke);
+}
+
+:where(.sds) .ticket-card .ticket-copy, :where(.sds).ticket-card .ticket-copy {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+:where(.sds) .ticket-card-title, :where(.sds).ticket-card-title {
+  color: var(--black);
+  font-size: var(--text-14);
+  font-weight: 500;
+  line-height: 20px;
+  overflow-wrap: break-word;
+}
+
+:where(.sds) .ticket-card .ticket-meta, :where(.sds).ticket-card .ticket-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  min-width: 0;
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  line-height: 16px;
+}
+
+:where(.sds) .ticket-steps, :where(.sds).ticket-steps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+:where(.sds) .ticket-steps li, :where(.sds).ticket-steps li {
+  position: relative;
+  display: grid;
+  grid-template-columns: 14px minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: var(--space-8);
+  color: var(--text-muted);
+  font-size: var(--text-14);
+  line-height: 20px;
+}
+
+:where(.sds) .ticket-steps li:not(:last-child)::before, :where(.sds).ticket-steps li:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 6.5px;
+  width: 1px;
+  height: calc(100% + var(--space-12));
+  background: var(--black-12);
+}
+
+:where(.sds) .ticket-steps svg, :where(.sds).ticket-steps svg {
+  position: relative;
+  flex: none;
+  background: var(--white);
+  border-radius: var(--radius-circle);
+  color: var(--black-25);
+}
+
+:where(.sds) .ticket-steps .is-done, :where(.sds).ticket-steps .is-done { color: var(--black); }
+
+:where(.sds) .ticket-steps .is-done svg, :where(.sds).ticket-steps .is-done svg { color: var(--status-complete); }
+
+:where(.sds) .ticket-steps time, :where(.sds).ticket-steps time {
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  font-variant-numeric: var(--numeric);
+  line-height: 16px;
+}
+
+:where(.sds) .ticket-overview, :where(.sds).ticket-overview {
+  position: absolute;
+  top: var(--space-12);
+  right: var(--space-12);
+  left: var(--space-12);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-8);
+  padding: var(--space-12) calc(var(--space-12) + 28px) var(--space-12) var(--space-12);
+  border-radius: var(--radius-card);
+  background: var(--white);
+  box-shadow: var(--stroke), 0 6px 8px -4px rgb(0 0 0 / 16%);
+}
+
+:where(.sds) .ticket-overview.is-set, :where(.sds).ticket-overview.is-set {
+  position: relative;
+  top: auto;
+  right: auto;
+  left: auto;
+  width: 360px;
+  max-width: 100%;
+}
+
+:where(.sds) .ticket-overview-dismiss, :where(.sds).ticket-overview-dismiss {
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-4);
+}
+
+:where(.sds) .ticket-overview-copy, :where(.sds).ticket-overview-copy {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+:where(.sds) .ticket-overview-k, :where(.sds).ticket-overview-k {
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  font-variant-numeric: var(--numeric);
+  line-height: 16px;
+}
+
+:where(.sds) .ticket-overview-title, :where(.sds).ticket-overview-title {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--black);
+  font-size: var(--text-14);
+  font-weight: 500;
+  line-height: 20px;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+html[data-theme="dark"] :where(.sds) .ticket-overview, html[data-theme="dark"] :where(.sds).ticket-overview {
+  box-shadow: var(--stroke), 0 6px 8px -4px rgb(0 0 0 / 50%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where(.sds) .typing-dots span, :where(.sds).typing-dots span { animation: none; }
+}
+
+/* A page or a list with nothing in it. The title and the line are one group. The action sits below them. */
+:where(.sds) .empty, :where(.sds).empty {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-16);
+  box-sizing: border-box;
+  min-height: 100%;
+  padding: var(--space-25);
+  text-align: center;
+}
+
+:where(.sds) .empty-copy, :where(.sds).empty-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+:where(.sds) .empty-mark, :where(.sds).empty-mark {
+  display: flex;
+  margin-bottom: var(--space-4);
+  color: var(--text-muted);
+}
+
+:where(.sds) .empty h2, :where(.sds).empty h2 {
+  margin: 0;
+  color: var(--black);
+  font-family: var(--font);
+  font-size: var(--text-16);
+  font-weight: 500;
+  line-height: 20px;
+}
+
+:where(.sds) .empty p, :where(.sds).empty p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: var(--text-14);
+  font-weight: 400;
+  line-height: 20px;
+}
+
+/* A glance at a list on a dashboard: a grey head strip over a white list, and a link to the rest.
+   The head, each row, and the more link share one height, the height of a two-line row. */
+:where(.sds) .widget, :where(.sds).widget {
+  --widget-row: 52px;
+  --widget-row-single: 36px;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--grey);
+  border-radius: calc(var(--radius-control) + var(--space-4));
+  background: var(--white);
+}
+:where(.sds) .widget-head, :where(.sds).widget-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-8);
+  min-height: var(--widget-row);
+  padding: 0 var(--space-8) 0 var(--space-16);
+  background: var(--sidebar-grey);
+}
+:where(.sds) .widget-head h2, :where(.sds).widget-head h2 {
+  display: flex;
+  align-items: center;
+  margin: 0;
+  color: var(--black);
+  font-family: var(--font);
+  font-size: var(--text-14);
+  font-weight: 400;
+  line-height: 20px;
+}
+:where(.sds) .widget-head h2 > .i, :where(.sds).widget-head h2 > .i { margin-right: var(--space-8); color: var(--text-muted); }
+:where(.sds) .widget-count, :where(.sds).widget-count {
+  margin-left: var(--space-4);
+  color: var(--text-muted);
+  font-variant-numeric: var(--numeric);
+}
+:where(.sds) .widget-head .text-icon, :where(.sds).widget-head .text-icon { color: var(--black); }
+:where(.sds) .widget-head .text-icon:hover, :where(.sds).widget-head .text-icon:hover { background: var(--grey); }
+/* Spaced like a menu: the list sits 2px in, and rows take the menu item's padding and radius. */
+:where(.sds) .widget-list, :where(.sds).widget-list {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  margin: 0;
+  padding: 2px;
+  list-style: none;
+}
+/* Fill: the list adds no height of its own, so the card takes its height from its neighbours.
+   It keeps room for three rows and the more link when it stands alone. */
+:where(.sds) .widget-list.is-fill, :where(.sds).widget-list.is-fill {
+  contain: size;
+  min-height: calc(var(--widget-row) * 4 + 4px);
+  overflow: hidden;
+}
+:where(.sds) .widget-row, :where(.sds).widget-row {
+  display: grid;
+  /* At least a status ring wide, so a row of rings starts its text with the head title. An avatar takes its own width. */
+  grid-template-columns: minmax(20px, max-content) minmax(0, 1fr) max-content;
+  grid-template-areas: "lead title meta" "lead subtitle trail";
+  column-gap: 10px;
+  align-items: center;
+  min-height: var(--widget-row);
+  padding: 6px 14px;
+  border-radius: 4px;
+  color: var(--black);
+  text-decoration: none;
+}
+/* No subtitle: one line, so the row only needs one line's height. */
+:where(.sds) .widget-row.is-single, :where(.sds).widget-row.is-single {
+  grid-template-areas: "lead title meta";
+  min-height: var(--widget-row-single);
+}
+:where(.sds) .widget-row:hover, :where(.sds).widget-row:hover { background: var(--sidebar-grey); }
+:where(.sds) .widget-row:focus-visible, :where(.sds).widget-row:focus-visible,
+:where(.sds) .widget-more:focus-visible, :where(.sds).widget-more:focus-visible { outline: 2px solid var(--action); outline-offset: -2px; }
+:where(.sds) .widget-lead, :where(.sds).widget-lead { display: inline-flex; grid-area: lead; }
+:where(.sds) .widget-row-title, :where(.sds).widget-row-title,
+:where(.sds) .widget-row-subtitle, :where(.sds).widget-row-subtitle {
+  overflow: hidden;
+  font-size: var(--text-14);
+  line-height: 20px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+:where(.sds) .widget-row-title, :where(.sds).widget-row-title { grid-area: title; font-weight: 500; font-variant-numeric: var(--numeric); }
+:where(.sds) .widget-row-subtitle, :where(.sds).widget-row-subtitle { grid-area: subtitle; }
+/* A preview steps down in size and ink, so the title leads. */
+:where(.sds) .widget-row.is-muted .widget-row-subtitle, :where(.sds).widget-row.is-muted .widget-row-subtitle { color: var(--text-muted); font-size: var(--text-13); }
+:where(.sds) .widget-meta, :where(.sds).widget-meta {
+  grid-area: meta;
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  line-height: 20px;
+  text-align: right;
+}
+:where(.sds) .widget-trail, :where(.sds).widget-trail { display: inline-flex; grid-area: trail; justify-self: end; }
+/* A chip or an avatar in a row takes one step past the row hover, so it does not blend in. */
+:where(.sds) .widget-row :is(.mini-pill, .avatar:not(.is-empty)), :where(.sds).widget-row :is(.mini-pill, .avatar:not(.is-empty)) { background: var(--sidebar-grey); }
+:where(.sds) .widget-row:hover :is(.mini-pill, .avatar:not(.is-empty)), :where(.sds).widget-row:hover :is(.mini-pill, .avatar:not(.is-empty)) { background: var(--grey); }
+:where(.sds) .widget-more-item, :where(.sds).widget-more-item { margin-top: auto; }
+:where(.sds) .widget-more, :where(.sds).widget-more {
+  display: flex;
+  align-items: center;
+  min-height: var(--widget-row);
+  padding: 6px 14px;
+  border-radius: 4px;
+  color: var(--text-muted);
+  font-size: var(--text-14);
+  line-height: 20px;
+  text-decoration: none;
+}
+/* The more link matches the rows above it. */
+:where(.sds) .widget-list:has(.widget-row.is-single) .widget-more, :where(.sds).widget-list:has(.widget-row.is-single) .widget-more { min-height: var(--widget-row-single); }
+:where(.sds) .widget-more:hover, :where(.sds).widget-more:hover { background: var(--sidebar-grey); color: var(--black); }
+:where(.sds) .widget-empty, :where(.sds).widget-empty { display: flex; flex: 1; min-height: 196px; }
+/* How far along something is: 2px ticks every 4px. Done fills in blue over light grey.
+   An end part spans the whole bar in a darker grey and is clipped, so its ticks line up with the ones under it. */
+:where(.sds) .meter, :where(.sds).meter {
+  position: relative;
+  height: 42px;
+  background: repeating-linear-gradient(90deg, var(--black-12) 0 var(--space-2), transparent var(--space-2) var(--space-4));
+}
+:where(.sds) .meter-fill, :where(.sds).meter-fill {
+  height: 100%;
+  background: repeating-linear-gradient(90deg, var(--action) 0 var(--space-2), transparent var(--space-2) var(--space-4));
+}
+:where(.sds) .meter-end, :where(.sds).meter-end {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(90deg, var(--black-50) 0 var(--space-2), transparent var(--space-2) var(--space-4));
+  clip-path: inset(0 0 0 calc(100% - var(--meter-end)));
+}
+
+/* The gallery frame: a third of a dashboard. */
+:where(.sds) .widget-frame, :where(.sds).widget-frame { width: 360px; max-width: 100%; }
+
+html[data-theme="dark"] :where(.sds) .widget-row:hover, html[data-theme="dark"] :where(.sds).widget-row:hover,
+html[data-theme="dark"] :where(.sds) .widget-more:hover, html[data-theme="dark"] :where(.sds).widget-more:hover,
+html[data-theme="dark"] :where(.sds) .widget-row :is(.mini-pill, .avatar:not(.is-empty)), html[data-theme="dark"] :where(.sds).widget-row :is(.mini-pill, .avatar:not(.is-empty)) { background: var(--grey); }
+html[data-theme="dark"] :where(.sds) .widget-head .text-icon:hover, html[data-theme="dark"] :where(.sds).widget-head .text-icon:hover,
+html[data-theme="dark"] :where(.sds) .widget-row:hover :is(.mini-pill, .avatar:not(.is-empty)), html[data-theme="dark"] :where(.sds).widget-row:hover :is(.mini-pill, .avatar:not(.is-empty)) { background: var(--black-12); }
 
 /* Run sheet. Each to-do is finished on its line. The table stays in todos.css. */
 
@@ -2910,14 +3470,19 @@ html[data-theme="dark"] :where(.sds) .sheet-fade, html[data-theme="dark"] :where
   color: var(--black);
 }
 
-:where(.sds) .sheet-line .sheet-room, :where(.sds).sheet-line .sheet-room,
 :where(.sds) .sheet-line .sheet-title, :where(.sds).sheet-line .sheet-title,
 :where(.sds) .sheet-line .sheet-note, :where(.sds).sheet-line .sheet-note {
-  cursor: pointer;
+  cursor: text;
+}
+
+:where(.sds) .sheet-line input.sheet-room, :where(.sds).sheet-line input.sheet-room,
+:where(.sds) input.todo-side-room {
+  cursor: text;
 }
 
 :where(.sds) .sheet-line .sheet-title:focus, :where(.sds).sheet-line .sheet-title:focus,
-:where(.sds) .sheet-line .sheet-note:focus, :where(.sds).sheet-line .sheet-note:focus {
+:where(.sds) .sheet-line .sheet-note:focus, :where(.sds).sheet-line .sheet-note:focus,
+:where(.sds) .sheet-line .sheet-room:focus, :where(.sds).sheet-line .sheet-room:focus {
   cursor: text;
 }
 
@@ -2987,6 +3552,15 @@ html[data-theme="dark"] :where(.sds) .sheet-fade, html[data-theme="dark"] :where
 :where(.sds) .sheet-line:hover .sheet-type:hover, :where(.sds).sheet-line:hover .sheet-type:hover,
 :where(.sds) .sheet:focus-within .sheet-type:hover, :where(.sds).sheet:focus-within .sheet-type:hover { background: var(--sidebar-grey); }
 
+/* A chip is 20px. The line box does not make it taller. Type stays the size the chip already had. */
+:where(.sds) .sheet-chip, :where(.sds).sheet-chip {
+  box-sizing: border-box;
+  height: 20px;
+  min-height: 20px;
+  padding: 2px 4px;
+  line-height: 16px;
+}
+
 /* The row stays hovered while the pointer is on a chip. The chip takes the next step. */
 :where(.sds) .sheet-chevron, :where(.sds).sheet-chevron { opacity: 0; }
 :where(.sds) :hover > .sheet-chevron, :where(.sds):hover > .sheet-chevron,
@@ -3019,25 +3593,37 @@ html[data-theme="dark"] :where(.sds) .sheet-fade, html[data-theme="dark"] :where
   align-items: center;
   justify-self: start;
   position: relative;
-  top: -2px;
-  margin-top: 4px;
-  width: max-content;
+  top: 0;
+  margin: 0;
+  width: auto;
+  max-width: 100%;
   height: 20px;
-  padding: var(--space-2) var(--space-4);
-  border-radius: 4px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
   background: transparent;
   font-size: var(--text-16);
-  font-weight: 400;
-  line-height: 16px;
+  font-weight: 500;
+  font-variant-numeric: normal;
+  line-height: 20px;
   text-align: left;
 }
 
+:where(.sds) input.sheet-room {
+  field-sizing: content;
+  width: auto;
+  min-width: 0;
+  outline: none;
+  box-shadow: none;
+}
+
 :where(.sds) .sheet-room:hover, :where(.sds).sheet-room:hover,
-:where(.sds) .sheet-room[aria-expanded="true"], :where(.sds).sheet-room[aria-expanded="true"],
 :where(.sds) .sheet-line:hover .sheet-room:hover, :where(.sds).sheet-line:hover .sheet-room:hover,
-:where(.sds) .sheet-line:hover .sheet-room[aria-expanded="true"], :where(.sds).sheet-line:hover .sheet-room[aria-expanded="true"],
-:where(.sds) .sheet:focus-within .sheet-room:hover, :where(.sds).sheet:focus-within .sheet-room:hover,
-:where(.sds) .sheet:focus-within .sheet-room[aria-expanded="true"], :where(.sds).sheet:focus-within .sheet-room[aria-expanded="true"] { background: var(--grey); }
+:where(.sds) .sheet:focus-within .sheet-room:hover, :where(.sds).sheet:focus-within .sheet-room:hover { background: transparent; }
+
+:where(.sds) input.sheet-room:focus {
+  box-shadow: inset 0 -1px 0 var(--black-25);
+}
 
 :where(.sds) .sheet-room .sheet-edit, :where(.sds).sheet-room .sheet-edit { margin-inline-start: 0; }
 :where(.sds) .sheet-room:hover .sheet-edit, :where(.sds).sheet-room:hover .sheet-edit,
@@ -3770,7 +4356,7 @@ html[data-theme="dark"] :where(.sds) .sheet-room[aria-expanded="true"], html[dat
 html[data-theme="dark"] :where(.sds) .sheet-line:hover .sheet-room:hover, html[data-theme="dark"] :where(.sds).sheet-line:hover .sheet-room:hover,
 html[data-theme="dark"] :where(.sds) .sheet-line:hover .sheet-room[aria-expanded="true"], html[data-theme="dark"] :where(.sds).sheet-line:hover .sheet-room[aria-expanded="true"],
 html[data-theme="dark"] :where(.sds) .sheet:focus-within .sheet-room:hover, html[data-theme="dark"] :where(.sds).sheet:focus-within .sheet-room:hover,
-html[data-theme="dark"] :where(.sds) .sheet:focus-within .sheet-room[aria-expanded="true"], html[data-theme="dark"] :where(.sds).sheet:focus-within .sheet-room[aria-expanded="true"] { background: var(--black-12); }
+html[data-theme="dark"] :where(.sds) .sheet:focus-within .sheet-room[aria-expanded="true"], html[data-theme="dark"] :where(.sds).sheet:focus-within .sheet-room[aria-expanded="true"] { background: transparent; }
 html[data-theme="dark"] :where(.sds) .sheet-chip:hover, html[data-theme="dark"] :where(.sds).sheet-chip:hover,
 html[data-theme="dark"] :where(.sds) .sheet-chip[aria-expanded="true"], html[data-theme="dark"] :where(.sds).sheet-chip[aria-expanded="true"] { background: var(--grey); }
 html[data-theme="dark"] :where(.sds) .sheet-line:hover .sheet-chip:hover, html[data-theme="dark"] :where(.sds).sheet-line:hover .sheet-chip:hover,
@@ -3875,11 +4461,22 @@ html[data-theme="dark"] :where(.sds) .sheet-who.is-empty[aria-expanded="true"] .
   line-height: 48px;
   text-align: center;
   font-variant-numeric: var(--numeric);
-  cursor: pointer;
+  cursor: text;
 }
 :where(.sds) .todo-side-room:hover, :where(.sds).todo-side-room:hover,
-:where(.sds) .todo-side-room[aria-expanded="true"], :where(.sds).todo-side-room[aria-expanded="true"] { background: var(--grey); }
+:where(.sds) .todo-side-room[aria-expanded="true"], :where(.sds).todo-side-room[aria-expanded="true"],
+:where(.sds) .todo-side-room:focus, :where(.sds).todo-side-room:focus { background: var(--grey); }
 :where(.sds) .todo-side-room.is-quiet, :where(.sds).todo-side-room.is-quiet { color: var(--black-50); }
+:where(.sds) .todo-side-room.is-static, :where(.sds).todo-side-room.is-static { cursor: default; }
+:where(.sds) .todo-side-room.is-static:hover, :where(.sds).todo-side-room.is-static:hover { background: var(--sidebar-grey); }
+:where(.sds) input.todo-side-room {
+  box-sizing: border-box;
+  display: inline-block;
+  min-width: 0;
+  max-width: 50px;
+  outline: none;
+}
+:where(.sds) input.todo-side-room::placeholder { color: var(--black-50); }
 
 :where(.sds) .todo-side-actions, :where(.sds).todo-side-actions {
   display: inline-flex;
@@ -3898,11 +4495,12 @@ html[data-theme="dark"] :where(.sds) .sheet-who.is-empty[aria-expanded="true"] .
 :where(.sds) .todo-side-actions .note-more[aria-expanded="true"]:not(:hover), :where(.sds).todo-side-actions .note-more[aria-expanded="true"]:not(:hover) { background: transparent; }
 
 :where(.sds) .todo-side-scroll, :where(.sds).todo-side-scroll {
+  --side-scroll-top: 40px;
   display: flex;
   flex-direction: column;
   gap: 24px;
   min-height: 0;
-  padding: var(--space-16) var(--space-25) var(--space-25);
+  padding: var(--side-scroll-top) var(--space-25) var(--space-25);
   overflow: auto;
   scrollbar-color: var(--black-25) var(--white);
   scrollbar-width: thin;
@@ -3924,6 +4522,14 @@ html[data-theme="dark"] :where(.sds) .sheet-who.is-empty[aria-expanded="true"] .
 }
 
 :where(.sds) .todo-side-title-row h2[hidden], :where(.sds).todo-side-title-row h2[hidden] { display: none; }
+
+/* The title and its description read as one block. */
+:where(.sds) .todo-side-heading, :where(.sds).todo-side-heading {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  width: 100%;
+}
 
 :where(.sds) .todo-side-facts, :where(.sds).todo-side-facts {
   display: flex;
@@ -3980,7 +4586,8 @@ html[data-theme="dark"] :where(.sds) .sheet-who.is-empty[aria-expanded="true"] .
   font-size: var(--text-16);
   line-height: 20px;
 }
-:where(.sds) .todo-side-facts .side-field.is-empty, :where(.sds).todo-side-facts .side-field.is-empty { color: var(--black-50); }
+:where(.sds) .todo-side-facts .side-field.is-empty, :where(.sds).todo-side-facts .side-field.is-empty,
+:where(.sds) .todo-side .side-field.is-empty, :where(.sds).todo-side .side-field.is-empty { color: var(--black-50); }
 
 :where(.sds) .todo-side-title-row h2, :where(.sds).todo-side-title-row h2 {
   margin: 0;
@@ -4004,6 +4611,19 @@ html[data-theme="dark"] :where(.sds) .sheet-who.is-empty[aria-expanded="true"] .
   flex-direction: column;
   gap: var(--space-8);
 }
+
+/* A fact read in a view-only panel. */
+:where(.sds) .todo-side-value, :where(.sds).todo-side-value {
+  margin: 0;
+  color: var(--black);
+  font-size: var(--text-14);
+  line-height: 20px;
+  overflow-wrap: anywhere;
+}
+:where(.sds) .todo-side-value.is-quiet, :where(.sds).todo-side-value.is-quiet { color: var(--text-muted); }
+:where(.sds) .todo-side-value.is-empty, :where(.sds).todo-side-value.is-empty { color: var(--black-25); }
+:where(.sds) .fact-row > .mini-pill, :where(.sds).fact-row > .mini-pill,
+:where(.sds) .fact-row > .dept, :where(.sds).fact-row > .dept { justify-self: start; }
 
 :where(.sds) .edit-text, :where(.sds).edit-text {
   display: inline-flex;
@@ -4083,6 +4703,7 @@ html[data-theme="dark"] :where(.sds) .text-well, html[data-theme="dark"] :where(
 :where(.sds) .edit-text:has([data-side-desc]) .edit-text-mark, :where(.sds).edit-text:has([data-side-desc]) .edit-text-mark { display: none; }
 
 :where(.sds) .todo-side-rule, :where(.sds).todo-side-rule {
+  flex: none;
   height: 1px;
   margin-inline: calc(var(--space-25) * -1);
   background: var(--line);
@@ -4102,6 +4723,16 @@ html[data-theme="dark"] :where(.sds) .text-well, html[data-theme="dark"] :where(
   display: flex;
   flex-direction: column;
   gap: var(--space-16);
+}
+
+/* The line field is 32px and the menus are 20px. Titles stay on one pitch: 4px between fields, 10px where a field meets a menu. */
+:where(.sds) .todo-side-meta > div:has(.line):has(+ div .line), :where(.sds).todo-side-meta > div:has(.line):has(+ div .line) {
+  margin-bottom: calc(var(--space-4) - var(--space-16));
+}
+
+:where(.sds) .todo-side-meta > div:has(.line):not(:has(+ div .line)):not(:last-child), :where(.sds).todo-side-meta > div:has(.line):not(:has(+ div .line)):not(:last-child),
+:where(.sds) .todo-side-meta > div:not(:has(.line)):has(+ div .line), :where(.sds).todo-side-meta > div:not(:has(.line)):has(+ div .line) {
+  margin-bottom: calc(var(--space-10) - var(--space-16));
 }
 
 :where(.sds) .todo-side-meta > div, :where(.sds).todo-side-meta > div {
@@ -4125,6 +4756,7 @@ html[data-theme="dark"] :where(.sds) .text-well, html[data-theme="dark"] :where(
 :where(.sds) .todo-side .activity-head, :where(.sds).todo-side .activity-head { min-height: 0; }
 
 :where(.sds) .todo-side-meta > .todo-side-photos, :where(.sds).todo-side-meta > .todo-side-photos { align-items: stretch; }
+:where(.sds) .todo-side-meta > .fact-row:has(> .side-photos), :where(.sds).todo-side-meta > .fact-row:has(> .side-photos) { align-items: start; }
 
 :where(.sds) .side-who, :where(.sds).side-who,
 :where(.sds) .side-status, :where(.sds).side-status {
@@ -4407,8 +5039,8 @@ html[data-theme="dark"] :where(.sds) .todo-side .side-photo-remove:hover, html[d
 
 :where(.sds) .side-photo, :where(.sds).side-photo,
 :where(.sds) .side-photo-add, :where(.sds).side-photo-add {
-  width: 56px;
-  height: 56px;
+  width: var(--side-photo-size, 56px);
+  height: var(--side-photo-size, 56px);
   border-radius: var(--radius-control);
 }
 
@@ -4419,12 +5051,23 @@ html[data-theme="dark"] :where(.sds) .todo-side .side-photo-remove:hover, html[d
 
 :where(.sds) .side-photo img, :where(.sds).side-photo img {
   display: block;
-  width: 56px;
-  height: 56px;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
   border-radius: var(--radius-control);
   outline: var(--outline-image);
   outline-offset: -1px;
+}
+
+:where(.sds) .side-photo-open, :where(.sds).side-photo-open {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-control);
+  background: none;
+  cursor: zoom-in;
 }
 
 :where(.sds) .side-photo-remove, :where(.sds).side-photo-remove {
@@ -4448,16 +5091,40 @@ html[data-theme="dark"] :where(.sds) .todo-side .side-photo-remove:hover, html[d
 :where(.sds) .side-photo:focus-within .side-photo-remove, :where(.sds).side-photo:focus-within .side-photo-remove { opacity: 1; }
 :where(.sds) .side-photo-remove:hover, :where(.sds).side-photo-remove:hover { background: var(--sidebar-grey); }
 
+/* The one photo upload tile. A context sets only its size, through --side-photo-size. */
 :where(.sds) .side-photo-add, :where(.sds).side-photo-add {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: 1px dashed var(--black-25);
-  background: var(--grey);
+  border: 0;
+  background: var(--sidebar-grey);
   color: var(--black-50);
+  transition: background-color 120ms ease;
 }
 
-:where(.sds) .side-photo-add:hover, :where(.sds).side-photo-add:hover { background: var(--black-12); }
+:where(.sds) .side-photo-add-frame, :where(.sds).side-photo-add-frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+:where(.sds) .side-photo-add-frame rect, :where(.sds).side-photo-add-frame rect {
+  x: 0.5px;
+  y: 0.5px;
+  width: calc(100% - 1px);
+  height: calc(100% - 1px);
+  rx: calc(var(--radius-control) - 0.5px);
+  fill: none;
+  stroke: var(--black-25);
+  stroke-width: 1px;
+  stroke-dasharray: 3 2;
+}
+
+:where(.sds) .side-photo-add:hover, :where(.sds).side-photo-add:hover { background: var(--grey); }
 
 :where(.sds) .todo-side .activity-list, :where(.sds).todo-side .activity-list { gap: var(--space-14); }
 

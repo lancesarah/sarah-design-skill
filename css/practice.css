@@ -39,7 +39,7 @@
   flex-direction: column;
   background: var(--white);
   border-radius: var(--radius-card);
-  box-shadow: var(--stroke), var(--elevation-menu);
+  box-shadow: var(--stroke), var(--ring-popup), var(--elevation-menu);
   overflow: hidden;
 }
 

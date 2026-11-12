@@ -61,6 +61,19 @@ input[type="search"]::-webkit-search-decoration {
 }
 
 button { cursor: pointer; }
+
+input:not([type]),
+input[type="text"],
+input[type="search"],
+input[type="email"],
+input[type="password"],
+input[type="url"],
+input[type="tel"],
+input[type="number"],
+textarea,
+[contenteditable="true"] {
+  cursor: text;
+}
 button:active:not(:disabled) { scale: 0.98; }
 button.sheet-line:active:not(:disabled) { scale: 1; }
 @media (prefers-reduced-motion: reduce) {
@@ -357,6 +370,8 @@ section { scroll-margin-top: 24px; }
   color: var(--white);
 }
 .btn:hover, .btn.is-hover { background: var(--action-hover); }
+/* Disabled is the same button, faded. */
+.btn:disabled { opacity: 0.6; }
 .btn-icon { width: 28px; padding: 7px; }
 .btn-secondary { background: var(--white); color: var(--black); box-shadow: var(--stroke); }
 .btn-secondary:hover, .btn-secondary.is-hover, .btn-secondary[aria-pressed="true"], .btn-secondary[aria-expanded="true"] { background: var(--sidebar-grey); }
@@ -385,8 +400,10 @@ section { scroll-margin-top: 24px; }
 }
 .chip.chip-filter:has(svg) { padding: 2px 5px; }
 .chip-filter:hover, .chip-filter.is-hover { background: var(--filter-chip-bg); }
+/* The name, the colon, and the value read as one phrase. Only the remove mark stands apart. */
+.chip.chip-filter { gap: 0; }
 .chip-filter .chip-k { font-weight: 400; }
-.chip-filter .x { transform: rotate(45deg); }
+.chip-filter .x { margin-left: 6px; transform: rotate(45deg); }
 
 .fit-label { display: inline-grid; justify-items: start; text-align: start; }
 .fit-label > * { grid-area: 1 / 1; }
@@ -430,7 +447,7 @@ section { scroll-margin-top: 24px; }
   padding: 2px;
   background: var(--white);
   border-radius: 6px;
-  box-shadow: var(--stroke), var(--shadow-menu);
+  box-shadow: var(--stroke), var(--ring-menu), var(--shadow-menu);
 }
 .menu[hidden] { display: none; }
 .menu-item, .menu-search {
@@ -823,7 +840,7 @@ html.is-tip-open .tip-host:not(.is-tip-source):is(:hover, :focus-visible, .is-ti
   padding: 20px;
   background: var(--white);
   border-radius: 6px;
-  box-shadow: var(--stroke), var(--shadow-menu);
+  box-shadow: var(--stroke), var(--ring-popup), var(--shadow-menu);
 }
 .confirm strong { font-size: 14px; font-weight: 500; line-height: normal; }
 .confirm p { margin: 0; color: var(--black-50); font-size: 12px; font-weight: 400; line-height: normal; }
@@ -1935,7 +1952,7 @@ html[data-theme="dark"] .side-search kbd {
   line-height: 16px;
 }
 
-/* The department tag is the dot: a colored circle beside black text. The same chip is used in a menu. */
+/* The department tag is the dot: a colored circle beside black text. A menu option is the plain tag, with no ring. */
 .menu .dept,
 .menu .dept[data-dept],
 #department .dept,
@@ -2187,8 +2204,9 @@ html[data-theme="dark"] #table .sheet.is-open .sheet-line.is-hover .urgency-stan
   color: var(--black);
   box-shadow: inset 0 0 0 0.5px var(--black-12), 0 0 0 0.5px var(--black-12);
 }
-/* A label: the circle and the name, with no stroke and no control. */
-.dept.dept-plain {
+/* A label: the circle and the name, with no stroke and no control. [data-dept] outranks `.menu .dept[data-dept]`. */
+.dept.dept-plain,
+.dept.dept-plain[data-dept] {
   height: auto;
   padding: 0;
   background: transparent;
@@ -2378,3 +2396,545 @@ button.dept[aria-expanded="true"] > .dept-chevron {
 .cash-new-location:hover { background: var(--grey); }
 
 html[data-theme="dark"] .cash-new-location:hover { background: var(--black-12); }
+
+/* Message, Message group, Day, Typing, Resolved, Ticket, and Ticket note.
+   The conversation in the messages panel uses these same classes. */
+
+.message-frame {
+  width: 360px;
+  max-width: 100%;
+}
+
+.message-frame:has(.empty) {
+  display: flex;
+  height: 280px;
+}
+
+.thread-log-body {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-16) var(--space-12);
+}
+
+.thread-log-body > * + * {
+  margin-top: var(--space-14);
+}
+
+.thread-day {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  font-weight: 400;
+  line-height: 16px;
+}
+
+.thread-day::before,
+.thread-day::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+
+.thread-line {
+  display: grid;
+  grid-template-columns: 35px minmax(0, 1fr);
+  column-gap: var(--space-8);
+  align-items: start;
+}
+
+.thread-line > .avatar,
+.thread-line > img.avatar {
+  width: 35px;
+  height: 35px;
+}
+
+.thread-line > .avatar:not(img):not(.is-photo) {
+  border: 1px solid var(--black-12);
+}
+
+.thread-line > img.avatar {
+  border-radius: var(--radius-circle);
+  object-fit: cover;
+  outline: var(--outline-image);
+  outline-offset: -1px;
+}
+
+.thread-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+.thread-copy .who {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-8);
+  margin-bottom: var(--space-4);
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  font-weight: 400;
+  line-height: 16px;
+}
+
+.thread-copy .who time {
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  font-weight: 400;
+  line-height: 16px;
+}
+
+.thread-bubble {
+  display: flex;
+  align-items: center;
+  width: fit-content;
+  max-width: 100%;
+  min-width: 0;
+  min-height: 32px;
+  padding: calc((32px - 20px) / 2) var(--space-10);
+  border-radius: var(--radius-card);
+  background: var(--sidebar-grey);
+  color: var(--black);
+}
+
+.thread-bubble p {
+  min-width: 0;
+  margin: 0;
+  overflow-wrap: anywhere;
+  font-size: var(--text-14);
+  font-weight: 400;
+  line-height: 20px;
+}
+
+.typing-dots {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  height: 20px;
+}
+
+.typing-dots span {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-circle);
+  background: var(--text-muted);
+  animation: typing-dot 1s var(--ease-in-out) infinite;
+}
+
+.typing-dots span:nth-child(2) { animation-delay: 150ms; }
+.typing-dots span:nth-child(3) { animation-delay: 300ms; }
+
+@keyframes typing-dot {
+  0%, 80%, 100% { opacity: 0.35; }
+  40% { opacity: 1; }
+}
+
+.thread-line.is-continued { margin-top: var(--space-2); }
+
+.thread-line.is-continued .thread-copy { grid-column: 2; }
+
+.thread-line.is-latest .thread-bubble {
+  border-radius: var(--radius-card) var(--radius-card) var(--radius-card) 0;
+}
+
+.thread-line.is-you {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.thread-line.is-you .thread-copy {
+  align-items: flex-end;
+  width: 100%;
+  min-width: 0;
+  /* No picture on this side, so the bubble stops where the other person's picture starts. */
+  max-width: calc(100% - 35px - var(--space-8));
+}
+
+.thread-line.is-you .thread-bubble {
+  background: var(--action);
+  color: var(--white);
+}
+
+.thread-line.is-you.is-latest .thread-bubble {
+  border-radius: var(--radius-card) var(--radius-card) 0 var(--radius-card);
+}
+
+html[data-theme="dark"] .thread-bubble { background: var(--grey); }
+
+html[data-theme="dark"] .thread-line.is-you .thread-bubble { color: var(--button-fill); }
+
+html[data-theme="dark"] .thread-line > img.avatar {
+  clip-path: inset(1px round 50%);
+}
+
+.ticket-resolved {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-12);
+  width: 360px;
+  max-width: 100%;
+  padding: var(--space-16);
+  background: var(--sidebar-grey);
+  text-align: center;
+}
+
+html[data-theme="dark"] .ticket-resolved { background: var(--grey); }
+
+.ticket-resolved p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  font-weight: 400;
+  line-height: 16px;
+}
+
+.ticket-resolved-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-8);
+}
+
+html[data-theme="dark"] .ticket-resolved .btn-tertiary { background: var(--black-12); }
+
+.ticket-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+  width: 360px;
+  max-width: 100%;
+  padding: var(--space-16);
+  border-radius: var(--radius-card);
+  background: var(--white);
+  box-shadow: var(--stroke);
+}
+
+.ticket-card .ticket-copy {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.ticket-card-title {
+  color: var(--black);
+  font-size: var(--text-14);
+  font-weight: 500;
+  line-height: 20px;
+  overflow-wrap: break-word;
+}
+
+.ticket-card .ticket-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  min-width: 0;
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  line-height: 16px;
+}
+
+.ticket-steps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ticket-steps li {
+  position: relative;
+  display: grid;
+  grid-template-columns: 14px minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: var(--space-8);
+  color: var(--text-muted);
+  font-size: var(--text-14);
+  line-height: 20px;
+}
+
+.ticket-steps li:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 6.5px;
+  width: 1px;
+  height: calc(100% + var(--space-12));
+  background: var(--black-12);
+}
+
+.ticket-steps svg {
+  position: relative;
+  flex: none;
+  background: var(--white);
+  border-radius: var(--radius-circle);
+  color: var(--black-25);
+}
+
+.ticket-steps .is-done { color: var(--black); }
+
+.ticket-steps .is-done svg { color: var(--status-complete); }
+
+.ticket-steps time {
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  font-variant-numeric: var(--numeric);
+  line-height: 16px;
+}
+
+.ticket-overview {
+  position: absolute;
+  top: var(--space-12);
+  right: var(--space-12);
+  left: var(--space-12);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-8);
+  padding: var(--space-12) calc(var(--space-12) + 28px) var(--space-12) var(--space-12);
+  border-radius: var(--radius-card);
+  background: var(--white);
+  box-shadow: var(--stroke), 0 6px 8px -4px rgb(0 0 0 / 16%);
+}
+
+.ticket-overview.is-set {
+  position: relative;
+  top: auto;
+  right: auto;
+  left: auto;
+  width: 360px;
+  max-width: 100%;
+}
+
+.ticket-overview-dismiss {
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-4);
+}
+
+.ticket-overview-copy {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.ticket-overview-k {
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  font-variant-numeric: var(--numeric);
+  line-height: 16px;
+}
+
+.ticket-overview-title {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--black);
+  font-size: var(--text-14);
+  font-weight: 500;
+  line-height: 20px;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+html[data-theme="dark"] .ticket-overview {
+  box-shadow: var(--stroke), 0 6px 8px -4px rgb(0 0 0 / 50%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .typing-dots span { animation: none; }
+}
+
+/* A page or a list with nothing in it. The title and the line are one group. The action sits below them. */
+.empty {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-16);
+  box-sizing: border-box;
+  min-height: 100%;
+  padding: var(--space-25);
+  text-align: center;
+}
+
+.empty-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.empty-mark {
+  display: flex;
+  margin-bottom: var(--space-4);
+  color: var(--text-muted);
+}
+
+.empty h2 {
+  margin: 0;
+  color: var(--black);
+  font-family: var(--font);
+  font-size: var(--text-16);
+  font-weight: 500;
+  line-height: 20px;
+}
+
+.empty p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: var(--text-14);
+  font-weight: 400;
+  line-height: 20px;
+}
+
+/* A glance at a list on a dashboard: a grey head strip over a white list, and a link to the rest.
+   The head, each row, and the more link share one height, the height of a two-line row. */
+.widget {
+  --widget-row: 52px;
+  --widget-row-single: 36px;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--grey);
+  border-radius: calc(var(--radius-control) + var(--space-4));
+  background: var(--white);
+}
+.widget-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-8);
+  min-height: var(--widget-row);
+  padding: 0 var(--space-8) 0 var(--space-16);
+  background: var(--sidebar-grey);
+}
+.widget-head h2 {
+  display: flex;
+  align-items: center;
+  margin: 0;
+  color: var(--black);
+  font-family: var(--font);
+  font-size: var(--text-14);
+  font-weight: 400;
+  line-height: 20px;
+}
+.widget-head h2 > .i { margin-right: var(--space-8); color: var(--text-muted); }
+.widget-count {
+  margin-left: var(--space-4);
+  color: var(--text-muted);
+  font-variant-numeric: var(--numeric);
+}
+.widget-head .text-icon { color: var(--black); }
+.widget-head .text-icon:hover { background: var(--grey); }
+/* Spaced like a menu: the list sits 2px in, and rows take the menu item's padding and radius. */
+.widget-list {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  margin: 0;
+  padding: 2px;
+  list-style: none;
+}
+/* Fill: the list adds no height of its own, so the card takes its height from its neighbours.
+   It keeps room for three rows and the more link when it stands alone. */
+.widget-list.is-fill {
+  contain: size;
+  min-height: calc(var(--widget-row) * 4 + 4px);
+  overflow: hidden;
+}
+.widget-row {
+  display: grid;
+  /* At least a status ring wide, so a row of rings starts its text with the head title. An avatar takes its own width. */
+  grid-template-columns: minmax(20px, max-content) minmax(0, 1fr) max-content;
+  grid-template-areas: "lead title meta" "lead subtitle trail";
+  column-gap: 10px;
+  align-items: center;
+  min-height: var(--widget-row);
+  padding: 6px 14px;
+  border-radius: 4px;
+  color: var(--black);
+  text-decoration: none;
+}
+/* No subtitle: one line, so the row only needs one line's height. */
+.widget-row.is-single {
+  grid-template-areas: "lead title meta";
+  min-height: var(--widget-row-single);
+}
+.widget-row:hover { background: var(--sidebar-grey); }
+.widget-row:focus-visible,
+.widget-more:focus-visible { outline: 2px solid var(--action); outline-offset: -2px; }
+.widget-lead { display: inline-flex; grid-area: lead; }
+.widget-row-title,
+.widget-row-subtitle {
+  overflow: hidden;
+  font-size: var(--text-14);
+  line-height: 20px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.widget-row-title { grid-area: title; font-weight: 500; font-variant-numeric: var(--numeric); }
+.widget-row-subtitle { grid-area: subtitle; }
+/* A preview steps down in size and ink, so the title leads. */
+.widget-row.is-muted .widget-row-subtitle { color: var(--text-muted); font-size: var(--text-13); }
+.widget-meta {
+  grid-area: meta;
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  line-height: 20px;
+  text-align: right;
+}
+.widget-trail { display: inline-flex; grid-area: trail; justify-self: end; }
+/* A chip or an avatar in a row takes one step past the row hover, so it does not blend in. */
+.widget-row :is(.mini-pill, .avatar:not(.is-empty)) { background: var(--sidebar-grey); }
+.widget-row:hover :is(.mini-pill, .avatar:not(.is-empty)) { background: var(--grey); }
+.widget-more-item { margin-top: auto; }
+.widget-more {
+  display: flex;
+  align-items: center;
+  min-height: var(--widget-row);
+  padding: 6px 14px;
+  border-radius: 4px;
+  color: var(--text-muted);
+  font-size: var(--text-14);
+  line-height: 20px;
+  text-decoration: none;
+}
+/* The more link matches the rows above it. */
+.widget-list:has(.widget-row.is-single) .widget-more { min-height: var(--widget-row-single); }
+.widget-more:hover { background: var(--sidebar-grey); color: var(--black); }
+.widget-empty { display: flex; flex: 1; min-height: 196px; }
+/* How far along something is: 2px ticks every 4px. Done fills in blue over light grey.
+   An end part spans the whole bar in a darker grey and is clipped, so its ticks line up with the ones under it. */
+.meter {
+  position: relative;
+  height: 42px;
+  background: repeating-linear-gradient(90deg, var(--black-12) 0 var(--space-2), transparent var(--space-2) var(--space-4));
+}
+.meter-fill {
+  height: 100%;
+  background: repeating-linear-gradient(90deg, var(--action) 0 var(--space-2), transparent var(--space-2) var(--space-4));
+}
+.meter-end {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(90deg, var(--black-50) 0 var(--space-2), transparent var(--space-2) var(--space-4));
+  clip-path: inset(0 0 0 calc(100% - var(--meter-end)));
+}
+
+/* The gallery frame: a third of a dashboard. */
+.widget-frame { width: 360px; max-width: 100%; }
+
+html[data-theme="dark"] .widget-row:hover,
+html[data-theme="dark"] .widget-more:hover,
+html[data-theme="dark"] .widget-row :is(.mini-pill, .avatar:not(.is-empty)) { background: var(--grey); }
+html[data-theme="dark"] .widget-head .text-icon:hover,
+html[data-theme="dark"] .widget-row:hover :is(.mini-pill, .avatar:not(.is-empty)) { background: var(--black-12); }

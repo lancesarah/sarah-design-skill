@@ -195,7 +195,7 @@ export default function TodosPage() {
 
   return (
     <PageLayout
-      className="todos-page"
+      className="sheet-page todos-page"
       icon="clipboard"
       title="To-Dos"
       count={visible.length}

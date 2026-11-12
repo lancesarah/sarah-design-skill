@@ -16,6 +16,8 @@
   /* Roles. Components use these, not the raw hues. */
   --action: var(--blue);
   --action-hover: var(--blue-hover);
+  /* A picked card's fill: the action blue washed into the page, so the pick reads without a ring. */
+  --action-tint: color-mix(in srgb, var(--action) 10%, var(--white));
   --destructive: var(--red);
   --text-muted: var(--black-50);
   --bg-surface: var(--white);
@@ -145,8 +147,10 @@ html[data-font="switzer"] {
    These are the cheatsheet neutrals only. */
 html[data-theme="dark"] {
   /* The page is lighter than the nav and chat. Chrome stays the darker surface. */
-  --white: #212121;
   --sidebar-grey: #1A1A1A;
+  /* Halfway from the chrome to #212121. #212121 against the nav read too heavy, so the page card sits one half step up. */
+  --page-mid: color-mix(in srgb, var(--sidebar-grey) 50%, #212121);
+  --white: var(--page-mid);
   --grey: #292929;
   --black: #EEEEEE;
   --black-50: #B5B5B5;
@@ -154,6 +158,12 @@ html[data-theme="dark"] {
   --black-25: color-mix(in srgb, var(--black-50) 50%, var(--sidebar-grey));
   /* One step lighter than --grey, halfway to --black-25. */
   --grey-up: color-mix(in srgb, var(--grey) 50%, var(--black-25));
+  /* Halfway from the page to --grey. A widget head, so it lifts off the page without the full step. */
+  --grey-low: color-mix(in srgb, var(--white) 50%, var(--grey));
+  /* The dark page swallows a 10% wash, so the pick takes more blue. */
+  --action-tint: color-mix(in srgb, var(--action) 18%, var(--white));
+  /* Halfway from --grey to --black-12. A widget head, one rise above its --grey list, where a full step reads too heavy. */
+  --grey-mid: color-mix(in srgb, var(--grey) 50%, var(--black-12));
   /* One step lighter than --grey. Light --black-12 is 1.39 on white and 1.28 on the hover fill.
      #292929 matched --grey, so outlines vanished on a hovered or selected row. */
   --black-12: #3a3a3a;

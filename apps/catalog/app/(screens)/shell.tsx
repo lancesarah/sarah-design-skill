@@ -7,6 +7,7 @@ import { ChatProvider } from "./chat-data";
 import { MessagesBoard, MessagesSide } from "./messages";
 import { NotificationsSide } from "./notifications";
 import { usePageLimits } from "./page-limits";
+import { ShellPanelsContext } from "./shell-panels";
 
 export function AppShell({ children }: { children: ReactNode }) {
   const { sideCollapsed, lanceCollapsed, chooseSide, chooseLance } = usePageLimits();
@@ -44,8 +45,19 @@ export function AppShell({ children }: { children: ReactNode }) {
     }
   }, [inbox, expanded]);
 
+  const makeRoom = () => {
+    const before = { side: sideCollapsed, lance: lanceCollapsed };
+    setInbox(null);
+    chooseSide(true);
+    chooseLance(true);
+    return () => {
+      chooseSide(before.side);
+      chooseLance(before.lance);
+    };
+  };
+
   return (
-    <>
+    <ShellPanelsContext.Provider value={makeRoom}>
       <WorkspaceSide
         collapsed={sideCollapsed}
         onCollapsedChange={chooseSide}
@@ -79,6 +91,6 @@ export function AppShell({ children }: { children: ReactNode }) {
       </ChatProvider>
       <LanceSide collapsed={lanceCollapsed} onCollapsedChange={chooseLance} />
       <FontSwitch />
-    </>
+    </ShellPanelsContext.Provider>
   );
 }

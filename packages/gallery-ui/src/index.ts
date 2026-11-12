@@ -30,7 +30,9 @@ export { Avatar, Person, Composer, LancePanel, Comment } from "./components/Peop
 export { Day, Message, MessageGroup, Resolved, Ticket, TicketNote, Typing, type MessageGroupItem, type MessageProps, type TicketStep } from "./components/Messages";
 export { Empty } from "./components/Empty";
 export { Meter } from "./components/Meter";
-export { Widget, WidgetEmpty, WidgetList, WidgetMore, WidgetRow } from "./components/Widget";
+export { ShareBar, type Share, type ShareTone } from "./components/ShareBar";
+export { Widget, WidgetEmpty, WidgetFacts, WidgetList, WidgetMore, WidgetRow } from "./components/Widget";
+export { RoomMark, isRoomNumber } from "./components/RoomMark";
 export { ActivityFeed, type ActivityComment, type ActivityItem, type ActivityStatus } from "./components/ActivityFeed";
 export { Status, Urgency, Toast, Tooltip } from "./components/Feedback";
 export {

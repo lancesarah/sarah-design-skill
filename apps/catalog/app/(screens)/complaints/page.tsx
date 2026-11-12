@@ -427,6 +427,14 @@ export default function ComplaintsPage() {
     return () => cancelAnimationFrame(frame);
   }, [present, open]);
 
+  const startedFromHome = useRef(false);
+  useEffect(() => {
+    if (startedFromHome.current || !new URLSearchParams(window.location.search).has("new")) return;
+    startedFromHome.current = true;
+    window.history.replaceState(null, "", window.location.pathname);
+    requestAnimationFrame(() => createComplaint());
+  }, []);
+
   // Written fields start empty. Status and urgency keep the cells' resting values.
   function createComplaint() {
     const id = `complaint-${Date.now()}`;

@@ -225,6 +225,10 @@ export const icons = {
     "viewBox": "0 0 24 24",
     "body": "<path fill=\"currentColor\" d=\"M12,21q-3.75,0-6.38-2.63T3,12T5.63,5.63T12,3q0.35,0 0.69,0.02q0.34,0.02 0.66,0.07q-1.03,0.73-1.64,1.89T11.1,7.5q0,2.25 1.57,3.82T16.5,12.9q1.38,0 2.53-0.61t1.88-1.64q0.05,0.33 0.07,0.66T21,12q0,3.75-2.63,6.38T12,21Zm0-2q2.2,0 3.95-1.21t2.55-3.16q-0.5,0.13-1,0.2t-1,0.08q-3.07,0-5.24-2.16Q9.1,10.58 9.1,7.5q0-0.5 0.08-1t0.2-1Q7.43,6.3 6.21,8.05T5,12q0,2.9 2.05,4.95T12,19Z\"/>"
   },
+  "tablet": {
+    "viewBox": "0 0 14 14",
+    "body": "<g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" style=\"stroke-width: var(--icon-stroke)\"><rect x=\"2.8\" y=\"1.5\" width=\"8.4\" height=\"11\" rx=\"1.5\"/><path d=\"M6.3 10.4h1.4\"/></g>"
+  },
   "tag": {
     "viewBox": "0 0 14 14",
     "body": "<g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" style=\"stroke-width: var(--icon-stroke)\"><path d=\"M1.8 2.9a1.1 1.1 0 0 1 1.1-1.1h3.6c.3 0 .6.1.8.3l4.8 4.8a1.1 1.1 0 0 1 0 1.6l-3.6 3.6a1.1 1.1 0 0 1-1.6 0L2.1 7.3a1.1 1.1 0 0 1-.3-.8Z\"/><circle cx=\"4.6\" cy=\"4.6\" r=\".9\"/></g>"

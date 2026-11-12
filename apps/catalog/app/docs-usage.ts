@@ -65,7 +65,7 @@ export const USAGE: Record<string, Usage> = {
   "button": {
     "when": [
       "Primary: the one action that creates or commits on that view.",
-      "Secondary: an action beside the primary, or Cancel.",
+      "Secondary: an action beside the primary, or Cancel. A section's own action on the page, such as Edit beside a section title, with its icon.",
       "Tertiary: a choice is on, and it should read as selected without a stroke or a dark fill. Required on a step is this.",
       "Danger: a delete control. The button on the page, the confirming control on the delete card, and an icon that removes a row. The icon is `--destructive` with or without a label.",
       "Icon button: an action has no room for a label, or it is a tool in a row."
@@ -92,10 +92,10 @@ export const USAGE: Record<string, Usage> = {
   },
   "text-icon": {
     "when": [
-      "a quiet action that should not compete with the page: a label, an icon, and no fill until hover. A tool in a row, or a secondary action inside content."
+      "a quiet action that should not compete with the page: a label, an icon, and no fill until hover. A tool in a row, or a control in a widget's grey head."
     ],
     "whenNot": [
-      "the main action on a view. That is the primary button. A button in the header with no icon."
+      "the main action on a view. That is the primary button. A button in the header with no icon. A section's action on the page, such as Edit beside a section title. That is the secondary button."
     ],
     "rules": [
       "Default: `TextIcon`. Label, small, and delete.",
@@ -415,6 +415,19 @@ export const USAGE: Record<string, Usage> = {
       "A 42px bar of 2px ticks every 4px. The done part is `--action` over `--black-12`. An end part, such as rooms on DND, takes the right end in `--black-50`. It spans the whole bar and is clipped, so its ticks line up with the ones under it. The bar is one image to a screen reader, and `label` is what it reads."
     ]
   },
+  "share-bar": {
+    "when": [
+      "one whole split into a few shares, such as today's tickets by channel."
+    ],
+    "whenNot": [
+      "how far along something is. That is Meter. A long list of parts. That is a widget's rows."
+    ],
+    "rules": [
+      "Default: `ShareBar`, with `shares`, each an `id`, a `label`, a `value`, and a `tone`.",
+      "States: two to five shares, as counts or as percents with `percent`.",
+      "Its own component, not Meter. A plain bar, 8px tall with fully round ends, and no ticks. The shares fill it: each share is a solid part sized by its value, 2px apart, left to right, busiest first. When the shares are stages in order, such as leads from New to Negotiating, they keep that order instead. Tones go in that order: `action` (`--action`), `strong` (`--black`), `muted` (`--black-50`), `quiet` (`--black-25`), then `faint` (`--black-12`). A share of zero has no part. The key sits 16px under the bar, one column per share: the figure, 16px weight 500, over an 8px dot in the share's tone and the label, 12px in `--text-muted`. The bar is one image to a screen reader and reads each label and its figure."
+    ]
+  },
   "widget": {
     "when": [
       "a dashboard shows a few records from a longer list, and a way to the rest."
@@ -424,8 +437,8 @@ export const USAGE: Record<string, Usage> = {
     ],
     "rules": [
       "Default: `Widget`, holding a `WidgetList`. `WidgetEmpty` holds an `Empty` when there is nothing to show.",
-      "States: rows and a more link, rows only, and empty.",
-      "One card: a 1px `--grey` border, a 10px radius, and a `--sidebar-grey` head over a `--white` list. The head is a 16px icon in `--text-muted`, `--space-8` from the title, the same gap as a Lance suggestion. The title is 14px weight 400, the count in `--text-muted`, and one action on the right. The action is a plus that starts a new record, as a `TextIcon` or a link with the `text-icon sm` class. The head is 52px, the height of a row. With the Depth switch on, the card takes the drop under its hairline."
+      "States: rows and a more link, rows only, and empty. A widget that lists rows goes empty when it has no rows: `WidgetEmpty` replaces its summary and its list, and the head stays. A widget that only shows figures, a meter, a share bar, or a chart has no empty. It shows its zeros, because zero is a reading.",
+      "One card: a 1px `--grey` border, a 10px radius, and a `--sidebar-grey` head over a `--white` list. The head is a 16px icon in `--text-muted`, `--space-8` from the title, the same gap as a Lance suggestion. The title is 14px weight 400, the count in `--text-muted`, and one action on the right. The action is a plus that starts a new record, as a `TextIcon` or a link with the `text-icon sm` class. A leaderboard puts its top three on a podium over the rows, second, first, third, each on a `--sidebar-grey` step, and the rows go on from fourth to sixth. First place's step is `--filter-chip-bg` with its place in `--action`, a 1px `--action` stroke on the top and sides, and `--shadow-card`. The step has no bottom stroke, so it does not double the rule it stands on. First place's avatar takes `--shadow-card` too. Every podium avatar keeps the named ring, 1px `--black-12`. A widget whose rows change with a time window, such as a leaderboard, takes segments there instead, sized to their labels: Today, 7d, and 30d, or 24h, 7d, and 30d. A `Menu` trigger on the grey head hovers `--grey`, one step from the head. Segments in the head take a `--grey` track so they do not fade into it, and an unselected segment hovers `--black-12`. In dark mode the list is `--white`, the page, edged by the card's border, and the head is `--grey-low`, halfway from the page to `--grey`. Lifting the list off the page read too heavy. Everything inside the list moves with it. A row hovers `--grey`, a pill in a row rests `--grey` and is `--black-12` on a hovered row, and the room map's cells, the podium steps, and a day's hover are `--grey`, with a room's hover `--black-12`. A head trigger hovers `--black-12`, and the segment track is `--white`, the page, so it sits below the head and the `--grey` selected pill still shows. The head is 52px, the height of a row. With the Depth switch on, the card takes the drop under its hairline."
     ]
   },
   "widget-list": {
@@ -450,8 +463,22 @@ export const USAGE: Record<string, Usage> = {
     ],
     "rules": [
       "Default: `WidgetRow`, with `lead`, `title`, `subtitle`, `meta`, and `trail`.",
-      "States: a status and a person, an avatar and a muted preview, and rest and hover.",
-      "A row is 52px and two lines. Padding is `6px 14px` with a 4px radius and a 10px gap, like a menu item. Its hover is `--sidebar-grey`, with no fade. The lead is at least 18px wide: a status, or an avatar. The title is 14px weight 500, and the subtitle is 14px weight 400 under it. When the second line previews the record, such as a note's first line, pass `subtitleTone=\"muted\"`: it steps down to 13px in `--text-muted` so the title leads. The meta is 12px in `--text-muted` on the first line's right. The trail is a chip on the second line's right, such as a person. A row with no subtitle and no trail is one line, 36px tall, such as a DND room. The more link under those rows is 36px too. A chip or an avatar in a row is `--sidebar-grey` and takes `--grey` on the row hover, one step past it, so it does not blend in. Dark mode steps `--grey` to `--black-12`. A row and the more link render `a`. Pass `as` to use the app's link."
+      "States: a status and a person, an avatar and a muted preview, facts with a chip, and rest and hover.",
+      "A row is 52px and two lines. Padding is `6px 14px` with a 4px radius and a 10px gap, like a menu item. Its hover is `--sidebar-grey`, with no fade. The lead is at least 18px wide: a status, an avatar, or a room mark. A room mark centers the title on it, see Room mark. The title is 14px weight 500, and the subtitle is 14px weight 400 under it. When the second line previews the record, such as a note's first line, pass `subtitleTone=\"muted\"`: it steps down to 13px in `--text-muted` so the title leads. When the second line lists facts about the record, such as the room and the head count, pass `subtitle={<WidgetFacts items={[...]} />}`: the same 13px `--text-muted`, with a `·` between facts and 4px on each side of it. An empty fact drops out, so pass `null` for one that does not apply. Do not join facts into a string by hand. The meta is 12px in `--text-muted` on the first line's right. The trail is a chip on the second line's right, such as a person. A row with no subtitle and no trail is one line, 36px tall, such as a DND room. The more link under those rows is 36px too. A row with no lead drops the lead column, so its text starts on the row's inset. A chip or an avatar in a row is `--sidebar-grey` and takes `--grey` on the row hover, one step past it, so it does not blend in. Dark mode steps `--grey` to `--black-12`. A row and the more link render `a`. Pass `as` to use the app's link."
+    ]
+  },
+  "room-mark": {
+    "when": [
+      "a widget row that is about a room, such as response time, problem rooms, or do not disturb. The room leads and the description sits beside it."
+    ],
+    "whenNot": [
+      "the To-dos and Complaints widgets. Their rows lead with the status, and the room is the title. A to-do's detail, which is the 50px square in Room. A table row, which is the room column. A person, which is Avatar."
+    ],
+    "rules": [
+      "Default: `RoomMark` as the `lead` of a `WidgetRow`, with the description as `title` and no `subtitle`.",
+      "States: a room number, and a place. A place, such as Lobby, has no number, so the square holds the 18px location icon in `--text-muted`, and the row's title writes the place first: “Lobby · Ice machine”.",
+      "The group chat mark from Messages at the row's size. A 40px square, a 6px radius (`--radius-control`), a 1px `--black-12` ring, and the `--sidebar-grey` fill. The number is typed in it, `--text-14` weight 500 with `--numeric`. Four digits need 14px to fit 40px, so it is one step under the 16px in Room. The square is read aloud as the number, and a place's icon is hidden, since the title already says it.",
+      "In a row it takes one step past the row hover, like an avatar: `--sidebar-grey` at rest and `--grey` when the row is hovered. Dark mode steps `--grey` to `--black-12`. A row that leads with a room mark and has no subtitle puts its title on both lines, centered on the square, at weight 400, since the number in the square is the record's name. The meta and the trail stay on the right, one over the other. A row with only a meta, such as a DND room, is still 52px, the square's height."
     ]
   },
   "todos-widget": {

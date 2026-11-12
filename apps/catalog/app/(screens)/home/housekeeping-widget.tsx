@@ -1,6 +1,6 @@
 "use client";
 
-import { Avatar, Meter, Widget, WidgetList, WidgetMore, WidgetRow } from "@lance-live/gallery-ui";
+import { Avatar, Empty, Meter, Widget, WidgetEmpty, WidgetList, WidgetMore, WidgetRow } from "@lance-live/gallery-ui";
 import Link from "next/link";
 
 type Housekeeper = { id: string; name: string; initials: string; done: number; left: number };
@@ -26,62 +26,63 @@ export function HousekeepingWidget() {
   const shown = [...HOUSEKEEPERS].sort((a, b) => b.left - a.left).slice(0, LIMIT);
   const more = HOUSEKEEPERS.length - shown.length;
   return (
-    <Widget
-      icon="bed"
-      title="Housekeeping"
-      className="home-housekeeping"
-      action={
-        <Link className="sds text-icon sm" href="/boards">
-          Board
-        </Link>
-      }
-    >
-      <div className="home-summary">
-        <p className="home-summary-hero">
-          <span className="home-summary-figure">{left}</span>
-          <span className="home-summary-label">rooms left to clean</span>
-        </p>
-        <dl className="home-summary-stats">
-          <div>
-            <dt>
-              <span className="home-summary-key is-clean" aria-hidden="true" />
-              Clean
-            </dt>
-            <dd>{clean}</dd>
+    <Widget icon="bed" title="Housekeeping" className="home-housekeeping">
+      {HOUSEKEEPERS.length ? (
+        <>
+          <div className="home-summary">
+            <p className="home-summary-hero">
+              <span className="home-summary-figure">{left}</span>
+              <span className="home-summary-label">rooms left to clean</span>
+            </p>
+            <dl className="home-summary-stats">
+              <div>
+                <dt>
+                  <span className="home-summary-key is-clean" aria-hidden="true" />
+                  Clean
+                </dt>
+                <dd>{clean}</dd>
+              </div>
+              <div>
+                <dt>
+                  <span className="home-summary-key is-dnd" aria-hidden="true" />
+                  DND
+                </dt>
+                <dd>{DND}</dd>
+              </div>
+              <div>
+                <dt>Total</dt>
+                <dd>{total}</dd>
+              </div>
+            </dl>
+            <Meter className="home-summary-meter" value={clean} max={total} end={DND} label={`${clean} clean, ${left} left, ${DND} on DND, of ${total} rooms`} />
           </div>
-          <div>
-            <dt>
-              <span className="home-summary-key is-dnd" aria-hidden="true" />
-              DND
-            </dt>
-            <dd>{DND}</dd>
-          </div>
-          <div>
-            <dt>Total</dt>
-            <dd>{total}</dd>
-          </div>
-        </dl>
-        <Meter className="home-summary-meter" value={clean} max={total} end={DND} label={`${clean} clean, ${left} left, ${DND} on DND, of ${total} rooms`} />
-      </div>
-      <WidgetList>
-        {shown.map((person) => (
-          <WidgetRow
-            key={person.id}
-            as={Link}
-            href="/boards"
-            lead={<Avatar initials={person.initials} />}
-            title={person.name}
-            subtitle={`${person.done} done`}
-            subtitleTone="muted"
-            meta={<span className="home-hk-person-left">{person.left} left</span>}
-          />
-        ))}
-        {more > 0 ? (
-          <WidgetMore as={Link} href="/boards">
-            + {more} more
-          </WidgetMore>
-        ) : null}
-      </WidgetList>
+          <WidgetList>
+            {shown.map((person) => (
+              <WidgetRow
+                key={person.id}
+                as={Link}
+                href="/boards"
+                lead={<Avatar initials={person.initials} />}
+                title={person.name}
+                subtitle={`${person.done} done`}
+                subtitleTone="muted"
+                meta={<span className="home-hk-person-left">{person.left} left</span>}
+              />
+            ))}
+            {more > 0 ? (
+              <WidgetMore as={Link} href="/boards">
+                + {more} more
+              </WidgetMore>
+            ) : null}
+          </WidgetList>
+        </>
+      ) : (
+        <WidgetEmpty>
+          <Empty icon="bed" title="No rooms assigned">
+            Housekeepers show here once today's rooms are assigned.
+          </Empty>
+        </WidgetEmpty>
+      )}
     </Widget>
   );
 }

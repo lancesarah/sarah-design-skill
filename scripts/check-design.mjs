@@ -7,6 +7,7 @@ import { createRequire } from "node:module";
 import { dirname, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 import { build } from "./build-usage.mjs";
+import { stale } from "./sync-catalog.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const ts = createRequire(import.meta.url)("typescript");
@@ -153,6 +154,9 @@ function checkTsx(file, text) {
 }
 
 checkUsage();
+for (const { source, copy } of stale()) {
+  report(copy, 1, "Catalog copy", `Out of date with ${source}. Run \`npm run sync\`.`);
+}
 for (const dir of DIRS) {
   for (const path of walk(join(root, dir))) {
     const file = relative(root, path);

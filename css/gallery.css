@@ -2834,7 +2834,11 @@ html[data-theme="dark"] .ticket-overview {
   font-variant-numeric: var(--numeric);
 }
 .widget-head .text-icon { color: var(--black); }
-.widget-head .text-icon:hover { background: var(--grey); }
+.widget-head .text-icon:hover,
+.widget-head .trigger:is(:hover, .is-hover, [aria-expanded="true"]) { background: var(--grey); }
+/* Segments on the grey head take one step for the track, and their hover the step after it. */
+.widget-head .segmented { background: var(--grey); }
+.widget-head .segment:not([aria-selected="true"]):is(:hover, .is-hover) { background: var(--black-12); }
 /* Spaced like a menu: the list sits 2px in, and rows take the menu item's padding and radius. */
 .widget-list {
   display: flex;
@@ -2869,6 +2873,12 @@ html[data-theme="dark"] .ticket-overview {
   grid-template-areas: "lead title meta";
   min-height: var(--widget-row-single);
 }
+/* No lead: the text starts on the row's inset, with no empty column before it. */
+.widget-row.no-lead {
+  grid-template-columns: minmax(0, 1fr) max-content;
+  grid-template-areas: "title meta" "subtitle trail";
+}
+.widget-row.no-lead.is-single { grid-template-areas: "title meta"; }
 .widget-row:hover { background: var(--sidebar-grey); }
 .widget-row:focus-visible,
 .widget-more:focus-visible { outline: 2px solid var(--action); outline-offset: -2px; }
@@ -2885,6 +2895,9 @@ html[data-theme="dark"] .ticket-overview {
 .widget-row-subtitle { grid-area: subtitle; }
 /* A preview steps down in size and ink, so the title leads. */
 .widget-row.is-muted .widget-row-subtitle { color: var(--text-muted); font-size: var(--text-13); }
+/* Facts step down like a preview, so the title leads. */
+.widget-facts { color: var(--text-muted); font-size: var(--text-13); }
+.widget-facts-dot { padding: 0 var(--space-4); }
 .widget-meta {
   grid-area: meta;
   color: var(--text-muted);
@@ -2894,8 +2907,37 @@ html[data-theme="dark"] .ticket-overview {
 }
 .widget-trail { display: inline-flex; grid-area: trail; justify-self: end; }
 /* A chip or an avatar in a row takes one step past the row hover, so it does not blend in. */
-.widget-row :is(.mini-pill, .avatar:not(.is-empty)) { background: var(--sidebar-grey); }
-.widget-row:hover :is(.mini-pill, .avatar:not(.is-empty)) { background: var(--grey); }
+.widget-row :is(.mini-pill, .avatar:not(.is-empty), .room-mark) { background: var(--sidebar-grey); }
+.widget-row:hover :is(.mini-pill, .avatar:not(.is-empty), .room-mark) { background: var(--grey); }
+/* A named avatar keeps its ring in a row, as it does everywhere else. A photo has its own outline, and mini already has one. */
+.widget-row .avatar:not(.is-empty):not(.is-photo):not(.mini) { border: 1px solid var(--black-12); }
+/* Room mark: the group chat mark from Messages at the row's 40px, with the number typed in. Four digits need 14px to fit. */
+.room-mark {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--black-12);
+  border-radius: var(--radius-control);
+  background: var(--sidebar-grey);
+  color: var(--black);
+  font-size: var(--text-14);
+  font-weight: 500;
+  line-height: 20px;
+  font-variant-numeric: var(--numeric);
+}
+.room-mark .i { color: var(--text-muted); }
+/* A room that leads a row with no subtitle: the description is the title, centered on the square, in body weight. The facts stay on the right. */
+.widget-row:has(> .widget-lead .room-mark):not(:has(.widget-row-subtitle)) {
+  grid-template-areas: "lead title meta" "lead title trail";
+}
+.widget-row.is-single:has(> .widget-lead .room-mark) { grid-template-areas: "lead title meta"; }
+.widget-row:has(> .widget-lead .room-mark):not(:has(.widget-row-subtitle)) .widget-row-title {
+  align-self: center;
+  font-weight: 400;
+}
 .widget-more-item { margin-top: auto; }
 .widget-more {
   display: flex;
@@ -2930,11 +2972,80 @@ html[data-theme="dark"] .ticket-overview {
   clip-path: inset(0 0 0 calc(100% - var(--meter-end)));
 }
 
+/* Share bar */
+.share-bar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+}
+/* A plain bar: each share is a solid part, sized by its value, 2px apart. */
+.share-bar-track {
+  display: flex;
+  gap: var(--space-2);
+  height: 8px;
+  overflow: hidden;
+  border-radius: 999px;
+}
+.share-bar-part {
+  flex-basis: 0;
+  min-width: var(--space-2);
+  background: var(--share-tone);
+}
+:is(.share-bar-part, .share-bar-dot).is-action { --share-tone: var(--action); }
+:is(.share-bar-part, .share-bar-dot).is-strong { --share-tone: var(--black); }
+:is(.share-bar-part, .share-bar-dot).is-muted { --share-tone: var(--black-50); }
+:is(.share-bar-part, .share-bar-dot).is-quiet { --share-tone: var(--black-25); }
+:is(.share-bar-part, .share-bar-dot).is-faint { --share-tone: var(--black-12); }
+/* One column per share, so the key reads left to right like the bar. The figure leads; the markup keeps label then figure for a screen reader. */
+.share-bar-key {
+  display: grid;
+  grid-auto-columns: minmax(0, 1fr);
+  grid-auto-flow: column;
+  gap: var(--space-16);
+  margin: 0;
+}
+.share-bar-key > div {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: var(--space-2);
+  min-width: 0;
+}
+.share-bar-key dt {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  overflow: hidden;
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  line-height: 16px;
+  white-space: nowrap;
+}
+.share-bar-key dd {
+  margin: 0;
+  color: var(--black);
+  font-size: var(--text-16);
+  font-weight: 500;
+  line-height: 24px;
+  font-variant-numeric: var(--numeric);
+}
+.share-bar-dot {
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--share-tone);
+}
+
 /* The gallery frame: a third of a dashboard. */
 .widget-frame { width: 360px; max-width: 100%; }
 
+/* In dark mode the list is the page, edged by its border, and the head rises half a step above it. */
+html[data-theme="dark"] .widget { background: var(--white); }
+html[data-theme="dark"] .widget-head { background: var(--grey-low); }
 html[data-theme="dark"] .widget-row:hover,
 html[data-theme="dark"] .widget-more:hover,
-html[data-theme="dark"] .widget-row :is(.mini-pill, .avatar:not(.is-empty)) { background: var(--grey); }
+html[data-theme="dark"] .widget-row :is(.mini-pill, .avatar:not(.is-empty), .room-mark) { background: var(--grey); }
+html[data-theme="dark"] .widget-row:hover :is(.mini-pill, .avatar:not(.is-empty), .room-mark) { background: var(--black-12); }
+html[data-theme="dark"] .widget-head .segmented { background: var(--white); }
 html[data-theme="dark"] .widget-head .text-icon:hover,
-html[data-theme="dark"] .widget-row:hover :is(.mini-pill, .avatar:not(.is-empty)) { background: var(--black-12); }
+html[data-theme="dark"] .widget-head .trigger:is(:hover, .is-hover, [aria-expanded="true"]) { background: var(--black-12); }

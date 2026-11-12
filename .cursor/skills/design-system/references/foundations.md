@@ -122,13 +122,14 @@ Everything else uses this stack. A new overlay takes the row it belongs to. It d
 
 `html[data-theme="dark"]` in `catalog/tokens.css` recolors the same tokens. Type, sizes, spacing, and radii do not change.
 
-The nav and the chat stay darker than the page. The page is the lighter surface.
+The nav and the chat stay darker than the page. The page is the lighter surface, by half a step: `--page-mid` sits halfway from the chrome to `#212121`, because `#212121` beside the nav read too heavy.
 
 | Role | Token | Dark |
 |------|--------|------|
-| Page | `--white` | `#212121` |
+| Page | `--white`, set to `--page-mid` | halfway from `#1A1A1A` to `#212121`, about `#1E1E1E` |
 | Sidebar, chat, department bar, and other chrome | `--sidebar-grey` | `#1A1A1A` |
 | Selected row and hover on that chrome | `--grey` | `#292929` |
+| Widget head, half a step above the page | `--grey-low` | halfway from the page to `--grey` |
 | One step lighter than `--grey` | `--grey-up` | halfway from `--grey` to `--black-25` |
 | Names | `--black` | `#EEEEEE` |
 | Subtext | `--black-50`, and `--text-muted` follows it | `#B5B5B5` |
@@ -136,9 +137,9 @@ The nav and the chat stay darker than the page. The page is the lighter surface.
 | Quiet fill and hover outline | `--black-12` | `#3a3a3a` |
 | Card and panel stroke | `--line`, `--stroke` | `#313131` |
 
-`--line` is `--grey` in light mode, so light borders stay the same. In dark mode it is `#313131`: lighter than the page (`#212121`) and still lighter than a hovered row (`--grey`, `#292929`). A divider or chip stroke painted in `--grey` or the old `--black-12` matches that hover fill and disappears. `--black-12` is the next step, `#3a3a3a`, for hover outlines and the pressed chip stroke. Accent colors stay.
+`--line` is `--grey` in light mode, so light borders stay the same. In dark mode it is `#313131`: lighter than the page (`--page-mid`) and still lighter than a hovered row (`--grey`, `#292929`). A divider or chip stroke painted in `--grey` or the old `--black-12` matches that hover fill and disappears. `--black-12` is the next step, `#3a3a3a`, for hover outlines and the pressed chip stroke. Accent colors stay.
 
-Hover lightens. A card or table row whose resting fill is the page steps from `--white` (`#212121`) to `--grey` (`#292929`). It does not fall back onto the darker chrome. A selected note uses that same lighter fill, so the selected card is `--grey` in dark mode.
+Hover lightens. A card or table row whose resting fill is the page steps from `--white` (`--page-mid`) to `--grey` (`#292929`). It does not fall back onto the darker chrome. A selected note uses that same lighter fill, so the selected card is `--grey` in dark mode.
 
 `--sidebar-grey` is darker than the page in dark mode. It is chrome. A hover painted in it goes darker, so it is off the dark ladder. The dark steps are `--white` → `--grey` → `--black-12` → `--grey-up`.
 

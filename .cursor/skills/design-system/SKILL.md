@@ -11,7 +11,7 @@ Everything is written as **roles and ratios** ("one step from its ground", "the 
 
 The gallery (`catalog/index.html`, `catalog/gallery.css`) is the component catalog. `catalog/tokens.css` is the only source of color, type, space, radius, and shadow. `catalog/todos-alt.css` styles the table and filter row. `catalog/notes.html` is the header and sidebar specimen. The avatar in those pages is `catalog/assets/avatar-sarah.png`.
 
-These files sit in this skill folder, next to `SKILL.md`. Read them from here in whatever project you are editing. Do not look for `css/tokens.css`, `css/gallery.css`, `index.html`, or `notes.html` at the project root when they are not there.
+These files sit in this skill folder, next to `SKILL.md`. Read them from here in whatever project you are editing. Do not look for `css/tokens.css`, `css/gallery.css`, `index.html`, or `notes.html` at the project root when they are not there. In the repo that owns this skill, `css/` is the source. The three catalog stylesheets are copies. Edit `css/`, then run `npm run sync`.
 
 When the project you are editing already contains those live files, the live files are the source. Read and edit the live files. `catalog/` is the copy that travels with this skill. When the live files are absent, read `catalog/` and apply those values in the styling system the project already uses.
 
@@ -77,7 +77,7 @@ Every part comes from the parent. Hover and selected share one step. If that ste
 
 | Part | Light | Dark |
 | --- | --- | --- |
-| Page | `--white` via `--bg-surface` | `--white` is `#212121` |
+| Page | `--white` via `--bg-surface` | `--white` is `--page-mid`, halfway from the chrome to `#212121` |
 | Chrome (nav, chat, department bar) | `--sidebar-grey` | `#1A1A1A`, darker than the page |
 | Hover and selected on the page | `--sidebar-grey` | `--grey` (`#292929`), lighter than the page |
 | Hover on that chrome, or the next step | `--grey` | `--black-12` |

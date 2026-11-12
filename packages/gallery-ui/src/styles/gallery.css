@@ -2852,7 +2852,11 @@ html[data-theme="dark"] :where(.sds) .ticket-overview, html[data-theme="dark"] :
   font-variant-numeric: var(--numeric);
 }
 :where(.sds) .widget-head .text-icon, :where(.sds).widget-head .text-icon { color: var(--black); }
-:where(.sds) .widget-head .text-icon:hover, :where(.sds).widget-head .text-icon:hover { background: var(--grey); }
+:where(.sds) .widget-head .text-icon:hover, :where(.sds).widget-head .text-icon:hover,
+:where(.sds) .widget-head .trigger:is(:hover, .is-hover, [aria-expanded="true"]), :where(.sds).widget-head .trigger:is(:hover, .is-hover, [aria-expanded="true"]) { background: var(--grey); }
+/* Segments on the grey head take one step for the track, and their hover the step after it. */
+:where(.sds) .widget-head .segmented, :where(.sds).widget-head .segmented { background: var(--grey); }
+:where(.sds) .widget-head .segment:not([aria-selected="true"]):is(:hover, .is-hover), :where(.sds).widget-head .segment:not([aria-selected="true"]):is(:hover, .is-hover) { background: var(--black-12); }
 /* Spaced like a menu: the list sits 2px in, and rows take the menu item's padding and radius. */
 :where(.sds) .widget-list, :where(.sds).widget-list {
   display: flex;
@@ -2887,6 +2891,12 @@ html[data-theme="dark"] :where(.sds) .ticket-overview, html[data-theme="dark"] :
   grid-template-areas: "lead title meta";
   min-height: var(--widget-row-single);
 }
+/* No lead: the text starts on the row's inset, with no empty column before it. */
+:where(.sds) .widget-row.no-lead, :where(.sds).widget-row.no-lead {
+  grid-template-columns: minmax(0, 1fr) max-content;
+  grid-template-areas: "title meta" "subtitle trail";
+}
+:where(.sds) .widget-row.no-lead.is-single, :where(.sds).widget-row.no-lead.is-single { grid-template-areas: "title meta"; }
 :where(.sds) .widget-row:hover, :where(.sds).widget-row:hover { background: var(--sidebar-grey); }
 :where(.sds) .widget-row:focus-visible, :where(.sds).widget-row:focus-visible,
 :where(.sds) .widget-more:focus-visible, :where(.sds).widget-more:focus-visible { outline: 2px solid var(--action); outline-offset: -2px; }
@@ -2903,6 +2913,9 @@ html[data-theme="dark"] :where(.sds) .ticket-overview, html[data-theme="dark"] :
 :where(.sds) .widget-row-subtitle, :where(.sds).widget-row-subtitle { grid-area: subtitle; }
 /* A preview steps down in size and ink, so the title leads. */
 :where(.sds) .widget-row.is-muted .widget-row-subtitle, :where(.sds).widget-row.is-muted .widget-row-subtitle { color: var(--text-muted); font-size: var(--text-13); }
+/* Facts step down like a preview, so the title leads. */
+:where(.sds) .widget-facts, :where(.sds).widget-facts { color: var(--text-muted); font-size: var(--text-13); }
+:where(.sds) .widget-facts-dot, :where(.sds).widget-facts-dot { padding: 0 var(--space-4); }
 :where(.sds) .widget-meta, :where(.sds).widget-meta {
   grid-area: meta;
   color: var(--text-muted);
@@ -2912,8 +2925,37 @@ html[data-theme="dark"] :where(.sds) .ticket-overview, html[data-theme="dark"] :
 }
 :where(.sds) .widget-trail, :where(.sds).widget-trail { display: inline-flex; grid-area: trail; justify-self: end; }
 /* A chip or an avatar in a row takes one step past the row hover, so it does not blend in. */
-:where(.sds) .widget-row :is(.mini-pill, .avatar:not(.is-empty)), :where(.sds).widget-row :is(.mini-pill, .avatar:not(.is-empty)) { background: var(--sidebar-grey); }
-:where(.sds) .widget-row:hover :is(.mini-pill, .avatar:not(.is-empty)), :where(.sds).widget-row:hover :is(.mini-pill, .avatar:not(.is-empty)) { background: var(--grey); }
+:where(.sds) .widget-row :is(.mini-pill, .avatar:not(.is-empty), .room-mark), :where(.sds).widget-row :is(.mini-pill, .avatar:not(.is-empty), .room-mark) { background: var(--sidebar-grey); }
+:where(.sds) .widget-row:hover :is(.mini-pill, .avatar:not(.is-empty), .room-mark), :where(.sds).widget-row:hover :is(.mini-pill, .avatar:not(.is-empty), .room-mark) { background: var(--grey); }
+/* A named avatar keeps its ring in a row, as it does everywhere else. A photo has its own outline, and mini already has one. */
+:where(.sds) .widget-row .avatar:not(.is-empty):not(.is-photo):not(.mini), :where(.sds).widget-row .avatar:not(.is-empty):not(.is-photo):not(.mini) { border: 1px solid var(--black-12); }
+/* Room mark: the group chat mark from Messages at the row's 40px, with the number typed in. Four digits need 14px to fit. */
+:where(.sds) .room-mark, :where(.sds).room-mark {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--black-12);
+  border-radius: var(--radius-control);
+  background: var(--sidebar-grey);
+  color: var(--black);
+  font-size: var(--text-14);
+  font-weight: 500;
+  line-height: 20px;
+  font-variant-numeric: var(--numeric);
+}
+:where(.sds) .room-mark .i, :where(.sds).room-mark .i { color: var(--text-muted); }
+/* A room that leads a row with no subtitle: the description is the title, centered on the square, in body weight. The facts stay on the right. */
+:where(.sds) .widget-row:has(> .widget-lead .room-mark):not(:has(.widget-row-subtitle)), :where(.sds).widget-row:has(> .widget-lead .room-mark):not(:has(.widget-row-subtitle)) {
+  grid-template-areas: "lead title meta" "lead title trail";
+}
+:where(.sds) .widget-row.is-single:has(> .widget-lead .room-mark), :where(.sds).widget-row.is-single:has(> .widget-lead .room-mark) { grid-template-areas: "lead title meta"; }
+:where(.sds) .widget-row:has(> .widget-lead .room-mark):not(:has(.widget-row-subtitle)) .widget-row-title, :where(.sds).widget-row:has(> .widget-lead .room-mark):not(:has(.widget-row-subtitle)) .widget-row-title {
+  align-self: center;
+  font-weight: 400;
+}
 :where(.sds) .widget-more-item, :where(.sds).widget-more-item { margin-top: auto; }
 :where(.sds) .widget-more, :where(.sds).widget-more {
   display: flex;
@@ -2948,14 +2990,83 @@ html[data-theme="dark"] :where(.sds) .ticket-overview, html[data-theme="dark"] :
   clip-path: inset(0 0 0 calc(100% - var(--meter-end)));
 }
 
+/* Share bar */
+:where(.sds) .share-bar, :where(.sds).share-bar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+}
+/* A plain bar: each share is a solid part, sized by its value, 2px apart. */
+:where(.sds) .share-bar-track, :where(.sds).share-bar-track {
+  display: flex;
+  gap: var(--space-2);
+  height: 8px;
+  overflow: hidden;
+  border-radius: 999px;
+}
+:where(.sds) .share-bar-part, :where(.sds).share-bar-part {
+  flex-basis: 0;
+  min-width: var(--space-2);
+  background: var(--share-tone);
+}
+:where(.sds) :is(.share-bar-part, .share-bar-dot).is-action, :where(.sds):is(.share-bar-part, .share-bar-dot).is-action { --share-tone: var(--action); }
+:where(.sds) :is(.share-bar-part, .share-bar-dot).is-strong, :where(.sds):is(.share-bar-part, .share-bar-dot).is-strong { --share-tone: var(--black); }
+:where(.sds) :is(.share-bar-part, .share-bar-dot).is-muted, :where(.sds):is(.share-bar-part, .share-bar-dot).is-muted { --share-tone: var(--black-50); }
+:where(.sds) :is(.share-bar-part, .share-bar-dot).is-quiet, :where(.sds):is(.share-bar-part, .share-bar-dot).is-quiet { --share-tone: var(--black-25); }
+:where(.sds) :is(.share-bar-part, .share-bar-dot).is-faint, :where(.sds):is(.share-bar-part, .share-bar-dot).is-faint { --share-tone: var(--black-12); }
+/* One column per share, so the key reads left to right like the bar. The figure leads; the markup keeps label then figure for a screen reader. */
+:where(.sds) .share-bar-key, :where(.sds).share-bar-key {
+  display: grid;
+  grid-auto-columns: minmax(0, 1fr);
+  grid-auto-flow: column;
+  gap: var(--space-16);
+  margin: 0;
+}
+:where(.sds) .share-bar-key > div, :where(.sds).share-bar-key > div {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: var(--space-2);
+  min-width: 0;
+}
+:where(.sds) .share-bar-key dt, :where(.sds).share-bar-key dt {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  overflow: hidden;
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  line-height: 16px;
+  white-space: nowrap;
+}
+:where(.sds) .share-bar-key dd, :where(.sds).share-bar-key dd {
+  margin: 0;
+  color: var(--black);
+  font-size: var(--text-16);
+  font-weight: 500;
+  line-height: 24px;
+  font-variant-numeric: var(--numeric);
+}
+:where(.sds) .share-bar-dot, :where(.sds).share-bar-dot {
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--share-tone);
+}
+
 /* The gallery frame: a third of a dashboard. */
 :where(.sds) .widget-frame, :where(.sds).widget-frame { width: 360px; max-width: 100%; }
 
+/* In dark mode the list is the page, edged by its border, and the head rises half a step above it. */
+html[data-theme="dark"] :where(.sds) .widget, html[data-theme="dark"] :where(.sds).widget { background: var(--white); }
+html[data-theme="dark"] :where(.sds) .widget-head, html[data-theme="dark"] :where(.sds).widget-head { background: var(--grey-low); }
 html[data-theme="dark"] :where(.sds) .widget-row:hover, html[data-theme="dark"] :where(.sds).widget-row:hover,
 html[data-theme="dark"] :where(.sds) .widget-more:hover, html[data-theme="dark"] :where(.sds).widget-more:hover,
-html[data-theme="dark"] :where(.sds) .widget-row :is(.mini-pill, .avatar:not(.is-empty)), html[data-theme="dark"] :where(.sds).widget-row :is(.mini-pill, .avatar:not(.is-empty)) { background: var(--grey); }
+html[data-theme="dark"] :where(.sds) .widget-row :is(.mini-pill, .avatar:not(.is-empty), .room-mark), html[data-theme="dark"] :where(.sds).widget-row :is(.mini-pill, .avatar:not(.is-empty), .room-mark) { background: var(--grey); }
+html[data-theme="dark"] :where(.sds) .widget-row:hover :is(.mini-pill, .avatar:not(.is-empty), .room-mark), html[data-theme="dark"] :where(.sds).widget-row:hover :is(.mini-pill, .avatar:not(.is-empty), .room-mark) { background: var(--black-12); }
+html[data-theme="dark"] :where(.sds) .widget-head .segmented, html[data-theme="dark"] :where(.sds).widget-head .segmented { background: var(--white); }
 html[data-theme="dark"] :where(.sds) .widget-head .text-icon:hover, html[data-theme="dark"] :where(.sds).widget-head .text-icon:hover,
-html[data-theme="dark"] :where(.sds) .widget-row:hover :is(.mini-pill, .avatar:not(.is-empty)), html[data-theme="dark"] :where(.sds).widget-row:hover :is(.mini-pill, .avatar:not(.is-empty)) { background: var(--black-12); }
+html[data-theme="dark"] :where(.sds) .widget-head .trigger:is(:hover, .is-hover, [aria-expanded="true"]), html[data-theme="dark"] :where(.sds).widget-head .trigger:is(:hover, .is-hover, [aria-expanded="true"]) { background: var(--black-12); }
 
 /* Run sheet. Each to-do is finished on its line. The table stays in todos.css. */
 

@@ -2,7 +2,7 @@
 
 import { ASSIGNEE_PEOPLE, Empty, Person, Status, TextIcon, Widget, WidgetEmpty, WidgetList, WidgetMore, WidgetRow, type StatusValue, type UrgencyValue } from "@lance-live/gallery-ui";
 import Link from "next/link";
-import { useLayoutEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { TodoEditor, type Todo } from "../todos/todo-editor";
 
 type HomeTodo = {
@@ -17,11 +17,8 @@ type HomeTodo = {
 };
 
 const ME = "Sarah";
-/** Rows before the list is measured. Then it shows as many as fit, and the rest wait behind "+ N more". */
+/** A glance, not the list. The rest wait behind "+ N more". */
 const LIMIT = 4;
-/** A row and the more link, from `--widget-row`, and the list's 2px inset on each side. */
-const ROW = 52;
-const INSET = 4;
 const RANK: Record<UrgencyValue, number> = { urgent: 0, high: 1, standard: 2, low: 3 };
 
 const TODOS: HomeTodo[] = [
@@ -44,21 +41,7 @@ function initialsOf(name: string) {
 export function TodosWidget() {
   const [todos, setTodos] = useState(TODOS);
   const [draft, setDraft] = useState<Todo | null>(null);
-  const list = useRef<HTMLUListElement>(null);
-  const [fit, setFit] = useState(LIMIT);
-  useLayoutEffect(() => {
-    const node = list.current;
-    if (!node) return;
-    const measure = () => {
-      const rows = Math.floor((node.clientHeight - INSET) / ROW);
-      setFit(rows >= todos.length ? todos.length : Math.max(rows - 1, 1));
-    };
-    measure();
-    const observer = new ResizeObserver(measure);
-    observer.observe(node);
-    return () => observer.disconnect();
-  }, [todos.length]);
-  const shown = [...todos].sort((a, b) => RANK[a.urgency] - RANK[b.urgency]).slice(0, fit);
+  const shown = [...todos].sort((a, b) => RANK[a.urgency] - RANK[b.urgency]).slice(0, LIMIT);
   const more = todos.length - shown.length;
 
   return (
@@ -93,7 +76,7 @@ export function TodosWidget() {
         }
       >
         {shown.length ? (
-          <WidgetList fill ref={list}>
+          <WidgetList>
             {shown.map((todo) => (
               <WidgetRow
                 key={todo.id}

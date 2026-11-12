@@ -1,14 +1,14 @@
 "use client";
 
-import { Avatar, Button, DepartmentChip, Icon, TextIcon, Widget, WidgetList, WidgetRow, type IconName } from "@lance-live/gallery-ui";
-import Link from "next/link";
-import { useLayoutEffect, useRef, useState, type CSSProperties, type MouseEvent, type ReactNode, type Ref } from "react";
+import { Button, Icon, TextIcon, type IconName } from "@lance-live/gallery-ui";
+import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type MouseEvent, type PointerEvent, type ReactNode, type Ref } from "react";
 import { PageLayout } from "../page-layout";
+import { useMakeRoom } from "../shell-panels";
 import { TodoEditor, type Todo } from "../todos/todo-editor";
-import { DndWidget } from "./dnd-widget";
-import { HousekeepingWidget } from "./housekeeping-widget";
-import { KnowledgeWidget } from "./knowledge-widget";
-import { TodosWidget } from "./todos-widget";
+import { HomeColumns, HomeWide } from "./columns";
+import { HOME_WIDGETS } from "./widget-catalog";
+import { WidgetGallery } from "./widget-gallery";
+import { place, useWidgetDrag, visibleIds, type Layout } from "./use-widget-drag";
 
 /** What the action's editor opens with. */
 type PatternDraft = Pick<Todo, "title" | "note" | "place" | "item" | "type" | "urgency"> & { room?: string };
@@ -66,49 +66,9 @@ const PATTERNS: Pattern[] = [
   },
 ];
 
-type HomeNote = { id: string; initials: string; name: string; time: string; title: string; preview: string };
-
-const NOTES: HomeNote[] = [
-  { id: "n1", initials: "CS", name: "Cy Smith", time: "9h", title: "11/10 NA shift", preview: "Guest Khari Emberly checked out two days early. I did not check them out in the system." },
-  { id: "n2", initials: "AC", name: "Ana Cruz", time: "17h", title: "11/10 PM shift", preview: "Room moves completed: 428 to 423. Rooms out of order: 618, 722, 924." },
-  { id: "n3", initials: "JR", name: "Jo Reyes", time: "1d", title: "AM shift", preview: "Smooth shift. Delta all assigned and checked in." },
-];
-
-type HomeCall = { id: string; phone: string; summary: string; outcome: string; time: string };
-
-const CALLS: HomeCall[] = [
-  { id: "c1", phone: "+1 (917) 822-3169", summary: "Asked about same-day spa bookings", outcome: "Needs attention", time: "12m" },
-  { id: "c2", phone: "+1 (310) 770-6689", summary: "Confirmed a late arrival for Friday", outcome: "Transferred", time: "40m" },
-  { id: "c3", phone: "+1 (866) 550-1427", summary: "Tried to reach the restaurant", outcome: "Missed", time: "1h" },
-];
-
-type HomeComplaint = { id: string; room: string; title: string; dept: string; time: string };
-
-const COMPLAINTS: HomeComplaint[] = [
-  { id: "p1", room: "917", title: "Smoking smell in the hallway", dept: "Management", time: "2h" },
-  { id: "p2", room: "905", title: "Noise from the room next door", dept: "Front Desk", time: "5h" },
-  { id: "p3", room: "412", title: "Shower drains slowly", dept: "Maintenance", time: "1d" },
-];
-
 function greeting(date: Date) {
   const hour = date.getHours();
   return hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
-}
-
-function Tile({ id, title, count, href, children }: { id: string; title: string; count: number; href: string; children: ReactNode }) {
-  return (
-    <section className="home-tile" aria-labelledby={id}>
-      <div className="home-section-head">
-        <h2 id={id}>
-          {title} <span className="home-count">{count}</span>
-        </h2>
-        <Link className="sds text-icon sm" href={href}>
-          All
-        </Link>
-      </div>
-      <ul className="home-list">{children}</ul>
-    </section>
-  );
 }
 
 /** How the cards trade places. Next sinks the front card into the slot behind. Previous settles the new one from above. */
@@ -210,6 +170,83 @@ function LanceCard({
   );
 }
 
+/** The widgets someone took off Home, kept in this browser. A widget added later shows until it is removed. */
+const HIDDEN_KEY = "home-hidden-widgets";
+/** Where each widget sits, kept in this browser. A widget added to the catalog later takes its catalog place. */
+const ORDER_KEY = "home-widget-order";
+const CATALOG = HOME_WIDGETS.map((widget) => widget.id);
+const BY_ID = new Map(HOME_WIDGETS.map((widget) => [widget.id, widget]));
+
+function savedOrder(saved: string[]) {
+  const order = saved.filter((id) => BY_ID.has(id));
+  CATALOG.forEach((id, index) => {
+    if (order.includes(id)) return;
+    const before = CATALOG.slice(0, index).reverse().find((item) => order.includes(item));
+    order.splice(before ? order.indexOf(before) + 1 : 0, 0, id);
+  });
+  return order;
+}
+
+/** In edit mode the widget shakes, stops taking clicks, and shows its remove mark in the corner. */
+/** Each widget gets its own phase and speed from its place, so neighbors never shake in step. */
+function shakeStyle(index: number) {
+  return { "--shake-delay": `${-((index * 113) % 280)}ms`, "--shake-time": `${250 + ((index * 47) % 70)}ms` } as CSSProperties;
+}
+
+/** In edit mode a widget drags to a new place. With focus, the arrow keys move it one place. */
+function EditableWidget({
+  id,
+  title,
+  index,
+  editing,
+  lifted,
+  onRemove,
+  onDrag,
+  onStep,
+  children,
+}: {
+  id: string;
+  title: string;
+  index: number;
+  editing: boolean;
+  lifted: boolean;
+  onRemove: () => void;
+  onDrag: (event: PointerEvent<HTMLDivElement>) => void;
+  onStep: (by: number) => void;
+  children: ReactNode;
+}) {
+  return (
+    <div
+      className={lifted ? "home-edit-item is-lifted" : "home-edit-item"}
+      style={shakeStyle(index)}
+      data-widget-id={id}
+      tabIndex={editing ? 0 : undefined}
+      aria-label={editing ? `${title}. Drag, or use the arrow keys, to move it.` : undefined}
+      onPointerDown={editing ? onDrag : undefined}
+      onKeyDown={
+        editing
+          ? (event) => {
+              if (event.target !== event.currentTarget) return;
+              const by = event.key === "ArrowUp" || event.key === "ArrowLeft" ? -1 : event.key === "ArrowDown" || event.key === "ArrowRight" ? 1 : 0;
+              if (!by) return;
+              event.preventDefault();
+              onStep(by);
+            }
+          : undefined
+      }
+    >
+      <div className="home-edit-body" inert={editing}>
+        {children}
+      </div>
+      {editing ? (
+        <button type="button" className="home-edit-remove" aria-label={`Remove ${title}`} onClick={onRemove}>
+          <Icon name="close" size={10} />
+        </button>
+      ) : null}
+    </div>
+  );
+}
+
 export default function HomePage() {
   const now = new Date();
   const [patterns, setPatterns] = useState(PATTERNS);
@@ -218,6 +255,45 @@ export default function HomePage() {
   const [deal, setDeal] = useState<Deal | null>(null);
   const [acting, setActing] = useState<Pattern | null>(null);
   const front = useRef<HTMLElement>(null);
+  const [editing, setEditing] = useState(false);
+  const makeRoom = useMakeRoom();
+  const makeRoomRef = useRef(makeRoom);
+  makeRoomRef.current = makeRoom;
+  useEffect(() => {
+    if (!editing) return;
+    return makeRoomRef.current();
+  }, [editing]);
+  const [layout, setLayout] = useState<Layout>(() => ({ order: CATALOG, hidden: new Set() }));
+  useEffect(() => {
+    const hidden = window.localStorage.getItem(HIDDEN_KEY);
+    const order = window.localStorage.getItem(ORDER_KEY);
+    setLayout({ order: savedOrder(order ? (JSON.parse(order) as string[]) : CATALOG), hidden: new Set(hidden ? (JSON.parse(hidden) as string[]) : []) });
+  }, []);
+  const saveLayout = (next: Layout) => {
+    setLayout(next);
+    window.localStorage.setItem(ORDER_KEY, JSON.stringify(next.order));
+    window.localStorage.setItem(HIDDEN_KEY, JSON.stringify([...next.hidden]));
+  };
+  const drag = useWidgetDrag(layout, saveLayout);
+  const shown = new Set(visibleIds(layout));
+  const toggleWidget = (id: string) => {
+    const hidden = new Set(layout.hidden);
+    if (!hidden.delete(id)) hidden.add(id);
+    saveLayout({ ...layout, hidden });
+  };
+  const [moved, setMoved] = useState<string | null>(null);
+  const stepWidget = (id: string, by: number) => {
+    const visible = visibleIds(layout);
+    const target = visible[visible.indexOf(id) + by];
+    if (!target) return;
+    saveLayout(place(layout, id, target, by > 0));
+    setMoved(id);
+  };
+  useEffect(() => {
+    if (!moved) return;
+    drag.boardRef.current?.querySelector<HTMLElement>(`[data-widget-id="${moved}"]`)?.focus();
+    setMoved(null);
+  }, [moved, drag.boardRef]);
   const at = Math.min(index, patterns.length - 1);
   const pattern = patterns[at];
   /** A keyboard press (`detail` 0) snaps. */
@@ -245,7 +321,7 @@ export default function HomePage() {
     return () => run.cancel();
   }, [deal]);
   return (
-    <PageLayout className="home-page" icon="home" title="Home">
+    <PageLayout className="home-page" icon="home" title="Home" header={false}>
       <div className="home-body">
         <div className="home-band" aria-hidden="true" />
         <div className="home-content">
@@ -290,59 +366,37 @@ export default function HomePage() {
             </div>
           ) : null}
 
-          <div className="home-tiles">
-            <HousekeepingWidget />
-            <TodosWidget />
-            <Widget
-              icon="doc"
-              title="Internal notes"
-              count={NOTES.length}
-              action={
-                <Link className="sds text-icon sm" href="/notes?new" aria-label="New note">
-                  <Icon name="plus" size={14} />
-                </Link>
-              }
-            >
-              <WidgetList>
-                {NOTES.map((note) => (
-                  <WidgetRow key={note.id} as={Link} href="/notes" lead={<Avatar initials={note.initials} name={note.name} />} title={note.title} subtitle={note.preview} subtitleTone="muted" meta={note.time} />
-                ))}
-              </WidgetList>
-            </Widget>
-            <KnowledgeWidget />
-            <DndWidget />
-
-            <Tile id="home-calls" title="Calls" count={CALLS.length} href="/calls">
-              {CALLS.map((call) => (
-                <li key={call.id}>
-                  <Link className="home-row home-line" href="/calls">
-                    <span className="home-row-copy">
-                      <span className="home-row-title">{call.phone}</span>
-                      <span className="home-row-meta">
-                        {call.outcome} · {call.summary}
-                      </span>
-                    </span>
-                    <span className="home-time">{call.time}</span>
-                  </Link>
-                </li>
-              ))}
-            </Tile>
-
-            <Tile id="home-complaints" title="Complaints" count={COMPLAINTS.length} href="/complaints">
-              {COMPLAINTS.map((complaint) => (
-                <li key={complaint.id}>
-                  <Link className="home-row home-complaint" href="/complaints">
-                    <span className="home-room">{complaint.room}</span>
-                    <span className="home-row-copy">
-                      <span className="home-row-title">{complaint.title}</span>
-                      <DepartmentChip name={complaint.dept} plain />
-                    </span>
-                    <span className="home-time">{complaint.time}</span>
-                  </Link>
-                </li>
-              ))}
-            </Tile>
-          </div>
+          <section className={editing ? "home-widgets is-editing" : "home-widgets"} aria-labelledby="home-widgets-title">
+            <div className="home-section-head">
+              <h2 id="home-widgets-title">Widgets</h2>
+              <Button variant="secondary" aria-pressed={editing} onClick={() => setEditing(!editing)}>
+                <Icon name={editing ? "check" : "edit"} size={14} />
+                {editing ? "Done" : "Edit"}
+              </Button>
+            </div>
+            <HomeColumns boardRef={drag.boardRef}>
+              {visibleIds(drag.view).map((id, index) => {
+                const { title, wide, Component } = BY_ID.get(id)!;
+                const item = (
+                  <EditableWidget
+                    key={id}
+                    id={id}
+                    title={title}
+                    index={index}
+                    editing={editing}
+                    lifted={drag.dragging === id}
+                    onRemove={() => toggleWidget(id)}
+                    onDrag={(event) => drag.start(event, id, "page")}
+                    onStep={(by) => stepWidget(id, by)}
+                  >
+                    <Component />
+                  </EditableWidget>
+                );
+                return wide ? <HomeWide key={id}>{item}</HomeWide> : item;
+              })}
+            </HomeColumns>
+          </section>
+          {editing ? <WidgetGallery shown={shown} onToggle={toggleWidget} onDrag={(event, id) => drag.start(event, id, "gallery")} onDone={() => setEditing(false)} /> : null}
         </div>
       </div>
       {acting ? (

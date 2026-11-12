@@ -54,6 +54,7 @@ export function PageLayout({
   tabs,
   toolbar,
   bodyClassName,
+  header = true,
   children,
   className,
   ...rest
@@ -67,6 +68,8 @@ export function PageLayout({
   toolbar?: ReactNode;
   /** Wraps everything under the header. The header stays outside so it can snap while the body moves. */
   bodyClassName?: string;
+  /** False leaves the header out, for a page whose content names it, such as Home's greeting. */
+  header?: boolean;
   children: ReactNode;
 } & Omit<HTMLAttributes<HTMLElement>, "title">) {
   const below = (
@@ -82,7 +85,7 @@ export function PageLayout({
   );
   return (
     <main className={["notes-page", "sds", className].filter(Boolean).join(" ")} {...rest}>
-      <PageHeader mark={icon} title={title} count={count != null ? String(count) : undefined} actions={actions ?? null} />
+      {header ? <PageHeader mark={icon} title={title} count={count != null ? String(count) : undefined} actions={actions ?? null} /> : null}
       {bodyClassName ? <div className={bodyClassName}>{below}</div> : below}
     </main>
   );

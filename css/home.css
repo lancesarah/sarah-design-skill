@@ -1,20 +1,10 @@
 /* Home: a photo behind the greeting and the top of Lance's patterns, then four tiles. */
-/* The photo runs edge to edge, so the body steps past the page's 2px inset and hides its scrollbar. */
-/* The header floats on the photo. The body slides up under it, past the page's top inset too. */
-.notes-page.home-page .page-head {
-  position: relative;
-  z-index: 1;
-  border-bottom-color: transparent;
-  pointer-events: none;
-}
-.notes-page.home-page .page-head > * { pointer-events: auto; }
-/* The mark sits on the sky, so it stays black in both themes. */
-.notes-page.home-page .page-head .page-mark,
-.notes-page.home-page .page-head .page-mark .i { color: var(--on-image-ink); }
+/* The photo runs edge to edge, so the body steps past the page's 2px inset and hides its scrollbar. Home has no header: the greeting names the page. */
 .home-page .home-body {
+  container-type: inline-size;
   position: relative;
   min-height: 0;
-  margin: calc(-60px - var(--space-2)) calc(var(--space-2) * -1) 0;
+  margin: calc(var(--space-2) * -1) calc(var(--space-2) * -1) 0;
   overflow-y: auto;
   scrollbar-width: none;
 }
@@ -25,13 +15,20 @@
   height: 422px;
   background: var(--grey) url("/images/home-dunes.jpg") center 62% / cover no-repeat;
 }
+/* Registered so the inset resolves to px here, against the body, and the gallery inherits the number rather than re-reading 100cqi against its own container. */
+@property --home-inset {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 16px;
+}
 .home-content {
+  --home-inset: max(var(--space-16), calc((100cqi - 1040px) / 2));
   container: home / inline-size;
   position: relative;
   display: flex;
   flex-direction: column;
   gap: var(--space-25);
-  padding: 242px max(var(--space-16), calc((100% - 1040px) / 2)) 80px;
+  padding: 242px var(--home-inset) 80px;
 }
 
 /* Sits 16px over the card, tighter than the page's 25px gap. */
@@ -117,6 +114,56 @@
 }
 .home-prev .i { transform: rotate(90deg); }
 .home-next .i { transform: rotate(-90deg); }
+/* Meetings: the week as seven days. Clear at rest, a step on hover, a step more when picked. Today's date is blue, and a dot marks a day with meetings. */
+.home-week-label { padding-right: var(--space-4); }
+.home-week {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: var(--space-8);
+  padding: var(--space-8);
+  border-bottom: 1px solid var(--grey);
+}
+.home-week-day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-8) 0 var(--space-4);
+  border: 0;
+  border-radius: var(--radius-control);
+  background: transparent;
+  color: var(--black);
+  font: inherit;
+  cursor: pointer;
+  transition: background-color 150ms var(--ease-out);
+}
+.home-week-day:hover { background: var(--sidebar-grey); }
+html[data-theme="dark"] .home-week-day:hover { background: var(--grey); }
+/* The picked day is the filter chip's blue, and it keeps that fill on hover. */
+.home-week-day[aria-selected="true"],
+html[data-theme="dark"] .home-week-day[aria-selected="true"] { background: var(--filter-chip-bg); }
+.home-week-day[aria-selected="true"] .home-week-date { color: var(--action); }
+.home-week-weekday {
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  line-height: 16px;
+}
+.home-week-date {
+  font-size: var(--text-14);
+  font-weight: 500;
+  line-height: 20px;
+  font-variant-numeric: var(--numeric);
+}
+.home-week-day.is-today .home-week-date { color: var(--action); }
+.home-week-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+}
+.home-week-dot.is-busy { background: var(--black-25); }
+@media (prefers-reduced-motion: reduce) {
+  .home-week-day { transition: none; }
+}
 
 .home-lance-pattern {
   display: flex;
@@ -213,13 +260,40 @@
   @keyframes home-deal-fade { to { opacity: 0; } }
 }
 
+/* Two columns that stack on their own: each widget hugs its content, and neither column waits for the other's rows. */
+/* The widgets are one section: its title sits close to the grid it names, and the section sits farther from Lance's card above. */
+.home-widgets {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+  margin-top: calc(40px - var(--space-25));
+}
 .home-tiles {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--space-8);
+  align-items: start;
+  gap: var(--space-12);
 }
+.home-col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+  min-width: 0;
+}
+.home-cell > * { width: 100%; }
+.home-board {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+}
+.home-wide > * { width: 100%; }
 @container home (max-width: 760px) {
-  .home-tiles { grid-template-columns: minmax(0, 1fr); }
+  .home-tiles {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .home-col { display: contents; }
 }
 
 /* A widget's summary: one figure leads, its totals sit beside it, a meter runs underneath. Housekeeping and Knowledge health share it. */
@@ -245,11 +319,18 @@
   font-variant-numeric: var(--numeric);
 }
 .home-summary-of { color: var(--black-25); }
+/* A summary with nothing under it needs no rule. */
+.home-summary.is-alone { border-bottom: 0; }
 .home-summary-label {
-  margin-top: var(--space-8);
+  margin-top: var(--space-4);
   color: var(--text-muted);
   font-size: var(--text-14);
   line-height: 20px;
+}
+/* A figure inside the label, such as the rating, takes strong ink so it reads before its words. */
+.home-summary-label-figure {
+  color: var(--black);
+  font-variant-numeric: var(--numeric);
 }
 /* Clean fills in blue, left stays light grey, DND takes the end in the meter's darker grey. */
 .home-summary-meter { grid-column: 1 / -1; }
@@ -287,14 +368,8 @@
   border-radius: 999px;
 }
 .home-summary-key.is-clean { background: var(--action); }
-/* Room numbers run three or four digits; a fixed slot keeps the moons in one column. */
-.home-dnd-room {
-  min-width: 4ch;
-  font-size: var(--text-14);
-  font-weight: 500;
-  line-height: 20px;
-  font-variant-numeric: var(--numeric);
-}
+/* The meter's light grey ticks, so the key matches the part it names. */
+.home-summary-key.is-waiting { background: var(--black-12); }
 .home-dnd-state {
   display: inline-flex;
   align-items: center;
@@ -303,14 +378,504 @@
   font-weight: 400;
 }
 .home-dnd-state .mini-pill { color: var(--black); }
-.home-dnd-check {
+/* Departures: three numbers side by side, centered in the card, each label under its figure, a rule between them. */
+/* A widget's check, such as Verified, sits on the right of its title. */
+.widget-head .home-check { padding-right: var(--space-8); }
+/* One line in the head: the answer, then its detail after a dot. */
+.widget-head .home-check-copy {
+  flex-direction: row;
+  align-items: baseline;
+  gap: var(--space-4);
+  font-size: var(--text-12);
+  line-height: 16px;
+  white-space: nowrap;
+}
+/* A step under the head title, so the status reads as its note. The mark shrinks with it. */
+.widget-head .home-check { gap: var(--space-4); }
+.widget-head .home-check svg {
+  width: 14px;
+  height: 14px;
+}
+.widget-head .home-check-sub::before {
+  content: "·";
+  margin-right: var(--space-4);
+}
+.home-departures-stats {
+  display: grid;
+  flex: 1;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: center;
+  margin: 0;
+  padding: var(--space-16);
+}
+.home-departures-stats > div {
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  gap: var(--space-8);
+  padding: var(--space-8) 0;
+  text-align: center;
+}
+.home-departures-stats > div + div { border-left: 1px solid var(--grey); }
+.home-departures-stats dt {
+  color: var(--text-muted);
+  font-size: var(--text-14);
+  line-height: 20px;
+}
+.home-departures-stats dd {
+  margin: 0;
+  color: var(--black);
+  font-size: var(--text-24);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  font-variant-numeric: var(--numeric);
+}
+/* A tally: one figure and its answer share a line, then one line per part. Readings and Tickets by channel share it. */
+.home-tally-summary { padding: var(--space-16) var(--space-16) var(--space-8); }
+.home-tally-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-16);
+  margin: 0;
+}
+.home-tally-label {
+  margin-left: var(--space-8);
+  color: var(--text-muted);
+  font-size: var(--text-14);
+}
+.home-tally-aside {
+  color: var(--text-muted);
+  font-size: var(--text-14);
+}
+.home-tally-aside.is-warn { color: var(--urgency-urgent); }
+.home-readings-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--black-25);
+}
+.home-readings-dot.is-open { background: var(--black); }
+.home-tally-count {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-8);
+  color: var(--text-muted);
+  font-size: var(--text-14);
+  font-variant-numeric: var(--numeric);
+}
+.home-tally-count.is-open {
+  color: var(--black);
+  font-weight: 500;
+}
+/* Tickets by channel: one bar per channel, on the share bar key's columns and in its tones. The busiest bar is the full 64px. */
+.home-bars {
+  display: grid;
+  grid-auto-columns: minmax(0, 1fr);
+  grid-auto-flow: column;
+  gap: var(--space-16);
+  margin: var(--space-8) 0 0;
+}
+/* The markup keeps label then figure, so a screen reader reads "Voice, 46". The bar is drawn first and the figure sits over the label.
+   The track is 72px, hatched for the part not filled. The fill sits on its bottom, the busiest channel at full height. */
+.home-bars > div {
+  --bar-height: 72px;
+  display: grid;
+  grid-template-rows: var(--bar-height) auto auto;
+  min-width: 0;
+}
+.home-bars > div::before,
+.home-bars > div::after {
+  content: "";
+  grid-row: 1;
+  grid-column: 1;
+}
+/* Fine 1px lines on the page, a hairline box around them. */
+.home-bars > div::before {
+  box-shadow: inset 0 0 0 1px var(--line);
+  background: repeating-linear-gradient(-45deg, var(--line) 0 1px, transparent 1px 5px);
+}
+.home-bars > div::after {
+  align-self: end;
+  border-radius: var(--radius-well) var(--radius-well) 0 0;
+  height: max(var(--space-4), calc(var(--bar) * var(--bar-height)));
+  background: var(--bar-tone);
+  clip-path: inset(100% 0 0 0);
+}
+.home-bars.is-seen > div::after {
+  clip-path: inset(0);
+  animation: home-bar-fill 480ms var(--ease-out) calc(var(--at, 0) * 40ms) both;
+}
+/* Fills once from the bottom, the first time the chart is on screen. Clipped, not scaled, so the rounded corners hold. */
+@keyframes home-bar-fill {
+  from { clip-path: inset(100% 0 0 0); }
+  to { clip-path: inset(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .home-bars > div::after { clip-path: inset(0); animation: none; }
+}
+.home-bars > div.is-action { --bar-tone: var(--action); }
+.home-bars > div.is-strong { --bar-tone: var(--black); }
+.home-bars > div.is-muted { --bar-tone: var(--black-50); }
+.home-bars > div.is-quiet { --bar-tone: var(--black-25); }
+.home-bars dd {
+  grid-row: 2;
+  margin: var(--space-8) 0 0;
+  color: var(--black);
+  font-size: var(--text-16);
+  font-weight: 500;
+  line-height: 24px;
+  font-variant-numeric: var(--numeric);
+}
+.home-bars dt {
+  grid-row: 3;
+  overflow: hidden;
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  line-height: 16px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+/* Activity: the period sits in the head at its own width. The key reads "Call 12" on one line per kind. */
+.widget-head :is(.home-activity-period, .home-range) { width: auto; }
+.home-key {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4) var(--space-16);
+  margin: var(--space-8) 0 0;
+}
+.home-key > div {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-4);
+}
+.home-key dt {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  line-height: 16px;
+}
+.home-key dd {
+  margin: 0;
+  color: var(--black);
+  font-size: var(--text-12);
+  font-weight: 500;
+  line-height: 16px;
+  font-variant-numeric: var(--numeric);
+}
+.home-summary-key.is-call { background: var(--action); }
+.home-summary-key.is-email { background: var(--black-50); }
+.home-summary-key.is-sms { background: var(--black-25); }
+/* One bar per stretch of time on the Tickets bars' hatched track. The stack fills from the bottom, calls first, the busiest stretch at full height. */
+.home-activity-chart {
+  display: grid;
+  grid-auto-columns: minmax(0, 1fr);
+  grid-auto-flow: column;
+  gap: var(--space-8);
+  margin: var(--space-16) 0 0;
+  padding: 0;
+  list-style: none;
+}
+.home-activity-chart > li {
+  --bar-height: 96px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  min-width: 0;
+}
+.home-activity-track {
+  display: flex;
+  align-items: flex-end;
+  height: var(--bar-height);
+  box-shadow: inset 0 0 0 1px var(--line);
+  background: repeating-linear-gradient(-45deg, var(--line) 0 1px, transparent 1px 5px);
+}
+.home-activity-stack {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 1px;
+  width: 100%;
+  height: max(var(--space-4), calc(var(--bar) * var(--bar-height)));
+  overflow: hidden;
+  border-radius: var(--radius-well) var(--radius-well) 0 0;
+  clip-path: inset(100% 0 0 0);
+}
+.home-activity-stack > span { flex-basis: 0; min-height: 2px; }
+.home-activity-stack > .is-call { background: var(--action); }
+.home-activity-stack > .is-email { background: var(--black-50); }
+.home-activity-stack > .is-sms { background: var(--black-25); }
+.home-activity-chart.is-seen .home-activity-stack {
+  clip-path: inset(0);
+  animation: home-bar-fill 480ms var(--ease-out) calc(var(--at, 0) * 40ms) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .home-activity-stack { clip-path: inset(0); animation: none; }
+  .home-activity-chart.is-seen .home-activity-stack { animation: none; }
+}
+.home-activity-label {
+  overflow: hidden;
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  line-height: 16px;
+  text-align: center;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+/* Pipeline stages: seven bars, so the gap steps down from the four channels'. */
+.home-bars.is-compact { gap: var(--space-8); }
+/* Lead trend: a bar a day for 30 days, the busiest day full. They fill left to right, the first time the chart is on screen. */
+.home-trend-body { padding-bottom: var(--space-16); }
+.home-trend {
+  --bar-height: 64px;
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-2);
+  height: var(--bar-height);
+  margin-top: var(--space-16);
+}
+.home-trend > span {
+  flex: 1;
+  height: max(var(--space-2), calc(var(--bar) * var(--bar-height)));
+  border-radius: var(--radius-well) var(--radius-well) 0 0;
+  background: var(--black-25);
+  clip-path: inset(100% 0 0 0);
+}
+.home-trend.is-seen > span {
+  clip-path: inset(0);
+  animation: home-bar-fill 480ms var(--ease-out) calc(var(--at, 0) * 12ms) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .home-trend > span,
+  .home-trend.is-seen > span { clip-path: inset(0); animation: none; }
+}
+.home-trend-axis {
+  display: flex;
+  justify-content: space-between;
+  margin: var(--space-8) 0 0;
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  line-height: 16px;
+}
+/* Upsell requests: a widget row that is answered in place, so it is not a link and has no hover. Deny and Confirm sit on the right. */
+.home-upsell {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr) max-content;
+  align-items: center;
+  column-gap: 10px;
+  min-height: var(--widget-row);
+  padding: 6px 14px;
+}
+.home-upsell-copy {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.home-upsell-offer,
+.home-upsell-sub {
+  overflow: hidden;
+  font-size: var(--text-14);
+  line-height: 20px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.home-upsell-offer { color: var(--black); font-weight: 500; }
+.home-upsell-sub { color: var(--text-muted); }
+.home-upsell-price { color: var(--black); font-variant-numeric: var(--numeric); }
+.home-upsell-actions {
+  display: flex;
+  gap: var(--space-8);
+}
+.home-upsell-answer {
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  line-height: 16px;
+}
+/* Room map: the key, then one row per floor, the floor on the left and its rooms wrapping beside it. A long map scrolls under the key. */
+/* The filter is a secondary button on the grey head, so its hover is one step past the head. */
+.widget-head .btn-secondary:hover,
+.widget-head .btn-secondary[aria-expanded="true"] { background: var(--grey); }
+.widget-head .btn-secondary .i { color: var(--text-muted); }
+/* The filter menu: Type and Floor, each with its current value before the chevron. Each opens its options to the side. */
+.home-map-menu-value {
+  margin-left: auto;
+  padding-left: var(--space-16);
+  color: var(--text-muted);
+}
+.home-map-menu .home-map-menu-value + .menu-next { margin-left: 0; }
+.home-map-menu .menu-next { color: var(--black-50); transform: rotate(-90deg); }
+.home-map-key { margin: 0; padding: var(--space-16) var(--space-16) var(--space-8); }
+.home-map-key dt .i { color: var(--text-muted); }
+.home-map-key-mark {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  box-shadow: inset 0 0 0 1px var(--black-12);
+  background: var(--sidebar-grey);
+}
+.home-map-key-mark.is-occupied {
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--urgency-high) 40%, transparent);
+  background: var(--urgency-high-bg);
+}
+.home-map {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  max-height: 360px;
+  padding: var(--space-8) var(--space-16) var(--space-16);
+  overflow-y: auto;
+}
+.home-map-floor {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr);
+  align-items: start;
+}
+.home-map-floor h3 {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  font-weight: 400;
+  line-height: 40px;
+  white-space: nowrap;
+}
+.home-map-floor ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+/* The room mark's fill and ring, at the map's size. An occupied room takes the open status's orange, tinted. */
+.home-map-room {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  width: 48px;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-control);
+  box-shadow: inset 0 0 0 1px var(--black-12);
+  background: var(--sidebar-grey);
+  color: var(--black);
+  font: inherit;
+  transition: background-color 150ms var(--ease-out), scale 120ms var(--ease-out);
+}
+.home-map-room.is-occupied {
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--urgency-high) 40%, transparent);
+  background: var(--urgency-high-bg);
+}
+button.home-map-room { cursor: pointer; }
+button.home-map-room:hover { background: var(--grey); }
+button.home-map-room.is-occupied:hover { background: color-mix(in srgb, var(--urgency-high) 12%, transparent); }
+button.home-map-room:active { scale: 0.96; }
+html[data-theme="dark"] .home-map-room:not(.is-occupied) { background: var(--grey); }
+html[data-theme="dark"] button.home-map-room:not(.is-occupied):hover { background: var(--black-12); }
+.home-map-number {
+  font-size: var(--text-12);
+  font-weight: 500;
+  line-height: 16px;
+  font-variant-numeric: var(--numeric);
+}
+.home-map-marks {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: 10px;
+  color: var(--text-muted);
+}
+.home-map-ring {
+  width: 8px;
+  height: 8px;
+  border: 1.5px solid var(--urgency-high);
+  border-radius: 50%;
+}
+.home-map-note {
+  margin: 0;
+  padding: var(--space-8) var(--space-16) var(--space-16);
+  border-top: 1px solid var(--grey);
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  line-height: 16px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .home-map-room { transition: none; }
+  button.home-map-room:active { scale: none; }
+}
+/* Voice overview: calls handled and the rating split the top in half, a rule between them, like Departures. The columns and gap match the share bar key, so the rating sits over the second share. */
+.home-voice-split {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-16);
+}
+.home-voice-split > p + p { position: relative; }
+.home-voice-split > p + p::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 calc(-1 * var(--space-8));
+  width: 1px;
+  background: var(--grey);
+}
+/* The rating stars fill like Meter: --action over --black-12. They take the figure's 24px line so both halves stay level. */
+.home-stars {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: 24px;
+}
+.home-star {
+  position: relative;
+  width: 20px;
+  height: 20px;
+  color: var(--black-12);
+}
+.home-star svg {
+  display: block;
+  width: 20px;
+  height: 20px;
+}
+.home-star path {
+  fill: currentColor;
+  stroke: currentColor;
+  stroke-width: 1;
+  stroke-linejoin: round;
+}
+.home-star-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  overflow: hidden;
+  color: var(--action);
+}
+.home-tickets-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+  padding-bottom: var(--space-16);
+}
+.home-readings-warn {
+  flex-shrink: 0;
+  color: var(--urgency-urgent);
+}
+.home-tally .widget-row-title { font-weight: 400; }
+/* A dot needs no icon-wide column. */
+.home-readings .widget-row {
+  grid-template-columns: 6px minmax(0, 1fr) max-content;
+  column-gap: var(--space-12);
+}
+.home-check {
   display: flex;
   align-items: center;
   gap: var(--space-8);
   margin: 0;
 }
-.home-dnd-check svg { flex-shrink: 0; }
-.home-dnd-check-copy {
+.home-check svg { flex-shrink: 0; }
+.home-check.is-warn svg { color: var(--urgency-urgent); }
+.home-check-copy {
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
@@ -319,15 +884,18 @@
   font-weight: 500;
   line-height: 20px;
 }
-.home-dnd-check-sub {
+.home-check-sub {
   color: var(--text-muted);
   font-size: var(--text-12);
   font-weight: 400;
   line-height: 16px;
 }
+/* The line sits over the button, at the bottom of the card, instead of under the summary. */
+.home-summary:has(~ .home-summary-cta) { border-bottom: 0; }
 .home-summary-cta {
   margin-top: auto;
   padding: var(--space-16);
+  border-top: 1px solid var(--grey);
 }
 .home-hk-person-left {
   color: var(--black);
@@ -335,8 +903,221 @@
   font-weight: 500;
   font-variant-numeric: var(--numeric);
 }
+/* PMs: today's areas in the head, and each program's pace on its row. */
+.home-pm-today {
+  padding-right: var(--space-8);
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  font-variant-numeric: var(--numeric);
+}
+.home-pm-behind,
+.home-pm-on-track {
+  font-size: var(--text-12);
+  line-height: 16px;
+  font-variant-numeric: var(--numeric);
+}
+.home-pm-behind { color: var(--destructive); font-weight: 500; }
+/* Guestroom PMs: a ring beside the figure. It fills like Meter, --action over --black-12, and starts at the top. */
+.home-ring-summary {
+  display: flex;
+  align-items: center;
+  gap: var(--space-16);
+  padding: var(--space-16);
+}
+.home-ring {
+  position: relative;
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+}
+.home-ring svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+.home-ring circle {
+  fill: none;
+  stroke-width: 6;
+}
+.home-ring-track { stroke: var(--black-12); }
+.home-ring-fill {
+  stroke: var(--action);
+  stroke-linecap: round;
+}
+.home-ring-figure {
+  color: var(--black);
+  font-size: var(--text-14);
+  font-weight: 500;
+  font-variant-numeric: var(--numeric);
+}
+.home-ring-late { margin-top: var(--space-4); }
+/* Leaderboards: the top three stand on a podium, second, first, third. The steps are one fill step from the card and stand on its rule. */
+.home-podium {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: end;
+  gap: var(--space-8);
+  margin: 0;
+  padding: var(--space-20) var(--space-16) 0;
+  border-bottom: 1px solid var(--grey);
+  list-style: none;
+}
+.home-podium-place {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 0;
+  text-align: center;
+}
+.home-podium-place.is-1 { order: 2; }
+.home-podium-place.is-2 { order: 1; }
+.home-podium-place.is-3 { order: 3; }
+.home-podium-name {
+  max-width: 100%;
+  margin-top: var(--space-8);
+  overflow: hidden;
+  color: var(--black);
+  font-size: var(--text-14);
+  font-weight: 500;
+  line-height: 20px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.home-podium-score {
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  line-height: 16px;
+  font-variant-numeric: var(--numeric);
+}
+.home-podium-step {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  margin-top: var(--space-12);
+  border-radius: 6px 6px 0 0;
+  background: var(--sidebar-grey);
+  color: var(--black-25);
+  font-size: var(--text-20);
+  font-weight: 500;
+}
+.is-1 > .home-podium-step { height: 64px; }
+.is-2 > .home-podium-step { height: 44px; }
+.is-3 > .home-podium-step { height: 32px; }
+html[data-theme="dark"] .home-podium-step { background: var(--grey); }
+/* First place takes the filter chip's blue, the one tint the system has. */
+.is-1 > .home-podium-step,
+html[data-theme="dark"] .is-1 > .home-podium-step {
+  border: 1px solid var(--action);
+  border-bottom: 0;
+  background: var(--filter-chip-bg);
+  color: var(--action);
+  box-shadow: var(--shadow-card);
+}
+/* The named avatar's ring, as in a widget row. First place lifts off the card with the card shadow. */
+.home-podium .avatar:not(.is-empty):not(.is-photo) { border: 1px solid var(--black-12); }
+.home-podium .is-1 .avatar { box-shadow: var(--shadow-card); }
+/* A place past the podium leads its row as the bare number. */
+.home-rank {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  font-weight: 500;
+  font-variant-numeric: var(--numeric);
+}
+/* Maintenance overview: PMs completed leads, then three figures in columns split by a hairline. The columns take no fill. */
+.home-maint {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-20);
+  padding: var(--space-16);
+}
+.home-maint-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 0;
+  padding-top: var(--space-16);
+  border-top: 1px solid var(--grey);
+}
+.home-maint-stats > div {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: var(--space-2);
+  min-width: 0;
+}
+.home-maint-stats > div + div {
+  padding-left: var(--space-16);
+  border-left: 1px solid var(--grey);
+}
+.home-maint-stats dt {
+  overflow: hidden;
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  line-height: 16px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.home-maint-stats dd {
+  margin: 0;
+  color: var(--black);
+  font-size: var(--text-16);
+  font-weight: 500;
+  line-height: 24px;
+  font-variant-numeric: var(--numeric);
+}
+.home-maint-stats dd.is-late { color: var(--destructive); }
+/* PM compliance: a half dial of Meter's ticks, done in --action over --black-12, with the percent under the arch. */
+.home-gauge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-20);
+  padding: var(--space-20) var(--space-16) var(--space-16);
+}
+.home-gauge-dial {
+  position: relative;
+  width: 220px;
+}
+.home-gauge-dial svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.home-gauge-dial line {
+  stroke: var(--black-12);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+.home-gauge-dial line.is-done { stroke: var(--action); }
+.home-gauge-read {
+  position: absolute;
+  inset: auto 0 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0;
+}
+.home-gauge-read .home-summary-label { margin-top: var(--space-2); }
+.home-gauge .home-summary-stats {
+  justify-content: center;
+  text-align: center;
+}
+.home-gauge .home-summary-stats dt { justify-content: center; }
+.home-pm-on-track { color: var(--text-muted); }
+/* A figure in a row's trail, such as a ticket count or a charge, in strong ink. */
+.home-trail-figure {
+  color: var(--black);
+  font-size: var(--text-12);
+  font-weight: 500;
+  line-height: 16px;
+  font-variant-numeric: var(--numeric);
+}
 .home-tile {
-  min-height: 230px;
   padding: var(--space-16);
   border-radius: var(--radius-card);
   background: var(--sidebar-grey);
@@ -405,16 +1186,7 @@
   font-size: var(--text-12);
   line-height: 20px;
 }
-.home-room {
-  font-size: var(--text-16);
-  font-weight: 500;
-  line-height: 20px;
-  font-variant-numeric: var(--numeric);
-}
-.home-room:empty::before { content: "–"; color: var(--black-25); }
-
 .home-line { grid-template-columns: minmax(0, 1fr) auto; }
-.home-complaint { grid-template-columns: 44px minmax(0, 1fr) auto; }
 
 html[data-theme="dark"] .home-tile { background: var(--grey); }
 html[data-theme="dark"] .home-lance-stack { --home-lance-side: var(--grey); }
@@ -431,4 +1203,247 @@ html[data-theme="dark"] .home-row:hover :is(.mini-pill, .avatar:not(.is-empty)) 
   .home-lance-actions { border-bottom-left-radius: var(--radius-card); }
   /* Actions sit at the bottom here, so the card behind is all grey. */
   .home-lance-stack.has-more::before { background: var(--home-lance-side); }
+}
+
+/* Edit mode. Each widget shakes and shows a remove mark in its top-left corner. The gallery docks under the widgets. */
+.home-edit-item { position: relative; }
+.home-edit-body > * { width: 100%; }
+.home-widgets.is-editing .home-edit-item { animation: home-shake var(--shake-time, 280ms) var(--ease-in-out) var(--shake-delay, 0ms) infinite alternate; }
+.home-widgets.is-editing .home-wide .home-edit-item { animation-name: home-shake-wide; }
+@keyframes home-shake {
+  from { rotate: -0.4deg; }
+  to { rotate: 0.4deg; }
+}
+/* The room map spans the row, so the same angle would swing its ends much further. */
+@keyframes home-shake-wide {
+  from { rotate: -0.1deg; }
+  to { rotate: 0.1deg; }
+}
+.home-edit-remove {
+  position: absolute;
+  top: calc(var(--space-8) * -1);
+  left: calc(var(--space-8) * -1);
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-circle);
+  background: var(--white);
+  color: var(--black);
+  box-shadow: var(--stroke), var(--shadow-card);
+  cursor: pointer;
+  animation: home-remove-in 160ms var(--ease-out);
+  transition: background-color var(--motion-hover) ease, scale 160ms var(--ease-out);
+}
+.home-edit-remove:hover { background: var(--sidebar-grey); }
+.home-edit-remove:active { scale: 0.98; }
+.home-edit-remove::before {
+  content: "";
+  position: absolute;
+  inset: calc(var(--space-4) * -1);
+}
+html[data-theme="dark"] .home-edit-remove { background: var(--grey); }
+html[data-theme="dark"] .home-edit-remove:hover { background: var(--black-12); }
+@keyframes home-remove-in {
+  from { opacity: 0; scale: 0.9; }
+  to { opacity: 1; scale: 1; }
+}
+/* Dragging. The widget lifts into a ghost under the pointer and leaves its slot open where it will land. */
+.home-widgets.is-editing .home-edit-item { cursor: grab; }
+.home-widgets.is-editing .home-edit-item:focus-visible {
+  outline: 2px solid var(--action);
+  outline-offset: var(--space-2);
+  border-radius: var(--radius-card);
+}
+.home-widgets.is-editing .home-edit-item.is-lifted {
+  border-radius: var(--radius-card);
+  background: var(--sidebar-grey);
+  animation: none;
+}
+html[data-theme="dark"] .home-widgets.is-editing .home-edit-item.is-lifted { background: var(--grey); }
+.home-edit-item.is-lifted > * { visibility: hidden; }
+.home-drag-ghost {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 30;
+  margin: 0;
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-menu);
+  pointer-events: none;
+  transform-origin: 0 0;
+  will-change: transform;
+}
+.home-drag-ghost .home-edit-body > * { width: 100%; }
+body.is-widget-dragging,
+body.is-widget-dragging * { cursor: grabbing; }
+body.is-widget-dragging { user-select: none; }
+
+/* The widget gallery. It docks on the bottom of the page, a little wider than the widgets, and meets the page's edge square. */
+.home-content:has(> .home-gallery) { padding-bottom: 0; }
+.home-page .home-body:has(.home-gallery) { margin-bottom: calc(var(--space-2) * -1); }
+.home-gallery {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  height: 294px;
+  margin: 0 calc(min(var(--space-16) * 3, var(--home-inset)) * -1);
+  overflow: hidden;
+  border-radius: var(--radius-card) var(--radius-card) 0 0;
+  background: var(--white);
+  box-shadow: var(--stroke), var(--ring-menu), var(--elevation-menu);
+  animation: home-gallery-in 240ms var(--ease-out);
+}
+@keyframes home-gallery-in {
+  from { transform: translateY(var(--space-25)); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+.home-gallery-body {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+.home-gallery-side {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: var(--space-12);
+  width: 220px;
+  padding: var(--space-12);
+  background: var(--sidebar-grey);
+}
+.home-gallery-side .search {
+  width: 100%;
+  height: 32px;
+  background: var(--grey);
+}
+.home-gallery-cats {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.home-gallery-cat {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  min-height: 30px;
+  padding: var(--space-4) var(--space-8);
+  border: 0;
+  border-radius: var(--radius-control);
+  background: transparent;
+  color: var(--black-50);
+  font: inherit;
+  font-size: var(--text-14);
+  text-align: left;
+  cursor: pointer;
+}
+.home-gallery-cat .dept {
+  flex: 1;
+  min-width: 0;
+  color: inherit;
+  font-size: var(--text-14);
+}
+.home-gallery-cat:hover,
+.home-gallery-cat[aria-selected="true"] { background: var(--grey); }
+.home-gallery-cat[aria-selected="true"] { color: var(--black); }
+.home-gallery-cat-name { flex: 1; min-width: 0; }
+.home-gallery-cat-count {
+  color: var(--black-25);
+  font-variant-numeric: var(--numeric);
+}
+.home-gallery-cat[aria-selected="true"] .home-gallery-cat-count { color: var(--text-muted); }
+.home-gallery-main {
+  flex: 1;
+  min-width: 0;
+  padding: var(--space-12) var(--space-16) var(--space-16);
+  overflow-y: auto;
+}
+.home-gallery-title {
+  margin: 0 0 var(--space-12);
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  font-weight: 500;
+  line-height: 16px;
+}
+.home-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: var(--space-8);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.home-gallery-tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  min-width: 0;
+  padding: var(--space-8);
+  border-radius: var(--radius-control);
+  transition: background-color var(--motion-hover) ease;
+}
+.home-gallery-tile:hover { background: var(--sidebar-grey); }
+html[data-theme="dark"] .home-gallery-tile:hover { background: var(--grey); }
+.home-gallery-tile:has(> .home-gallery-pick[aria-pressed="true"]),
+html[data-theme="dark"] .home-gallery-tile:has(> .home-gallery-pick[aria-pressed="true"]) { background: var(--action-tint); }
+.home-gallery-tile:active { scale: 0.98; }
+/* A live widget at half size. The frame clips it to a glance. */
+.home-gallery-preview {
+  height: 136px;
+  overflow: hidden;
+  border-radius: var(--radius-card);
+  pointer-events: none;
+}
+.home-gallery-scale {
+  width: 200%;
+  transform: scale(0.5);
+  transform-origin: top left;
+}
+.home-gallery-scale > * { width: 100%; }
+.home-gallery-name {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  min-width: 0;
+  color: var(--black);
+  font-size: var(--text-12);
+  line-height: 16px;
+}
+.home-gallery-name > span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.home-gallery-name .i { flex: none; color: var(--action); }
+.home-gallery-pick {
+  position: absolute;
+  inset: 0;
+  padding: 0;
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
+  cursor: pointer;
+}
+.home-gallery-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-12);
+  padding: var(--space-10) var(--space-12) var(--space-10) var(--space-16);
+  border-top: 1px solid var(--line);
+}
+.home-gallery-foot p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: var(--text-12);
+}
+@media (prefers-reduced-motion: reduce) {
+  .home-widgets.is-editing .home-edit-item,
+  .home-edit-remove,
+  .home-gallery { animation: none; }
 }

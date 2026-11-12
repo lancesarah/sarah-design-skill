@@ -36,8 +36,10 @@ import {
   Day,
   Empty,
   Meter,
+  ShareBar,
   Widget,
   WidgetEmpty,
+  WidgetFacts,
   WidgetList,
   WidgetMore,
   WidgetRow,
@@ -77,6 +79,7 @@ import {
   DataTable,
   DateCell,
   RoomCell,
+  RoomMark,
   SidePhotos,
   SideRoom,
   FactField,
@@ -1713,6 +1716,35 @@ export function Rooms() {
           </Example>
         </DocPage>
       )}
+      {page === "share-bar" && (
+        <DocPage title="Share bar" description="One whole split into shares. A plain bar with a solid part per share, in its own tone, and a key that names each one.">
+          <Example id="share-bar-example" title="Default" description="Today's tickets by channel, busiest first." code={`import { ShareBar } from "@lance-live/gallery-ui";
+
+export function TicketsByChannel() {
+  return (
+    <ShareBar
+      shares={[
+        { id: "voice", label: "Voice", value: 46, tone: "action" },
+        { id: "text", label: "Text", value: 38, tone: "strong" },
+        { id: "tablet", label: "Tablet", value: 21, tone: "muted" },
+        { id: "manual", label: "Manual", value: 9, tone: "quiet" },
+      ]}
+    />
+  );
+}`}>
+            <div className="sds widget-frame">
+              <ShareBar
+                shares={[
+                  { id: "voice", label: "Voice", value: 46, tone: "action" },
+                  { id: "text", label: "Text", value: 38, tone: "strong" },
+                  { id: "tablet", label: "Tablet", value: 21, tone: "muted" },
+                  { id: "manual", label: "Manual", value: 9, tone: "quiet" },
+                ]}
+              />
+            </div>
+          </Example>
+        </DocPage>
+      )}
       {page === "widget" && (
         <DocPage title="Widget" description="A glance at a list on a dashboard. A grey head with the title, the count, and one action, over a few rows and a link to the rest.">
           <Example id="widget-example" title="Default" description="Open to-dos, most urgent first, with who has each one." code={`import { Person, Status, TextIcon, Widget, WidgetList, WidgetMore, WidgetRow } from "@lance-live/gallery-ui";
@@ -1845,6 +1877,69 @@ export function NoteRow() {
               <div className="sds widget">
                 <WidgetList>
                   <WidgetRow href="#widget-row" lead={<Avatar initials="CS" name="Cy Smith" />} title="11/10 NA shift" subtitle="Guest Khari Emberly checked out two days early." subtitleTone="muted" meta="9h" />
+                </WidgetList>
+              </div>
+            </div>
+          </Example>
+          <Example id="widget-row-facts" title="Facts" description="An event: the name, then the room and the head count, muted with a dot between." code={`import { WidgetFacts, WidgetRow } from "@lance-live/gallery-ui";
+
+export function EventRow() {
+  return (
+    <WidgetRow href="/events" title="Brightline Partners breakfast" subtitle={<WidgetFacts items={["Garden room", "40 guests"]} />} meta="8:00 AM" trail={<span className="mini-pill">BEO</span>} />
+  );
+}`}>
+            <div className="sds widget-frame">
+              <div className="sds widget">
+                <WidgetList>
+                  <WidgetRow href="#widget-row" title="Brightline Partners breakfast" subtitle={<WidgetFacts items={["Garden room", "40 guests"]} />} meta="8:00 AM" trail={<span className="mini-pill">BEO</span>} />
+                </WidgetList>
+              </div>
+            </div>
+          </Example>
+        </DocPage>
+      )}
+      {page === "room-mark" && (
+        <DocPage title="Room mark" description="A room's square that leads a widget row, with the number typed in. The description sits beside it, centered.">
+          <Example id="room-mark-number" title="Room" description="A room number. The title is the issue, and the facts stay on the right." code={`import { Person, RoomMark, WidgetRow } from "@lance-live/gallery-ui";
+
+export function SlowTicketRow() {
+  return (
+    <WidgetRow href="/todos" lead={<RoomMark room="1204" />} title="Bathroom fan" meta="2d 4h" trail={<Person name="Ivan Hale" initials="IH" variant="pill" />} />
+  );
+}`}>
+            <div className="sds widget-frame">
+              <div className="sds widget">
+                <WidgetList>
+                  <WidgetRow href="#room-mark" lead={<RoomMark room="1204" />} title="Bathroom fan" meta="2d 4h" trail={<Person name="Ivan Hale" initials="IH" variant="pill" />} />
+                  <WidgetRow href="#room-mark" lead={<RoomMark room="318" />} title="AC not cooling" meta="1d 9h" trail={<Person name="Sarah" initials="SM" variant="pill" />} />
+                </WidgetList>
+              </div>
+            </div>
+          </Example>
+          <Example id="room-mark-place" title="Place" description="A place has no number, so the square holds the location icon and the title says the place first." code={`import { Person, RoomMark, WidgetRow } from "@lance-live/gallery-ui";
+
+export function PlaceRow() {
+  return (
+    <WidgetRow href="/todos" lead={<RoomMark room="Lobby" />} title="Lobby · Ice machine" meta="1d 2h" trail={<Person name="Sarah" initials="SM" variant="pill" />} />
+  );
+}`}>
+            <div className="sds widget-frame">
+              <div className="sds widget">
+                <WidgetList>
+                  <WidgetRow href="#room-mark" lead={<RoomMark room="Lobby" />} title="Lobby · Ice machine" meta="1d 2h" trail={<Person name="Sarah" initials="SM" variant="pill" />} />
+                </WidgetList>
+              </div>
+            </div>
+          </Example>
+          <Example id="room-mark-single" title="One fact" description="A row with only a meta, such as a room on do not disturb." code={`import { RoomMark, WidgetRow } from "@lance-live/gallery-ui";
+
+export function DndRow() {
+  return <WidgetRow href="/rooms" lead={<RoomMark room="512" />} title="Do not disturb" meta="3h" />;
+}`}>
+            <div className="sds widget-frame">
+              <div className="sds widget">
+                <WidgetList>
+                  <WidgetRow href="#room-mark" lead={<RoomMark room="512" />} title="Do not disturb" meta="3h" />
                 </WidgetList>
               </div>
             </div>

@@ -22,7 +22,7 @@ Color, type, and spacing are gallery specimens. They are not components. Header,
 
 ## Secondary button
 
-- When: an action beside the primary, or Cancel.
+- When: an action beside the primary, or Cancel. A section's own action on the page, such as Edit beside a section title, with its icon.
 - When not: the main action, or a fact.
 - Default: `.btn-secondary`.
 - States: rest is `--white`, `--black` text, and `--stroke`. Hover is one step from the surface it sits on. Text and the hairline stay. On the page that step is `--sidebar-grey` in light mode and `--grey` in dark mode. On a `--sidebar-grey` panel it is `--grey`. On a dark `--grey` panel it is `--black-12`. Press uses the same scale as the primary. A button is 28px.
@@ -189,8 +189,8 @@ Every editable description and notes field is this box. A complaint description,
 
 ## Text button
 
-- When: a quiet action that should not compete with the page: a label, an icon, and no fill until hover. A tool in a row, or a secondary action inside content.
-- When not: the main action on a view. That is the primary button. A button in the header with no icon.
+- When: a quiet action that should not compete with the page: a label, an icon, and no fill until hover. A tool in a row, or a control in a widget's grey head.
+- When not: the main action on a view. That is the primary button. A button in the header with no icon. A section's action on the page, such as Edit beside a section title. That is the secondary button.
 - Default: `TextIcon`. Label, small, and delete.
 - States: rest is clear. Hover fills one step from the surface it sits on. The label, the icon, and the gap do not move on hover. Press scales the whole control to `0.98`. The delete variant stays `--destructive` at rest and on hover, and opens Delete confirmation first.
 
@@ -297,6 +297,19 @@ On a to-do, the panel opens and closes from the task row. It is view-only: Sched
 The square stays 50px and `--sidebar-grey`. The number, in the square and on the row, is `--text-16` and weight 500. Clicking it edits the number there. On the row, clicking the number types it in place. An empty room is a quiet dash. It does not say Room.
 
 Forced by: “room will always be a drop down.” Then the number is typed: “clicking on it edits the text,” and the row is a text entry too.
+
+## Room mark
+
+- When: a widget row that is about a room, such as response time, problem rooms, or do not disturb. The room leads and the description sits beside it.
+- When not: the To-dos and Complaints widgets. Their rows lead with the status, and the room is the title. A to-do's detail, which is the 50px square in Room. A table row, which is the room column. A person, which is Avatar.
+- Default: `RoomMark` as the `lead` of a `WidgetRow`, with the description as `title` and no `subtitle`.
+- States: a room number, and a place. A place, such as Lobby, has no number, so the square holds the 18px location icon in `--text-muted`, and the row's title writes the place first: “Lobby · Ice machine”.
+
+The group chat mark from Messages at the row's size. A 40px square, a 6px radius (`--radius-control`), a 1px `--black-12` ring, and the `--sidebar-grey` fill. The number is typed in it, `--text-14` weight 500 with `--numeric`. Four digits need 14px to fit 40px, so it is one step under the 16px in Room. The square is read aloud as the number, and a place's icon is hidden, since the title already says it.
+
+In a row it takes one step past the row hover, like an avatar: `--sidebar-grey` at rest and `--grey` when the row is hovered. Dark mode steps `--grey` to `--black-12`. A row that leads with a room mark and has no subtitle puts its title on both lines, centered on the square, at weight 400, since the number in the square is the record's name. The meta and the trail stay on the right, one over the other. A row with only a meta, such as a DND room, is still 52px, the square's height.
+
+Forced by: “have room numbers be in squares, similar to the group chats in messaging,” “the room numbers typed in,” and “the description can sit to the right, centered.” The ring: the group chat mark keeps it, so the room mark does too.
 
 ## Lesson card
 
@@ -522,14 +535,32 @@ The mark is 18px in `--text-muted`. The title is 16px weight 500. The line is 14
 
 A 42px bar of 2px ticks every 4px. The done part is `--action` over `--black-12`. An end part, such as rooms on DND, takes the right end in `--black-50`. It spans the whole bar and is clipped, so its ticks line up with the ones under it. The bar is one image to a screen reader, and `label` is what it reads.
 
+## Share bar
+
+- When: one whole split into a few shares, such as today's tickets by channel.
+- When not: how far along something is. That is Meter. A long list of parts. That is a widget's rows.
+- Default: `ShareBar`, with `shares`, each an `id`, a `label`, a `value`, and a `tone`.
+- States: two to five shares, as counts or as percents with `percent`.
+
+Its own component, not Meter. A plain bar, 8px tall with fully round ends, and no ticks. The shares fill it: each share is a solid part sized by its value, 2px apart, left to right, busiest first. When the shares are stages in order, such as leads from New to Negotiating, they keep that order instead. Tones go in that order: `action` (`--action`), `strong` (`--black`), `muted` (`--black-50`), `quiet` (`--black-25`), then `faint` (`--black-12`). A share of zero has no part. The key sits 16px under the bar, one column per share: the figure, 16px weight 500, over an 8px dot in the share's tone and the label, 12px in `--text-muted`. The bar is one image to a screen reader and reads each label and its figure.
+
 ## Widget
 
 - When: a dashboard shows a few records from a longer list, and a way to the rest.
 - When not: the list itself. That is Table. One record. That is Section card.
 - Default: `Widget`, holding a `WidgetList`. `WidgetEmpty` holds an `Empty` when there is nothing to show.
-- States: rows and a more link, rows only, and empty.
+- States: rows and a more link, rows only, and empty. A widget that lists rows goes empty when it has no rows: `WidgetEmpty` replaces its summary and its list, and the head stays. A widget that only shows figures, a meter, a share bar, or a chart has no empty. It shows its zeros, because zero is a reading.
 
-One card: a 1px `--grey` border, a 10px radius, and a `--sidebar-grey` head over a `--white` list. The head is a 16px icon in `--text-muted`, `--space-8` from the title, the same gap as a Lance suggestion. The title is 14px weight 400, the count in `--text-muted`, and one action on the right. The action is a plus that starts a new record, as a `TextIcon` or a link with the `text-icon sm` class. The head is 52px, the height of a row. With the Depth switch on, the card takes the drop under its hairline.
+One card: a 1px `--grey` border, a 10px radius, and a `--sidebar-grey` head over a `--white` list. The head is a 16px icon in `--text-muted`, `--space-8` from the title, the same gap as a Lance suggestion. The title is 14px weight 400, the count in `--text-muted`, and one action on the right. The action is a plus that starts a new record, as a `TextIcon` or a link with the `text-icon sm` class. A leaderboard puts its top three on a podium over the rows, second, first, third, each on a `--sidebar-grey` step, and the rows go on from fourth to sixth. First place's step is `--filter-chip-bg` with its place in `--action`, a 1px `--action` stroke on the top and sides, and `--shadow-card`. The step has no bottom stroke, so it does not double the rule it stands on. First place's avatar takes `--shadow-card` too. Every podium avatar keeps the named ring, 1px `--black-12`. A widget whose rows change with a time window, such as a leaderboard, takes segments there instead, sized to their labels: Today, 7d, and 30d, or 24h, 7d, and 30d. A `Menu` trigger on the grey head hovers `--grey`, one step from the head. Segments in the head take a `--grey` track so they do not fade into it, and an unselected segment hovers `--black-12`. In dark mode the list is `--white`, the page, edged by the card's border, and the head is `--grey-low`, halfway from the page to `--grey`. Lifting the list off the page read too heavy. Everything inside the list moves with it. A row hovers `--grey`, a pill in a row rests `--grey` and is `--black-12` on a hovered row, and the room map's cells, the podium steps, and a day's hover are `--grey`, with a room's hover `--black-12`. A head trigger hovers `--black-12`, and the segment track is `--white`, the page, so it sits below the head and the `--grey` selected pill still shows. The head is 52px, the height of a row. With the Depth switch on, the card takes the drop under its hairline.
+
+## Widget gallery
+
+- When: Edit on the Widgets section of Home. It chooses which widgets Home shows.
+- When not: a modal or anything with a scrim. The widgets above must stay in reach for their remove marks.
+- Default: `WidgetGallery` (`(screens)/home/widget-gallery.tsx`), with every widget listed once in `HOME_WIDGETS` (`widget-catalog.tsx`) under its department.
+- States: Edit turns into Done, a secondary button with the check. Each widget shakes, `--ease-in-out`, 0.4deg either way, at its own phase and speed, 250 to 320ms, picked from its place so no two neighbors move in step, and the room map 0.1deg because it spans the row. A widget takes no clicks while it shakes. A 20px round remove mark sits 8px over its top-left corner: `--white` with `--stroke` and `--shadow-card`, hover `--sidebar-grey`, and `--grey` then `--black-12` in dark mode. Removing takes the widget off Home and the columns close the gap. It is not a delete, so it does not ask first. Reduced motion keeps the marks and drops the shake.
+
+The gallery docks on the bottom of Home and stays there while the page scrolls. It is 48px wider than the widgets on each side, never past the page's side inset, so a narrow page keeps it inside the card, 294px tall, and its bottom edge meets the bottom of the page card, so its top corners take `--radius-card` and its bottom corners are square. It is a card with `--stroke`, `--ring-menu`, and `--elevation-menu`, and it rises 25px into place on `--ease-out`. Opening it makes room: the nav and Lance collapse to their rails and an open inbox closes. Done puts the nav and Lance back the way they were. Its left column is `--sidebar-grey`, 220px: search with a `--grey` fill, then All widgets and one row per department. A department row is the plain department tag and its count in `--black-25`, 30px high like a sidebar link. Hover and selected are `--grey`. The column is the nav's surface, so search, hover, and selected match the nav's search and current link in both themes, `--grey` on `--sidebar-grey`. Selected turns the label `--black` and the count `--text-muted`. The right side is a section label in `--text-muted`, then the widgets themselves at half size, clipped to 136px, each with its title in 12px under it. A tile hovers `--sidebar-grey`. A check in `--action` after the title means it is on Home. Pressing a tile adds that widget in its place in the catalog order, or removes it when it is already there. The footer has one line of help in `--text-muted` and Done, the primary. Escape is Done too. What someone removes is kept in this browser, so a widget added to the catalog later still shows.
 
 ## Widget list
 
@@ -545,9 +576,9 @@ The list sits 2px in from the card, like a menu, with no gap between rows. A wid
 - When: one record in a `WidgetList`.
 - When not: a table row. That is the task row.
 - Default: `WidgetRow`, with `lead`, `title`, `subtitle`, `meta`, and `trail`.
-- States: a status and a person, an avatar and a muted preview, and rest and hover.
+- States: a status and a person, an avatar and a muted preview, facts with a chip, and rest and hover.
 
-A row is 52px and two lines. Padding is `6px 14px` with a 4px radius and a 10px gap, like a menu item. Its hover is `--sidebar-grey`, with no fade. The lead is at least 18px wide: a status, or an avatar. The title is 14px weight 500, and the subtitle is 14px weight 400 under it. When the second line previews the record, such as a note's first line, pass `subtitleTone="muted"`: it steps down to 13px in `--text-muted` so the title leads. The meta is 12px in `--text-muted` on the first line's right. The trail is a chip on the second line's right, such as a person. A row with no subtitle and no trail is one line, 36px tall, such as a DND room. The more link under those rows is 36px too. A chip or an avatar in a row is `--sidebar-grey` and takes `--grey` on the row hover, one step past it, so it does not blend in. Dark mode steps `--grey` to `--black-12`. A row and the more link render `a`. Pass `as` to use the app's link.
+A row is 52px and two lines. Padding is `6px 14px` with a 4px radius and a 10px gap, like a menu item. Its hover is `--sidebar-grey`, with no fade. The lead is at least 18px wide: a status, an avatar, or a room mark. A room mark centers the title on it, see Room mark. The title is 14px weight 500, and the subtitle is 14px weight 400 under it. When the second line previews the record, such as a note's first line, pass `subtitleTone="muted"`: it steps down to 13px in `--text-muted` so the title leads. When the second line lists facts about the record, such as the room and the head count, pass `subtitle={<WidgetFacts items={[...]} />}`: the same 13px `--text-muted`, with a `·` between facts and 4px on each side of it. An empty fact drops out, so pass `null` for one that does not apply. Do not join facts into a string by hand. The meta is 12px in `--text-muted` on the first line's right. The trail is a chip on the second line's right, such as a person. A row with no subtitle and no trail is one line, 36px tall, such as a DND room. The more link under those rows is 36px too. A row with no lead drops the lead column, so its text starts on the row's inset. A chip or an avatar in a row is `--sidebar-grey` and takes `--grey` on the row hover, one step past it, so it does not blend in. Dark mode steps `--grey` to `--black-12`. A row and the more link render `a`. Pass `as` to use the app's link.
 
 ## To-dos widget
 

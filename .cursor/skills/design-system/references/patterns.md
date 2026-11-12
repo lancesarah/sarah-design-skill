@@ -175,7 +175,7 @@ See Lesson card in [components.md](components.md). A training lesson is that car
 
 ## Empty, loading, and error
 
-An empty section uses the empty this product already has for that kind of thing. A new note reads “Title” and “New note”. An empty room is the quiet dash. An unassigned person is the dashed avatar. An empty to-do says Location and Item. A comment thread with no comments keeps the heading and the composer. Secondary copy uses `--text-muted`. If that section has no empty yet, say the empty state is undecided. Do not invent one.
+An empty section uses the empty this product already has for that kind of thing. A new note reads “Title” and “New note”. An empty room is the quiet dash. An unassigned person is the dashed avatar. An empty to-do says Location and Item. A comment thread with no comments keeps the heading and the composer. A widget with rows uses `WidgetEmpty`, and a widget of figures shows its zeros. Secondary copy uses `--text-muted`. If that section has no empty yet, say the empty state is undecided. Do not invent one.
 
 Loading a table uses the skeleton in the Table section of [components.md](components.md). The bars sit in the cells and pulse once. The values then crossfade in, one column after the next. The columns do not change width when the values arrive. The row takes no hover and no press while the bars are up. Reduced motion skips the pulse and shows the values in place. Do not invent a second loader.
 

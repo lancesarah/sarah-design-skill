@@ -75,7 +75,7 @@ export function WidgetRow<T extends ElementType = "a">({ as, lead, title, subtit
   const Link: ElementType = as ?? "a";
   return (
     <li>
-      <Link className={["widget-row", subtitleTone === "muted" ? "is-muted" : "", subtitle || trail ? "" : "is-single", className].filter(Boolean).join(" ")} {...rest}>
+      <Link className={["widget-row", subtitleTone === "muted" ? "is-muted" : "", subtitle || trail ? "" : "is-single", lead ? "" : "no-lead", className].filter(Boolean).join(" ")} {...rest}>
         {lead ? <span className="widget-lead">{lead}</span> : null}
         <span className="widget-row-title">{title}</span>
         {subtitle ? <span className="widget-row-subtitle">{subtitle}</span> : null}
@@ -83,6 +83,21 @@ export function WidgetRow<T extends ElementType = "a">({ as, lead, title, subtit
         {trail ? <span className="widget-trail">{trail}</span> : null}
       </Link>
     </li>
+  );
+}
+
+/** A row's subtitle when it lists facts about the record, such as the room and the head count. Muted, with a dot between facts; empty facts drop out. */
+export function WidgetFacts({ items }: { items: (ReactNode | null | false | undefined)[] }) {
+  const facts = items.filter((item) => item !== null && item !== false && item !== undefined && item !== "");
+  return (
+    <span className="widget-facts">
+      {facts.map((fact, index) => (
+        <span key={index}>
+          {index ? <span className="widget-facts-dot" aria-hidden="true">·</span> : null}
+          {fact}
+        </span>
+      ))}
+    </span>
   );
 }
 

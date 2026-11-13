@@ -8,7 +8,7 @@ import { fileURLToPath } from "node:url";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 
-export const CATALOG = ["tokens.css", "gallery.css", "todos-alt.css"].map((name) => ({
+export const CATALOG = ["tokens.css", "gallery.css", "todos-alt.css", "editor-dialog.css"].map((name) => ({
   source: `css/${name}`,
   copy: `.cursor/skills/design-system/catalog/${name}`,
 }));

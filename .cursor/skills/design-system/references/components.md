@@ -18,7 +18,9 @@ Color, type, and spacing are gallery specimens. They are not components. Header,
 - When: the one action that creates or commits on that view.
 - When not: a second action, a filter, a fact, or the confirming delete. A page that only views leaves that corner empty.
 - Default: `.btn`.
-- States: rest is `--action` with white text. Hover is `--action-hover` in both themes. One per surface. No hairline. Nothing else on that surface uses this fill. Press scales the whole control to `0.98` and does not darken the fill. Disabled is the same button at 60% opacity. It does not scale and does not take a hover fill. A button is 28px, line-height 20px, padding `--space-4` 6px. An icon in the button uses that same padding. The label and the icon are centered. Side padding is equal.
+- States: rest is `--action` with white text. Hover is `--action-hover` in both themes. One per surface. Rest is the `--action` fill under `--depth-sheen`, with `--depth-edge` and `--depth-drop` as the shadow. `--depth-rim` is a 1px inner highlight drawn on `::after`. That is the depth. A flat blue fill is wrong. Disabled drops the depth. Nothing else on that surface uses this fill. Press scales the whole control to `0.98` and does not darken the fill. Disabled is the same button at 60% opacity. It does not scale and does not take a hover fill. A button is 28px, line-height 20px, padding `--space-4` 6px. An icon in the button uses that same padding. The label and the icon are centered. Side padding is equal.
+
+Forced by: "the primary button doesn't have the correct styling, it doesn't have the depth."
 
 ## Secondary button
 
@@ -26,6 +28,8 @@ Color, type, and spacing are gallery specimens. They are not components. Header,
 - When not: the main action, or a fact.
 - Default: `.btn-secondary`.
 - States: rest is `--white`, `--black` text, and `--stroke`. Hover is one step from the surface it sits on. Text and the hairline stay. On the page that step is `--sidebar-grey` in light mode and `--grey` in dark mode. On a `--sidebar-grey` panel it is `--grey`. On a dark `--grey` panel it is `--black-12`. Press uses the same scale as the primary. A button is 28px.
+
+Secondary button, Filter, and the trigger: rest is `--stroke` plus `--depth-drop`.
 
 ## Tertiary button
 
@@ -42,6 +46,8 @@ Forced by: “instead of the inverted button can you make it like a tertiary but
 - When not: the primary. A menu’s last item stays red text, not this button.
 - Default: `.btn-danger`, the fill.
 - States: fill is `--destructive` with white text. Hover is `color-mix(in srgb, var(--destructive) 88%, black)`. Light is `.btn-danger-light`: `--destructive` text and icon on `color-mix(in srgb, var(--destructive) 5%, transparent)`, no hairline. Hover deepens that fill to 12%. The text stays red. Press scales. There is no line variant. The word and the icon stay `--destructive` at rest, on hover, and on a hovered row. They do not turn grey or black. The grey icon switch does not recolor them. A trash icon with no label is still this control. The press opens Delete confirmation. It does not remove the thing.
+
+The filled danger button takes the same sheen, edge and drop as the primary. The light danger button does not.
 
 Forced by: the step trash icons were grey. Then, “destructive items should always be RED.” Then, “on any destructive action, you need the popup.”
 
@@ -124,6 +130,8 @@ Forced by: the High chip, “the chip is misaligned with the text.”
 - Default: the gallery status symbol and its label.
 - States: rest is the symbol and the word. On a hovered row the hover is a pill, `--grey` in light mode and `--black-12` in dark mode. The label matches the record.
 
+In a table, a status never sits alone. The description sits next to it on the same line: what happened, or why it is in that state, such as Transferred, then to the front desk. The description is 12px `--text-muted`, `--space-8` after the status, and it truncates with an ellipsis before the status does. The status keeps its symbol, word, and color.
+
 ## Menu
 
 - When: a list of options that already exist, or a more menu.
@@ -160,7 +168,7 @@ Forced by: “on any destructive action, you need the popup. Whether it's a tras
 - Default: `.field`.
 - States: the input is `--white`, `--text-14`, height 32px, padding `0 var(--space-10)`, radius `--radius-control`, and `--stroke`. Hover darkens the stroke to `--black-12`. Focus uses `--black-25` and does not fill.
 
-Every one-line input box is 32px. A labeled field and a line field share that height, that padding, and that radius. A quantity, a date, a unit, a minimum, and a maximum are this box. A description or a notes field is the text well. A typed fact in a detail panel is this box inside the fact row. Search stays the search field.
+Every one-line input box is 32px. A labeled field and a line field share that height, that padding, and that radius. A quantity, a date, a unit, a minimum, and a maximum are this box. A description or a notes field is the text well. The pill editor's own description is not. It is the name block in Pill editor. A typed fact in a detail panel is this box inside the fact row. Search stays the search field.
 
 ## Line field
 
@@ -286,7 +294,7 @@ The body stacks its sections 24px apart. The scroll padding is `--space-16` on t
 
 A view-only panel reads its facts and keeps Activity live. Edit opens the editor popup for that record. Nothing else in the body edits. The room is the static square. A typed fact, such as the description, location, or item, is plain `--text-14` text (`.todo-side-value`). An empty one is a quiet dash. The description sits 4px under the title with no label, in `--text-muted` (`.todo-side-heading`). The panel body starts 40px below the header actions. An empty one reads No description in `--black-25`. Type, status, and urgency are their chips with `editable={false}`. The assignee is the person pill, or Unassigned. None of them show a chevron or a pencil.
 
-On a to-do, the panel opens and closes from the task row. It is view-only: Schedule for future, then Edit. The side title is the typed title, or the location and item as text, joined by a middle dot. An empty one is New to-do. The table's To-do cell shows a typed title as text, and without one it shows the Location and Item chips. A new to-do opens the editor popup with the name selected. The rules below are for a panel that edits in place, such as a complaint. The side title is the location and item chips, empty or filled. An empty title is Location and Item, not the word “To-do”. The title chips use the task row’s box and the same hover. In the side panel, guest mood, type, assigned, status, and urgency share one type: `--font`, `--text-14`, weight 400, and a 16px line-height. The control is 20px tall, with padding `2px 4px` and a 4px radius. The status icon is 16px so the word stays on that line. Table chips stay 13px. A menu option stays `--text-14`. The assignee keeps the miniature avatar, the name, and a `--sidebar-grey` fill. Hover and an open menu keep that fill and show the down chevron. Unassigned is clear at rest. Hover and an open menu use that same `--sidebar-grey` fill, and `--grey` in dark mode. Status keeps its icon and label and has no fill at rest. Type is the department chip. It rests clear with the `--black-12` ring. Hover and an open menu fill `--sidebar-grey`, and `--grey` in dark mode. The ring stays. The room uses the task row’s room control. Location and Item are dropdowns. At rest they are the value with no fill. Hover and an open menu show a `--sidebar-grey` pill and a down chevron after the value. The room, title, and date use `--space-16`. The Description label is `--text-12`. The note under it is `--text-14`. Activity stacks its heading and reply `--space-8` apart. The reply field is `--text-14`. Guest mood, phone, email, and a page’s other facts use this same panel. They do not get a second header or a second width.
+On a to-do, the panel opens and closes from the task row. It is view-only: Schedule for future, then Edit. The side title is the typed title, or the location and item as text, joined by a middle dot. An empty one is New to-do. The table's To-do cell shows a typed title as text, and without one it shows the Location and Item chips. A new to-do opens the editor popup with the name selected. The rules below are for a panel that edits in place, such as a complaint. The side title is the location and item chips, empty or filled. An empty title is Location and Item, not the word “To-do”. The title chips use the task row’s box and the same hover. In the side panel, guest mood, type, assigned, status, and urgency share one type: `--font`, `--text-14`, weight 400, and a 16px line-height. The control is 20px tall, with padding `2px 4px` and a 4px radius. The status icon is 16px so the word stays on that line. Table chips stay 13px. A menu option stays `--text-14`. The assignee keeps the miniature avatar, the name, and a `--sidebar-grey` fill. Hover and an open menu keep that fill and show the down chevron. Unassigned is clear at rest. Hover and an open menu use that same `--sidebar-grey` fill, and `--grey` in dark mode. Status keeps its icon and label and has no fill at rest. Type is the department chip. It rests clear with the `--black-12` ring. Hover and an open menu fill `--sidebar-grey`, and `--grey` in dark mode. The ring stays. The room uses the task row’s room control. Location and Item are dropdowns. At rest they are the value with no fill. Hover and an open menu show a `--sidebar-grey` pill and a down chevron after the value. The room, title, and date use `--space-16`. The Description label is `--text-12`. The note under it is `--text-14`. Activity reads heading, thread, then reply, as in Activity. The reply field is `--text-14`. Guest mood, phone, email, and a page’s other facts use this same panel. They do not get a second header or a second width.
 
 ## Room
 
@@ -402,7 +410,20 @@ Width is `652px`, or the screen when that is narrower. Height starts at `554px`,
 
 The shell is the editor popup's. The card fits its content and does not keep the 554px height. There is no divider under the header. The body pads `--space-16` on top and twice that below, and stacks its sections 40px apart.
 
-Every choice is one `EditorPill`: 28px tall, padding `0 var(--space-10)`, `--radius-control`, `--white` with `--stroke`, `--text-14`. Hover and an open menu fill `--sidebar-grey`. Its menu is the gallery menu, with `taskMenuItem` rows. A leading icon is 14px in `--text-muted`, 6px from the value. An unset pill shows its placeholder, muted: Location, Item, Category. The pills flow in one wrapping line, `--space-8` apart. `EditorPillRow` starts a new line when a pair belongs together, such as status and urgency.
+The record opens with its name block, `.editor-dialog-name`: the title, then the description, stacked `--space-10` apart. Neither has a label, a well, a border, or padding. They sit on the card.
+
+- **Title** (`.editor-dialog-title`): `--text-24`, weight 500, line-height 28px, `--black`. One line.
+- **Description** (`.editor-dialog-subtitle`): `--text-14`, line-height 20px, `--text-muted`. It is a textarea with `field-sizing: content` and `resize: none`, so it starts as one line and grows as you type.
+- **Placeholders:** both are `--black-25`. The words change with the record (Title and Description, or the item and where it was found). The styling doesn't.
+- **Required:** a required description left empty after Save turns its placeholder red, the same red as a required pill.
+
+This is not the text well and not Record title. The 96px text well is for a notes field inside a form, not for a record's own description.
+
+Forced by: "the editor is not using the right formatting for the title and description." Lost & found used a 16px title and a labelled grey text well.
+
+Every choice is one `EditorPill`: 28px tall, padding `0 var(--space-10)`, `--radius-control`, `--white` with `--stroke`, `--text-14`. Hover and an open menu fill `--sidebar-grey`. Its menu is the gallery menu, with `taskMenuItem` rows. A leading icon is 14px in `--text-muted`, 6px from the value. An unset pill shows its placeholder, muted: Location, Item, Category. Every pill sits on one line, `--space-8` apart, in this order: the place, then the item or category, then the remaining choices, then status and the person. The line wraps only when the card runs out of width. It never breaks on purpose to group a pair. `EditorPillRow` is not used.
+
+Forced by: "in the editor, bring all the drop downs to the same line."
 
 A value inside a pill is its component, at `--text-14`, with no ring, padding, or fill of its own: the department tag is `plain`, and the urgency and person pill lose their padding and fill. Status keeps its icon and label.
 
@@ -452,7 +473,9 @@ A comment is the gallery comment. The row is at least 49px. The photo is 21px. T
 - When: the thread of comments and status changes on a record, newest first.
 - When not: a conversation. That is Message and Message group. A single remark. That is Comment.
 - Default: `ActivityFeed`.
-- States: a thread that starts with a comment, and one that is only status. A comment in the thread is Comment. A person on a status line is the miniature name pill. The heading and the reply stack `--space-8` apart. The reply field is `--text-14`, and it is the message composer.
+- States: a thread that starts with a comment, and one that is only status. A comment in the thread is Comment. A person on a status line is the miniature name pill. The order is the heading, then the thread, then the reply. The message composer sits after the last comment or status line, never between the heading and the thread. The heading and the first line stack `--space-8` apart. The thread and the composer stack `--space-8` apart. An empty thread is the heading and then the composer. The reply field is `--text-14`, and it is the message composer.
+
+Forced by: Lost & found's panel put the comment box on top of the activity.
 
 ## Message
 
@@ -607,6 +630,10 @@ Open to-dos, most urgent first, four at a time. A row is the status, the room or
 
 A new table copies that section. It does not invent a second row, chip, or filter.
 
+Every cell in a row is an element that can draw `::before`, because the line between two columns is the right cell's `::before`. An input, textarea, select, or image never sits directly in `.sheet-line`. It sits in a cell span, as the room input does in `<span class="sheet-room-cell">`. A bare input there drops the line to its left.
+
+A status column carries the status and its description together, as in Status. A table does not show a bare status word with the reason left to the detail panel.
+
 A table chip is 20px tall. Padding is 2px 4px and the radius is 4px. The height does not grow with the line box. The label keeps the size that chip already uses. A location or an item is 14px. A chip in the side panel is 20px as well.
 
 The list variant is the checklist. It is this table. It keeps the rows and the columns, and it leaves off the column header, the column rules, the row wash, and the Showing count. The group header stays on the list.
@@ -618,6 +645,10 @@ Forced by: “No don't show the showing X of X in this table since there is no t
 Forced by: “Just make it so that this custom list is a variant of DataTable.”
 
 The Assigned column is that table column on every table. The cell is the initials in a 35×35 avatar. Hover shows the chevron beside that circle, outside the pill, and the full name in a tooltip. Only the circle’s fill changes. The ring stays 1px. It does not gain a second stroke. The chevron does not sit in that pill, and the next column stays put. Click opens the people menu. The row hover does not change the photo. Unassigned is the dashed empty avatar, and the tooltip says “Unassigned”. In dark mode a named photo is `--grey`, lighter than the page. Hovering that circle uses a `--black-12` fill. The ring stays 1px. An empty photo stays clear, with a 1px dashed `--black-50` stroke. The dark photo clip that insets a portrait does not apply to that dash. The named pill stays in the side panel, a menu, a filter, and an activity line. It does not go in the column.
+
+The column is as wide as the circle plus its hover chevron: 35px, the `--space-4` gap, and the 10px chevron, so 49px. The chevron draws inside the column, not in the column gap. Showing it does not touch the next column's content. A column header shorter than that does not set the width.
+
+Forced by: the Staff column on Lost & found, "not leaving room for the chevron on hover and needed to be wider."
 
 A column that shows one of a fixed set of options is already as wide as its longest option, including that option’s icon and padding. This holds for every aligned grid, including a table and a week schedule. The header and every row share one set of tracks. Do not let each row measure its own columns. The control still hugs the value it is showing. Choosing another option does not move that column or the columns beside it. Stack every option in the same grid cell and hide the ones that are not selected.
 

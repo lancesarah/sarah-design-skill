@@ -971,7 +971,7 @@ html[data-theme="dark"] :where(.sds) .menu .call-resolution, html[data-theme="da
   color: var(--black);
 }
 
-/* Sidebar. Type is Plus Jakarta Sans. Icons are the library set, drawn at 18px. */
+/* Sidebar. Type is the UI face, Switzer. Icons are the library set, drawn at 18px. */
 :where(.sds) .side-frame, :where(.sds).side-frame {
   width: 277px;
   height: 920px;
@@ -1905,7 +1905,7 @@ html[data-theme="dark"] body.is-side-settling :where(.sds) .side-links a[aria-cu
   background: var(--grey);
 }
 html[data-theme="dark"] :where(.sds) .btn:not(.btn-secondary):not(.btn-tertiary):not(.btn-danger):not(.btn-danger-light), html[data-theme="dark"] :where(.sds).btn:not(.btn-secondary):not(.btn-tertiary):not(.btn-danger):not(.btn-danger-light) {
-  background: var(--action);
+  background-color: var(--action);
   color: var(--button-fill);
 }
 html[data-theme="dark"] :where(.sds) .lance.has-value button[aria-label="Send"], html[data-theme="dark"] :where(.sds).lance.has-value button[aria-label="Send"],
@@ -1918,13 +1918,12 @@ html[data-theme="dark"] :where(.sds) .well.is-on, html[data-theme="dark"] :where
 }
 html[data-theme="dark"] :where(.sds) .btn:not(.btn-secondary):not(.btn-tertiary):not(.btn-danger):not(.btn-danger-light):hover, html[data-theme="dark"] :where(.sds).btn:not(.btn-secondary):not(.btn-tertiary):not(.btn-danger):not(.btn-danger-light):hover,
 html[data-theme="dark"] :where(.sds) .btn:not(.btn-secondary):not(.btn-tertiary):not(.btn-danger):not(.btn-danger-light).is-hover, html[data-theme="dark"] :where(.sds).btn:not(.btn-secondary):not(.btn-tertiary):not(.btn-danger):not(.btn-danger-light).is-hover {
-  background: var(--action-hover);
+  background-color: var(--action-hover);
   color: var(--button-fill);
 }
 html[data-theme="dark"] :where(.sds) .btn-secondary, html[data-theme="dark"] :where(.sds).btn-secondary {
   background: var(--white);
   color: var(--black);
-  box-shadow: var(--stroke);
 }
 html[data-theme="dark"] :where(.sds) .btn-secondary:hover, html[data-theme="dark"] :where(.sds).btn-secondary:hover,
 html[data-theme="dark"] :where(.sds) .btn-secondary.is-hover, html[data-theme="dark"] :where(.sds).btn-secondary.is-hover {
@@ -2150,18 +2149,18 @@ html[data-theme="dark"] :where(.sds) #table .sheet.is-open .sheet-line.is-hover 
 }
 :where(.sds) #page-layout .filter-row, :where(.sds)#page-layout .filter-row { padding: var(--space-12) var(--space-16); }
 
-:where(.sds) #comment .comment-row, :where(.sds)#comment .comment-row {
+:where(.sds) :is(#comment, #activity) .comment-row, :where(.sds):is(#comment, #activity) .comment-row {
   display: flex;
   align-items: flex-start;
   gap: 10px;
   width: min(360px, 100%);
   min-height: 49px;
 }
-:where(.sds) #comment .comment-photo, :where(.sds)#comment .comment-photo { width: 21px; height: 21px; font-size: 9px; }
-:where(.sds) #comment .person-copy, :where(.sds)#comment .person-copy { display: flex; flex-direction: column; min-width: 0; }
-:where(.sds) #comment .comment-meta, :where(.sds)#comment .comment-meta { font-size: 12px; line-height: 16px; }
-:where(.sds) #comment .comment-meta time, :where(.sds)#comment .comment-meta time { margin-left: 8px; color: var(--black-50); font-weight: 400; }
-:where(.sds) #comment .comment-row p, :where(.sds)#comment .comment-row p { margin: 0; font-size: 14px; }
+:where(.sds) :is(#comment, #activity) .comment-photo, :where(.sds):is(#comment, #activity) .comment-photo { width: 21px; height: 21px; font-size: 9px; }
+:where(.sds) :is(#comment, #activity) .person-copy, :where(.sds):is(#comment, #activity) .person-copy { display: flex; flex-direction: column; min-width: 0; }
+:where(.sds) :is(#comment, #activity) .comment-meta, :where(.sds):is(#comment, #activity) .comment-meta { font-size: 12px; line-height: 16px; }
+:where(.sds) :is(#comment, #activity) .comment-meta time, :where(.sds):is(#comment, #activity) .comment-meta time { margin-left: 8px; color: var(--black-50); font-weight: 400; }
+:where(.sds) :is(#comment, #activity) .comment-row p, :where(.sds):is(#comment, #activity) .comment-row p { margin: 0; font-size: 14px; }
 :where(.sds) #comment .note-more, :where(.sds)#comment .note-more {
   display: inline-flex;
   align-items: center;
@@ -3177,6 +3176,41 @@ html[data-theme="dark"] :where(.sds) .widget-head .segmented, html[data-theme="d
 html[data-theme="dark"] :where(.sds) .widget-head .text-icon:hover, html[data-theme="dark"] :where(.sds).widget-head .text-icon:hover,
 html[data-theme="dark"] :where(.sds) .widget-head .trigger:is(:hover, .is-hover, [aria-expanded="true"]), html[data-theme="dark"] :where(.sds).widget-head .trigger:is(:hover, .is-hover, [aria-expanded="true"]) { background: var(--black-12); }
 
+/* Activity specimen. The heading, the thread, then the composer, each --space-8 apart. */
+:where(.sds) .activity-spec, :where(.sds).activity-spec { display: flex; flex-direction: column; gap: var(--space-8); width: 360px; max-width: 100%; }
+:where(.sds) .activity-spec .msg, :where(.sds).activity-spec .msg { width: 100%; }
+
+/* Pill editor specimen. The card sits in the section instead of over a scrim. */
+:where(.sds) .col > .editor-dialog-card, :where(.sds).col > .editor-dialog-card { width: 652px; max-width: 100%; }
+
+/* Depth. The primary is the fill under a sheen, an inset edge, and a drop. Its inner rim is ::after,
+   because a shadow cannot fade from top to bottom. The filled danger takes the sheen, edge and drop.
+   A white raised control takes its stroke and the drop. Disabled is flat. */
+:where(.sds) .btn:not(.btn-secondary, .btn-tertiary, .btn-danger, .btn-danger-light, :disabled), :where(.sds).btn:not(.btn-secondary, .btn-tertiary, .btn-danger, .btn-danger-light, :disabled) {
+  position: relative;
+  background-image: var(--depth-sheen);
+  box-shadow: var(--depth-edge), var(--depth-drop);
+}
+:where(.sds) .btn:not(.btn-secondary, .btn-tertiary, .btn-danger, .btn-danger-light, :disabled)::after, :where(.sds).btn:not(.btn-secondary, .btn-tertiary, .btn-danger, .btn-danger-light, :disabled)::after {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  padding: 1px;
+  border-radius: calc(var(--radius-control) - 1px);
+  background: var(--depth-rim);
+  pointer-events: none;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+}
+:where(.sds) .btn.btn-danger:not(:disabled), :where(.sds).btn.btn-danger:not(:disabled) {
+  background-image: var(--depth-sheen);
+  box-shadow: var(--depth-edge), var(--depth-drop);
+}
+:where(.sds) :is(.btn-secondary, .filter, .trigger), :where(.sds):is(.btn-secondary, .filter, .trigger), :where(.sds) .segmented .slide-pill, :where(.sds).segmented .slide-pill, :where(.sds) .segmented:not(.has-slide) > .segment[aria-selected="true"], :where(.sds).segmented:not(.has-slide) > .segment[aria-selected="true"] {
+  box-shadow: var(--stroke), var(--depth-drop);
+}
+/* The dark segment pill has no hairline. It takes the drop alone. */
+html[data-theme="dark"] :where(.sds) .segmented .slide-pill, html[data-theme="dark"] :where(.sds).segmented .slide-pill { box-shadow: var(--depth-drop); }
+
 /* Run sheet. Each to-do is finished on its line. The table stays in todos.css. */
 
 :where(.sds) .sheet-work, :where(.sds).sheet-work {
@@ -3641,6 +3675,12 @@ html[data-theme="dark"] :where(.sds) .sheet-fade, html[data-theme="dark"] :where
   width: 1px;
   background: var(--line);
   pointer-events: none;
+}
+
+/* An input or image cannot draw ::before, so it never sits directly in the row. It sits in a cell span. */
+:where(.sds) .sheet-room-cell, :where(.sds).sheet-room-cell {
+  display: flex;
+  min-width: 0;
 }
 
 
@@ -4141,6 +4181,8 @@ html[data-theme="dark"] :where(.sds) .sheet-fade, html[data-theme="dark"] :where
 :where(.sds) .sheet-who, :where(.sds).sheet-who {
   display: inline-flex;
   align-items: center;
+  /* The circle, the gap, and the hover chevron. The chevron is absolute, so the cell reserves it or it draws in the column gap. */
+  min-width: calc(35px + var(--space-4) + 10px);
   /* The empty circle has no glyphs, so a baseline line box would hang a descender under it and grow the row. */
   vertical-align: top;
   height: auto;
@@ -5063,6 +5105,7 @@ html[data-sheet-layout="chips"] :where(.sds) .sheet-line > .col-reserve, html[da
 html[data-sheet-layout="chips"] :where(.sds) .sheet-line > .sheet-who, html[data-sheet-layout="chips"] :where(.sds).sheet-line > .sheet-who,
 html[data-sheet-layout="chips"] :where(.sds) .sheet-line > .sheet-status, html[data-sheet-layout="chips"] :where(.sds).sheet-line > .sheet-status,
 html[data-sheet-layout="chips"] :where(.sds) .sheet-line > .sheet-room, html[data-sheet-layout="chips"] :where(.sds).sheet-line > .sheet-room,
+html[data-sheet-layout="chips"] :where(.sds) .sheet-line > .sheet-room-cell, html[data-sheet-layout="chips"] :where(.sds).sheet-line > .sheet-room-cell,
 html[data-sheet-layout="chips"] :where(.sds) .sheet-line > .sheet-guest, html[data-sheet-layout="chips"] :where(.sds).sheet-line > .sheet-guest,
 html[data-sheet-layout="chips"] :where(.sds) .sheet-line > .sheet-guest-col, html[data-sheet-layout="chips"] :where(.sds).sheet-line > .sheet-guest-col {
   flex: none;

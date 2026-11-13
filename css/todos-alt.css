@@ -464,6 +464,12 @@ html[data-theme="dark"] .sheet-fade {
   pointer-events: none;
 }
 
+/* An input or image cannot draw ::before, so it never sits directly in the row. It sits in a cell span. */
+.sheet-room-cell {
+  display: flex;
+  min-width: 0;
+}
+
 
 .sheet-empty { grid-column: 1 / -1; }
 
@@ -964,6 +970,8 @@ input.sheet-room:focus {
 .sheet-who {
   display: inline-flex;
   align-items: center;
+  /* The circle, the gap, and the hover chevron. The chevron is absolute, so the cell reserves it or it draws in the column gap. */
+  min-width: calc(35px + var(--space-4) + 10px);
   /* The empty circle has no glyphs, so a baseline line box would hang a descender under it and grow the row. */
   vertical-align: top;
   height: auto;
@@ -1886,6 +1894,7 @@ html[data-sheet-layout="chips"] .sheet-line > .col-reserve,
 html[data-sheet-layout="chips"] .sheet-line > .sheet-who,
 html[data-sheet-layout="chips"] .sheet-line > .sheet-status,
 html[data-sheet-layout="chips"] .sheet-line > .sheet-room,
+html[data-sheet-layout="chips"] .sheet-line > .sheet-room-cell,
 html[data-sheet-layout="chips"] .sheet-line > .sheet-guest,
 html[data-sheet-layout="chips"] .sheet-line > .sheet-guest-col {
   flex: none;

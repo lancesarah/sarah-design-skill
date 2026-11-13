@@ -1,0 +1,502 @@
+/* Editor dialog: the popup for editing one record. Backdrop, card, header, tabs, scrolling body, footer. */
+.editor-dialog {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-25);
+}
+
+.editor-dialog-scrim {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  background: color-mix(in srgb, var(--black) 40%, transparent);
+  animation: confirm-scrim 240ms var(--ease-out);
+}
+
+.editor-dialog-card {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  width: min(652px, 100%);
+  height: 90%;
+  min-height: 0;
+  max-height: 90%;
+  overflow: hidden;
+  padding-top: var(--space-25);
+  padding-bottom: var(--space-16);
+  border-radius: var(--radius-card);
+  background: var(--white);
+  box-shadow: var(--stroke), var(--ring-popup), var(--elevation-menu);
+  animation: confirm-in 240ms var(--ease-out);
+}
+
+.editor-dialog-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+  width: 100%;
+  min-height: 0;
+  flex: 1;
+  padding-inline: var(--space-25);
+  overflow: hidden;
+}
+
+.editor-dialog-head {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--space-25);
+  min-width: 0;
+}
+
+.editor-dialog-kicker {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-16);
+  min-height: 28px;
+}
+
+.editor-dialog-kicker p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  line-height: 16px;
+}
+
+.editor-dialog-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+}
+
+.editor-dialog-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-control);
+  color: var(--black-50);
+}
+
+.editor-dialog-close:hover {
+  background: var(--sidebar-grey);
+  color: var(--black);
+}
+
+html[data-theme="dark"] .editor-dialog-close:hover { background: var(--grey); }
+
+.editor-dialog-name {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--space-10);
+  min-width: 0;
+}
+
+.editor-dialog-name p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: var(--text-14);
+  line-height: 20px;
+}
+
+.editor-dialog-title {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--black);
+  font: inherit;
+  font-size: var(--text-24);
+  font-weight: 500;
+  line-height: 28px;
+}
+
+.editor-dialog-title:focus { outline: none; }
+
+/* An editable subtitle reads like the static one and grows with its text. */
+.editor-dialog-subtitle {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: var(--text-14);
+  line-height: 20px;
+  resize: none;
+  field-sizing: content;
+}
+.editor-dialog-subtitle:focus { outline: none; }
+.editor-dialog-subtitle::placeholder { color: var(--black-25); }
+.editor-dialog-title::placeholder,
+.editor-dialog-title.is-quiet { color: var(--black-25); }
+
+.editor-dialog-main {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+}
+
+/* The tab bar runs edge to edge across the card. */
+.editor-dialog-main > .tabs-frame {
+  align-self: stretch;
+  width: calc(100% + var(--space-25) * 2);
+  max-width: none;
+  margin-inline: calc(var(--space-25) * -1);
+  background: var(--sidebar-grey);
+  --scroll-fade: var(--sidebar-grey);
+  border-bottom: 1px solid var(--line);
+}
+
+.editor-dialog-rule {
+  align-self: stretch;
+  flex: none;
+  width: calc(100% + var(--space-25) * 2);
+  max-width: none;
+  height: 0;
+  margin: var(--space-10) calc(var(--space-25) * -1);
+  border: 0;
+  border-top: 1px solid var(--line);
+}
+
+.editor-dialog-main .tabs-scroll {
+  overflow: hidden;
+  scrollbar-width: none;
+}
+
+.editor-dialog-main .tabs-scroll > .tabs,
+.editor-dialog-main .tabs {
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: 7px var(--space-25) var(--space-8);
+  background: var(--sidebar-grey);
+  border-radius: 0;
+  overflow: hidden;
+}
+
+.editor-dialog-main .tabs .slide-pill { background: var(--grey); }
+
+html[data-theme="dark"] .editor-dialog-main > .tabs-frame,
+html[data-theme="dark"] .editor-dialog-main .tabs {
+  background: var(--grey);
+  --scroll-fade: var(--grey);
+}
+
+html[data-theme="dark"] .editor-dialog-main .tabs .slide-pill { background: var(--black-12); }
+
+.editor-dialog-body {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  align-self: stretch;
+  gap: var(--space-25);
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+  margin-inline: -1px;
+  overflow: auto;
+  padding: var(--space-12) 1px;
+}
+
+.editor-dialog-body > * { flex-shrink: 0; }
+
+.editor-dialog-foot {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-8);
+  flex: none;
+  padding: var(--space-16) var(--space-25) 0;
+  border-top: 1px solid var(--line);
+}
+
+/* A required description left empty. Only the placeholder turns red. */
+.editor-dialog-subtitle.is-invalid::placeholder { color: color-mix(in srgb, var(--destructive) 70%, var(--text-muted)); }
+
+/* Photo viewer: one photo full size, above any popup. */
+.photo-viewer {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 64px;
+}
+
+.photo-viewer-scrim {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  background: var(--scrim-photo);
+  cursor: zoom-out;
+  animation: confirm-scrim 200ms var(--ease-out);
+}
+
+.photo-viewer-image {
+  position: relative;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: var(--radius-control);
+  pointer-events: none;
+  animation: photo-viewer-in 240ms var(--ease-out);
+}
+
+.photo-viewer-button {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-control);
+  background: var(--white);
+  box-shadow: var(--stroke);
+  color: var(--black);
+  cursor: pointer;
+  transition: background-color 120ms ease, scale 160ms var(--ease-out);
+}
+.photo-viewer-button:hover { background: var(--sidebar-grey); }
+.photo-viewer-button:active { scale: 0.98; }
+.photo-viewer-close { top: var(--space-16); right: var(--space-16); }
+.photo-viewer-prev,
+.photo-viewer-next { top: 50%; translate: 0 -50%; }
+.photo-viewer-prev { left: var(--space-16); }
+.photo-viewer-next { right: var(--space-16); }
+.photo-viewer-prev .i { rotate: 90deg; }
+.photo-viewer-next .i { rotate: -90deg; }
+
+.photo-viewer-count {
+  position: absolute;
+  bottom: var(--space-16);
+  left: 50%;
+  translate: -50% 0;
+  margin: 0;
+  padding: var(--space-4) var(--space-10);
+  border-radius: var(--radius-control);
+  background: var(--white);
+  box-shadow: var(--stroke);
+  color: var(--black);
+  font-size: var(--text-14);
+  line-height: 20px;
+  font-variant-numeric: var(--numeric);
+}
+
+@keyframes photo-viewer-in {
+  from { opacity: 0; scale: 0.96; }
+  to { opacity: 1; scale: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .editor-dialog-scrim,
+  .editor-dialog-card,
+  .photo-viewer-scrim,
+  .photo-viewer-image { animation: none; }
+}
+
+/* Pill editor: the card fits its content, and every field is one pill in a row. */
+.editor-dialog-card.is-pills { height: auto; }
+.editor-dialog-card.is-pills .editor-dialog-rule { display: none; }
+.editor-dialog-card.is-pills .editor-dialog-body { flex: none; gap: calc(var(--space-20) * 2); overflow: visible; padding-block: var(--space-16) calc(var(--space-16) * 2); }
+.editor-photos { --side-photo-size: 56px; }
+.editor-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-8);
+}
+
+.editor-pill-row { display: flex; flex-wrap: wrap; flex-basis: 100%; gap: var(--space-8); }
+.editor-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 var(--space-10);
+  border: 0;
+  border-radius: var(--radius-control);
+  background: var(--white);
+  box-shadow: var(--stroke);
+  color: var(--black);
+  font: inherit;
+  font-size: var(--text-14);
+  line-height: 20px;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 120ms ease;
+}
+.editor-pill:hover,
+.editor-pill[aria-expanded="true"] { background: var(--sidebar-grey); }
+/* A required choice left empty after a save attempt. */
+.editor-pill.is-invalid { box-shadow: 0 0 0 1px color-mix(in srgb, var(--destructive) 40%, transparent); }
+.editor-pill.is-static { cursor: default; }
+.editor-pill.is-static:hover { background: var(--white); }
+.editor-pill > .i { color: var(--text-muted); }
+.editor-pill.is-quiet .editor-pill-value { color: var(--text-muted); }
+.editor-pill.is-invalid .editor-pill-value,
+.editor-pill.is-invalid > .i { color: color-mix(in srgb, var(--destructive) 70%, var(--text-muted)); }
+.editor-pill :is(.status, .urgency, .dept, .mini-pill) { font-size: var(--text-14); }
+.editor-pill :is(.urgency, .mini-pill) { padding: 0; background: transparent; }
+.editor-pill-value { display: inline-flex; align-items: center; min-width: 0; }
+
+/* A guestroom's room number rides in a grey track behind the Location pill. */
+.editor-pill-group {
+  display: inline-flex;
+  align-items: center;
+  border-radius: var(--radius-control);
+  background: transparent;
+  box-shadow: 0 0 0 1px transparent;
+  transition: background-color 200ms var(--ease-out), box-shadow 200ms var(--ease-out);
+}
+.editor-pill-group.is-open {
+  background: var(--sidebar-grey);
+  box-shadow: var(--stroke);
+}
+.editor-pill-room-slot {
+  display: grid;
+  grid-template-columns: 0fr;
+  opacity: 0;
+  transition: grid-template-columns 240ms var(--ease-out), opacity 160ms var(--ease-out);
+}
+.editor-pill-room-slot > span { min-width: 0; overflow: hidden; }
+.editor-pill-group.is-open .editor-pill-room-slot {
+  grid-template-columns: 1fr;
+  opacity: 1;
+  transition-delay: 0ms, 60ms;
+}
+@media (prefers-reduced-motion: reduce) {
+  .editor-pill-group,
+  .editor-pill-room-slot { transition-duration: 0ms; }
+}
+/* Hidden copies of the placeholder and the value share the input's cell,
+   so the field is as wide as the wider of the two. */
+.editor-pill-room-field {
+  position: relative;
+  display: inline-grid;
+  height: 28px;
+  font-size: var(--text-14);
+  line-height: 28px;
+}
+.editor-pill-room-field::before,
+.editor-pill-room-field::after,
+.editor-pill-room {
+  padding: 0 var(--space-12) 0 var(--space-10);
+  font: inherit;
+  white-space: pre;
+}
+.editor-pill-room-field::before,
+.editor-pill-room-field::after { grid-area: 1 / 1; visibility: hidden; }
+.editor-pill-room-field::before { content: attr(data-placeholder); }
+.editor-pill-room-field::after { content: attr(data-value); }
+.editor-pill-room {
+  position: absolute;
+  inset: 0;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: transparent;
+  color: var(--black);
+}
+.editor-pill-room::placeholder { color: var(--black-25); }
+/* A required room left empty: the track itself carries the red. */
+.editor-pill-group.is-invalid {
+  background: color-mix(in srgb, var(--destructive) 6%, var(--sidebar-grey));
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--destructive) 40%, transparent);
+}
+.editor-pill-group.is-invalid .editor-pill-room::placeholder { color: color-mix(in srgb, var(--destructive) 70%, var(--text-muted)); }
+.editor-pill-room:focus { outline: none; }
+
+/* The footer's photo control: a 28px square on the left, like the footer buttons. */
+.editor-pill.editor-photo-pill {
+  justify-content: center;
+  width: 28px;
+  margin-inline-end: auto;
+  padding: 0;
+}
+
+/* Labelled text entries under the description, two to a row. */
+.editor-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-16);
+}
+.editor-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+}
+.editor-field-label {
+  color: var(--black-50);
+  font-size: var(--text-12);
+  line-height: 16px;
+}
+.editor-field-input {
+  width: 100%;
+  height: 32px;
+  margin: 0;
+  padding: 0 var(--space-10);
+  border: 0;
+  border-radius: var(--radius-control);
+  background: var(--white);
+  box-shadow: var(--stroke);
+  color: var(--black);
+  font: inherit;
+  font-size: var(--text-14);
+  line-height: 20px;
+}
+.editor-field-input:hover { box-shadow: 0 0 0 1px var(--black-12); }
+.editor-field-input:focus { outline: none; box-shadow: 0 0 0 1px var(--black-25); }
+.editor-field-input::placeholder { color: var(--text-muted); }
+
+/* Shown above the card when Save is pressed with a required field empty. */
+.required-toast {
+  position: fixed;
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  padding: 0 var(--space-10);
+  border-radius: var(--radius-control);
+  background: var(--white);
+  box-shadow: var(--stroke);
+  color: var(--text-muted);
+  font-size: var(--text-14);
+  line-height: 20px;
+  text-align: center;
+  white-space: nowrap;
+  pointer-events: none;
+  transform: translate(-50%, calc(-100% - var(--space-12)));
+  animation: required-toast-in 200ms var(--ease-out);
+  transition: opacity 200ms var(--ease-out);
+}
+.required-toast.is-leaving { opacity: 0; }
+@keyframes required-toast-in {
+  from { opacity: 0; transform: translate(-50%, calc(-100% - var(--space-4))); }
+}
+@keyframes required-toast-fade {
+  from { opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .required-toast { animation-name: required-toast-fade; }
+}

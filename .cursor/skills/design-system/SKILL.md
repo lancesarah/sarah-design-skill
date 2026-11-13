@@ -9,9 +9,9 @@ Interfaces built with this skill feel physical but quiet. A page that is itself 
 
 Everything is written as **roles and ratios** ("one step from its ground", "the blue action", "the gap inside a group smaller than the gap between groups"). The concrete numbers are this product's, in `catalog/tokens.css`. Do not remap them to another palette. A second hex, font size, or spacing step sits beside a system that is already measured.
 
-The gallery (`catalog/index.html`, `catalog/gallery.css`) is the component catalog. `catalog/tokens.css` is the only source of color, type, space, radius, and shadow. `catalog/todos-alt.css` styles the table and filter row. `catalog/notes.html` is the header and sidebar specimen. The avatar in those pages is `catalog/assets/avatar-sarah.png`.
+The gallery (`catalog/index.html`, `catalog/gallery.css`) is the component catalog. `catalog/tokens.css` is the only source of color, type, space, radius, and shadow. `catalog/todos-alt.css` styles the table and filter row. `catalog/editor-dialog.css` styles the editor popup and the pill editor. `catalog/notes.html` is the header and sidebar specimen. The avatar in those pages is `catalog/assets/avatar-sarah.png`.
 
-These files sit in this skill folder, next to `SKILL.md`. Read them from here in whatever project you are editing. Do not look for `css/tokens.css`, `css/gallery.css`, `index.html`, or `notes.html` at the project root when they are not there. In the repo that owns this skill, `css/` is the source. The three catalog stylesheets are copies. Edit `css/`, then run `npm run sync`.
+These files sit in this skill folder, next to `SKILL.md`. Read them from here in whatever project you are editing. Do not look for `css/tokens.css`, `css/gallery.css`, `index.html`, or `notes.html` at the project root when they are not there. In the repo that owns this skill, `css/` is the source. The four catalog stylesheets are copies. Edit `css/`, then run `npm run sync`.
 
 When the project you are editing already contains those live files, the live files are the source. Read and edit the live files. `catalog/` is the copy that travels with this skill. When the live files are absent, read `catalog/` and apply those values in the styling system the project already uses.
 
@@ -62,7 +62,7 @@ Work top to bottom. Each step constrains the next. Most weak UI comes from start
 3. **Placement.** A main page puts its one primary, with an icon, on the right of the header. Every button in the header has an icon. A text-only header button is wrong. A full subpage keeps its content within 820px. Its top-right is back navigation only. A primary on a subpage sits in the page content. A section's actions sit with that section. A control sits next to what it sets. Search is not in the header.
 4. **Component.** Copy the gallery piece the job already has: header, filter row, note card, comment thread, task row, detail panel, or the closest control. Do not restyle that piece. If the gallery already has the component, use that one. Do not draw a second search, a second filter, or a second combination beside it. A list of similar items can be cards. One thing sits on the page. A table is for many records. A menu is for options that already exist. A modal is the delete confirmation, or a lesson card. Inline first.
 5. **Surface and layer.** Decide the ground, then take one step from it. A hairline is 1px `--line`. Two strokes on one edge read as a thicker line. A tooltip is the top layer. Menus, the filter row, and the detail panel use the stack in [foundations.md](references/foundations.md). A new overlay does not invent a z-index.
-6. **Type and spacing.** Plus Jakarta Sans. Hierarchy is a size step plus an ink step, with weight 500 only where the gallery already uses it (a record title, a section label, a place). 4px-based steps from `--space-2` through `--space-25`. Inside a control, use that component's padding. Between groups, use the larger steps. Do not loosen an icon gap to invent room, and do not tighten a section gap down to an item gap.
+6. **Type and spacing.** Switzer. Hierarchy is a size step plus an ink step, with weight 500 only where the gallery already uses it (a record title, a section label, a place). 4px-based steps from `--space-2` through `--space-25`. Inside a control, use that component's padding. Between groups, use the larger steps. Do not loosen an icon gap to invent room, and do not tighten a section gap down to an item gap.
 7. **Colour roles.** The neutral carries structure. `--action` is the one blue, for the primary, the open row, a switch that is on, and a progress fill. `--destructive` is the one red, for a danger button. A department or an urgency carries identity, as the gallery chip, and never ranks the page. Status wins a clash with a row hover: the open to-do stays `--filter-chip-bg` with a 1px `--action` box.
 8. **Motion gate.** Should it move at all? The more often it is seen, the less it moves. A table row does not fade its wash. A keyboard action snaps. If it moves: name one purpose, animate only the properties that change, use the curves in [polish.md](references/polish.md), keep everyday UI under 300ms, make the exit about 20% faster, and ship a reduced-motion version that keeps the static cue.
 9. **Review.** Walk [quality-checklist.md](references/quality-checklist.md) for the rows this change could break. Check both themes when dark is in play. Look for a double hairline, a sibling that does not match, a label that wraps, a column header on the wrong track, and a hover that restyles a fact.
@@ -96,8 +96,9 @@ Every part comes from the parent. Hover and selected share one step. If that ste
 
 | Role | Default | Rule |
 | --- | --- | --- |
-| Face | Plus Jakarta Sans, 400 and 500 | Switzer is the dev switch only. Libre Baskerville is an editorial moment the gallery already uses |
+| Face | Switzer, 400 and 500 | Plus Jakarta Sans is the dev switch only. Libre Baskerville is an editorial moment the gallery already uses |
 | Record title | 16 / 500 | Not the name of a table. A table's own title is on Table in [components.md](references/components.md) |
+| Editor title | 24 / 500, line-height 28px | The pill editor's title. Its description is 14px, line-height 20px, in --text-muted. See Pill editor |
 | Page title, body, button | 14 / 400 | The page title is `--black`, including the parent you click to go back. The count is 14 / 400 in `--text-muted` |
 | Place | 14 / 500 | |
 | Section label, note, meta | 12 | Label is 500 in `--text-muted`. Meta is 400 in `--text-muted` |
@@ -202,7 +203,7 @@ Open the one file that matches the task. Read a second only when the task crosse
 | Before calling UI work done | [quality-checklist.md](references/quality-checklist.md) |
 
 - [foundations.md](references/foundations.md): roles, the ink ladder, what changes and what stays, layering, dark mode, type, space, radius.
-- [components.md](references/components.md): when to use each control, and that control's size, fill, and states. A one-line input box is 32px. A description or notes field is the text well, 96px.
+- [components.md](references/components.md): when to use each control, and that control's size, fill, and states. A one-line input box is 32px. A notes field inside a form is the text well, 96px. A record's own description in the pill editor is not. See Pill editor.
 - [patterns.md](references/patterns.md): the job, spacing a screen, and the blocks. A person, an urgency, and a type are named there only as a pointer to the component.
 - [polish.md](references/polish.md): the motion decision, curves, durations, icons, fewer containers.
 - [guard-rails.md](references/guard-rails.md): corrections that came back more than once. Follow them with the component spec.

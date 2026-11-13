@@ -149,3 +149,9 @@ Dark mode recolors the tokens in [foundations.md](foundations.md). It does not c
 Filter chips on notes sit under Filters, Print, and New, as the filter row block describes. They do not sit above those buttons.
 
 Forced by: "in dark mode, the hover should lighten the selection" and "it's wrong in the table," "the primary button is wrong," "the secondary button is also wrong in dark mode," "the stroke around search bar is too harsh," "the name and the count should be different colors. use the new step made from the side bar color," "the filter chips should go BELOW the buttons on the right, not above," "strokes are disappearing into the background on hover," "the stroke around the table is too light," "profile pictures should be lighter than the background," "the unassigned avatar blends in," "on hover, the background of this toggle is disappearing," "the hover in the detail view is going darker," "they are hovering with different padding and different colors," and "the hover is too light."
+
+## The catalog is the drawing
+
+If the product draws something the catalog doesn't, such as depth, a token, a column width, or an editor's title, the catalog is out of date. Fix the catalog and that component's section in the same change. Don't leave it for the next build to guess. When the live product is open, check its computed styles against the catalog before shipping a copied component.
+
+Forced by: a Lost & found build that followed the catalog exactly. It came out with a flat primary, a pill editor title with no spec, and a chevron with no room, because the catalog didn't have them.

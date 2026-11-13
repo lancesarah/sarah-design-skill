@@ -121,7 +121,7 @@ export function FontSwitch() {
 
   useLayoutEffect(() => {
     if (mounted.current) {
-      if (face === "switzer") document.documentElement.dataset.font = "switzer";
+      if (face === "jakarta") document.documentElement.dataset.font = "jakarta";
       else delete document.documentElement.dataset.font;
       try {
         localStorage.setItem("font", face);

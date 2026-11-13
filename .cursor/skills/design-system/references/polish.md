@@ -93,7 +93,7 @@ Truncation in markup is the `…` character. Three periods are not an ellipsis.
 
 An uppercase label loosens its letter-spacing. Tight capitals read as a block.
 
-The UI face is Plus Jakarta Sans. The dev switch can put Switzer back for a comparison. The fallback is a face with a similar x-height and weight, so a missing font does not reflow the line. Product pages set `-webkit-font-smoothing: var(--font-smoothing)` on `body`. Libre Baskerville is for editorial moments only.
+The UI face is Switzer. The dev switch can put Plus Jakarta Sans back for a comparison. The fallback is a face with a similar x-height and weight, so a missing font does not reflow the line. Product pages set `-webkit-font-smoothing: var(--font-smoothing)` on `body`. Libre Baskerville is for editorial moments only.
 
 An underline is a link. Emphasis in the interface is weight or color. Bold is for that emphasis. Italic is for a citation or a linguistic stress, and it stays in the editorial face.
 
@@ -119,7 +119,7 @@ Space inside a control stays the component's own spacing. Do not loosen an icon-
 
 Nested rounded surfaces that sit within 24px of padding use `outer radius = inner radius + padding`. A shell padded by `--space-16` around a `--radius-control` surface uses `--radius-shell`. The menu is already concentric: 6px shell, 2px padding, 4px items. `--radius-well`, `--radius-tag`, and `--radius-circle` stay on the components they name.
 
-Depth stays on `--stroke` and `--shadow-menu`. Dividers stay `1px solid var(--grey)`. Inputs keep their focus ring.
+Depth stays on `--stroke`, `--shadow-menu`, and the depth tokens: `--depth-sheen`, `--depth-edge`, `--depth-rim`, and `--depth-drop`. See Elevation and stroke in [foundations.md](foundations.md). Dividers stay `1px solid var(--grey)`. Inputs keep their focus ring.
 
 Photographs use `outline: var(--outline-image)` and `outline-offset: -1px`. Light mode is pure black at 10% opacity. Dark mode is pure white at 10% opacity, not the hairline and not a tinted grey. A light ring baked into the photo is clipped off (`clip-path: inset(1px round 50%)`) so the circle sits on the surface.
 

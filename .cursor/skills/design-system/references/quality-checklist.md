@@ -10,7 +10,8 @@ Run the rows this change could break. A row that does not match sends you back t
 - [ ] Status copy matches the record. Open, In progress, and Completed say what the record is now.
 - [ ] Hover and selected share one step from the surface they sit on. A selected control does not take a second step under the pointer. Dark mode lightens that step. See [foundations.md](foundations.md).
 - [ ] A button changes its fill only. See Primary button, Secondary button, Tertiary button, Danger button, and Filter chip in [components.md](components.md).
-- [ ] A description or notes field is the text well, and every one of those boxes is the same height. A one-line input box is the field or the line field. See [components.md](components.md).
+- [ ] The primary button has its depth: sheen, edge, rim, and drop. A secondary button has its stroke and drop.
+- [ ] A notes field inside a form is the text well, and every one of those boxes is the same height. A pill editor's own description is not. See Pill editor in [components.md](components.md). A one-line input box is the field or the line field. See [components.md](components.md).
 - [ ] A tooltip is the top layer. It paints above the page, the table, and the sidebar. A click does not hide it. A menu, the filter row, and the detail panel use the stack in [foundations.md](foundations.md). A new overlay does not invent a z-index.
 - [ ] The edit stayed on the control the user pointed at. Neighbors are unchanged. See [guard-rails.md](guard-rails.md).
 - [ ] Related things are grouped, and the gap inside a group is smaller than the gap between groups. A title and the content it names keep at least 40px. A label the content does not need is absent. See Spacing a screen in [patterns.md](patterns.md). The lesson card’s measurements apply only to a lesson card.
@@ -34,6 +35,7 @@ Check this on every change, on the rendered screen. Equal padding is not alignme
 - [ ] A chip that opens a menu follows Department tag in [components.md](components.md).
 - [ ] A dropdown follows Menu in [components.md](components.md).
 - [ ] A new table follows Table in [components.md](components.md).
+- [ ] Every hover chevron fits inside its own column. Showing it doesn't move or crowd the next column.
 - [ ] A filter follows the filter row in [patterns.md](patterns.md).
 
 ## If you added motion, an icon, or a container
@@ -49,3 +51,6 @@ Check this on every change, on the rendered screen. Equal padding is not alignme
 - [ ] A measured count follows Progress bar in [components.md](components.md). A lesson follows Lesson card.
 - [ ] Delete follows Delete confirmation in [components.md](components.md). A new record is created on the page, not in a prompt.
 - [ ] A dropdown trigger keeps its hover fill while the menu is open. See [foundations.md](foundations.md).
+- [ ] Activity reads heading, thread, composer. The composer is last.
+- [ ] Pill editor pills sit on one line and wrap only for width.
+- [ ] The pill editor title is 24/500 and its description is 14px muted with no label or well.

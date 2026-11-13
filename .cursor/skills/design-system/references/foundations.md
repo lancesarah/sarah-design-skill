@@ -162,7 +162,7 @@ Sidebar icon buttons stay unfilled. The switch under Settings uses `--action` an
 
 ## Type
 
-- `--font`: Plus Jakarta Sans, weights 400 and 500. Plus Jakarta Sans is the UI face. Switzer stays on the dev switch so the two can be compared. Libre Baskerville is for editorial moments only, where the gallery already uses it.
+- `--font`: Switzer, weights 400 and 500. Switzer is the UI face. Plus Jakarta Sans stays on the dev switch (`html[data-font="jakarta"]`) so the two can be compared. Libre Baskerville is for editorial moments only, where the gallery already uses it.
 - Sizes: `--text-10`, `--text-12`, `--text-13`, `--text-14`, `--text-16`, `--text-20`, `--text-24`. Which size a component uses is on that component in [components.md](components.md). The shared scale is in [SKILL.md](../SKILL.md).
 - `--font-smoothing`: `antialiased` on product pages.
 - `--text-wrap-title`: `balance` for headings. `--text-wrap-copy`: `pretty` for short copy.
@@ -186,6 +186,12 @@ Sidebar icon buttons stay unfilled. The switch under Settings uses `--action` an
 
 - `--elevation-menu`: menus and popovers. It is the `--shadow-menu` value.
 - `--stroke`: 1px `--grey` ring, for controls. A card or a table takes `--stroke-card`, one step darker, 1px `--black-12`. The page card is 1px `--black-12` too.
+- Depth: the press-taking controls. It is not a menu shadow and not a card shadow.
+  - `--depth-sheen`: a top-to-bottom gradient over a filled button, white at 14% to black at 6%.
+  - `--depth-edge`: an inset 1px ring, black at 14%, on a filled button.
+  - `--depth-rim`: the primary's 1px inner highlight, white at 32% fading to 8%. It is drawn on `::after`.
+  - `--depth-drop`: `0 1px 2px`, black at 8%, under a raised control. Dark mode is black at 40%. The other three do not change.
+  - The primary takes all four. The filled danger takes the sheen, the edge, and the drop. The secondary button, Filter, and the trigger take `--stroke` plus the drop. Disabled is flat. See Primary button in [components.md](components.md).
 - `--outline-image`: 1px pure black at 10% opacity, inset on photographs. In dark mode it is pure white at 10% opacity, not the hairline and not a tinted grey.
 - `--icon-stroke`: `calc(1 / 0.95)`. Icons with class `i` are scaled to 0.95, and this keeps the painted stroke at `1`. Every icon is the line construction `#i-calendar` and `#i-camera` use, on a 14 grid with round ends and joins. See [polish.md](polish.md).
 - `--hit` / `--hit-touch`: 40px and 44px hit areas. The visible control stays its gallery size.

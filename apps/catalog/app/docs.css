@@ -244,7 +244,7 @@
 }
 
 .docs-card {
-  border: 1px solid var(--line);
+  border: 1px solid var(--line-card);
   border-radius: var(--radius-well);
   background: var(--white);
 }

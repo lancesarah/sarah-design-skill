@@ -3,6 +3,7 @@
 import { ConfirmDialog, DepartmentChip, DetailPanel, FactRow, Icon, OverlayMenu, captureClose, type MenuPoint } from "@lance-live/gallery-ui";
 import { useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
+import { useNotify } from "../action-toast";
 import { ReplyForm } from "../chrome";
 import { Glyph } from "../glyph";
 
@@ -215,6 +216,7 @@ export function CallDetails({
   const [elapsed, setElapsed] = useState(0);
   const [transcriptOpen, setTranscriptOpen] = useState(true);
   const [menu, setMenu] = useState<MenuState | null>(null);
+  const notify = useNotify();
   const [pendingComment, setPendingComment] = useState<number | null>(null);
   const anchorRef = useRef<HTMLElement | null>(null);
   const transferred = resolution === "transferred";
@@ -551,6 +553,7 @@ export function CallDetails({
           setPendingComment(null);
           flushSync(() => onDeleteComment(index));
           play();
+          notify("Comment deleted");
         }}
       />
     </DetailPanel>

@@ -1,6 +1,6 @@
 "use client";
 
-import { Widget } from "@lance-live/gallery-ui";
+import { Widget, WidgetFigure, WidgetNote, WidgetStats, WidgetSummary } from "@lance-live/gallery-ui";
 
 /** Estimated from what Lance did this week, at the time each would take by hand. */
 const WEEK = { savedMinutes: 265, replies: 17, triaged: 23, calls: 31 };
@@ -15,27 +15,17 @@ function duration(minutes: number) {
 /** The manual work Lance absorbed this week. The estimate leads, the work behind it sits beside it. */
 export function TimeSavedWidget() {
   return (
-    <Widget icon="clock" title="Time saved" action={<span className="home-pm-today">This week</span>}>
-      <div className="home-summary is-alone">
-        <p className="home-summary-hero">
-          <span className="home-summary-figure">~{duration(WEEK.savedMinutes)}</span>
-          <span className="home-summary-label">saved, estimated</span>
-        </p>
-        <dl className="home-summary-stats">
-          <div>
-            <dt>Replies</dt>
-            <dd>{WEEK.replies}</dd>
-          </div>
-          <div>
-            <dt>Triaged</dt>
-            <dd>{WEEK.triaged}</dd>
-          </div>
-          <div>
-            <dt>Calls</dt>
-            <dd>{WEEK.calls}</dd>
-          </div>
-        </dl>
-      </div>
+    <Widget icon="clock" title="Time saved" action={<WidgetNote>This week</WidgetNote>}>
+      <WidgetSummary alone>
+        <WidgetFigure value={`~${duration(WEEK.savedMinutes)}`} label="saved, estimated" />
+        <WidgetStats
+          items={[
+            { label: "Replies", value: WEEK.replies },
+            { label: "Triaged", value: WEEK.triaged },
+            { label: "Calls", value: WEEK.calls },
+          ]}
+        />
+      </WidgetSummary>
     </Widget>
   );
 }

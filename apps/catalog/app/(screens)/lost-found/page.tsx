@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  Chip,
   Button,
   CHIP_LABEL_INSET,
   ChipDropdown,
@@ -24,7 +25,6 @@ import {
   TEXT_SHORT_MIN,
   Tabs,
   TitleSubtitle,
-  Toast,
   captureClose,
   dateColumn,
   taskMenuItem,
@@ -32,9 +32,9 @@ import {
   type DataColumn,
 } from "@lance-live/gallery-ui";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { createPortal, flushSync } from "react-dom";
+import { flushSync } from "react-dom";
+import { putBack, useNotify } from "../action-toast";
 import { FilterMenu, SearchBox } from "../chrome";
-import { Glyph } from "../glyph";
 import { PageLayout } from "../page-layout";
 
 type Bucket = "held" | "returned" | "archived";
@@ -297,6 +297,7 @@ function ItemEditor({
 }
 
 export default function LostFoundPage() {
+  const notify = useNotify();
   const [items, setItems] = useState(STARTER);
   const [logging, setLogging] = useState(false);
   const [editing, setEditing] = useState<string | null>(null);
@@ -308,7 +309,6 @@ export default function LostFoundPage() {
   const [selected, setSelected] = useState<string | null>(null);
   const [present, setPresent] = useState(false);
   const [hidden, setHidden] = useState(true);
-  const [notice, setNotice] = useState<{ id: number; message: string; itemId: string; bucket: Bucket } | null>(null);
   const retained = useRef<FoundItem | null>(null);
   const menu = useTableMenu();
 
@@ -538,6 +538,7 @@ export default function LostFoundPage() {
         return item;
       }),
     );
+    notify("Item updated");
   }
 
   function addItem(item: FoundItem) {
@@ -547,6 +548,7 @@ export default function LostFoundPage() {
     setCategories([]);
     setItems((list) => [item, ...list]);
     setEnteringId(item.id);
+    notify("Item added");
   }
 
   function assign(row: FoundItem, next: Bucket) {
@@ -559,28 +561,27 @@ export default function LostFoundPage() {
     play();
     if (next === "returned") {
       const name = row.description.trim() || "Item";
-      setNotice({ id: Date.now(), message: `${name} marked returned`, itemId: row.id, bucket: row.bucket });
+      notify({
+        message: `${name} marked returned`,
+        action: "Undo",
+        onAction: () => setItems((list) => list.map((item) => (item.id === row.id ? { ...item, bucket: row.bucket } : item))),
+      });
     }
   }
-
-  useEffect(() => {
-    if (!notice) return;
-    const timer = window.setTimeout(() => setNotice((current) => (current?.id === notice.id ? null : current)), 4000);
-    return () => window.clearTimeout(timer);
-  }, [notice]);
 
   function move(row: FoundItem) {
     assign(row, row.bucket === "held" ? "returned" : "held");
   }
 
   function removeItem(row: FoundItem) {
-    if (row.photo?.startsWith("blob:")) URL.revokeObjectURL(row.photo);
+    const index = items.findIndex((item) => item.id === row.id);
     const play = captureClose(document.querySelector(`[data-record="${CSS.escape(row.id)}"]`));
     flushSync(() => {
       setItems((list) => list.filter((item) => item.id !== row.id));
       setSelected((current) => (current === row.id ? null : current));
     });
     play();
+    notify({ message: "Item deleted", action: "Undo", onAction: () => setItems((list) => putBack(list, row, index)) });
   }
 
   const record = retained.current;
@@ -617,9 +618,7 @@ export default function LostFoundPage() {
           <FilterMenu value={categories} onValueChange={setCategories} options={CATEGORIES} />
           <div className="filter-chips">
             {categories.map((value) => (
-              <button key={value} className="chip chip-filter" type="button" onClick={() => setCategories((current) => current.filter((item) => item !== value))}>
-                <span className="chip-k">Category</span>: {value} <Glyph name="plus" size={10} className="x" />
-              </button>
+              <Chip key={value} filter={{ name: "Category", value }} onClick={() => setCategories((current) => current.filter((item) => item !== value))} />
             ))}
           </div>
         </div>
@@ -728,20 +727,6 @@ export default function LostFoundPage() {
             removeItem(editingItem);
           }}
         />
-      ) : null}
-      {notice ? createPortal(
-        <div className="page-toast">
-          <Toast
-            key={notice.id}
-            message={notice.message}
-            action="Undo"
-            onAction={() => {
-              setItems((list) => list.map((item) => (item.id === notice.itemId ? { ...item, bucket: notice.bucket } : item)));
-              setNotice(null);
-            }}
-          />
-        </div>,
-        document.body,
       ) : null}
     </PageLayout>
   );

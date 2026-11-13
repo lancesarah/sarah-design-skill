@@ -2,6 +2,7 @@
 
 import { useLayoutEffect, useState, type ReactNode } from "react";
 import { FontSwitch } from "../font-switch";
+import { ToastProvider } from "./action-toast";
 import { LanceSide, WorkspaceSide } from "./chrome";
 import { ChatProvider } from "./chat-data";
 import { MessagesBoard, MessagesSide } from "./messages";
@@ -58,6 +59,7 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   return (
     <ShellPanelsContext.Provider value={makeRoom}>
+      <ToastProvider>
       <WorkspaceSide
         collapsed={sideCollapsed}
         onCollapsedChange={chooseSide}
@@ -91,6 +93,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       </ChatProvider>
       <LanceSide collapsed={lanceCollapsed} onCollapsedChange={chooseLance} />
       <FontSwitch />
+      </ToastProvider>
     </ShellPanelsContext.Provider>
   );
 }

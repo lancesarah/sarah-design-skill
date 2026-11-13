@@ -1,6 +1,6 @@
 "use client";
 
-import { Widget } from "@lance-live/gallery-ui";
+import { Widget, WidgetTally } from "@lance-live/gallery-ui";
 import type { CSSProperties } from "react";
 import { useSeen } from "./use-seen";
 
@@ -25,12 +25,7 @@ export function PipelineStagesWidget() {
   return (
     <Widget icon="list" title="Pipeline stages">
       <div className="home-tally-summary home-tickets-body">
-        <p className="home-tally-top">
-          <span>
-            <span className="home-summary-figure">{live}</span>
-            <span className="home-tally-label">{live === 1 ? "live lead" : "live leads"}</span>
-          </span>
-        </p>
+        <WidgetTally value={live} label={live === 1 ? "live lead" : "live leads"} />
         <dl ref={ref} className={seen ? "home-bars is-seen is-compact" : "home-bars is-compact"}>
           {STAGES.map((stage, at) => (
             <div key={stage.id} className={`is-${stage.tone}`} style={{ "--bar": stage.value / biggest, "--at": at } as CSSProperties}>

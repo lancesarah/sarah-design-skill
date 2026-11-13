@@ -1,10 +1,10 @@
 "use client";
 
-import { ASSIGNEE_PEOPLE, ActivityFeed, Button, DepartmentChip, DetailPanel, FactRow, Icon, Person, PhotoThumb, PhotoViewer, SideRoom, StatusCell, Tabs, TaskTable, UrgencyCell, captureClose, type ActivityItem } from "@lance-live/gallery-ui";
+import { Chip, ASSIGNEE_PEOPLE, ActivityFeed, Button, DepartmentChip, DetailPanel, FactRow, Icon, Person, PhotoThumb, PhotoViewer, SideRoom, StatusCell, Tabs, TaskTable, UrgencyCell, captureClose, type ActivityItem } from "@lance-live/gallery-ui";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { flushSync } from "react-dom";
+import { putBack, useNotify } from "../action-toast";
 import { FilterMenu, SearchBox } from "../chrome";
-import { Glyph } from "../glyph";
 import { PageLayout } from "../page-layout";
 import { ITEMS, PLACES, ROOMS, TodoEditor, isAssigned, type Todo } from "./todo-editor";
 
@@ -106,6 +106,7 @@ function TodoDetail({
 }
 
 export default function TodosPage() {
+  const notify = useNotify();
   const [todos, setTodos] = useState(STARTER);
   const [bucket, setBucket] = useState("open");
   const [query, setQuery] = useState("");
@@ -175,6 +176,8 @@ export default function TodosPage() {
   }
 
   function removeTodo(id: string) {
+    const index = todos.findIndex((todo) => todo.id === id);
+    const removed = todos[index];
     const play = captureClose(document.querySelector(`[data-record="${CSS.escape(id)}"]`));
     flushSync(() => {
       setTodos((list) => list.filter((todo) => todo.id !== id));
@@ -182,6 +185,7 @@ export default function TodosPage() {
       setEditing((current) => (current?.id === id ? null : current));
     });
     play();
+    if (removed) notify({ message: "To-do deleted", action: "Undo", onAction: () => setTodos((list) => putBack(list, removed, index)) });
   }
 
   const edited = editing ? todos.find((todo) => todo.id === editing.id) ?? null : null;
@@ -240,9 +244,7 @@ export default function TodosPage() {
           <FilterMenu value={types} onValueChange={setTypes} options={["Housekeeping", "Maintenance"]} />
           <div className="filter-chips">
             {types.map((value) => (
-              <button key={value} className="chip chip-filter" type="button" onClick={() => setTypes((current) => current.filter((item) => item !== value))}>
-                <span className="chip-k">Type</span>: {value} <Glyph name="plus" size={10} className="x" />
-              </button>
+              <Chip key={value} filter={{ name: "Type", value }} onClick={() => setTypes((current) => current.filter((item) => item !== value))} />
             ))}
           </div>
         </div>
@@ -303,6 +305,7 @@ export default function TodosPage() {
             onClose={() => setEditing(null)}
             onSave={(next) => {
               setTodos((list) => list.map((todo) => (todo.id === next.id ? next : todo)));
+              notify(editing?.creating ? "To-do created" : "To-do updated");
               setEditing(null);
             }}
             onDelete={() => removeTodo(edited.id)}

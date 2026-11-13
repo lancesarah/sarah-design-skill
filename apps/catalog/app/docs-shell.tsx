@@ -74,6 +74,7 @@ const NAV: Group[] = [
           { id: "meter", label: "Meter" },
           { id: "share-bar", label: "Share bar" },
           { id: "widget", label: "Widget" },
+          { id: "widget-summary", label: "Widget summary" },
           { id: "widget-list", label: "Widget list" },
           { id: "widget-row", label: "Widget row" },
           { id: "room-mark", label: "Room mark" },

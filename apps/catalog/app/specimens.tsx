@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Button, SegmentedControl, ThemeSwitch, type ButtonVariant } from "@lance-live/gallery-ui";
+import { Button, IconButton, SegmentedControl, ThemeSwitch, type ButtonVariant } from "@lance-live/gallery-ui";
 import { DocPage, Example } from "./docs-example";
 
 function Plus() {
@@ -121,6 +121,16 @@ export function AddButton() {
           <Button variant="secondary" icon aria-label="New">
             <Plus />
           </Button>
+        </Example>
+        <Example id="icon-button" title="Header icon" description="A tool in a header or a panel bar, such as a panel toggle. The glyph is grey, with no fill or stroke until hover. Every panel toggle uses it." code={`import { IconButton } from "@lance-live/gallery-ui";
+
+export function DetailsToggle({ onClick }: { onClick: () => void }) {
+  return <IconButton icon="panel" aria-label="Show details" onClick={onClick} />;
+}`}>
+          <IconButton icon="panel" aria-label="Show details" />
+          <IconButton icon="panel" aria-label="Show details" state="hover" />
+          <IconButton icon="fullscreen" aria-label="Expand" />
+          <IconButton icon="clock" aria-label="History" />
         </Example>
         <Example id="disabled" title="Disabled" description="An action that is not available yet. Every variant keeps its shape and fades." code={`import { Button } from "@lance-live/gallery-ui";
 

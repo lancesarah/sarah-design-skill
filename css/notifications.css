@@ -170,7 +170,7 @@ body.is-inbox-open .notes-page {
   position: relative;
   overflow: hidden;
   background: var(--white);
-  border: 1px solid var(--grey);
+  border: 1px solid var(--line-card);
   border-radius: var(--radius-control) var(--radius-control) var(--radius-control) calc(var(--radius-control) + var(--space-8));
 }
 
@@ -350,7 +350,7 @@ html[data-theme="dark"] .notice-row[aria-selected="true"] .avatar {
   border-bottom: 0;
   border-radius: var(--radius-card);
   background: var(--sidebar-grey);
-  box-shadow: var(--stroke);
+  box-shadow: var(--stroke-card);
 }
 
 .notice-row.is-support .avatar,
@@ -924,7 +924,7 @@ html[data-theme="dark"] .thread-person:hover { background: var(--grey); }
   padding: var(--space-12) calc(var(--space-12) + 28px) var(--space-12) var(--space-12);
   border-radius: var(--radius-card);
   background: var(--white);
-  box-shadow: var(--stroke), 0 6px 8px -4px rgb(0 0 0 / 16%);
+  box-shadow: var(--stroke-card), 0 6px 8px -4px rgb(0 0 0 / 16%);
   opacity: 1;
   transition: opacity var(--motion-grow-out) var(--ease-out);
 }
@@ -942,12 +942,12 @@ html[data-theme="dark"] .thread-person:hover { background: var(--grey); }
   right: calc(var(--space-12) * -1);
   bottom: calc(100% + 1px);
   left: calc(var(--space-12) * -1);
-  height: var(--space-12);
+  height: calc(var(--space-12) - 1px);
   background: var(--white);
 }
 
 html[data-theme="dark"] .ticket-overview {
-  box-shadow: var(--stroke), 0 6px 8px -4px rgb(0 0 0 / 50%);
+  box-shadow: var(--stroke-card), 0 6px 8px -4px rgb(0 0 0 / 50%);
 }
 
 .ticket-overview-dismiss {
@@ -1371,7 +1371,7 @@ html[data-theme="dark"] .ticket-row:hover {
   padding: var(--space-16);
   border-radius: var(--radius-card);
   background: var(--white);
-  box-shadow: var(--stroke);
+  box-shadow: var(--stroke-card);
 }
 
 /* The open ticket's title wraps. In the list it stays one line. */

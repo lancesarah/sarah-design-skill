@@ -544,7 +544,7 @@ html[data-theme="dark"] .pm-page .pm-check-edit:hover { background: var(--grey);
 
 .pm-page .pm-list-group {
   border-radius: var(--radius-control);
-  box-shadow: var(--stroke);
+  box-shadow: var(--stroke-card);
   background: var(--white);
   overflow: hidden;
 }
@@ -1226,7 +1226,6 @@ html[data-theme="dark"] .pm-page .pm-check-notes textarea { background: var(--gr
 .readings-page .pm-back-icon,
 .cash-back-icon { transform: rotate(90deg); }
 
-.pm-toast,
 .page-toast {
   position: fixed;
   z-index: 90;
@@ -1235,7 +1234,6 @@ html[data-theme="dark"] .pm-page .pm-check-notes textarea { background: var(--gr
   animation: confirm-in 240ms var(--ease-out);
 }
 
-.pm-toast .toast,
 .page-toast .toast {
   width: max-content;
   max-width: min(440px, calc(100vw - var(--space-25) * 2));
@@ -1244,17 +1242,13 @@ html[data-theme="dark"] .pm-page .pm-check-notes textarea { background: var(--gr
   padding: 10px 14px;
 }
 
-.pm-toast .toast > svg,
 .page-toast .toast > svg { flex: none; }
 
-.pm-toast .toast > span:not(.when),
 .page-toast .toast > span:not(.when) {
   min-width: 0;
   line-height: 20px;
 }
 
-.pm-toast .toast .when,
-.pm-toast .toast-link,
 .page-toast .toast .when,
 .page-toast .toast-link {
   flex: none;
@@ -1262,7 +1256,6 @@ html[data-theme="dark"] .pm-page .pm-check-notes textarea { background: var(--gr
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .pm-toast,
   .page-toast { animation: none; }
 }
 
@@ -1312,24 +1305,7 @@ html[data-theme="dark"] .pm-page .pm-check-notes textarea { background: var(--gr
 
 .pm-editor-pick-value { color: var(--text-muted); }
 
-/* Edit to-do. A guestroom puts the room number beside the location. */
-.todo-editor-place.has-room {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-8);
-}
-.todo-editor .pm-editor-pick :is(.status, .urgency, .dept, .mini-pill) { font-size: var(--text-14); }
-/* The field is the box, so a value sits on its 10px inset with no chip padding or fill. */
-.todo-editor .pm-editor-pick :is(.urgency, .mini-pill) {
-  padding: 0;
-  background: transparent;
-}
-.todo-editor .pm-editor-pick .mini-pill { gap: var(--space-8); }
-.todo-editor .todo-side-photos {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-}
+/* Edit to-do. */
 .todo-editor .side-photos { --side-photo-size: 87px; }
 
 .pm-editor-pick-value {
@@ -1791,7 +1767,7 @@ html[data-theme="dark"] .readings-editor .sheet-head { background: var(--grey); 
   padding: var(--space-16);
   border-radius: var(--radius-card);
   background: var(--white);
-  box-shadow: var(--stroke);
+  box-shadow: var(--stroke-card);
 }
 
 .readings-count {
@@ -1888,7 +1864,7 @@ html[data-theme="dark"] .readings-editor .sheet-head { background: var(--grey); 
   padding: var(--space-8) var(--space-12);
   border-radius: var(--radius-card);
   background: var(--white);
-  box-shadow: var(--stroke);
+  box-shadow: var(--stroke-card);
   color: var(--black);
   text-align: left;
 }
@@ -2089,19 +2065,7 @@ html[data-theme="dark"] .readings-editor .sheet-head { background: var(--grey); 
   font-weight: 700;
 }
 
-html[data-icon-ink="muted"] .i[data-icon-label] {
-  color: var(--text-muted) !important;
-}
-
-html[data-icon-ink="muted"] :is(.danger, .btn-danger-light, .pm-editor-remove) .i[data-icon-label] {
-  color: var(--destructive) !important;
-}
-
-html[data-icon-ink="muted"] .urgency-urgent .i[data-icon-label] {
-  color: var(--urgency-urgent) !important;
-}
-
-html[data-icon-ink="muted"] :is(.editor-pill, .pm-editor-pick).is-invalid .i[data-icon-label] {
+:is(.editor-pill, .pm-editor-pick).is-invalid .i {
   color: color-mix(in srgb, var(--destructive) 70%, var(--text-muted)) !important;
 }
 
@@ -2166,3 +2130,274 @@ html[data-icon-ink="muted"] :is(.editor-pill, .pm-editor-pick).is-invalid .i[dat
   background: transparent;
   cursor: pointer;
 }
+
+/* Guest messages: the Notes list beside one conversation. The conversation starts at the tab line. */
+.guest-page[data-view="top"]::after { grid-row: 2 / -1; }
+
+/* A filter category opens its options to the side, so its chevron points right. */
+.filter-menu .menu-next {
+  color: var(--black-50);
+  transform: rotate(-90deg);
+}
+
+.guest-page .brief-list button { grid-template-columns: 51px minmax(0, 1fr) auto; }
+
+/* The Messages row's end: the unread dot over the time. */
+.guest-page .brief-list .notice-end {
+  align-self: start;
+  margin-left: var(--space-8);
+}
+
+.guest-page .brief-list button:not(.is-unread) .notice-dot { visibility: hidden; }
+
+.guest-page .brief-list .note-line { justify-content: flex-start; }
+
+.guest-mark {
+  place-items: center;
+  flex: none;
+  color: var(--text-muted);
+  box-shadow: inset 0 0 0 1px var(--black-12);
+}
+
+html[data-theme="dark"] .guest-mark { background: var(--grey); }
+html[data-theme="dark"] .brief-list button:hover .guest-mark,
+html[data-theme="dark"] .brief-list button[aria-selected="true"] .guest-mark { background: var(--black-12); }
+
+.thread-banner .guest-mark {
+  width: 35px;
+  height: 35px;
+}
+
+.guest-page[data-view="top"] .brief-read {
+  grid-row: 2 / -1;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* The open note's title rule reaches every h2 in the pane. The empty keeps its own 16px title. */
+.notes-page[data-view="top"] .brief-read .empty h2 { font-size: var(--text-16); }
+
+/* The conversation, then the guest in the detail panel's 392px column. Both headers share one rule line. */
+.guest-open {
+  position: relative;
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+.guest-thread {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+
+.guest-sheet {
+  position: relative;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.guest-handoff {
+  padding-right: var(--space-12);
+  background: var(--action-tint);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--action) 25%, transparent), 0 6px 8px -4px rgb(0 0 0 / 12%);
+}
+
+html[data-theme="dark"] .guest-handoff {
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--action) 35%, transparent), 0 6px 8px -4px rgb(0 0 0 / 50%);
+}
+
+.guest-handoff-text {
+  margin: 0;
+  color: var(--action-hover);
+  font-size: var(--text-14);
+  font-weight: 500;
+  line-height: 20px;
+}
+
+html[data-theme="dark"] .guest-handoff-text { color: var(--action); }
+
+.guest-handoff-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-8);
+}
+
+.guest-sheet > .ticket-resolved { width: auto; }
+
+.guest-sheet > .msg.is-fill { margin-bottom: var(--space-4); }
+
+.guest-reply-hint {
+  margin: 0 var(--space-12) var(--space-12);
+  padding-inline: var(--space-4);
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  line-height: 16px;
+}
+
+.guest-side {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  width: 392px;
+  min-height: 0;
+  border-left: 1px solid var(--line);
+}
+
+.guest-side.is-over {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 3;
+  background: var(--white);
+  box-shadow: var(--shadow-menu);
+}
+
+/* The detail panel's slide. Beside the conversation, the column gives its width back as it leaves, so the conversation follows the edge. */
+.guest-side {
+  transition:
+    margin-right var(--motion-panel) var(--ease-drawer),
+    display var(--motion-panel) allow-discrete;
+}
+
+.guest-side[hidden] {
+  display: none;
+  margin-right: -392px;
+  transition:
+    margin-right var(--motion-panel-out) var(--ease-drawer),
+    display var(--motion-panel-out) allow-discrete;
+}
+
+@starting-style {
+  .guest-side { margin-right: -392px; }
+}
+
+.guest-side.is-over {
+  transform: translateX(0);
+  transition:
+    transform var(--motion-panel) var(--ease-drawer),
+    display var(--motion-panel) allow-discrete;
+}
+
+.guest-side.is-over[hidden] {
+  margin-right: 0;
+  transform: translateX(100%);
+  transition:
+    transform var(--motion-panel-out) var(--ease-drawer),
+    display var(--motion-panel-out) allow-discrete;
+}
+
+@starting-style {
+  .guest-side.is-over { margin-right: 0; transform: translateX(100%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .guest-side,
+  .guest-side[hidden] { transition: none; }
+}
+
+.guest-side .todo-side-scroll { --side-scroll-top: var(--space-25); flex: 1; }
+
+.guest-side .sheet-label {
+  color: var(--black-50);
+  font-size: var(--text-12);
+  font-weight: 500;
+}
+
+.notes-page[data-view="top"] .guest-side .todo-side-title-row h2 {
+  font-size: var(--text-16);
+  line-height: 20px;
+}
+
+.guest-side-section {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-12);
+}
+
+.guest-side-title {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-4);
+  font-size: var(--text-14);
+  font-weight: 500;
+  line-height: 20px;
+}
+
+.guest-side-count {
+  color: var(--text-muted);
+  font-weight: 400;
+  font-variant-numeric: var(--numeric);
+}
+
+.guest-calls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.guest-call {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-12);
+  border-radius: var(--radius-card);
+  box-shadow: var(--stroke-card);
+}
+
+.guest-call-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-8);
+  font-size: var(--text-14);
+  font-weight: 500;
+  line-height: 20px;
+}
+
+.guest-call-head time {
+  flex: none;
+  color: var(--black-50);
+  font-size: var(--text-12);
+  font-weight: 400;
+  font-variant-numeric: var(--numeric);
+}
+
+.guest-call-summary {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: var(--text-14);
+  line-height: 20px;
+}
+
+.guest-side .todo-side-title-row { align-items: center; }
+
+.guest-side .todo-side-title-row .note-more { flex: none; }
+
+.guest-side-help {
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  line-height: 16px;
+}
+
+.guest-phone {
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  outline: none;
+}
+
+.guest-phone::placeholder { color: var(--black-50); }

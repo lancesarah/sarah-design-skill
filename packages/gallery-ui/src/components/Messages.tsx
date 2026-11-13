@@ -1,6 +1,6 @@
 "use client";
 
-import { forwardRef, type TransitionEvent } from "react";
+import { forwardRef, type ReactNode, type TransitionEvent } from "react";
 import { Button } from "./Button";
 import { Status } from "./Feedback";
 import { Avatar } from "./People";
@@ -15,6 +15,8 @@ export type MessageProps = {
   photo?: string;
   /** The person signed in. The bubble sits on the right, in the one blue. */
   you?: boolean;
+  /** The name over yours when it goes out for a team, like Front desk. Defaults to You. */
+  byline?: string;
   /** Same person, inside two minutes. No second name, and 2px under the line above. */
   continued?: boolean;
   /** The last line of that run. One bottom corner is square, on that person's side. */
@@ -22,7 +24,7 @@ export type MessageProps = {
 };
 
 /** One line in a conversation. The name and the time sit above the bubble. */
-export function Message({ name, body, time, initials, photo, you = false, continued = false, latest = false }: MessageProps) {
+export function Message({ name, body, time, initials, photo, you = false, byline = "You", continued = false, latest = false }: MessageProps) {
   const classes = ["sds", "thread-line", you ? "is-you" : "", continued ? "is-continued" : "", latest ? "is-latest" : ""].filter(Boolean).join(" ");
   return (
     <div className={classes}>
@@ -30,7 +32,7 @@ export function Message({ name, body, time, initials, photo, you = false, contin
       <div className="thread-copy">
         {continued ? null : (
           <span className="who">
-            {you ? "You" : name}
+            {you ? byline : name}
             {time ? <time dateTime={time}>{time}</time> : null}
           </span>
         )}
@@ -103,18 +105,33 @@ export function Typing({ initials, photo, name, label = "Typing" }: { initials?:
 }
 
 /** A finished conversation. The reply field is gone. The next step is a new chat, or reopening this one. */
-export function Resolved({ note = "This conversation is resolved.", onNew, onReopen }: { note?: string; onNew?: () => void; onReopen?: () => void }) {
+export function Resolved({
+  note = "This conversation is resolved.",
+  onNew,
+  onReopen,
+  actions,
+}: {
+  note?: string;
+  onNew?: () => void;
+  onReopen?: () => void;
+  /** Replaces Start a new chat and Reopen to reply, for a thread that is answered somewhere else. */
+  actions?: ReactNode;
+}) {
   return (
     <div className="sds ticket-resolved">
       <p>{note}</p>
       <span className="ticket-resolved-actions">
-        <Button variant="tertiary" onClick={onNew}>
-          <Icon name="plus-bold" size={14} />
-          Start a new chat
-        </Button>
-        <Button variant="secondary" onClick={onReopen}>
-          Reopen to reply
-        </Button>
+        {actions ?? (
+          <>
+            <Button variant="tertiary" onClick={onNew}>
+              <Icon name="plus-bold" size={14} />
+              Start a new chat
+            </Button>
+            <Button variant="secondary" onClick={onReopen}>
+              Reopen to reply
+            </Button>
+          </>
+        )}
       </span>
     </div>
   );

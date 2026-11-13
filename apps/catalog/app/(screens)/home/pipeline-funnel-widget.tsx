@@ -1,6 +1,6 @@
 "use client";
 
-import { ShareBar, Widget, type Share } from "@lance-live/gallery-ui";
+import { ShareBar, Widget, WidgetNote, WidgetTally, type Share } from "@lance-live/gallery-ui";
 
 /** This week's conversations, earliest stage first. Won takes the blue. */
 const STAGES: Share[] = [
@@ -14,14 +14,9 @@ const STAGES: Share[] = [
 export function PipelineFunnelWidget() {
   const total = STAGES.reduce((sum, stage) => sum + stage.value, 0);
   return (
-    <Widget icon="bubble-lines" title="Pipeline" action={<span className="home-pm-today">This week</span>}>
+    <Widget icon="bubble-lines" title="Pipeline" action={<WidgetNote>This week</WidgetNote>}>
       <div className="home-tally-summary home-tickets-body">
-        <p className="home-tally-top">
-          <span>
-            <span className="home-summary-figure">{total}</span>
-            <span className="home-tally-label">{total === 1 ? "conversation" : "conversations"}</span>
-          </span>
-        </p>
+        <WidgetTally value={total} label={total === 1 ? "conversation" : "conversations"} />
         <ShareBar shares={STAGES} />
       </div>
     </Widget>

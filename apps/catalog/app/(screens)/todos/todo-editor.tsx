@@ -1,9 +1,7 @@
 "use client";
 
-import { ASSIGNEE_PEOPLE, Button, ConfirmDialog, DEPARTMENTS, DepartmentChip, EditorDialog, EditorPhotos, EditorPill, EditorPillRow, EditorPills, Icon, Person, PhotoPill, RequiredToast, RoomPill, SidePhotos, Status, Urgency, taskMenuItem, type ActivityItem, type Photo, type TaskRow } from "@lance-live/gallery-ui";
+import { ASSIGNEE_PEOPLE, Button, ConfirmDialog, DEPARTMENTS, DepartmentChip, EditorDialog, EditorPhotos, EditorPill, EditorPillRow, EditorPills, Icon, Person, PhotoPill, RequiredToast, RoomPill, Status, Urgency, taskMenuItem, type ActivityItem, type Photo, type TaskRow } from "@lance-live/gallery-ui";
 import { Fragment, useCallback, useState, type ReactNode } from "react";
-import { EditorPick } from "../editor-pick";
-import { useEditorStyle } from "../editor-style";
 
 export type Todo = TaskRow & { bucket: "open" | "scheduled" | "completed"; activity: ActivityItem[]; photos?: Photo[] };
 
@@ -30,7 +28,7 @@ export function isAssigned(todo: Todo) {
 
 type Pick = "place" | "item" | "type" | "assignee" | "status" | "urgency";
 
-type EditorField = { key: Pick; label: string; icon?: "location" | "tag"; value: ReactNode; quiet?: boolean; menu: ReactNode };
+type EditorField = { key: Pick; icon?: "location" | "tag"; value: ReactNode; quiet?: boolean; menu: ReactNode };
 
 export function TodoEditor({
   todo,
@@ -69,18 +67,15 @@ export function TodoEditor({
       }, option.label),
     );
   const listed = (options: readonly string[], value: string) => (value && !options.includes(value) ? [value, ...options] : options).map((item) => ({ value: item, label: item }));
-  const pills = useEditorStyle() !== "fields";
-  const place: EditorField = { key: "place", label: "Location", icon: "location", value: draft.place || "Location", quiet: !draft.place, menu: pickMenu("place", listed(PLACES, draft.place ?? ""), draft.place ?? "", (value) => patch({ place: value })) };
-  const item: EditorField = { key: "item", label: "Item", icon: "tag", value: draft.item || "Item", quiet: !draft.item, menu: pickMenu("item", listed(ITEMS, draft.item ?? ""), draft.item ?? "", (value) => patch({ item: value })) };
+  const place: EditorField = { key: "place", icon: "location", value: draft.place || "Location", quiet: !draft.place, menu: pickMenu("place", listed(PLACES, draft.place ?? ""), draft.place ?? "", (value) => patch({ place: value })) };
+  const item: EditorField = { key: "item", icon: "tag", value: draft.item || "Item", quiet: !draft.item, menu: pickMenu("item", listed(ITEMS, draft.item ?? ""), draft.item ?? "", (value) => patch({ item: value })) };
   const department: EditorField = {
     key: "type",
-    label: "Department",
     value: <DepartmentChip name={draft.type} plain />,
     menu: pickMenu("type", listed(TYPES, draft.type).map((entry) => ({ value: entry.value, label: <DepartmentChip name={entry.value} plain /> })), draft.type, (type) => patch({ type })),
   };
   const assignee: EditorField = {
     key: "assignee",
-    label: "Assigned",
     value: isAssigned(draft) ? <Person name={draft.assignee} initials={draft.initials} variant="pill" /> : <Person name="Unassigned" variant="unassigned" />,
     menu: pickMenu(
       "assignee",
@@ -97,33 +92,21 @@ export function TodoEditor({
   };
   const urgency: EditorField = {
     key: "urgency",
-    label: "Urgency",
     value: <Urgency level={draft.urgency} />,
     menu: pickMenu("urgency", URGENCIES.map((entry) => ({ value: entry.value, label: <Urgency level={entry.value} /> })), draft.urgency, (value) => patch({ urgency: value as Todo["urgency"] })),
   };
   const status: EditorField = {
     key: "status",
-    label: "Status",
     value: <Status status={draft.status} />,
     menu: pickMenu("status", STATUSES.map((entry) => ({ value: entry.value, label: <Status status={entry.value} /> })), draft.status, (value) => patch({ status: value as Todo["status"] })),
   };
   const fields = [place, item, department, assignee, status, urgency];
-  const gridField = (field: EditorField) => (
-    <div className="pm-editor-field">
-      <span className="sheet-label">{field.label}</span>
-      <EditorPick icon={field.icon} open={menu === field.key} onToggle={() => toggle(field.key)} value={field.value} quiet={field.quiet} menu={field.menu} />
-    </div>
-  );
-  const roomInput = (className: string, placeholder: string) => (
-    <input className={className} aria-label="Room number" inputMode="numeric" value={draft.room} placeholder={placeholder} onChange={(event) => patch({ room: event.target.value })} />
-  );
-
 
   return (
     <>
       <EditorDialog
         kicker={`${creating ? "Create" : "Edit"} ${noun}`}
-        layout={pills ? "pills" : "fields"}
+        layout="pills"
         className="pm-page todo-editor"
         title={draft.title ?? ""}
         titlePlaceholder={`${Noun} title`}
@@ -143,7 +126,7 @@ export function TodoEditor({
         }}
         footer={
           <>
-            {pills ? <PhotoPill onAdd={(added) => setDraft((current) => ({ ...current, photos: [...(current.photos ?? []), ...added] }))} /> : null}
+            <PhotoPill onAdd={(added) => setDraft((current) => ({ ...current, photos: [...(current.photos ?? []), ...added] }))} />
             <Button variant="secondary">
               <Icon name="calendar" size={14} />
               Schedule for future
@@ -163,47 +146,23 @@ export function TodoEditor({
           </>
         }
       >
-        {pills ? <EditorPhotos photos={photos} onRemove={(photo) => patch({ photos: photos.filter((item) => item.src !== photo.src) })} /> : null}
-        {pills ? (
-          <EditorPills>
-            {fields.map((field) => {
-              const pick = <EditorPill icon={field.icon} open={menu === field.key} onToggle={() => toggle(field.key)} value={field.value} quiet={field.quiet} invalid={tried && field.key === "place" && missing.place} menu={field.menu} />;
-              if (field.key === "urgency") return null;
-              if (field.key === "status") {
-                return (
-                  <EditorPillRow key={field.key}>
-                    {pick}
-                    <EditorPill icon={urgency.icon} open={menu === urgency.key} onToggle={() => toggle(urgency.key)} value={urgency.value} quiet={urgency.quiet} menu={urgency.menu} />
-                  </EditorPillRow>
-                );
-              }
-              if (field.key !== "place") return <Fragment key={field.key}>{pick}</Fragment>;
-              return <RoomPill key={field.key} lead={pick} open={guestroom} value={draft.room ?? ""} onChange={(room) => patch({ room })} invalid={tried && missing.room} />;
-            })}
-          </EditorPills>
-        ) : (
-          <>
-            <div className="pm-editor-pair">
-              <div className="pm-editor-field">
-                <span className="sheet-label">Location</span>
-                <div className={guestroom ? "todo-editor-place has-room" : "todo-editor-place"}>
-                  <EditorPick icon="location" open={menu === "place"} onToggle={() => toggle("place")} value={place.value} quiet={place.quiet} invalid={tried && missing.place} menu={place.menu} />
-                  {guestroom ? roomInput("pm-editor-input", "Room number") : null}
-                </div>
-              </div>
-              {gridField(item)}
-            </div>
-            <div className="pm-editor-pair">
-              {gridField(department)}
-              {gridField(assignee)}
-            </div>
-            <div className="pm-editor-pair">
-              {gridField(urgency)}
-              {gridField(status)}
-            </div>
-            <SidePhotos label="Photo" />
-          </>
-        )}
+        <EditorPhotos photos={photos} onRemove={(photo) => patch({ photos: photos.filter((item) => item.src !== photo.src) })} />
+        <EditorPills>
+          {fields.map((field) => {
+            const pick = <EditorPill icon={field.icon} open={menu === field.key} onToggle={() => toggle(field.key)} value={field.value} quiet={field.quiet} invalid={tried && field.key === "place" && missing.place} menu={field.menu} />;
+            if (field.key === "urgency") return null;
+            if (field.key === "status") {
+              return (
+                <EditorPillRow key={field.key}>
+                  {pick}
+                  <EditorPill icon={urgency.icon} open={menu === urgency.key} onToggle={() => toggle(urgency.key)} value={urgency.value} quiet={urgency.quiet} menu={urgency.menu} />
+                </EditorPillRow>
+              );
+            }
+            if (field.key !== "place") return <Fragment key={field.key}>{pick}</Fragment>;
+            return <RoomPill key={field.key} lead={pick} open={guestroom} value={draft.room ?? ""} onChange={(room) => patch({ room })} invalid={tried && missing.room} />;
+          })}
+        </EditorPills>
       </EditorDialog>
       {toast ? <RequiredToast id={toast} onDone={hideToast} /> : null}
       <ConfirmDialog

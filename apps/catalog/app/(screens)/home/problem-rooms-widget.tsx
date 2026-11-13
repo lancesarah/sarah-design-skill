@@ -1,6 +1,6 @@
 "use client";
 
-import { Empty, RoomMark, Widget, WidgetEmpty, WidgetList, WidgetMore, WidgetRow } from "@lance-live/gallery-ui";
+import { Empty, RoomMark, Widget, WidgetEmpty, WidgetList, WidgetMore, WidgetNote, WidgetRow } from "@lance-live/gallery-ui";
 import Link from "next/link";
 /** A room's tickets over the last 90d. `issue` is the one that keeps coming back; `last` is the age of the newest ticket. */
 type ProblemRoom = { room: string; issue: string; tickets: number; last: string };
@@ -27,7 +27,7 @@ export function ProblemRoomsWidget() {
   const shown = problems.slice(0, LIMIT);
   const more = problems.length - shown.length;
   return (
-    <Widget icon="warn" title="Problem rooms" count={problems.length} action={<span className="home-pm-today">Last 90d</span>}>
+    <Widget icon="warn" title="Problem rooms" count={problems.length} action={<WidgetNote>Last 90d</WidgetNote>}>
       {shown.length ? (
         <WidgetList>
           {shown.map((room) => (

@@ -2,12 +2,12 @@
 
 import { Button, Icon, TextIcon, type IconName } from "@lance-live/gallery-ui";
 import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type MouseEvent, type PointerEvent, type ReactNode, type Ref } from "react";
+import { useNotify } from "../action-toast";
 import { PageLayout } from "../page-layout";
-import { useMakeRoom } from "../shell-panels";
 import { TodoEditor, type Todo } from "../todos/todo-editor";
 import { HomeColumns, HomeWide } from "./columns";
 import { HOME_WIDGETS } from "./widget-catalog";
-import { WidgetGallery } from "./widget-gallery";
+import { AddWidgets } from "./widget-gallery";
 import { place, useWidgetDrag, visibleIds, type Layout } from "./use-widget-drag";
 
 /** What the action's editor opens with. */
@@ -176,6 +176,11 @@ const HIDDEN_KEY = "home-hidden-widgets";
 const ORDER_KEY = "home-widget-order";
 const CATALOG = HOME_WIDGETS.map((widget) => widget.id);
 const BY_ID = new Map(HOME_WIDGETS.map((widget) => [widget.id, widget]));
+/**
+ * One element per widget, made once. A widget takes no props, so handing React the same element each render lets it
+ * skip the widget. Without this, turning edit mode on, or every step of a drag, re-rendered all of them.
+ */
+const WIDGET_ELEMENTS = new Map(HOME_WIDGETS.map(({ id, Component }) => [id, <Component key={id} />]));
 
 function savedOrder(saved: string[]) {
   const order = saved.filter((id) => BY_ID.has(id));
@@ -248,6 +253,7 @@ function EditableWidget({
 }
 
 export default function HomePage() {
+  const notify = useNotify();
   const now = new Date();
   const [patterns, setPatterns] = useState(PATTERNS);
   const [index, setIndex] = useState(0);
@@ -256,12 +262,14 @@ export default function HomePage() {
   const [acting, setActing] = useState<Pattern | null>(null);
   const front = useRef<HTMLElement>(null);
   const [editing, setEditing] = useState(false);
-  const makeRoom = useMakeRoom();
-  const makeRoomRef = useRef(makeRoom);
-  makeRoomRef.current = makeRoom;
+  // Escape leaves edit mode. An open Add Widgets popup takes the first Escape for itself.
   useEffect(() => {
     if (!editing) return;
-    return makeRoomRef.current();
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setEditing(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
   }, [editing]);
   const [layout, setLayout] = useState<Layout>(() => ({ order: CATALOG, hidden: new Set() }));
   useEffect(() => {
@@ -296,6 +304,26 @@ export default function HomePage() {
   }, [moved, drag.boardRef]);
   const at = Math.min(index, patterns.length - 1);
   const pattern = patterns[at];
+  /** The last pattern fades out before it goes. Bringing them back fades the patterns and the Widgets head in. */
+  const [leaving, setLeaving] = useState(false);
+  const [arriving, setArriving] = useState(false);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const boardTop = useRef<number | null>(null);
+  const hadPattern = useRef(Boolean(pattern));
+  // When the patterns go or come back, the widgets slide from where they were to where they land.
+  useLayoutEffect(() => {
+    const board = drag.boardRef.current;
+    const content = contentRef.current;
+    if (!board || !content) return;
+    const top = board.getBoundingClientRect().top - content.getBoundingClientRect().top;
+    const was = boardTop.current;
+    boardTop.current = top;
+    if (hadPattern.current === Boolean(pattern)) return;
+    hadPattern.current = Boolean(pattern);
+    if (was === null || Math.abs(was - top) < 1 || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const easing = getComputedStyle(content).getPropertyValue("--ease-out").trim() || "ease-out";
+    board.animate([{ transform: `translateY(${was - top}px)` }, { transform: "none" }], { duration: 320, easing });
+  });
   /** A keyboard press (`detail` 0) snaps. */
   const shuffle = (dir: Deal["dir"], event: MouseEvent<HTMLButtonElement>) =>
     setDeal(event.detail === 0 || !pattern ? null : { from: pattern, at, dir, key: Date.now() });
@@ -320,18 +348,56 @@ export default function HomePage() {
     const run = card.animate([from, { opacity: 1, transform: "none" }], { duration: reduce ? 160 : 480, easing: ease });
     return () => run.cancel();
   }, [deal]);
+  /** Over the widgets, or beside the greeting once every pattern is dismissed. */
+  const widgetActions = (
+    <>
+      {editing ? <AddWidgets shown={shown} onToggle={toggleWidget} /> : null}
+      {pattern || editing ? null : (
+        <Button
+          icon
+          aria-label="Bring back Lance's patterns"
+          title="Bring back Lance's patterns"
+          onClick={() => {
+            setDeal(null);
+            setIndex(0);
+            setPatterns(PATTERNS);
+            setArriving(true);
+          }}
+        >
+          <Icon name="sparkle" size={14} />
+        </Button>
+      )}
+      <Button variant="secondary" aria-pressed={editing} onClick={() => setEditing(!editing)}>
+        <Icon name={editing ? "check" : "edit"} size={14} />
+        {editing ? "Done" : "Edit"}
+      </Button>
+    </>
+  );
   return (
     <PageLayout className="home-page" icon="home" title="Home" header={false}>
       <div className="home-body">
         <div className="home-band" aria-hidden="true" />
-        <div className="home-content">
+        <div ref={contentRef} className="home-content">
           <section className="home-hello" aria-label="Today">
             <h1 suppressHydrationWarning>{greeting(now)}, Sarah</h1>
             <p suppressHydrationWarning>{now.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}</p>
+            {pattern ? null : <div className="home-section-actions home-hello-actions">{widgetActions}</div>}
           </section>
 
           {pattern ? (
-            <div className={patterns.length > 1 ? "home-lance-stack has-more" : "home-lance-stack"}>
+            <div
+              className={["home-lance-stack", patterns.length > 1 && "has-more", leaving && "is-leaving", arriving && "is-arriving"].filter(Boolean).join(" ")}
+              inert={leaving}
+              onAnimationEnd={(event) => {
+                if (event.target !== event.currentTarget) return;
+                if (leaving) {
+                  setLeaving(false);
+                  setPatterns([]);
+                  setIndex(0);
+                }
+                setArriving(false);
+              }}
+            >
               <LanceCard
                 sectionRef={front}
                 pattern={pattern}
@@ -341,6 +407,12 @@ export default function HomePage() {
                 onVote={(vote) => setFeedback((current) => ({ ...current, [pattern.id]: current[pattern.id] === vote ? undefined : vote }))}
                 onStep={step}
                 onDismiss={(event) => {
+                  if (patterns.length === 1) {
+                    if (event.detail !== 0 && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) return setLeaving(true);
+                    setPatterns([]);
+                    setIndex(0);
+                    return;
+                  }
                   shuffle("dismiss", event);
                   setPatterns((list) => list.filter((item) => item.id !== pattern.id));
                   setIndex((current) => Math.max(0, Math.min(current, patterns.length - 2)));
@@ -366,17 +438,20 @@ export default function HomePage() {
             </div>
           ) : null}
 
-          <section className={editing ? "home-widgets is-editing" : "home-widgets"} aria-labelledby="home-widgets-title">
-            <div className="home-section-head">
-              <h2 id="home-widgets-title">Widgets</h2>
-              <Button variant="secondary" aria-pressed={editing} onClick={() => setEditing(!editing)}>
-                <Icon name={editing ? "check" : "edit"} size={14} />
-                {editing ? "Done" : "Edit"}
-              </Button>
-            </div>
+          <section
+            className={editing ? "home-widgets is-editing" : "home-widgets"}
+            aria-labelledby={pattern ? "home-widgets-title" : undefined}
+            aria-label={pattern ? undefined : "Widgets"}
+          >
+            {pattern ? (
+              <div className={arriving ? "home-section-head is-arriving" : "home-section-head"}>
+                <h2 id="home-widgets-title">Widgets</h2>
+                <div className="home-section-actions">{widgetActions}</div>
+              </div>
+            ) : null}
             <HomeColumns boardRef={drag.boardRef}>
               {visibleIds(drag.view).map((id, index) => {
-                const { title, wide, Component } = BY_ID.get(id)!;
+                const { title, wide } = BY_ID.get(id)!;
                 const item = (
                   <EditableWidget
                     key={id}
@@ -386,17 +461,16 @@ export default function HomePage() {
                     editing={editing}
                     lifted={drag.dragging === id}
                     onRemove={() => toggleWidget(id)}
-                    onDrag={(event) => drag.start(event, id, "page")}
+                    onDrag={(event) => drag.start(event, id)}
                     onStep={(by) => stepWidget(id, by)}
                   >
-                    <Component />
+                    {WIDGET_ELEMENTS.get(id)}
                   </EditableWidget>
                 );
                 return wide ? <HomeWide key={id}>{item}</HomeWide> : item;
               })}
             </HomeColumns>
           </section>
-          {editing ? <WidgetGallery shown={shown} onToggle={toggleWidget} onDrag={(event, id) => drag.start(event, id, "gallery")} onDone={() => setEditing(false)} /> : null}
         </div>
       </div>
       {acting ? (
@@ -416,7 +490,10 @@ export default function HomePage() {
             activity: [],
           }}
           onClose={() => setActing(null)}
-          onSave={() => setActing(null)}
+          onSave={() => {
+            notify(acting.action === "Create work order" ? "Work order created" : "To-do created");
+            setActing(null);
+          }}
         />
       ) : null}
     </PageLayout>

@@ -1,6 +1,6 @@
 "use client";
 
-import { ASSIGNEE_PEOPLE, Empty, isRoomNumber, Person, RoomMark, Widget, WidgetEmpty, WidgetList, WidgetMore, WidgetRow } from "@lance-live/gallery-ui";
+import { ASSIGNEE_PEOPLE, Empty, isRoomNumber, Person, RoomMark, Widget, WidgetEmpty, WidgetFigure, WidgetList, WidgetMore, WidgetNote, WidgetRow, WidgetSummary } from "@lance-live/gallery-ui";
 import Link from "next/link";
 /** A maintenance ticket closed in the past 24h. `minutes` is from opened to resolved. */
 type Resolved = { id: string; room: string; item: string; minutes: number; resolver: string };
@@ -38,15 +38,12 @@ export function ResponseTimeWidget() {
   const shown = [...RESOLVED].sort((a, b) => b.minutes - a.minutes).slice(0, LIMIT);
   const more = RESOLVED.length - shown.length;
   return (
-    <Widget icon="wrench" title="Response time" action={<span className="home-pm-today">Past 24h</span>}>
+    <Widget icon="wrench" title="Response time" action={<WidgetNote>Past 24h</WidgetNote>}>
       {RESOLVED.length ? (
         <>
-          <div className="home-summary">
-            <p className="home-summary-hero">
-              <span className="home-summary-figure">{duration(average)}</span>
-              <span className="home-summary-label">average time to resolve</span>
-            </p>
-          </div>
+          <WidgetSummary>
+            <WidgetFigure value={duration(average)} label="average time to resolve" />
+          </WidgetSummary>
           <WidgetList>
             {shown.map((ticket) => (
               <WidgetRow

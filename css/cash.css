@@ -385,7 +385,7 @@ html[data-theme="dark"] .cash-new-location:hover { background: var(--black-12); 
   flex-direction: column;
   flex: none;
   padding: 6px;
-  border: 1px solid var(--grey);
+  border: 1px solid var(--line-card);
   border-radius: 10px;
   background: var(--sidebar-grey);
 }

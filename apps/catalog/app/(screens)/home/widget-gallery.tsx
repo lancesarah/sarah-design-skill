@@ -1,98 +1,128 @@
 "use client";
 
-import { Button, DepartmentChip, Empty, Icon, SearchField } from "@lance-live/gallery-ui";
-import { useEffect, useRef, useState, type PointerEvent } from "react";
+import { Button, DepartmentChip, EditorDialog, Empty, Icon, SearchField } from "@lance-live/gallery-ui";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { HOME_WIDGETS, WIDGET_CATEGORIES } from "./widget-catalog";
 
 const ALL = "all";
 
+/** Builds a preview once its tile comes within a screen of view, then keeps it, so 42 live widgets are never mounted at once. */
+function LazyPreview({ children }: { children: ReactNode }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [seen, setSeen] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || seen) return;
+    const observer = new IntersectionObserver(([entry]) => entry?.isIntersecting && setSeen(true), { rootMargin: "100% 0px" });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [seen]);
+  return (
+    <div ref={ref} className="home-gallery-preview" inert aria-hidden="true">
+      {seen ? <div className="home-gallery-scale">{children}</div> : null}
+    </div>
+  );
+}
+
 /**
- * Docked on the bottom of the page while Home is in edit mode, so the widgets above stay in reach for their remove marks.
- * Categories on the left, live previews on the right. A preview adds its widget, or removes it when it is already on Home.
+ * The primary in Home's edit mode, and the gallery it opens over the whole screen, built on the editor dialog.
+ * The departments are its tabs and the search sits on top. Every widget shows as a live preview under its department.
+ * Pressing one adds it to Home, or takes it off when it is already there. The gallery stays open until Done.
  */
-export function WidgetGallery({
-  shown,
-  onToggle,
-  onDrag,
-  onDone,
-}: {
-  shown: Set<string>;
-  onToggle: (id: string) => void;
-  /** A press that travels drags the widget onto Home, to the place it is dropped. */
-  onDrag: (event: PointerEvent<HTMLButtonElement>, id: string) => void;
-  onDone: () => void;
-}) {
+export function AddWidgets({ shown, onToggle }: { shown: Set<string>; onToggle: (id: string) => void }) {
+  const [open, setOpen] = useState(false);
   const [category, setCategory] = useState(ALL);
   const [query, setQuery] = useState("");
-  const doneRef = useRef(onDone);
-  doneRef.current = onDone;
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
+  const close = () => {
+    setOpen(false);
+    setQuery("");
+    buttonRef.current?.focus();
+  };
+
+  // Edit mode also leaves on Escape, from window. This runs first and keeps that Escape for the gallery alone.
   useEffect(() => {
-    function onKey(event: KeyboardEvent) {
-      if (event.key === "Escape") doneRef.current();
-    }
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, []);
+    if (!open) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      event.stopImmediatePropagation();
+      setOpen(false);
+      setQuery("");
+      buttonRef.current?.focus();
+    };
+    document.addEventListener("keydown", onKey, true);
+    return () => document.removeEventListener("keydown", onKey, true);
+  }, [open]);
 
   const words = query.trim().toLowerCase();
-  const visible = HOME_WIDGETS.filter((widget) => (category === ALL || widget.category === category) && (!words || widget.title.toLowerCase().includes(words)));
-  const heading = category === ALL ? "All widgets" : WIDGET_CATEGORIES.find((item) => item.id === category)?.department;
-
+  const groups = WIDGET_CATEGORIES.filter((item) => category === ALL || item.id === category)
+    .map((item) => ({ ...item, widgets: HOME_WIDGETS.filter((widget) => widget.category === item.id && (!words || widget.title.toLowerCase().includes(words))) }))
+    .filter((group) => group.widgets.length);
   return (
-    <section className="home-gallery" aria-label="Widget gallery">
-      <div className="home-gallery-body">
-        <div className="home-gallery-side">
-          <SearchField placeholder="Search widgets" onValueChange={setQuery} />
-          <div className="home-gallery-cats" role="tablist" aria-label="Categories" aria-orientation="vertical">
-            <button type="button" role="tab" className="home-gallery-cat" aria-selected={category === ALL} onClick={() => setCategory(ALL)}>
-              <span className="home-gallery-cat-name">All widgets</span>
-              <span className="home-gallery-cat-count">{HOME_WIDGETS.length}</span>
-            </button>
-            {WIDGET_CATEGORIES.map((item) => (
-              <button key={item.id} type="button" role="tab" className="home-gallery-cat" aria-selected={category === item.id} onClick={() => setCategory(item.id)}>
-                <DepartmentChip plain name={item.department} />
-                <span className="home-gallery-cat-count">{HOME_WIDGETS.filter((widget) => widget.category === item.id).length}</span>
-              </button>
-            ))}
+    <>
+      <Button ref={buttonRef} aria-haspopup="dialog" aria-expanded={open} onClick={() => setOpen(true)}>
+        <Icon name="plus" size={14} />
+        Add Widgets
+      </Button>
+      {open ? (
+        <EditorDialog
+          kicker="Add widgets"
+          title="Add widgets"
+          className="home-add-dialog"
+          tabs={{
+            label: "Departments",
+            value: category,
+            onValueChange: setCategory,
+            items: [
+              { value: ALL, label: "All", count: HOME_WIDGETS.length },
+              ...WIDGET_CATEGORIES.map((item) => ({ value: item.id, label: item.department, count: HOME_WIDGETS.filter((widget) => widget.category === item.id).length })),
+            ],
+          }}
+          onClose={close}
+          footer={
+            <Button onClick={close}>
+              <Icon name="check" size={14} />
+              Done
+            </Button>
+          }
+        >
+          <div className="home-add-search">
+            <SearchField placeholder="Search widgets" defaultValue={query} onValueChange={setQuery} />
           </div>
-        </div>
-        <div className="home-gallery-main" role="tabpanel" aria-label={heading}>
-          <h3 className="home-gallery-title">{heading}</h3>
-          {visible.length ? (
-            <ul className="home-gallery-grid">
-              {visible.map(({ id, title, Component }) => {
-                const on = shown.has(id);
-                return (
-                  <li key={id} className="home-gallery-tile">
-                    <div className="home-gallery-preview" inert aria-hidden="true">
-                      <div className="home-gallery-scale">
-                        <Component />
-                      </div>
-                    </div>
-                    <span className="home-gallery-name">
-                      <span>{title}</span>
-                      {on ? <Icon name="check" size={14} /> : null}
-                    </span>
-                    <button type="button" className="home-gallery-pick" aria-pressed={on} aria-label={on ? `Remove ${title} from Home` : `Add ${title} to Home`} onClick={() => onToggle(id)} onPointerDown={(event) => onDrag(event, id)} />
-                  </li>
-                );
-              })}
-            </ul>
+          {groups.length ? (
+            groups.map((group) => (
+              <section key={group.id} className="home-add-group" aria-label={group.department}>
+                <h3 className="home-add-label">
+                  <DepartmentChip plain name={group.department} />
+                  <span className="home-add-count">{group.widgets.length}</span>
+                </h3>
+                <ul className="home-gallery-grid">
+                  {group.widgets.map(({ id, title, Component }) => {
+                    const on = shown.has(id);
+                    return (
+                      <li key={id} className="home-gallery-tile">
+                        <span className="home-gallery-name">
+                          <span>{title}</span>
+                          {on ? <Icon name="check" size={14} /> : null}
+                        </span>
+                        <LazyPreview>
+                          <Component />
+                        </LazyPreview>
+                        <button type="button" className="home-gallery-pick" aria-pressed={on} aria-label={on ? `Remove ${title} from Home` : `Add ${title} to Home`} onClick={() => onToggle(id)} />
+                      </li>
+                    );
+                  })}
+                </ul>
+              </section>
+            ))
           ) : (
             <Empty icon="search" title="No widgets found">
-              Try another word, or pick a category.
+              Try another word, or pick another department.
             </Empty>
           )}
-        </div>
-      </div>
-      <footer className="home-gallery-foot">
-        <p>Click a widget to add it, or drag it into place. A check means it is already on Home.</p>
-        <Button onClick={onDone}>
-          <Icon name="check" size={14} />
-          Done
-        </Button>
-      </footer>
-    </section>
+        </EditorDialog>
+      ) : null}
+    </>
   );
 }

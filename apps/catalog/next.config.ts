@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import createWithVercelToolbar from "@vercel/toolbar/plugins/next";
 
 const nextConfig: NextConfig = {
   transpilePackages: ["@lance-live/gallery-ui"],
@@ -6,4 +7,6 @@ const nextConfig: NextConfig = {
   devIndicators: { position: "bottom-right" },
 };
 
-export default nextConfig;
+const withVercelToolbar = createWithVercelToolbar();
+
+export default withVercelToolbar(nextConfig);

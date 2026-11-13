@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { Libre_Baskerville, Plus_Jakarta_Sans } from "next/font/google";
+import { VercelToolbar } from "@vercel/toolbar/next";
 import "./globals.css";
 import "./docs.css";
 import { DevBadge } from "./dev-badge";
@@ -30,7 +31,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async />
         <script
           dangerouslySetInnerHTML={{
-            __html: `try{if(localStorage.getItem("font")!=="jakarta")document.documentElement.dataset.font="switzer";if(localStorage.getItem("depth")==="on")document.documentElement.dataset.depth="on"}catch(e){}`,
+            __html: `try{if(localStorage.getItem("font")!=="jakarta")document.documentElement.dataset.font="switzer"}catch(e){}`,
           }}
         />
       </head>
@@ -38,6 +39,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         {children}
         <DevBadge />
         <SpacingTool />
+        {process.env.NODE_ENV === "development" ? <VercelToolbar /> : null}
       </body>
     </html>
   );

@@ -286,8 +286,12 @@ export function DataTable<T extends { id: string }>({
   }, [columns, rows, sort]);
 
   const measureKey = columns.map((column) => `${column.id}:${column.title}:${column.flex ? 1 : 0}:${column.text ?? ""}:${column.minWidth ?? ""}:${column.labelInset ?? 0}`).join("|");
+  // Screens often pass a fresh columns array each render. Widths only follow the column shape and the rows, so measure on those.
+  const columnsRef = useRef(columns);
+  columnsRef.current = columns;
 
   useLayoutEffect(() => {
+    const columns = columnsRef.current;
     const apply = () => {
       const sample = titleRefs.current.find((node) => node);
       const font = sample ? getComputedStyle(sample).font : "";
@@ -322,13 +326,15 @@ export function DataTable<T extends { id: string }>({
     };
     apply();
     let cancel = false;
-    document.fonts?.ready.then(() => {
-      if (!cancel) apply();
-    });
+    if (document.fonts && document.fonts.status !== "loaded") {
+      document.fonts.ready.then(() => {
+        if (!cancel) apply();
+      });
+    }
     return () => {
       cancel = true;
     };
-  }, [columns, measureKey, shown]);
+  }, [measureKey, rows]);
 
   useLayoutEffect(() => {
     if (!measured || revealed || shown.length === 0) return;
@@ -365,15 +371,17 @@ export function DataTable<T extends { id: string }>({
     .map((min, index) => columnTrack(columns[index] ?? {}, min))
     .join(" ");
 
-  return (
-    <>
+  // A second copy of every cell, so it only re-renders when the widths could change.
+  const measureCopy = useMemo(() => {
+    const columns = columnsRef.current;
+    return (
       <div aria-hidden="true" style={{ position: "fixed", left: -10000, top: 0, visibility: "hidden", pointerEvents: "none" }}>
         <div ref={measureRef} style={{ width: "max-content" }}>
           {columns.map((column) => {
             const samples = column.text
               ? null
               : column.measure
-                ? shown.map((row) => (
+                ? rows.map((row) => (
                     <span key={row.id} data-col={column.id} style={{ display: "inline-block", width: "max-content" }}>
                       {column.measure?.(row)}
                     </span>
@@ -382,7 +390,7 @@ export function DataTable<T extends { id: string }>({
                   ? null
                   : column.flex
                     ? null
-                    : shown.map((row) => (
+                    : rows.map((row) => (
                         <span key={row.id} data-col={column.id} style={{ display: "inline-block", width: "max-content" }}>
                           {column.render(row)}
                         </span>
@@ -396,6 +404,12 @@ export function DataTable<T extends { id: string }>({
           })}
         </div>
       </div>
+    );
+  }, [measureKey, rows]);
+
+  return (
+    <>
+      {measureCopy}
       <div className={list ? "sheet-fade is-list" : "sheet-fade"}>
       <div className="sheet-scroll">
       <div

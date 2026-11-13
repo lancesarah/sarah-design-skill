@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  Chip,
   AssigneeCell,
   Button,
   DataTable,
@@ -13,8 +14,8 @@ import {
 } from "@lance-live/gallery-ui";
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { flushSync } from "react-dom";
+import { useNotify } from "../action-toast";
 import { FilterMenu, SearchBox } from "../chrome";
-import { Glyph } from "../glyph";
 import { PageLayout, PageTitle } from "../page-layout";
 import { RecordEditor } from "./record-editor";
 import { SourceEditor, SourceEditorDialog } from "./source-editor";
@@ -661,6 +662,7 @@ function SourcePage({
 }
 
 export default function ReadingsPage() {
+  const notify = useNotify();
   const [sources, setSources] = useState(STARTER);
   const [logs, setLogs] = useState<Log[]>(() =>
     STARTER.flatMap((source) =>
@@ -709,6 +711,7 @@ export default function ReadingsPage() {
 
   function submit(source: Source, value: string, when: Date, alerts: string[], entries: Entry[], notes = "") {
     const stamp = formatWhen(when);
+    notify("Reading saved");
     setSources((current) => current.map((item) => item.id === source.id ? { ...item, latest: value, lastAt: stamp, alerts } : item));
     setLogs((current) => [{ id: `log-${Date.now()}`, sourceId: source.id, value, when: stamp, by: "Sarah", initials: "SM", notes: notes || undefined }, ...current]);
     if (entries.length > 0) {
@@ -929,9 +932,7 @@ export default function ReadingsPage() {
             />
             <div className="filter-chips">
               {historySources.map((value) => (
-                <button key={value} className="chip chip-filter" type="button" onClick={() => setHistorySources((current) => current.filter((item) => item !== value))}>
-                  <span className="chip-k">Source</span>: {value} <Glyph name="plus" size={10} className="x" />
-                </button>
+                <Chip key={value} filter={{ name: "Source", value }} onClick={() => setHistorySources((current) => current.filter((item) => item !== value))} />
               ))}
             </div>
             <Button variant="secondary" className="pm-download" onClick={() => downloadReadings(rows)}>

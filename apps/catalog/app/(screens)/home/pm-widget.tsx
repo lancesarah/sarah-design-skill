@@ -1,6 +1,6 @@
 "use client";
 
-import { Empty, Status, Widget, WidgetEmpty, WidgetList, WidgetMore, WidgetRow, type StatusValue } from "@lance-live/gallery-ui";
+import { Empty, Status, Widget, WidgetEmpty, WidgetList, WidgetMore, WidgetNote, WidgetRow, type StatusValue } from "@lance-live/gallery-ui";
 import Link from "next/link";
 
 /** `behind` is how many areas the program trails its pace by. Zero is on track. */
@@ -29,7 +29,7 @@ export function PmWidget() {
       icon="wrench"
       title="PMs"
       count={PMS.length}
-      action={PMS.length ? <span className="home-pm-today">{today} areas today</span> : undefined}
+      action={PMS.length ? <WidgetNote>{today} areas today</WidgetNote> : undefined}
     >
       {PMS.length ? (
         <WidgetList>

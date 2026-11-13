@@ -1,6 +1,6 @@
 "use client";
 
-import { Avatar, Empty, Meter, Widget, WidgetEmpty, WidgetList, WidgetMore, WidgetRow } from "@lance-live/gallery-ui";
+import { Avatar, Empty, Meter, Widget, WidgetEmpty, WidgetFigure, WidgetList, WidgetMore, WidgetRow, WidgetStats, WidgetSummary } from "@lance-live/gallery-ui";
 import Link from "next/link";
 
 type Housekeeper = { id: string; name: string; initials: string; done: number; left: number };
@@ -29,33 +29,17 @@ export function HousekeepingWidget() {
     <Widget icon="bed" title="Housekeeping" className="home-housekeeping">
       {HOUSEKEEPERS.length ? (
         <>
-          <div className="home-summary">
-            <p className="home-summary-hero">
-              <span className="home-summary-figure">{left}</span>
-              <span className="home-summary-label">rooms left to clean</span>
-            </p>
-            <dl className="home-summary-stats">
-              <div>
-                <dt>
-                  <span className="home-summary-key is-clean" aria-hidden="true" />
-                  Clean
-                </dt>
-                <dd>{clean}</dd>
-              </div>
-              <div>
-                <dt>
-                  <span className="home-summary-key is-dnd" aria-hidden="true" />
-                  DND
-                </dt>
-                <dd>{DND}</dd>
-              </div>
-              <div>
-                <dt>Total</dt>
-                <dd>{total}</dd>
-              </div>
-            </dl>
-            <Meter className="home-summary-meter" value={clean} max={total} end={DND} label={`${clean} clean, ${left} left, ${DND} on DND, of ${total} rooms`} />
-          </div>
+          <WidgetSummary>
+            <WidgetFigure value={left} label="rooms left to clean" />
+            <WidgetStats
+              items={[
+                { label: "Clean", value: clean, key: "action" },
+                { label: "DND", value: DND, key: "strong" },
+                { label: "Total", value: total },
+              ]}
+            />
+            <Meter className="widget-summary-meter" value={clean} max={total} end={DND} label={`${clean} clean, ${left} left, ${DND} on DND, of ${total} rooms`} />
+          </WidgetSummary>
           <WidgetList>
             {shown.map((person) => (
               <WidgetRow

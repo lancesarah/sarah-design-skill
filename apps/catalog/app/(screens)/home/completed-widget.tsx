@@ -1,6 +1,6 @@
 "use client";
 
-import { ASSIGNEE_PEOPLE, Avatar, Empty, Widget, WidgetEmpty, WidgetList, WidgetMore, WidgetRow } from "@lance-live/gallery-ui";
+import { ASSIGNEE_PEOPLE, Avatar, Empty, Widget, WidgetEmpty, WidgetFigure, WidgetList, WidgetMore, WidgetRow, WidgetSummary } from "@lance-live/gallery-ui";
 import Link from "next/link";
 
 /** A closed ticket. `ago` is minutes since it was completed. */
@@ -54,12 +54,9 @@ export function CompletedWidget() {
     <Widget icon="check" title="Completed today">
       {today.length ? (
         <>
-          <div className="home-summary">
-            <p className="home-summary-hero">
-              <span className="home-summary-figure">{today.length}</span>
-              <span className="home-summary-label">{today.length === 1 ? "ticket" : "tickets"} completed in the past 24h</span>
-            </p>
-          </div>
+          <WidgetSummary>
+            <WidgetFigure value={today.length} label={`${today.length === 1 ? "ticket" : "tickets"} completed in the past 24h`} />
+          </WidgetSummary>
           <WidgetList>
             {shown.map((person) => (
               <WidgetRow

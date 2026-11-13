@@ -1,6 +1,6 @@
 "use client";
 
-import { Empty, Widget, WidgetEmpty, WidgetList, WidgetMore, WidgetRow } from "@lance-live/gallery-ui";
+import { Empty, Widget, WidgetEmpty, WidgetList, WidgetMore, WidgetNote, WidgetRow } from "@lance-live/gallery-ui";
 import Link from "next/link";
 
 type Reading = { id: string; source: string; target: string; value: string; when: string };
@@ -22,7 +22,7 @@ export function OutOfRangeWidget() {
   const shown = READINGS.slice(0, LIMIT);
   const more = READINGS.length - shown.length;
   return (
-    <Widget icon="warn" title="Out of range" count={READINGS.length} action={<span className="home-pm-today">This week</span>}>
+    <Widget icon="warn" title="Out of range" count={READINGS.length} action={<WidgetNote>This week</WidgetNote>}>
       {shown.length ? (
         <WidgetList>
           {shown.map((reading) => (

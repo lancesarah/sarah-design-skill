@@ -3,6 +3,7 @@
 import { ASSIGNEE_PEOPLE, Empty, Person, Status, TextIcon, Widget, WidgetEmpty, WidgetList, WidgetMore, WidgetRow, type StatusValue, type UrgencyValue } from "@lance-live/gallery-ui";
 import Link from "next/link";
 import { useState } from "react";
+import { useNotify } from "../action-toast";
 import { TodoEditor, type Todo } from "../todos/todo-editor";
 
 type HomeTodo = {
@@ -39,6 +40,7 @@ function initialsOf(name: string) {
 
 /** Open to-dos at a glance, most urgent first, with who has each one. */
 export function TodosWidget() {
+  const notify = useNotify();
   const [todos, setTodos] = useState(TODOS);
   const [draft, setDraft] = useState<Todo | null>(null);
   const shown = [...todos].sort((a, b) => RANK[a.urgency] - RANK[b.urgency]).slice(0, LIMIT);
@@ -111,6 +113,7 @@ export function TodosWidget() {
           onClose={() => setDraft(null)}
           onSave={(next) => {
             setTodos((list) => [{ id: next.id, room: next.room, place: next.place ?? "", item: next.item ?? "", urgency: next.urgency, status: next.status, assignee: next.assignee, opened: next.opened }, ...list]);
+            notify("To-do created");
             setDraft(null);
           }}
         />

@@ -1,6 +1,6 @@
 "use client";
 
-import { Widget } from "@lance-live/gallery-ui";
+import { Widget, WidgetFigure, WidgetNote, WidgetStats, WidgetSummary } from "@lance-live/gallery-ui";
 
 const WINDOW = "Past 7d";
 
@@ -26,27 +26,17 @@ function median(values: number[]) {
 export function ReplyTimeWidget() {
   const average = FIRST_REPLIES.reduce((sum, minutes) => sum + minutes, 0) / FIRST_REPLIES.length;
   return (
-    <Widget icon="gauge" title="Average time to respond" action={<span className="home-pm-today">{WINDOW}</span>}>
-      <div className="home-summary">
-        <p className="home-summary-hero">
-          <span className="home-summary-figure">{duration(median(FIRST_REPLIES))}</span>
-          <span className="home-summary-label">median first reply</span>
-        </p>
-        <dl className="home-summary-stats">
-          <div>
-            <dt>Average</dt>
-            <dd>{duration(average)}</dd>
-          </div>
-          <div>
-            <dt>Fastest</dt>
-            <dd>{duration(Math.min(...FIRST_REPLIES))}</dd>
-          </div>
-          <div>
-            <dt>Slowest</dt>
-            <dd>{duration(Math.max(...FIRST_REPLIES))}</dd>
-          </div>
-        </dl>
-      </div>
+    <Widget icon="gauge" title="Average time to respond" action={<WidgetNote>{WINDOW}</WidgetNote>}>
+      <WidgetSummary>
+        <WidgetFigure value={duration(median(FIRST_REPLIES))} label="median first reply" />
+        <WidgetStats
+          items={[
+            { label: "Average", value: duration(average) },
+            { label: "Fastest", value: duration(Math.min(...FIRST_REPLIES)) },
+            { label: "Slowest", value: duration(Math.max(...FIRST_REPLIES)) },
+          ]}
+        />
+      </WidgetSummary>
     </Widget>
   );
 }

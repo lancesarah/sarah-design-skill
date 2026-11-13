@@ -71,6 +71,9 @@
   --stroke: 0 0 0 1px var(--grey);
   /* Hairline. Matches --grey in light. Dark mode sets its own. */
   --line: var(--grey);
+  /* The outer edge of a card or a table, one step past the hairlines inside it. */
+  --line-card: var(--black-12);
+  --stroke-card: 0 0 0 1px var(--line-card);
 
   --space-2: 2px;
   --space-4: 4px;

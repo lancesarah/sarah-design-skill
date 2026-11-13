@@ -1,6 +1,6 @@
 "use client";
 
-import { Widget } from "@lance-live/gallery-ui";
+import { Widget, WidgetNote, WidgetTally } from "@lance-live/gallery-ui";
 import type { CSSProperties } from "react";
 import { useSeen } from "./use-seen";
 
@@ -16,18 +16,9 @@ export function LeadTrendWidget() {
   const busiest = Math.max(1, ...DAILY);
   const { ref, seen } = useSeen<HTMLDivElement>();
   return (
-    <Widget icon="users" title="Lead trend" action={<span className="home-pm-today">Past 30d</span>}>
+    <Widget icon="users" title="Lead trend" action={<WidgetNote>Past 30d</WidgetNote>}>
       <div className="home-tally-summary home-trend-body">
-        <p className="home-tally-top">
-          <span>
-            <span className="home-summary-figure">{total}</span>
-            <span className="home-tally-label">{total === 1 ? "lead" : "leads"}</span>
-          </span>
-          <span className="home-tally-aside">
-            {change >= 0 ? "+" : "−"}
-            {Math.abs(change)}% on the 30d before
-          </span>
-        </p>
+        <WidgetTally value={total} label={total === 1 ? "lead" : "leads"} aside={`${change >= 0 ? "+" : "−"}${Math.abs(change)}% on the 30d before`} />
         <div ref={ref} className={seen ? "home-trend is-seen" : "home-trend"} role="img" aria-label={`New leads a day for 30 days: ${DAILY.join(", ")}. Today ${DAILY[DAILY.length - 1]}.`}>
           {DAILY.map((value, at) => (
             <span key={at} style={{ "--bar": value / busiest, "--at": at } as CSSProperties} />

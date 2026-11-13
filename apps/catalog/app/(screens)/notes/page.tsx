@@ -1,8 +1,9 @@
 "use client";
 
-import { Button, ConfirmDialog, DEPARTMENTS, DepartmentChip, Empty, Icon, OverlayMenu, Tabs, ViewedMenu, captureClose, type Viewer } from "@lance-live/gallery-ui";
+import { Chip, Button, ConfirmDialog, DEPARTMENTS, DepartmentChip, Empty, Icon, OverlayMenu, Tabs, ViewedMenu, captureClose, type Viewer } from "@lance-live/gallery-ui";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { flushSync } from "react-dom";
+import { putBack, useNotify } from "../action-toast";
 import { FilterMenu, ReplyForm, SearchBox } from "../chrome";
 import { EditText } from "../edit-text";
 import { Glyph } from "../glyph";
@@ -139,6 +140,7 @@ function revealNewCard(list: Element, id: string, before: Map<string, number>) {
 }
 
 export default function NotesPage() {
+  const notify = useNotify();
   const [records, setRecords] = useState(NOTES);
   const [dept, setDept] = useState("All");
   const [query, setQuery] = useState("");
@@ -317,9 +319,12 @@ export default function NotesPage() {
     if (list) revealNewCard(list, id, before);
     titleRef.current?.focus();
     titleRef.current?.select();
+    notify("Note created");
   }
 
   function removeNote(id: string) {
+    const index = records.findIndex((note) => note.id === id);
+    const removed = records[index];
     const play = captureClose(document.querySelector(`.brief-list [data-record="${CSS.escape(id)}"]`));
     const remaining = records.filter((note) => note.id !== id);
     flushSync(() => {
@@ -327,6 +332,7 @@ export default function NotesPage() {
       setSelected((current) => (current === id ? remaining[0]?.id ?? "" : current));
     });
     play();
+    if (removed) notify({ message: "Note deleted", action: "Undo", onAction: () => setRecords((current) => putBack(current, removed, index)) });
   }
 
   return (
@@ -369,9 +375,7 @@ export default function NotesPage() {
           </div>
           <div className="filter-chips">
             {rooms.map((room, index) => (
-              <button key={`${room}-${index}`} className="chip chip-filter" type="button" onClick={() => setRooms((current) => current.filter((_, item) => item !== index))}>
-                <span className="chip-k">Room</span>: {room} <Glyph name="plus" size={10} className="x" />
-              </button>
+              <Chip key={`${room}-${index}`} filter={{ name: "Room", value: room }} onClick={() => setRooms((current) => current.filter((_, item) => item !== index))} />
             ))}
           </div>
         </div>

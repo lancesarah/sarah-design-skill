@@ -248,6 +248,10 @@ export const icons = {
   "tune": {
     "viewBox": "0 0 14 14",
     "body": "<g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" style=\"stroke-width: var(--icon-stroke)\"><path d=\"M2 3.5h5.5M10.5 3.5H12M2 7h1.5M6.5 7H12M2 10.5h5.5M10.5 10.5H12\"/><circle cx=\"9\" cy=\"3.5\" r=\"1.5\"/><circle cx=\"5\" cy=\"7\" r=\"1.5\"/><circle cx=\"9\" cy=\"10.5\" r=\"1.5\"/></g>"
+  },
+  "sparkle": {
+    "viewBox": "0 0 14 14",
+    "body": "<g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" style=\"stroke-width: var(--icon-stroke)\"><path d=\"M6 3Q6.6 6.9 10.5 7.5 6.6 8.1 6 12 5.4 8.1 1.5 7.5 5.4 6.9 6 3Z\"/><path d=\"M11 1.2Q11.25 2.75 12.8 3 11.25 3.25 11 4.8 10.75 3.25 9.2 3 10.75 2.75 11 1.2Z\"/></g>"
   }
 } as const;
 

@@ -19,7 +19,7 @@ export function Empty({
     <div className="sds empty">
       <div className="empty-copy">
         <span className="empty-mark" aria-hidden="true">
-          <Icon name={icon} size={18} />
+          <Icon name={icon} size={24} />
         </span>
         <h2>{title}</h2>
         {children ? <p>{children}</p> : null}

@@ -1,6 +1,6 @@
 "use client";
 
-import { Empty, RoomMark, Widget, WidgetEmpty, WidgetList, WidgetMore, WidgetRow } from "@lance-live/gallery-ui";
+import { Empty, RoomMark, Widget, WidgetEmpty, WidgetList, WidgetMore, WidgetNote, WidgetRow } from "@lance-live/gallery-ui";
 import Link from "next/link";
 
 type MinibarRoom = { room: string; items: string; charge: number; out: string };
@@ -25,7 +25,7 @@ export function MinibarWidget() {
   const more = ROOMS.length - shown.length;
   const total = ROOMS.reduce((sum, room) => sum + room.charge, 0);
   return (
-    <Widget icon="cup" title="Minibar" count={ROOMS.length} action={ROOMS.length ? <span className="home-pm-today">{money(total)} today</span> : undefined}>
+    <Widget icon="cup" title="Minibar" count={ROOMS.length} action={ROOMS.length ? <WidgetNote>{money(total)} today</WidgetNote> : undefined}>
       {shown.length ? (
         <WidgetList>
           {shown.map((room) => (

@@ -1,7 +1,7 @@
 "use client";
 
 import { OverlayMenu, SegmentedControl, Sidebar, type SidebarGroup, type SidebarLink } from "@lance-live/gallery-ui";
-import { useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import { Glyph } from "./glyph";
 import { MESSAGE_COUNT } from "./messages";
@@ -33,7 +33,7 @@ const GROUPS: SidebarGroup[] = [
     open: true,
     links: [
       { href: "/calls", icon: "phone", label: "Calls" },
-      { href: "/#sidebar", icon: "bubble-lines", label: "Guest messages" },
+      { href: "/guest-messages", icon: "bubble-lines", label: "Guest messages" },
       { href: "/#sidebar", icon: "clock", label: "Wake-up calls" },
     ],
   },
@@ -324,6 +324,98 @@ export function FilterMenu({
             })}
           </>
         ) : null}
+      </OverlayMenu>
+    </div>
+  );
+}
+
+export type FilterGroup = {
+  name: string;
+  options: readonly string[];
+  value: readonly string[];
+  onValueChange: (value: string[]) => void;
+  /** One choice at a time, like a date range. Choosing it again clears it. */
+  single?: boolean;
+};
+
+/** Filters by category. Each category row opens its options to the side, like the gallery filter menu. */
+export function FilterGroupsMenu({ groups }: { groups: FilterGroup[] }) {
+  const [open, setOpen] = useState(false);
+  const [branch, setBranch] = useState<string | null>(null);
+  const anchorRef = useRef<HTMLButtonElement>(null);
+  const branchRef = useRef<HTMLButtonElement>(null);
+  const active = groups.find((group) => group.name === branch) ?? null;
+
+  useEffect(() => {
+    if (!open) return;
+    const close = (event: PointerEvent) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      if (anchorRef.current?.contains(target) || target.closest('[data-menu="filters"]')) return;
+      setOpen(false);
+      setBranch(null);
+    };
+    document.addEventListener("pointerdown", close);
+    return () => document.removeEventListener("pointerdown", close);
+  }, [open]);
+
+  return (
+    <div className="drop">
+      <button
+        ref={anchorRef}
+        className="trigger"
+        type="button"
+        aria-expanded={open}
+        aria-haspopup="menu"
+        aria-label="Filters"
+        onClick={() => {
+          setOpen((next) => !next);
+          setBranch(null);
+        }}
+      >
+        <span className="pair">
+          <Glyph name="filter" />
+          <span className="fit-label">Filters</span>
+        </span>
+        <Glyph name="chevron" />
+      </button>
+      <OverlayMenu open={open} anchorRef={anchorRef} className="filter-menu" label="Filters" marker="filters">
+        {groups.map((group) => (
+          <div key={group.name} className={branch === group.name ? "menu-branch is-open" : "menu-branch"} onMouseEnter={() => setBranch(group.name)}>
+            <button
+              ref={branch === group.name ? branchRef : undefined}
+              className="menu-item"
+              type="button"
+              aria-haspopup="menu"
+              aria-expanded={branch === group.name}
+              onClick={() => setBranch(group.name)}
+            >
+              {group.name}
+              <Glyph name="chevron" className="menu-next" />
+            </button>
+          </div>
+        ))}
+      </OverlayMenu>
+      <OverlayMenu key={branch ?? "closed"} open={open && active != null} anchorRef={branchRef} className="filter-sub" label={active?.name} placement="side" marker="filters">
+        {active?.options.map((option) => {
+          const checked = active.value.includes(option);
+          return (
+            <button
+              key={option}
+              className="menu-item"
+              type="button"
+              role={active.single ? "menuitemradio" : "menuitemcheckbox"}
+              aria-checked={checked}
+              onClick={() => {
+                if (active.single) active.onValueChange(checked ? [] : [option]);
+                else active.onValueChange(checked ? active.value.filter((item) => item !== option) : [...active.value, option]);
+              }}
+            >
+              {option}
+              <Glyph name="check" className="check" />
+            </button>
+          );
+        })}
       </OverlayMenu>
     </div>
   );

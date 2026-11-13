@@ -1,6 +1,6 @@
 "use client";
 
-import { Empty, Icon, RoomMark, Widget, WidgetEmpty, WidgetList, WidgetMore, WidgetRow } from "@lance-live/gallery-ui";
+import { Empty, Icon, RoomMark, Widget, WidgetEmpty, WidgetFigure, WidgetList, WidgetMore, WidgetRow, WidgetStats, WidgetSummary } from "@lance-live/gallery-ui";
 import Link from "next/link";
 import { CheckStatus } from "./check-status";
 type RoomStatus = "OD" | "OC";
@@ -43,18 +43,10 @@ export function DndWidget() {
     >
       {ROOMS.length ? (
         <>
-          <div className="home-summary">
-            <p className="home-summary-hero">
-              <span className="home-summary-figure">{ROOMS.length}</span>
-              <span className="home-summary-label">rooms on DND</span>
-            </p>
-            <dl className="home-summary-stats">
-              <div>
-                <dt>Water taken</dt>
-                <dd>{WATER_TAKEN}</dd>
-              </div>
-            </dl>
-          </div>
+          <WidgetSummary>
+            <WidgetFigure value={ROOMS.length} label="rooms on DND" />
+            <WidgetStats items={[{ label: "Water taken", value: WATER_TAKEN }]} />
+          </WidgetSummary>
           <WidgetList>
             {shown.map((room) => (
               <WidgetRow

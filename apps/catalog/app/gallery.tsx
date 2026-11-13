@@ -40,9 +40,16 @@ import {
   Widget,
   WidgetEmpty,
   WidgetFacts,
+  WidgetFigure,
   WidgetList,
   WidgetMore,
+  WidgetNote,
   WidgetRow,
+  WidgetStats,
+  WidgetSummary,
+  WidgetTally,
+  PhotoAddFrame,
+  TableChip,
   Composer,
   Confirm,
   DEPARTMENTS,
@@ -118,6 +125,27 @@ const DEMO_PHOTOS: Photo[] = [
   { src: "/avatar-sarah.png", alt: "Pillow on the bed" },
   { src: "/avatar-sarah.png", alt: "Closet shelf" },
 ];
+
+const DEMO_PLACES = ["Lobby", "Pool", "Gym", "Laundry"];
+
+function TableChipDemo() {
+  const [open, setOpen] = useState(false);
+  const [place, setPlace] = useState("");
+  return (
+    <TableChip
+      open={open}
+      onToggle={() => setOpen((current) => !current)}
+      menu={DEMO_PLACES.map((option) =>
+        taskMenuItem(option, option === place, () => {
+          setPlace(option);
+          setOpen(false);
+        }, option),
+      )}
+    >
+      <span style={place ? undefined : { color: "var(--black-50)" }}>{place || "Location"}</span>
+    </TableChip>
+  );
+}
 
 function PhotoThumbsDemo() {
   const [viewing, setViewing] = useState<number | null>(null);
@@ -697,6 +725,28 @@ export function Photos() {
         <SidePhotos />
       </Example>
       <Example
+        id="side-photo-add"
+        title="Add photo"
+        description="The tile that adds a photo. PhotoAddFrame draws its dashed stroke, 3px dashes with 2px gaps, which a CSS border can't set."
+        code={`import { Icon, PhotoAddFrame } from "@lance-live/gallery-ui";
+
+export function AddPhoto({ onAdd }: { onAdd: () => void }) {
+  return (
+    <button className="side-photo-add" type="button" aria-label="Add photo" onClick={onAdd}>
+      <PhotoAddFrame />
+      <Icon name="camera" size={18} />
+    </button>
+  );
+}`}
+      >
+        <div className="sds side-photos">
+          <button className="side-photo-add" type="button" aria-label="Add photo">
+            <PhotoAddFrame />
+            <Icon name="camera" size={18} />
+          </button>
+        </div>
+      </Example>
+      <Example
         id="cell-urgency"
         title="Urgency"
         description="Urgency hugs the word. Urgent keeps its icon."
@@ -891,6 +941,26 @@ export function TodoTable() {
                 />
           </div>
         </div>
+      </Example>
+      <Example
+        id="table-chip"
+        title="Table chip"
+        description="A cell that opens a menu, such as Status, Room, Urgency, or Type. The chevron shows on hover and while the menu is open, and the menu overlays the page."
+        code={`import { TableChip, taskMenuItem } from "@lance-live/gallery-ui";
+
+export function LocationCell({ value, open, onToggle, onChange }: LocationCellProps) {
+  return (
+    <TableChip
+      open={open}
+      onToggle={onToggle}
+      menu={PLACES.map((place) => taskMenuItem(place, place === value, () => { onChange(place); onToggle(); }, place))}
+    >
+      {value || "Location"}
+    </TableChip>
+  );
+}`}
+      >
+        <TableChipDemo />
       </Example>
       <Example
         id="table-simple"
@@ -1792,6 +1862,117 @@ export function NoTodos() {
                     Nothing is open right now.
                   </Empty>
                 </WidgetEmpty>
+              </Widget>
+            </div>
+          </Example>
+        </DocPage>
+      )}
+      {page === "widget-summary" && (
+        <DocPage title="Widget summary" description="The top of a widget that leads with a number. One figure, its totals beside it, and a meter or a chart under it.">
+          <Example id="widget-summary-example" title="Default" description="Rooms left to clean, with the clean and DND totals keyed to the meter." code={`import { Meter, Widget, WidgetFigure, WidgetStats, WidgetSummary } from "@lance-live/gallery-ui";
+
+export function Housekeeping() {
+  return (
+    <Widget icon="bed" title="Housekeeping">
+      <WidgetSummary alone>
+        <WidgetFigure value={38} label="rooms left to clean" />
+        <WidgetStats
+          items={[
+            { label: "Clean", value: 52, key: "action" },
+            { label: "DND", value: 6, key: "strong" },
+          ]}
+        />
+        <Meter className="widget-summary-meter" value={52} max={96} end={6} label="52 clean, 38 left, 6 on DND, of 96 rooms" />
+      </WidgetSummary>
+    </Widget>
+  );
+}`}>
+            <div className="sds widget-frame">
+              <Widget icon="bed" title="Housekeeping">
+                <WidgetSummary alone>
+                  <WidgetFigure value={38} label="rooms left to clean" />
+                  <WidgetStats
+                    items={[
+                      { label: "Clean", value: 52, key: "action" },
+                      { label: "DND", value: 6, key: "strong" },
+                    ]}
+                  />
+                  <Meter className="widget-summary-meter" value={52} max={96} end={6} label="52 clean, 38 left, 6 on DND, of 96 rooms" />
+                </WidgetSummary>
+              </Widget>
+            </div>
+          </Example>
+          <Example id="widget-summary-of" title="Part of a whole" description="A score out of its total, with its parts beside it and no keys." code={`import { Widget, WidgetFigure, WidgetStats, WidgetSummary } from "@lance-live/gallery-ui";
+
+export function KnowledgeHealth() {
+  return (
+    <Widget icon="book" title="Knowledge health">
+      <WidgetSummary alone>
+        <WidgetFigure value={41} of={80} label="health score" />
+        <WidgetStats
+          items={[
+            { label: "Verified", value: 41 },
+            { label: "Due soon", value: 12 },
+            { label: "Stale", value: 27 },
+          ]}
+        />
+      </WidgetSummary>
+    </Widget>
+  );
+}`}>
+            <div className="sds widget-frame">
+              <Widget icon="book" title="Knowledge health">
+                <WidgetSummary alone>
+                  <WidgetFigure value={41} of={80} label="health score" />
+                  <WidgetStats
+                    items={[
+                      { label: "Verified", value: 41 },
+                      { label: "Due soon", value: 12 },
+                      { label: "Stale", value: 27 },
+                    ]}
+                  />
+                </WidgetSummary>
+              </Widget>
+            </div>
+          </Example>
+          <Example id="widget-tally" title="Tally" description="The figure and its answer share a line, with a fact on the right, over a chart. The note in the head names the window." code={`import { ShareBar, Widget, WidgetNote, WidgetTally } from "@lance-live/gallery-ui";
+
+export function TicketsByChannel() {
+  return (
+    <Widget icon="tag" title="Tickets by channel" action={<WidgetNote>Today</WidgetNote>}>
+      <div style={{ display: "grid", gap: "var(--space-16)", padding: "var(--space-16)" }}>
+        <WidgetTally value={114} label="tickets recorded" aside="+12 vs yesterday" />
+        <ShareBar shares={shares} />
+      </div>
+    </Widget>
+  );
+}`}>
+            <div className="sds widget-frame">
+              <Widget icon="tag" title="Tickets by channel" action={<WidgetNote>Today</WidgetNote>}>
+                <div style={{ display: "grid", gap: "var(--space-16)", padding: "var(--space-16)" }}>
+                  <WidgetTally value={114} label="tickets recorded" aside="+12 vs yesterday" />
+                  <ShareBar
+                    shares={[
+                      { id: "voice", label: "Voice", value: 46, tone: "action" },
+                      { id: "text", label: "Text", value: 38, tone: "strong" },
+                      { id: "tablet", label: "Tablet", value: 21, tone: "muted" },
+                      { id: "manual", label: "Manual", value: 9, tone: "quiet" },
+                    ]}
+                  />
+                </div>
+              </Widget>
+            </div>
+          </Example>
+          <Example id="widget-tally-warn" title="Tally with a problem" description="The fact turns red when it needs attention, such as readings overdue." code={`import { WidgetTally } from "@lance-live/gallery-ui";
+
+export function MissingReadings() {
+  return <WidgetTally value={3} label="missing" aside="2 overdue" asideTone="warn" />;
+}`}>
+            <div className="sds widget-frame">
+              <Widget icon="wrench" title="Readings" action={<WidgetNote>Today</WidgetNote>}>
+                <div style={{ padding: "var(--space-16)" }}>
+                  <WidgetTally value={3} label="missing" aside="2 overdue" asideTone="warn" />
+                </div>
               </Widget>
             </div>
           </Example>

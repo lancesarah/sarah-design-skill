@@ -6,7 +6,7 @@ import { useLayoutEffect, useRef, useState, type PointerEvent as ReactPointerEve
 export type Layout = { order: string[]; hidden: Set<string> };
 
 const ITEM = "[data-widget-id]";
-/** How close to the top of the page, or to the gallery, the pointer comes before the page scrolls. */
+/** How close to the top or bottom of the page the pointer comes before the page scrolls. */
 const EDGE = 64;
 /** The pointer travels this far before a press becomes a drag, so a click still clicks. */
 const SLOP = 4;
@@ -34,9 +34,9 @@ function scrollerOf(from: Element) {
 const inside = (box: DOMRect, x: number, y: number) => x >= box.left && x <= box.right && y >= box.top && y <= box.bottom;
 
 /**
- * Drag a widget to a new place on Home, or drag one in from the gallery.
+ * Drag a widget to a new place on Home.
  * The other widgets move aside while the pointer travels. The widget lands in the slot it left open.
- * Leaving the widgets puts a gallery widget back. Escape puts everything back.
+ * Escape puts everything back.
  */
 export function useWidgetDrag(layout: Layout, commit: (layout: Layout) => void) {
   const boardRef = useRef<HTMLDivElement>(null);
@@ -70,13 +70,11 @@ export function useWidgetDrag(layout: Layout, commit: (layout: Layout) => void) 
     });
   }, [draft, layout]);
 
-  /** `source` is the widget on Home, or the gallery tile. A tile's preview becomes the ghost. */
-  const start = (event: ReactPointerEvent<HTMLElement>, id: string, from: "page" | "gallery") => {
+  const start = (event: ReactPointerEvent<HTMLElement>, id: string) => {
     if (event.button !== 0 || (event.target as Element).closest(".home-edit-remove")) return;
     const board = boardRef.current;
     if (!board) return;
-    const source = from === "gallery" ? event.currentTarget.closest(".home-gallery-tile")?.querySelector<HTMLElement>(".home-gallery-preview") : event.currentTarget;
-    if (!source) return;
+    const source = event.currentTarget;
     const base = layoutRef.current;
     const scroller = scrollerOf(board);
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -96,46 +94,37 @@ export function useWidgetDrag(layout: Layout, commit: (layout: Layout) => void) 
       setDraft(next);
     };
 
-    const galleryTop = () => document.querySelector(".home-gallery")?.getBoundingClientRect().top ?? window.innerHeight;
-
     const aim = () => {
       const { x, y } = pointer;
-      const box = board.getBoundingClientRect();
-      if (!inside(box, x, y) || y >= galleryTop()) {
-        if (from === "gallery") show(base);
+      if (!inside(board.getBoundingClientRect(), x, y)) {
         traded = null;
         return;
       }
-      const items = [...board.querySelectorAll<HTMLElement>(ITEM)];
-      const hit = items.find((el) => inside(el.getBoundingClientRect(), x, y))?.dataset.widgetId;
-      const present = !current.hidden.has(id);
-      if (!hit) {
-        const last = items.at(-1);
-        if (!present && (!last || y > last.getBoundingClientRect().bottom)) show(place(current, id, null));
-        return;
-      }
+      const hit = [...board.querySelectorAll<HTMLElement>(ITEM)].find((el) => inside(el.getBoundingClientRect(), x, y))?.dataset.widgetId;
+      if (!hit) return;
       if (hit === id) {
         traded = null;
         return;
       }
       if (hit === traded) return;
       const visible = visibleIds(current);
-      const at = visible.indexOf(id);
-      show(place(current, id, hit, present && at < visible.indexOf(hit)));
+      show(place(current, id, hit, visible.indexOf(id) < visible.indexOf(hit)));
       traded = hit;
     };
 
-    const scroll = () => {
+    /** Aims once per frame, however many pointer events land in it, then scrolls near an edge. */
+    const tick = () => {
       frame = 0;
+      aim();
       if (!ghost) return;
-      const top = Math.max(scroller.getBoundingClientRect().top, 0);
-      const bottom = Math.min(scroller.getBoundingClientRect().bottom, galleryTop());
+      const view = scroller.getBoundingClientRect();
+      const top = Math.max(view.top, 0);
+      const bottom = Math.min(view.bottom, window.innerHeight);
       const { y } = pointer;
       const by = y < top + EDGE ? -(top + EDGE - y) / 3 : y > bottom - EDGE && y < bottom ? (y - (bottom - EDGE)) / 3 : 0;
       if (!by) return;
       scroller.scrollTop += by;
-      aim();
-      frame = requestAnimationFrame(scroll);
+      frame = requestAnimationFrame(tick);
     };
 
     const lift = () => {
@@ -160,8 +149,7 @@ export function useWidgetDrag(layout: Layout, commit: (layout: Layout) => void) 
         lift();
       }
       ghost!.style.transform = `translate(${pointer.x - grab.x}px, ${pointer.y - grab.y}px)`;
-      aim();
-      if (!frame) frame = requestAnimationFrame(scroll);
+      if (!frame) frame = requestAnimationFrame(tick);
     };
 
     const stop = () => {
@@ -173,8 +161,8 @@ export function useWidgetDrag(layout: Layout, commit: (layout: Layout) => void) 
       document.body.classList.remove("is-widget-dragging");
     };
 
-    /** The ghost flies into the open slot once the page has its final order. A gallery ghost that lands nowhere fades. */
-    const settle = (into: boolean) => {
+    /** The ghost flies into the open slot once the page has its final order. */
+    const settle = () => {
       const lifted = ghost;
       if (!lifted) return setDragging(null);
       const done = () => {
@@ -182,36 +170,36 @@ export function useWidgetDrag(layout: Layout, commit: (layout: Layout) => void) 
         setDragging(null);
       };
       requestAnimationFrame(() => {
-        const slot = into ? board.querySelector<HTMLElement>(`[data-widget-id="${id}"]`) : null;
+        const slot = board.querySelector<HTMLElement>(`[data-widget-id="${id}"]`);
         if (reduce) return done();
         slot?.getAnimations().forEach((run) => run.finish());
         const easing = getComputedStyle(board).getPropertyValue("--ease-out").trim() || "ease-out";
         const box = slot?.getBoundingClientRect();
         const end = box
-          ? { transform: `translate(${box.left}px, ${box.top}px) scale(${box.width / lifted.offsetWidth})`, opacity: from === "gallery" ? 0 : 1 }
+          ? { transform: `translate(${box.left}px, ${box.top}px) scale(${box.width / lifted.offsetWidth})`, opacity: 1 }
           : { transform: lifted.style.transform, opacity: 0 };
         lifted.animate([{ transform: lifted.style.transform, opacity: 1 }, end], { duration: box ? 200 : 160, easing, fill: "forwards" }).onfinish = done;
       });
     };
 
     function drop() {
+      if (ghost && frame) aim();
       stop();
       if (!ghost) return;
       const eat = (ev: MouseEvent) => ev.stopPropagation();
       window.addEventListener("click", eat, true);
       setTimeout(() => window.removeEventListener("click", eat, true), 0);
-      const landed = current !== base && !current.hidden.has(id);
       snapshot();
-      if (landed) commitRef.current(current);
+      if (current !== base) commitRef.current(current);
       setDraft(null);
-      settle(landed || from === "page");
+      settle();
     }
 
     function cancel() {
       stop();
       snapshot();
       setDraft(null);
-      settle(from === "page");
+      settle();
     }
 
     function onKey(ev: KeyboardEvent) {

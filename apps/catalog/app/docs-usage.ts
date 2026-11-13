@@ -68,14 +68,14 @@ export const USAGE: Record<string, Usage> = {
       "Secondary: an action beside the primary, or Cancel. A section's own action on the page, such as Edit beside a section title, with its icon.",
       "Tertiary: a choice is on, and it should read as selected without a stroke or a dark fill. Required on a step is this.",
       "Danger: a delete control. The button on the page, the confirming control on the delete card, and an icon that removes a row. The icon is `--destructive` with or without a label.",
-      "Icon button: an action has no room for a label, or it is a tool in a row."
+      "Icon button: a tool in a header or a panel bar with no room for a label: show or hide a panel, expand, pin, history, new chat. Every panel toggle is this button, in every header."
     ],
     "whenNot": [
       "Primary: a second action, a filter, a fact, or the confirming delete. A page that only views leaves that corner empty.",
       "Secondary: the main action, or a fact.",
       "Tertiary: the primary, a secondary action, or a choice that is off. Off stays secondary.",
       "Danger: the primary. A menu’s last item stays red text, not this button.",
-      "Icon button: the primary action. That button has a label."
+      "Icon button: the primary action. That button has a label. An action on the page itself, such as New beside a table. That is the secondary icon-only button, with its stroke."
     ],
     "rules": [
       "Primary: Default: `.btn`.",
@@ -86,8 +86,8 @@ export const USAGE: Record<string, Usage> = {
       "Tertiary: States: rest is a `--grey` fill, `--black` text, and no hairline. Hover is `--black-12`. The text stays `--black`. An open menu keeps that hover fill. Press uses the same scale as the primary. A button is 28px.",
       "Danger: Default: `.btn-danger`, the fill.",
       "Danger: States: fill is `--destructive` with white text. Hover is `color-mix(in srgb, var(--destructive) 88%, black)`. Light is `.btn-danger-light`: `--destructive` text and icon on `color-mix(in srgb, var(--destructive) 5%, transparent)`, no hairline. Hover deepens that fill to 12%. The text stays red. Press scales. There is no line variant. The word and the icon stay `--destructive` at rest, on hover, and on a hovered row. They do not turn grey or black. The grey icon switch does not recolor them. A trash icon with no label is still this control. The press opens Delete confirmation. It does not remove the thing.",
-      "Icon button: Default: clear, not primary.",
-      "Icon button: States: rest is clear. Hover is one step from the surface. Press scales the whole control. Sidebar icon buttons stay unfilled at rest."
+      "Icon button: Default: `IconButton`. A 30px square, a `--black-50` glyph at 18px, and no fill or stroke at rest. It always has an `aria-label`.",
+      "Icon button: States: rest is clear. Hover fills `--grey`, one step from the surface; in the Lance panel that step is `--sidebar-grey`. Press scales the whole control. The glyph stays `--black-50` on hover. It never turns `--black`, and it never takes a stroke. Sidebar icon buttons stay unfilled at rest."
     ]
   },
   "text-icon": {
@@ -114,7 +114,7 @@ export const USAGE: Record<string, Usage> = {
     "rules": [
       "Default: `Chip`.",
       "States: rest, hover, and pressed. A chip hugs its label and does not reserve width for every option it might show. A longer value widens the chip, and the chips beside it move with it. A chip outside a menu is 13 / 400. Inside a menu it is `--text-14`.",
-      "Filter chip: Default: `.chip-filter`.",
+      "Filter chip: Default: `Chip` with `filter={{ name, value }}`, and `onClick` removes that filter. Do not write the `.chip-filter` markup by hand.",
       "Filter chip: States: rest is `--filter-chip-bg` and `--action` text. Hover keeps that fill."
     ]
   },
@@ -232,7 +232,7 @@ export const USAGE: Record<string, Usage> = {
     ],
     "rules": [
       "Default: `Avatar`.",
-      "States: named, photo, and unassigned. A named avatar keeps a solid 1px `--black-12` ring and the `--sidebar-grey` fill. A photo fills the same circle with the `--outline-image` inset, which stands in for the ring and the fill. Unassigned is clear, with a 1px dashed `--black-50` stroke. A picture that stands alone shows the name in a tooltip on hover, centered above it. When the name is written beside it, there is no tooltip. Row hover does not change the photo in light mode. In dark mode a named photo is `--grey`, then `--grey-up` when its row or chip is hovered."
+      "States: named, photo, unknown, and unassigned. A named avatar keeps a solid 1px `--black-12` ring and the `--sidebar-grey` fill. A person whose initials are unknown, such as a guest known only by a phone number, is that same ringed circle with the `user` icon in `--black-50`, 16px (18px on the large avatar). The mini avatar has no unknown state. A photo fills the same circle with the `--outline-image` inset, which stands in for the ring and the fill. Unassigned is clear, with a 1px dashed `--black-50` stroke. A picture that stands alone shows the name in a tooltip on hover, centered above it. When the name is written beside it, there is no tooltip. Row hover does not change the photo in light mode. In dark mode a named photo is `--grey`, then `--grey-up` when its row or chip is hovered."
     ]
   },
   "profile": {
@@ -258,7 +258,7 @@ export const USAGE: Record<string, Usage> = {
     ],
     "rules": [
       "Default: the Lance composer.",
-      "States: add, the mode control, the microphone, and an empty send arrow hover with `--grey`. The send arrow stays grey when the field is empty, including on hover. It turns `--action`, with white text, only when the field has text. The microphone stays `--action` only while it is on."
+      "States: add, the mode control, the microphone, and an empty send arrow hover with `--grey`. The send arrow stays grey when the field is empty, including on hover. It turns `--action`, with white text, only when the field has text, and fades both ways over `--motion-hover` on `--ease-out`. The microphone stays `--action` only while it is on."
     ]
   },
   "lance-side": {
@@ -308,7 +308,7 @@ export const USAGE: Record<string, Usage> = {
     "rules": [
       "Default: `Message`. Incoming, and you.",
       "States: incoming and you. A single line is rounded on every corner.",
-      "The name and the time sit above the bubble, 4px clear of it. Both are 12px, weight 400, `--text-muted`. Incoming is left, with a 35px photo. Yours is right, with no photo, and the name reads You. A yours bubble stops where the other person's picture starts: its widest left edge lines up with that picture. The bubble is 32px on one line, side padding `--space-10`, radius `--radius-card`. Incoming is `--sidebar-grey`. Yours is `--action`, with white text. A longer line grows. The words wrap inside the column."
+      "The name and the time sit above the bubble, 4px clear of it. Both are 12px, weight 400, `--text-muted`. Incoming is left, with a 35px photo. Yours is right, with no photo, and the name reads You. A yours bubble stops where the other person's picture starts: its widest left edge lines up with that picture. The bubble is 32px on one line, side padding `--space-10`, radius `--radius-card`. Incoming is `--sidebar-grey`. Yours is `--action`, with white text. A reply that goes out for a team, like Lance answering a guest, is yours, and the name reads the team, like Front desk. A longer line grows. The words wrap inside the column."
     ]
   },
   "message-group": {
@@ -352,15 +352,15 @@ export const USAGE: Record<string, Usage> = {
   },
   "resolved": {
     "when": [
-      "a conversation with Gavin is finished."
+      "a conversation with Gavin is finished, or a thread is answered somewhere else, like a Sales guest thread."
     ],
     "whenNot": [
       "a department thread, or a conversation that is still open. Those keep the reply field."
     ],
     "rules": [
       "Default: `Resolved`.",
-      "States: one.",
-      "The reply field is gone. The note is 12px `--text-muted`, centered on `--sidebar-grey`. Start a new chat is tertiary. Reopen to reply is secondary."
+      "States: resolved, and answered elsewhere.",
+      "The reply field is gone. The note is 12px `--text-muted`, centered on `--sidebar-grey`. Start a new chat is tertiary. Reopen to reply is secondary. Answered elsewhere, the note says where replies go out from, and the one action is secondary and opens the thread there, like Open in Sales."
     ]
   },
   "ticket": {
@@ -399,7 +399,7 @@ export const USAGE: Record<string, Usage> = {
     "rules": [
       "Default: `Empty`.",
       "States: a title and a line, and the same thing with one action under them.",
-      "The mark is 18px in `--text-muted`. The title is 16px weight 500. The line is 14px weight 400 in `--text-muted`. The gap inside the group is `--space-4`. The action sits `--space-16` below the group. It is centered, and it fills the space it is given."
+      "The mark is 24px in `--text-muted`. The title is 16px weight 500. The line is 14px weight 400 in `--text-muted`. The gap inside the group is `--space-4`. The action sits `--space-16` below the group. It is centered, and it fills the space it is given."
     ]
   },
   "meter": {
@@ -438,7 +438,20 @@ export const USAGE: Record<string, Usage> = {
     "rules": [
       "Default: `Widget`, holding a `WidgetList`. `WidgetEmpty` holds an `Empty` when there is nothing to show.",
       "States: rows and a more link, rows only, and empty. A widget that lists rows goes empty when it has no rows: `WidgetEmpty` replaces its summary and its list, and the head stays. A widget that only shows figures, a meter, a share bar, or a chart has no empty. It shows its zeros, because zero is a reading.",
-      "One card: a 1px `--grey` border, a 10px radius, and a `--sidebar-grey` head over a `--white` list. The head is a 16px icon in `--text-muted`, `--space-8` from the title, the same gap as a Lance suggestion. The title is 14px weight 400, the count in `--text-muted`, and one action on the right. The action is a plus that starts a new record, as a `TextIcon` or a link with the `text-icon sm` class. A leaderboard puts its top three on a podium over the rows, second, first, third, each on a `--sidebar-grey` step, and the rows go on from fourth to sixth. First place's step is `--filter-chip-bg` with its place in `--action`, a 1px `--action` stroke on the top and sides, and `--shadow-card`. The step has no bottom stroke, so it does not double the rule it stands on. First place's avatar takes `--shadow-card` too. Every podium avatar keeps the named ring, 1px `--black-12`. A widget whose rows change with a time window, such as a leaderboard, takes segments there instead, sized to their labels: Today, 7d, and 30d, or 24h, 7d, and 30d. A `Menu` trigger on the grey head hovers `--grey`, one step from the head. Segments in the head take a `--grey` track so they do not fade into it, and an unselected segment hovers `--black-12`. In dark mode the list is `--white`, the page, edged by the card's border, and the head is `--grey-low`, halfway from the page to `--grey`. Lifting the list off the page read too heavy. Everything inside the list moves with it. A row hovers `--grey`, a pill in a row rests `--grey` and is `--black-12` on a hovered row, and the room map's cells, the podium steps, and a day's hover are `--grey`, with a room's hover `--black-12`. A head trigger hovers `--black-12`, and the segment track is `--white`, the page, so it sits below the head and the `--grey` selected pill still shows. The head is 52px, the height of a row. With the Depth switch on, the card takes the drop under its hairline."
+      "One card: a 1px `--line-card` border, a 10px radius, and a `--sidebar-grey` head over a `--white` list. The head is a 16px icon in `--text-muted`, `--space-8` from the title, the same gap as a Lance suggestion. The title is 14px weight 400, the count in `--text-muted`, and one action on the right. The action is a plus that starts a new record, as a `TextIcon` or a link with the `text-icon sm` class. A leaderboard puts its top three on a podium over the rows, second, first, third, each on a `--sidebar-grey` step, and the rows go on from fourth to sixth. First place's step is `--filter-chip-bg` with its place in `--action`, a 1px `--action` stroke on the top and sides, and `--shadow-card`. The step has no bottom stroke, so it does not double the rule it stands on. First place's avatar takes `--shadow-card` too. Every podium avatar keeps the named ring, 1px `--black-12`. A widget whose rows change with a time window, such as a leaderboard, takes segments there instead, sized to their labels: Today, 7d, and 30d, or 24h, 7d, and 30d. A `Menu` trigger on the grey head hovers `--grey`, one step from the head. Segments in the head take a `--grey` track so they do not fade into it, and an unselected segment hovers `--black-12`. In dark mode the list is `--white`, the page, edged by the card's border, and the head is `--grey-low`, halfway from the page to `--grey`. Lifting the list off the page read too heavy. Everything inside the list moves with it. A row hovers `--grey`, a pill in a row rests `--grey` and is `--black-12` on a hovered row, and the room map's cells, the podium steps, and a day's hover are `--grey`, with a room's hover `--black-12`. A head trigger hovers `--black-12`, and the segment track is `--white`, the page, so it sits below the head and the `--grey` selected pill still shows. The head is 52px, the height of a row. The card takes the depth drop under its hairline."
+    ]
+  },
+  "widget-summary": {
+    "when": [
+      "a widget leads with a number, such as a count, a score out of a total, or a time, with its totals beside it and a meter or a chart under it."
+    ],
+    "whenNot": [
+      "a widget that only lists rows. That is Widget list."
+    ],
+    "rules": [
+      "Default: `WidgetSummary` holding a `WidgetFigure`, then `WidgetStats`, then a `Meter` with `className=\"widget-summary-meter\"`, which spans both columns. `alone` drops the rule when nothing sits under it. A tally is `WidgetTally`, over a chart, in the widget's 16px padding. A fact in the head beside the action is `WidgetNote`, passed as the widget's `action`.",
+      "States: a figure with stats and a meter, a part of a whole, a tally over a chart, and a tally whose fact is a problem.",
+      "`WidgetFigure` is 24px weight 500 in `--black`, its label under it in 14px `--text-muted`, 4px apart, on one line. `of` adds \" / total\" in `--black-25`. In a narrow card the stats wrap and the figure does not. `WidgetStats` puts each value over its label, 16px weight 500 then 12px `--text-muted`, 2px apart and 25px between stats, and keeps label then value in the markup for a screen reader. A stat that names a part of the meter takes a `key`: `action` for the part done, `strong` for the part set aside, such as DND, `muted` and `quiet` for the lighter greys. A chart's legend uses `WidgetKey` on its own. `WidgetTally` puts the figure and its answer on one line, 8px apart, with a 14px fact on the right. `asideTone=\"warn\"` turns the fact `--urgency-urgent`. `WidgetNote` is 12px `--text-muted` with 8px on its right."
     ]
   },
   "widget-list": {
@@ -625,7 +638,7 @@ export const USAGE: Record<string, Usage> = {
       "a record opens beside the table."
     ],
     "whenNot": [
-      "a subpage, or a popup. Edit template and Edit to-do are the editor popup."
+      "a subpage, or a popup. Edit template is the editor popup, and Edit to-do is the pill editor."
     ],
     "rules": [
       "Default: the gallery detail panel.",
@@ -640,8 +653,8 @@ export const USAGE: Record<string, Usage> = {
   },
   "editor": {
     "when": [
-      "Edit template, and Edit to-do from the to-do panel. It opens over the page. It is not a subpage.",
-      "Pill editor: creating or editing one record that is a title, a description, and a few choices from lists that already exist, such as a to-do, a complaint, or a found item. Complaints, Lost & found, Cash counts, new and edited, and a new reading use it. To-dos use it when the Dev bar's Pill editor switch is on."
+      "Edit template and the readings source. It opens over the page. It is not a subpage.",
+      "Pill editor: creating or editing one record that is a title, a description, and a few choices from lists that already exist, such as a to-do, a complaint, or a found item. Complaints, Lost & found, Cash counts, new and edited, and a new reading use it. To-dos use it, new and edited."
     ],
     "whenNot": [
       "a record that opens beside the table. That is the detail panel. A full subpage, or a delete confirmation.",
@@ -649,10 +662,10 @@ export const USAGE: Record<string, Usage> = {
     ],
     "rules": [
       "Dismiss: the corner close, the scrim, and Escape. Save is the primary, at the bottom right. Delete is the light danger button and opens the confirm first.",
-      "The kicker says the action and the item: Create to-do for a new record, Edit to-do for one that exists. Create template and Edit template follow the same rule.",
+      "The kicker says the action and the item: Create template for a new record, Edit template for one that exists. Every editor follows the same rule.",
       "Save names the item too: Save to-do, Save template, Save source. Never a bare Save.",
       "Divider: a 1px `--line` runs edge to edge under the header, with or without tabs. With tabs it is the bottom of the tab bar. Without tabs the shell draws it. The pill editor is the one exception: it has no divider. See Pill editor.",
-      "The fields are the `pm-editor-*` set: a label over a 32px input, and dropdowns as `EditorPick` (`(screens)/editor-pick.tsx`), two to a row in `.pm-editor-pair`. The photo upload is one tile everywhere (`.side-photo-add`): `--sidebar-grey`, a 1px dashed `--black-25` stroke drawn by `PhotoAddFrame` (3px dashes, 2px gaps, since a CSS border can't set either), `--radius-control`, hover `--grey`, and the 18px camera in `--black-50`. A context sets only its size, with `--side-photo-size` (56px by default, 87px in an editor popup). A location, in a field or beside a name, uses the `location` pin icon, not the house. The body stacks its rows 25px apart (`--space-25`) in every editor popup. The rule under the header has 10px above and below it, and the body pads 12px top and bottom. An unset dropdown shows its placeholder, muted. Edit to-do has no tabs. Its footer is Schedule for future, a secondary button with the calendar icon, then Save. The title is an editable text entry. Its placeholder is To-do title, in `--black-25`. A new to-do focuses it. The description is an editable line 10px under it (`onSubtitleChange`; `.editor-dialog-name` stacks its lines 10px apart), in `--text-muted`, with Add a description as its placeholder. It grows with its text. The body has no Description field. The body is Location, with the `location` pin icon, and Item, with the `tag` icon, then Department and Assigned, then Urgency and Status, then Photo. Status shows the Status component, icon and label, in the field and in its menu. Department, Assigned, and Urgency show their components the same way. The field is already the box, so a value inside it has no ring, chip padding, or fill: the department tag is `plain`, and the urgency and person pill lose their padding and fill. Every value starts on the field's 10px inset. An icon and its label are 6px apart, and the avatar and the name 8px, so a status label and a name line up. A Guestroom adds Room number beside Location, in the same column, `--space-8` apart. The header does not repeat the room. Any other location hides the room field. The photo tile is 87px, `--sidebar-grey`, with no dashed border. Its edits are a draft. Save writes them. Close drops them.",
+      "The fields are the `pm-editor-*` set: a label over a 32px input, and dropdowns as `EditorPick` (`(screens)/editor-pick.tsx`), two to a row in `.pm-editor-pair`. The photo upload is one tile everywhere (`.side-photo-add`): `--sidebar-grey`, a 1px dashed `--black-25` stroke drawn by `PhotoAddFrame` (3px dashes, 2px gaps, since a CSS border can't set either), `--radius-control`, hover `--grey`, and the 18px camera in `--black-50`. A context sets only its size, with `--side-photo-size` (56px by default, 87px in an editor popup). A location, in a field or beside a name, uses the `location` pin icon, not the house. The body stacks its rows 25px apart (`--space-25`) in every editor popup. The rule under the header has 10px above and below it, and the body pads 12px top and bottom. An unset dropdown shows its placeholder, muted.",
       "Width is `652px`, or the screen when that is narrower. Height starts at `554px`, the Details tab. Areas uses that same height. The box grows when the content is taller than `554px`. It stops at the viewport, inside `--space-25` of the scrim.",
       "Pill editor: Default: `EditorDialog` with `layout=\"pills\"`, and an `EditorPills` body.",
       "Pill editor: States: rest, a pill hovered or open, a placeholder pill, and a required pill left empty after Save.",
@@ -667,7 +680,7 @@ export const USAGE: Record<string, Usage> = {
   },
   "pill-editor": {
     "when": [
-      "creating or editing one record that is a title, a description, and a few choices from lists that already exist, such as a to-do, a complaint, or a found item. Complaints, Lost & found, Cash counts, new and edited, and a new reading use it. To-dos use it when the Dev bar's Pill editor switch is on."
+      "creating or editing one record that is a title, a description, and a few choices from lists that already exist, such as a to-do, a complaint, or a found item. Complaints, Lost & found, Cash counts, new and edited, and a new reading use it. To-dos use it, new and edited."
     ],
     "whenNot": [
       "a record with steps, tabs, a table of values, or a long answer. Template, Readings source, and Knowledge use the editor popup's fields or the page. A record that opens beside the table is the detail panel."

@@ -1,6 +1,6 @@
 "use client";
 
-import { Empty, TextIcon, Widget, WidgetEmpty, WidgetList, WidgetMore, WidgetRow } from "@lance-live/gallery-ui";
+import { Empty, TextIcon, Widget, WidgetEmpty, WidgetList, WidgetMore, WidgetNote, WidgetRow } from "@lance-live/gallery-ui";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -95,7 +95,7 @@ export function MeetingsWidget() {
       title="Meetings"
       action={
         <span className="home-lance-tools">
-          <span className="home-pm-today home-week-label">{weekLabel(days)}</span>
+          <WidgetNote className="home-week-label">{weekLabel(days)}</WidgetNote>
           <TextIcon icon="chevron" size="sm" className="home-prev" aria-label="Previous week" onClick={() => step(-1)} />
           <TextIcon icon="chevron" size="sm" className="home-next" aria-label="Next week" onClick={() => step(1)} />
         </span>

@@ -665,6 +665,12 @@ html[data-theme="dark"] :where(.sds) .note-avatar-slot img, html[data-theme="dar
 :where(.sds) .lance .well, :where(.sds).lance .well,
 :where(.sds) .msg .mode, :where(.sds).msg .mode,
 :where(.sds) .msg .well, :where(.sds).msg .well { transition: none; }
+:where(.sds) .lance button[aria-label="Send"], :where(.sds).lance button[aria-label="Send"],
+:where(.sds) .msg button[aria-label="Send"], :where(.sds).msg button[aria-label="Send"] {
+  transition:
+    background-color var(--motion-hover) var(--ease-out),
+    color var(--motion-hover) var(--ease-out);
+}
 :where(.sds) .mode:hover, :where(.sds).mode:hover, :where(.sds) .mode[aria-expanded="true"], :where(.sds).mode[aria-expanded="true"] { background: var(--grey); color: var(--black-50); }
 
 /* Fields */
@@ -1041,7 +1047,8 @@ body.is-side-collapsed :where(.sds) .side-frame, body.is-side-collapsed :where(.
   border-radius: 3px;
   color: var(--black-50);
 }
-:where(.sds) .side-icon:hover, :where(.sds).side-icon:hover { background: var(--grey); }
+:where(.sds) .side-icon:hover, :where(.sds).side-icon:hover,
+:where(.sds) .side-icon.is-hover, :where(.sds).side-icon.is-hover { background: var(--grey); }
 :where(.sds) .side-top, :where(.sds).side-top,
 :where(.sds) .side-fixed, :where(.sds).side-fixed,
 :where(.sds) .side-user, :where(.sds).side-user { flex: none; }
@@ -2310,7 +2317,7 @@ html[data-theme="dark"] :where(.sds) button.dept[aria-expanded="true"] {
   flex-direction: column;
   flex: none;
   padding: 6px;
-  border: 1px solid var(--grey);
+  border: 1px solid var(--line-card);
   border-radius: 10px;
   background: var(--sidebar-grey);
 }
@@ -2628,7 +2635,7 @@ html[data-theme="dark"] :where(.sds) .ticket-resolved .btn-tertiary, html[data-t
   padding: var(--space-16);
   border-radius: var(--radius-card);
   background: var(--white);
-  box-shadow: var(--stroke);
+  box-shadow: var(--stroke-card);
 }
 
 :where(.sds) .ticket-card .ticket-copy, :where(.sds).ticket-card .ticket-copy {
@@ -2718,7 +2725,7 @@ html[data-theme="dark"] :where(.sds) .ticket-resolved .btn-tertiary, html[data-t
   padding: var(--space-12) calc(var(--space-12) + 28px) var(--space-12) var(--space-12);
   border-radius: var(--radius-card);
   background: var(--white);
-  box-shadow: var(--stroke), 0 6px 8px -4px rgb(0 0 0 / 16%);
+  box-shadow: var(--stroke-card), 0 6px 8px -4px rgb(0 0 0 / 16%);
 }
 
 :where(.sds) .ticket-overview.is-set, :where(.sds).ticket-overview.is-set {
@@ -2762,7 +2769,7 @@ html[data-theme="dark"] :where(.sds) .ticket-resolved .btn-tertiary, html[data-t
 }
 
 html[data-theme="dark"] :where(.sds) .ticket-overview, html[data-theme="dark"] :where(.sds).ticket-overview {
-  box-shadow: var(--stroke), 0 6px 8px -4px rgb(0 0 0 / 50%);
+  box-shadow: var(--stroke-card), 0 6px 8px -4px rgb(0 0 0 / 50%);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -2822,7 +2829,7 @@ html[data-theme="dark"] :where(.sds) .ticket-overview, html[data-theme="dark"] :
   flex-direction: column;
   min-width: 0;
   overflow: hidden;
-  border: 1px solid var(--grey);
+  border: 1px solid var(--line-card);
   border-radius: calc(var(--radius-control) + var(--space-4));
   background: var(--white);
 }
@@ -2972,6 +2979,104 @@ html[data-theme="dark"] :where(.sds) .ticket-overview, html[data-theme="dark"] :
 :where(.sds) .widget-list:has(.widget-row.is-single) .widget-more, :where(.sds).widget-list:has(.widget-row.is-single) .widget-more { min-height: var(--widget-row-single); }
 :where(.sds) .widget-more:hover, :where(.sds).widget-more:hover { background: var(--sidebar-grey); color: var(--black); }
 :where(.sds) .widget-empty, :where(.sds).widget-empty { display: flex; flex: 1; min-height: 196px; }
+/* A fact in the head, beside the action. */
+:where(.sds) .widget-note, :where(.sds).widget-note {
+  padding-right: var(--space-8);
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  font-variant-numeric: var(--numeric);
+}
+/* A summary: one figure leads, its totals sit beside it, a meter runs underneath.
+   The figure keeps its label on one line. In a narrow card, the stats give way and wrap instead. */
+:where(.sds) .widget-summary, :where(.sds).widget-summary {
+  display: grid;
+  grid-template-columns: minmax(min-content, 1fr) minmax(0, max-content);
+  align-items: end;
+  gap: var(--space-16);
+  padding: var(--space-16);
+  border-bottom: 1px solid var(--grey);
+}
+/* A summary with nothing under it needs no rule. */
+:where(.sds) .widget-summary.is-alone, :where(.sds).widget-summary.is-alone { border-bottom: 0; }
+:where(.sds) .widget-summary-meter, :where(.sds).widget-summary-meter { grid-column: 1 / -1; }
+:where(.sds) .widget-figure, :where(.sds).widget-figure {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  white-space: nowrap;
+}
+:where(.sds) .widget-figure-value, :where(.sds).widget-figure-value {
+  color: var(--black);
+  font-size: var(--text-24);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  font-variant-numeric: var(--numeric);
+}
+:where(.sds) .widget-figure-of, :where(.sds).widget-figure-of { color: var(--black-25); }
+:where(.sds) .widget-figure-label, :where(.sds).widget-figure-label {
+  margin-top: var(--space-4);
+  color: var(--text-muted);
+  font-size: var(--text-14);
+  line-height: 20px;
+}
+:where(.sds) .widget-stats, :where(.sds).widget-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-8) var(--space-25);
+  margin: 0;
+}
+/* The figure leads and its label sits under it. The markup keeps label then figure, so a screen reader still reads "Clean, 52". */
+:where(.sds) .widget-stats > div, :where(.sds).widget-stats > div {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: var(--space-2);
+}
+:where(.sds) .widget-stats dt, :where(.sds).widget-stats dt {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  line-height: 16px;
+}
+:where(.sds) .widget-stats dd, :where(.sds).widget-stats dd {
+  margin: 0;
+  color: var(--black);
+  font-size: var(--text-16);
+  font-weight: 500;
+  line-height: 24px;
+  font-variant-numeric: var(--numeric);
+}
+/* The meter's colors, so the key matches the part it names. */
+:where(.sds) .widget-key, :where(.sds).widget-key {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+}
+:where(.sds) .widget-key.is-action, :where(.sds).widget-key.is-action { background: var(--action); }
+:where(.sds) .widget-key.is-strong, :where(.sds).widget-key.is-strong { background: var(--black-50); }
+:where(.sds) .widget-key.is-muted, :where(.sds).widget-key.is-muted { background: var(--black-25); }
+:where(.sds) .widget-key.is-quiet, :where(.sds).widget-key.is-quiet { background: var(--black-12); }
+/* A tally: the figure and its answer share a line, the fact sits on the right. */
+:where(.sds) .widget-tally, :where(.sds).widget-tally {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-16);
+  margin: 0;
+}
+:where(.sds) .widget-tally-label, :where(.sds).widget-tally-label {
+  margin-left: var(--space-8);
+  color: var(--text-muted);
+  font-size: var(--text-14);
+}
+:where(.sds) .widget-tally-aside, :where(.sds).widget-tally-aside {
+  color: var(--text-muted);
+  font-size: var(--text-14);
+}
+:where(.sds) .widget-tally-aside.is-warn, :where(.sds).widget-tally-aside.is-warn { color: var(--urgency-urgent); }
 /* How far along something is: 2px ticks every 4px. Done fills in blue over light grey.
    An end part spans the whole bar in a darker grey and is clipped, so its ticks line up with the ones under it. */
 :where(.sds) .meter, :where(.sds).meter {
@@ -3282,7 +3387,7 @@ html[data-theme="dark"] :where(.sds) .sheet-fade.is-list .sheet-line:hover, html
   min-height: 0;
   display: flex;
   padding: 0;
-  border: 1px solid var(--grey);
+  border: 1px solid var(--line-card);
   border-radius: var(--radius-control);
   background: transparent;
   overflow: hidden;
@@ -3370,7 +3475,6 @@ html[data-theme="dark"] :where(.sds) .sheet-page[data-view="head"] .sheet-head, 
 }
 html[data-theme="dark"] :where(.sds) .sheet-fade, html[data-theme="dark"] :where(.sds).sheet-fade {
   background: transparent;
-  border-color: var(--black-12);
 }
 
 :where(.sds) .sheet-head > span, :where(.sds).sheet-head > span {

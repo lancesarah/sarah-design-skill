@@ -281,7 +281,7 @@ html[data-theme="dark"] .calls-page .call-play:hover:not([aria-pressed="true"]) 
   padding: var(--space-4);
   border-radius: var(--radius-control);
   background: var(--sidebar-grey);
-  box-shadow: 0 0 0 1px var(--grey);
+  box-shadow: var(--stroke-card);
 }
 
 .calls-page .call-transcript-head {
@@ -316,7 +316,7 @@ html[data-theme="dark"] .calls-page .call-play:hover:not([aria-pressed="true"]) 
   flex-direction: column;
   gap: var(--space-12);
   padding: var(--space-16);
-  border: 1px solid var(--grey);
+  border: 1px solid var(--line-card);
   border-radius: var(--radius-control);
   background: var(--white);
 }
@@ -382,10 +382,7 @@ html[data-theme="dark"] .calls-page .call-play:hover:not([aria-pressed="true"]) 
 
 html[data-theme="dark"] .calls-page .call-transcript {
   background: var(--grey);
-  box-shadow: 0 0 0 1px var(--black-12);
 }
-
-html[data-theme="dark"] .calls-page .call-thread { border-color: var(--line); }
 
 html[data-theme="dark"] .calls-page .call-turn[data-who="guest"] p,
 html[data-theme="dark"] .calls-page .call-tool { background: var(--grey); }

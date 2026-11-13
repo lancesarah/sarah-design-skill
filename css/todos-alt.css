@@ -212,7 +212,7 @@ html[data-theme="dark"] .sheet-fade.is-list .sheet-line:hover {
   min-height: 0;
   display: flex;
   padding: 0;
-  border: 1px solid var(--grey);
+  border: 1px solid var(--line-card);
   border-radius: var(--radius-control);
   background: transparent;
   overflow: hidden;
@@ -300,7 +300,6 @@ html[data-theme="dark"] .sheet-page[data-view="head"] .sheet-head {
 }
 html[data-theme="dark"] .sheet-fade {
   background: transparent;
-  border-color: var(--black-12);
 }
 
 .sheet-head > span {

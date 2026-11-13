@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useDevDrag } from "./dev-drag";
 
 const faces = [
   { id: "jakarta", label: "Jakarta" },
@@ -13,14 +14,13 @@ export function FontSwitch() {
   const [face, setFace] = useState<Face>("switzer");
   const [lines, setLines] = useState(true);
   const [underline, setUnderline] = useState(false);
-  const [greyIcons, setGreyIcons] = useState(true);
   const [softInk, setSoftInk] = useState(false);
-  const [depth, setDepth] = useState(false);
-  const [pills, setPills] = useState(true);
   const trackRef = useRef<HTMLSpanElement>(null);
   const pillRef = useRef<HTMLSpanElement>(null);
   const ready = useRef(false);
   const mounted = useRef(false);
+  const barRef = useRef<HTMLDivElement>(null);
+  useDevDrag(barRef, "dev-switch");
 
   useEffect(() => {
     const saved = localStorage.getItem("font") === "jakarta" ? "jakarta" : "switzer";
@@ -32,43 +32,10 @@ export function FontSwitch() {
     const lineTabs = localStorage.getItem("tab-style") === "line";
     if (lineTabs) document.documentElement.dataset.tabStyle = "line";
     setUnderline(lineTabs);
-    const mutedIcons = localStorage.getItem("icon-ink") !== "ink";
-    if (mutedIcons) document.documentElement.dataset.iconInk = "muted";
-    setGreyIcons(mutedIcons);
     const soft = localStorage.getItem("text-ink") === "soft";
     if (soft) document.documentElement.dataset.textInk = "soft";
     setSoftInk(soft);
-    const raised = localStorage.getItem("depth") === "on";
-    if (raised) document.documentElement.dataset.depth = "on";
-    setDepth(raised);
-    const pillEditor = localStorage.getItem("editor-style") !== "fields";
-    if (!pillEditor) document.documentElement.dataset.editorStyle = "fields";
-    setPills(pillEditor);
   }, []);
-
-  function togglePills() {
-    const next = !pills;
-    setPills(next);
-    if (next) delete document.documentElement.dataset.editorStyle;
-    else document.documentElement.dataset.editorStyle = "fields";
-    try {
-      localStorage.setItem("editor-style", next ? "pills" : "fields");
-    } catch {
-      /* storage can be blocked; the attribute still switches the page */
-    }
-  }
-
-  function toggleDepth() {
-    const next = !depth;
-    setDepth(next);
-    if (next) document.documentElement.dataset.depth = "on";
-    else delete document.documentElement.dataset.depth;
-    try {
-      localStorage.setItem("depth", next ? "on" : "off");
-    } catch {
-      /* storage can be blocked; the attribute still switches the page */
-    }
-  }
 
   function toggleUnderline() {
     const next = !underline;
@@ -94,56 +61,6 @@ export function FontSwitch() {
     }
   }
 
-  function toggleGreyIcons() {
-    const next = !greyIcons;
-    setGreyIcons(next);
-    if (next) document.documentElement.dataset.iconInk = "muted";
-    else delete document.documentElement.dataset.iconInk;
-    try {
-      localStorage.setItem("icon-ink", next ? "muted" : "ink");
-    } catch {
-      /* storage can be blocked; the attribute still switches the page */
-    }
-  }
-
-  useEffect(() => {
-    const clear = () => {
-      document.querySelectorAll("[data-icon-label]").forEach((el) => el.removeAttribute("data-icon-label"));
-    };
-    if (!greyIcons) {
-      clear();
-      return;
-    }
-    let frame = 0;
-    const mark = () => {
-      cancelAnimationFrame(frame);
-      frame = requestAnimationFrame(() => {
-        clear();
-        const keep = colorsThatStay();
-        document.querySelectorAll("svg.i").forEach((svg) => {
-          if (!(svg instanceof SVGElement) || iconIsWhite(svg) || iconKeepsColor(svg, keep)) return;
-          let node = svg.parentElement;
-          while (node && node !== document.body) {
-            if (hasVisibleLabel(node, svg)) {
-              svg.setAttribute("data-icon-label", "");
-              return;
-            }
-            if (node.matches("button, a, [role='menuitem'], [role='menuitemradio'], [role='menuitemcheckbox'], [role='option'], [role='tab']")) return;
-            node = node.parentElement;
-          }
-        });
-      });
-    };
-    mark();
-    const observer = new MutationObserver(mark);
-    observer.observe(document.body, { childList: true, subtree: true });
-    return () => {
-      cancelAnimationFrame(frame);
-      observer.disconnect();
-      clear();
-    };
-  }, [greyIcons]);
-
   useEffect(() => {
     const clear = () => {
       document.querySelectorAll("[data-soft-ink]").forEach((el) => el.removeAttribute("data-soft-ink"));
@@ -152,19 +69,23 @@ export function FontSwitch() {
       clear();
       return;
     }
+    // Reads every color with the soft rule off, then writes. Interleaving reads and writes forces a style recalc per element.
     const apply = () => {
-      clear();
+      const root = document.documentElement;
+      delete root.dataset.textInk;
+      const marks: Array<[Element, boolean]> = [];
       document.querySelectorAll("body *").forEach((el) => {
         if (!(el instanceof HTMLElement) || el.closest(".dev-switch, .measure-chrome")) return;
-        if (isBlack(getComputedStyle(el).color)) el.setAttribute("data-soft-ink", "");
+        marks.push([el, isBlack(getComputedStyle(el).color)]);
       });
+      root.dataset.textInk = "soft";
+      for (const [el, black] of marks) el.toggleAttribute("data-soft-ink", black);
     };
-    let queued = false;
+    let queued = 0;
     const schedule = () => {
       if (queued) return;
-      queued = true;
-      requestAnimationFrame(() => {
-        queued = false;
+      queued = requestAnimationFrame(() => {
+        queued = 0;
         apply();
       });
     };
@@ -180,6 +101,7 @@ export function FontSwitch() {
     observer.observe(document.body, { childList: true, subtree: true });
     return () => {
       observer.disconnect();
+      cancelAnimationFrame(queued);
       clear();
     };
   }, [softInk]);
@@ -234,7 +156,7 @@ export function FontSwitch() {
   }, [face]);
 
   return (
-    <div className="dev-switch" role="group" aria-label="Dev">
+    <div ref={barRef} className="dev-switch" role="group" aria-label="Dev">
       <span>Dev</span>
       <span className="slide-group has-slide" ref={trackRef}>
         <span className="slide-pill" ref={pillRef} aria-hidden="true" />
@@ -256,67 +178,15 @@ export function FontSwitch() {
       <button type="button" aria-pressed={underline} onClick={toggleUnderline}>
         Underline
       </button>
-      <button type="button" aria-pressed={greyIcons} onClick={toggleGreyIcons}>
-        Grey icons
-      </button>
       <button type="button" aria-pressed={softInk} onClick={toggleSoftInk}>
         Soft black
       </button>
-      <button type="button" aria-pressed={depth} onClick={toggleDepth}>
-        Depth
-      </button>
-      <button type="button" aria-pressed={pills} onClick={togglePills}>
-        Pill editor
-      </button>
     </div>
   );
-}
-
-function iconKeepsColor(icon: SVGElement, keep: Set<string>) {
-  if (icon.closest(".danger, .btn-danger-light, .pm-editor-remove, .urgency-urgent")) return true;
-  return keep.has(getComputedStyle(icon).color);
-}
-
-function colorsThatStay() {
-  const names = ["--destructive", "--urgency-urgent", "--urgency-high", "--urgency-low", "--action", "--tag-text", "--dept-housekeeping", "--dept-maintenance", "--dept-food", "--dept-sales", "--dept-management"];
-  const probe = document.createElement("span");
-  document.body.appendChild(probe);
-  const colors = new Set<string>();
-  for (const name of names) {
-    probe.style.color = `var(${name})`;
-    colors.add(getComputedStyle(probe).color);
-  }
-  probe.remove();
-  return colors;
-}
-
-function iconIsWhite(icon: SVGElement) {
-  if (isWhite(getComputedStyle(icon).color)) return true;
-  const shape = icon.querySelector("path, circle, rect, line, polyline, polygon");
-  if (!(shape instanceof Element)) return false;
-  const paint = getComputedStyle(shape);
-  return (paint.fill !== "none" && isWhite(paint.fill)) || (paint.stroke !== "none" && isWhite(paint.stroke));
-}
-
-function isWhite(color: string) {
-  const match = color.match(/rgba?\(\s*(\d+)[\s,]+(\d+)[\s,]+(\d+)/);
-  if (!match) return false;
-  return Number(match[1]) >= 250 && Number(match[2]) >= 250 && Number(match[3]) >= 250;
 }
 
 function isBlack(color: string) {
   const match = color.match(/rgba?\(\s*(\d+)[\s,]+(\d+)[\s,]+(\d+)/);
   if (!match) return false;
   return match[1] === "0" && match[2] === "0" && match[3] === "0";
-}
-
-function hasVisibleLabel(el: HTMLElement, icon: Element) {
-  for (const node of el.childNodes) {
-    if (node.nodeType === Node.TEXT_NODE && node.textContent?.trim()) return true;
-    if (!(node instanceof HTMLElement) || node === icon || node.contains(icon) || node.matches("svg")) continue;
-    const style = getComputedStyle(node);
-    if (style.display === "none" || style.visibility === "hidden") continue;
-    if (node.innerText.trim()) return true;
-  }
-  return false;
 }

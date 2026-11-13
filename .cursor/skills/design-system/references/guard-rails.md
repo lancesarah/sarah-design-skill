@@ -96,6 +96,10 @@ See Sidebar in [components.md](components.md). Window resize stays in [patterns.
 
 See Header in [components.md](components.md).
 
+## Header icons are grey
+
+An icon-only tool in a header or a panel bar is `IconButton`: a `--black-50` glyph with no fill and no stroke at rest. A panel toggle is always this button, whichever header it sits in. Do not draw it with a black glyph, the `note-more` button, or a stroked secondary button. See Icon button in [components.md](components.md).
+
 ## Dropdown width
 
 See Menu in [components.md](components.md).

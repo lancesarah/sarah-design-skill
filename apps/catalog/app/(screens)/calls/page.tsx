@@ -1,8 +1,9 @@
 "use client";
 
-import { DataTable, Tabs, captureClose, dateColumn, textColumn, type DataColumn } from "@lance-live/gallery-ui";
+import { Chip, DataTable, Tabs, captureClose, dateColumn, textColumn, type DataColumn } from "@lance-live/gallery-ui";
 import { useEffect, useMemo, useState } from "react";
 import { flushSync } from "react-dom";
+import { putBack, useNotify } from "../action-toast";
 import { FilterMenu, RangeControl, SearchBox } from "../chrome";
 import { Glyph } from "../glyph";
 import { PageLayout } from "../page-layout";
@@ -35,6 +36,7 @@ const COLUMNS: Array<DataColumn<CallRow>> = [
 ];
 
 export default function CallsPage() {
+  const notify = useNotify();
   const [calls, setCalls] = useState(initialCalls);
   const [bucket, setBucket] = useState("all");
   const [query, setQuery] = useState("");
@@ -71,6 +73,24 @@ export default function CallsPage() {
     if (selected) setShownId(selected);
   }, [selected]);
   const shownResolution = (call: CallRecord) => (pending?.id === call.id ? pending.resolution : call.resolution);
+  const rows = useMemo(
+    () => visible.map((call) => ({ ...call, shown: pending?.id === call.id ? pending.resolution : call.resolution })),
+    [visible, pending],
+  );
+
+  function removeCall(id: string) {
+    const index = calls.findIndex((item) => item.id === id);
+    const removed = calls[index];
+    const play = captureClose(document.querySelector(`[data-record="${CSS.escape(id)}"]`));
+    flushSync(() => {
+      setCalls((list) => list.filter((item) => item.id !== id));
+      setSelected((current) => (current === id ? null : current));
+      setShownId((current) => (current === id ? null : current));
+      setPending((current) => (current?.id === id ? null : current));
+    });
+    play();
+    if (removed) notify({ message: "Call deleted", action: "Undo", onAction: () => setCalls((list) => putBack(list, removed, index)) });
+  }
 
   function chooseResolution(id: string, next: CallResolution) {
     const call = calls.find((item) => item.id === id);
@@ -116,9 +136,7 @@ export default function CallsPage() {
           <FilterMenu value={depts} onValueChange={setDepts} options={["Front Desk", "Housekeeping", "Food & Beverage"]} />
           <div className="filter-chips">
             {depts.map((value) => (
-              <button key={value} className="chip chip-filter" type="button" onClick={() => setDepts((current) => current.filter((item) => item !== value))}>
-                <span className="chip-k">Department</span>: {value} <Glyph name="plus" size={10} className="x" />
-              </button>
+              <Chip key={value} filter={{ name: "Department", value }} onClick={() => setDepts((current) => current.filter((item) => item !== value))} />
             ))}
           </div>
           <RangeControl label="Time range" value={range} onValueChange={setRange} />
@@ -129,22 +147,13 @@ export default function CallsPage() {
         <div className="sheet-list">
           <div className="stage sheet-stage">
             <DataTable
-              rows={visible.map((call) => ({ ...call, shown: shownResolution(call) }))}
+              rows={rows}
               total={calls.length}
               empty="No calls"
               selectedId={selected}
               onRowClick={(call) => setSelected(call.id)}
               onRowContextMenu={(call) => setSelected(call.id)}
-              onDelete={(call) => {
-                const play = captureClose(document.querySelector(`[data-record="${CSS.escape(call.id)}"]`));
-                flushSync(() => {
-                  setCalls((list) => list.filter((item) => item.id !== call.id));
-                  setSelected((current) => (current === call.id ? null : current));
-                  setShownId((current) => (current === call.id ? null : current));
-                  setPending((current) => (current?.id === call.id ? null : current));
-                });
-                play();
-              }}
+              onDelete={(call) => removeCall(call.id)}
               deleteNoun="call"
               rowName={(call) => call.summary.trim() || call.phone}
               columns={COLUMNS}
@@ -184,17 +193,7 @@ export default function CallsPage() {
                 list.map((item) => (item.id === panelCall.id ? { ...item, comments: item.comments.filter((_, commentIndex) => commentIndex !== index) } : item)),
               )
             }
-            onDelete={() => {
-              const id = panelCall.id;
-              const play = captureClose(document.querySelector(`[data-record="${CSS.escape(id)}"]`));
-              flushSync(() => {
-                setCalls((list) => list.filter((item) => item.id !== id));
-                setSelected(null);
-                setShownId(null);
-                setPending((current) => (current?.id === id ? null : current));
-              });
-              play();
-            }}
+            onDelete={() => removeCall(panelCall.id)}
           />
         ) : null}
       </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useDevDrag } from "./dev-drag";
 import "./spacing-tool.css";
 
 const SPACE: Record<number, string> = {
@@ -340,6 +341,8 @@ export function SpacingTool() {
   const selectedRef = useRef<Element | null>(null);
   const hoverRef = useRef<Element | null>(null);
   const layerRef = useRef<HTMLDivElement>(null);
+  const chromeRef = useRef<HTMLDivElement>(null);
+  useDevDrag(chromeRef, "spacing");
   const active = on || altHeld;
   selectedRef.current = selected;
   hoverRef.current = hover;
@@ -511,7 +514,7 @@ export function SpacingTool() {
           )}
         </div>
       )}
-      <div className="measure-chrome" data-measure-root>
+      <div ref={chromeRef} className="measure-chrome" data-measure-root>
         {active && (
           <p className="measure-hud">
             {snap ? (

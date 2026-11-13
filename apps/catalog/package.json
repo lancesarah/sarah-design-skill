@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@lance-live/gallery-ui": "*",
+    "@vercel/toolbar": "^0.2.7",
     "next": "16.4.2",
     "react": "19.2.3",
     "react-dom": "19.2.3"

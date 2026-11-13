@@ -1,6 +1,6 @@
 "use client";
 
-import { Widget } from "@lance-live/gallery-ui";
+import { Widget, WidgetNote } from "@lance-live/gallery-ui";
 
 /** Submission rate is inquiries that became a submitted lead. Voice completions are calls Lance finished with a lead. */
 const WEEK = { inquiries: 42, submitted: 0.68, voice: 19 };
@@ -8,7 +8,7 @@ const WEEK = { inquiries: 42, submitted: 0.68, voice: 19 };
 /** Sales in three numbers, the past 7 days. */
 export function SalesOverviewWidget() {
   return (
-    <Widget icon="tag" title="Sales overview" action={<span className="home-pm-today">Past 7d</span>}>
+    <Widget icon="tag" title="Sales overview" action={<WidgetNote>Past 7d</WidgetNote>}>
       <dl className="home-departures-stats">
         <div>
           <dt>Inquiries</dt>

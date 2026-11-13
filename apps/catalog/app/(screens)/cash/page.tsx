@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  Chip,
   Button,
   DataTable,
   DepartmentChip,
@@ -15,8 +16,8 @@ import {
 } from "@lance-live/gallery-ui";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { flushSync } from "react-dom";
+import { putBack, useNotify } from "../action-toast";
 import { FilterMenu, SearchBox } from "../chrome";
-import { Glyph } from "../glyph";
 import { PageLayout } from "../page-layout";
 import { CountEditor } from "./count-editor";
 import { LocationsEditor } from "./locations";
@@ -99,6 +100,7 @@ function shiftCash(direction: "forward" | "back", update: () => void) {
 }
 
 export default function CashPage() {
+  const notify = useNotify();
   const [locations, setLocations] = useState(INITIAL_LOCATIONS);
   const [counts, setCounts] = useState(INITIAL_COUNTS);
   const [view, setView] = useState<View>({ name: "list" });
@@ -191,12 +193,14 @@ export default function CashPage() {
   }, [present, hidden, open]);
 
   function remove(count: CashCount) {
+    const index = counts.findIndex((item) => item.id === count.id);
     const play = captureClose(document.querySelector(`[data-record="${CSS.escape(count.id)}"]`));
     flushSync(() => {
       setCounts((list) => list.filter((item) => item.id !== count.id));
       setSelectedId((current) => (current === count.id ? null : current));
     });
     play();
+    notify({ message: "Count deleted", action: "Undo", onAction: () => setCounts((list) => putBack(list, count, index)) });
   }
 
   if (view.name === "locations") {
@@ -210,6 +214,7 @@ export default function CashPage() {
   }
 
   function postCount(posted: PostedCount, editing: CashCount | null) {
+    notify(editing ? "Count updated" : "Count posted");
     const id = editing?.id ?? `count-${Date.now()}`;
     const keep = Boolean(editing && !editing.entry && Object.keys(posted.entry).length === 0);
     const next: CashCount = {
@@ -268,9 +273,7 @@ export default function CashPage() {
             <FilterMenu value={shifts} onValueChange={setShifts} options={shiftOptions} />
             <div className="filter-chips">
               {shifts.map((value) => (
-                <button key={value} className="chip chip-filter" type="button" onClick={() => setShifts((current) => current.filter((item) => item !== value))}>
-                  <span className="chip-k">Shift</span>: {value} <Glyph name="plus" size={10} className="x" />
-                </button>
+                <Chip key={value} filter={{ name: "Shift", value }} onClick={() => setShifts((current) => current.filter((item) => item !== value))} />
               ))}
             </div>
             <SegmentedControl

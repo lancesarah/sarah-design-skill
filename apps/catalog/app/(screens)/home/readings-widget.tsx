@@ -1,6 +1,6 @@
 "use client";
 
-import { Empty, Widget, WidgetEmpty, WidgetList, WidgetRow } from "@lance-live/gallery-ui";
+import { Empty, Widget, WidgetEmpty, WidgetList, WidgetRow, WidgetTally } from "@lance-live/gallery-ui";
 import Link from "next/link";
 
 type ReadingGroup = { id: string; name: string; readings: number; recorded: number; outOfRange: number };
@@ -36,15 +36,12 @@ function WarnMark({ label }: { label: string }) {
       {GROUPS.length ? (
         <>
           <div className="home-tally-summary">
-            <p className="home-tally-top">
-              <span>
-                <span className="home-summary-figure">{total - recorded}</span>
-                <span className="home-tally-label">missing</span>
-              </span>
-              <span className={outOfRange > 0 ? "home-tally-aside is-warn" : "home-tally-aside"}>
-                {outOfRange > 0 ? `${outOfRange} out of range` : "none out of range"}
-              </span>
-            </p>
+            <WidgetTally
+              value={total - recorded}
+              label="missing"
+              aside={outOfRange > 0 ? `${outOfRange} out of range` : "none out of range"}
+              asideTone={outOfRange > 0 ? "warn" : "default"}
+            />
           </div>
           <WidgetList>
             {GROUPS.map((group) => {

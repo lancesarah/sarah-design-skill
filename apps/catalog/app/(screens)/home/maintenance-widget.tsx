@@ -1,6 +1,6 @@
 "use client";
 
-import { Widget } from "@lance-live/gallery-ui";
+import { Widget, WidgetNote, WidgetTally } from "@lance-live/gallery-ui";
 
 const WINDOW = "Past 7d";
 
@@ -25,17 +25,9 @@ function percent(part: number, whole: number) {
 export function MaintenanceWidget() {
   const { pmsDue, pmsDone, pmsOverdue, workOrders, reactive, repairMinutes } = WEEK;
   return (
-    <Widget icon="wrench" title="Maintenance overview" action={<span className="home-pm-today">{WINDOW}</span>}>
+    <Widget icon="wrench" title="Maintenance overview" action={<WidgetNote>{WINDOW}</WidgetNote>}>
       <div className="home-maint">
-        <p className="home-tally-top">
-          <span>
-            <span className="home-summary-figure">{percent(pmsDone, pmsDue)}%</span>
-            <span className="home-tally-label">PMs completed</span>
-          </span>
-          <span className="home-tally-aside">
-            {pmsDone} of {pmsDue} due
-          </span>
-        </p>
+        <WidgetTally value={`${percent(pmsDone, pmsDue)}%`} label="PMs completed" aside={`${pmsDone} of ${pmsDue} due`} />
         <dl className="home-maint-stats">
           <div>
             <dt>PMs overdue</dt>

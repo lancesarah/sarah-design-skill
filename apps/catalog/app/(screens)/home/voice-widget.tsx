@@ -1,6 +1,6 @@
 "use client";
 
-import { ShareBar, Widget, type Share } from "@lance-live/gallery-ui";
+import { ShareBar, Widget, WidgetFigure, type Share } from "@lance-live/gallery-ui";
 
 /** Who finished each call: Lance on its own, or the desk after a handoff. */
 const OUTCOMES: Share[] = [
@@ -38,13 +38,10 @@ export function VoiceWidget() {
     <Widget icon="phone" title="Voice overview">
       <div className="home-tally-summary home-tickets-body">
         <div className="home-voice-split">
-          <p className="home-summary-hero">
-            <span className="home-summary-figure">{total}</span>
-            <span className="home-summary-label">{total === 1 ? "call handled" : "calls handled"}</span>
-          </p>
-          <p className="home-summary-hero">
+          <WidgetFigure value={total} label={total === 1 ? "call handled" : "calls handled"} />
+          <p className="widget-figure">
             <Stars value={RATING} />
-            <span className="home-summary-label">
+            <span className="widget-figure-label">
               <span className="home-summary-label-figure">{RATING}</span> / 5 call rating
             </span>
           </p>

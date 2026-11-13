@@ -56,7 +56,7 @@ Forced by: the step trash icons were grey. Then, “destructive items should alw
 
 - When: a chosen filter, on the filter row.
 - When not: the Filters trigger. That trigger keeps one width. The chip hugs the value it is showing.
-- Default: `.chip-filter`.
+- Default: `Chip` with `filter={{ name, value }}`, and `onClick` removes that filter. Do not write the `.chip-filter` markup by hand.
 - States: rest is `--filter-chip-bg` and `--action` text. Hover keeps that fill.
 
 ## Checkbox
@@ -106,7 +106,7 @@ Forced by: “Picking a person should ALWAYS be a drop down. Adding a person is 
 - When: the picture of a person, their photo or their initials in a ringed circle. The Assigned column of a table is the initials in a 35×35 avatar.
 - When not: a person named in a menu, a filter, a chip, or the side panel. That is the miniature name pill in Person. A decorative icon or a page mark.
 - Default: `Avatar`.
-- States: named, photo, and unassigned. A named avatar keeps a solid 1px `--black-12` ring and the `--sidebar-grey` fill. A photo fills the same circle with the `--outline-image` inset, which stands in for the ring and the fill. Unassigned is clear, with a 1px dashed `--black-50` stroke. A picture that stands alone shows the name in a tooltip on hover, centered above it. When the name is written beside it, there is no tooltip. Row hover does not change the photo in light mode. In dark mode a named photo is `--grey`, then `--grey-up` when its row or chip is hovered.
+- States: named, photo, unknown, and unassigned. A named avatar keeps a solid 1px `--black-12` ring and the `--sidebar-grey` fill. A person whose initials are unknown, such as a guest known only by a phone number, is that same ringed circle with the `user` icon in `--black-50`, 16px (18px on the large avatar). The mini avatar has no unknown state. A photo fills the same circle with the `--outline-image` inset, which stands in for the ring and the fill. Unassigned is clear, with a 1px dashed `--black-50` stroke. A picture that stands alone shows the name in a tooltip on hover, centered above it. When the name is written beside it, there is no tooltip. Row hover does not change the photo in light mode. In dark mode a named photo is `--grey`, then `--grey-up` when its row or chip is hovered.
 
 ## Urgency
 
@@ -182,10 +182,10 @@ Every editable description and notes field is this box. A complaint description,
 
 ## Icon button
 
-- When: an action has no room for a label, or it is a tool in a row.
-- When not: the primary action. That button has a label.
-- Default: clear, not primary.
-- States: rest is clear. Hover is one step from the surface. Press scales the whole control. Sidebar icon buttons stay unfilled at rest.
+- When: a tool in a header or a panel bar with no room for a label: show or hide a panel, expand, pin, history, new chat. Every panel toggle is this button, in every header.
+- When not: the primary action. That button has a label. An action on the page itself, such as New beside a table. That is the secondary icon-only button, with its stroke.
+- Default: `IconButton`. A 30px square, a `--black-50` glyph at 18px, and no fill or stroke at rest. It always has an `aria-label`.
+- States: rest is clear. Hover fills `--grey`, one step from the surface; in the Lance panel that step is `--sidebar-grey`. Press scales the whole control. The glyph stays `--black-50` on hover. It never turns `--black`, and it never takes a stroke. Sidebar icon buttons stay unfilled at rest.
 
 ## Text button
 
@@ -199,7 +199,7 @@ Every editable description and notes field is this box. A complaint description,
 - When: the field is the Lance chat.
 - When not: a reply under comments. That is the message composer.
 - Default: the Lance composer.
-- States: add, the mode control, the microphone, and an empty send arrow hover with `--grey`. The send arrow stays grey when the field is empty, including on hover. It turns `--action`, with white text, only when the field has text. The microphone stays `--action` only while it is on.
+- States: add, the mode control, the microphone, and an empty send arrow hover with `--grey`. The send arrow stays grey when the field is empty, including on hover. It turns `--action`, with white text, only when the field has text, and fades both ways over `--motion-hover` on `--ease-out`. The microphone stays `--action` only while it is on.
 
 ## Lance panel
 
@@ -272,7 +272,7 @@ A title and the table it names start 40px apart, measured to the table header. T
 ## Detail panel
 
 - When: a record opens beside the table.
-- When not: a subpage, or a popup. Edit template and Edit to-do are the editor popup.
+- When not: a subpage, or a popup. Edit template is the editor popup, and Edit to-do is the pill editor.
 - Default: the gallery detail panel.
 - States: closed, open, entering, and leaving. Editable, or view-only with Edit.
 
@@ -382,20 +382,20 @@ Forced by: Delete sat inside the type and frequency card. Then, “the cards gro
 
 ## Editor popup
 
-- When: Edit template, and Edit to-do from the to-do panel. It opens over the page. It is not a subpage.
+- When: Edit template and the readings source. It opens over the page. It is not a subpage.
 - When not: a record that opens beside the table. That is the detail panel. A full subpage, or a delete confirmation.
 - Dismiss: the corner close, the scrim, and Escape. Save is the primary, at the bottom right. Delete is the light danger button and opens the confirm first.
-- The kicker says the action and the item: Create to-do for a new record, Edit to-do for one that exists. Create template and Edit template follow the same rule.
+- The kicker says the action and the item: Create template for a new record, Edit template for one that exists. Every editor follows the same rule.
 - Save names the item too: Save to-do, Save template, Save source. Never a bare Save.
 - Divider: a 1px `--line` runs edge to edge under the header, with or without tabs. With tabs it is the bottom of the tab bar. Without tabs the shell draws it. The pill editor is the one exception: it has no divider. See Pill editor.
 
-The fields are the `pm-editor-*` set: a label over a 32px input, and dropdowns as `EditorPick` (`(screens)/editor-pick.tsx`), two to a row in `.pm-editor-pair`. The photo upload is one tile everywhere (`.side-photo-add`): `--sidebar-grey`, a 1px dashed `--black-25` stroke drawn by `PhotoAddFrame` (3px dashes, 2px gaps, since a CSS border can't set either), `--radius-control`, hover `--grey`, and the 18px camera in `--black-50`. A context sets only its size, with `--side-photo-size` (56px by default, 87px in an editor popup). A location, in a field or beside a name, uses the `location` pin icon, not the house. The body stacks its rows 25px apart (`--space-25`) in every editor popup. The rule under the header has 10px above and below it, and the body pads 12px top and bottom. An unset dropdown shows its placeholder, muted. Edit to-do has no tabs. Its footer is Schedule for future, a secondary button with the calendar icon, then Save. The title is an editable text entry. Its placeholder is To-do title, in `--black-25`. A new to-do focuses it. The description is an editable line 10px under it (`onSubtitleChange`; `.editor-dialog-name` stacks its lines 10px apart), in `--text-muted`, with Add a description as its placeholder. It grows with its text. The body has no Description field. The body is Location, with the `location` pin icon, and Item, with the `tag` icon, then Department and Assigned, then Urgency and Status, then Photo. Status shows the Status component, icon and label, in the field and in its menu. Department, Assigned, and Urgency show their components the same way. The field is already the box, so a value inside it has no ring, chip padding, or fill: the department tag is `plain`, and the urgency and person pill lose their padding and fill. Every value starts on the field's 10px inset. An icon and its label are 6px apart, and the avatar and the name 8px, so a status label and a name line up. A Guestroom adds Room number beside Location, in the same column, `--space-8` apart. The header does not repeat the room. Any other location hides the room field. The photo tile is 87px, `--sidebar-grey`, with no dashed border. Its edits are a draft. Save writes them. Close drops them.
+The fields are the `pm-editor-*` set: a label over a 32px input, and dropdowns as `EditorPick` (`(screens)/editor-pick.tsx`), two to a row in `.pm-editor-pair`. The photo upload is one tile everywhere (`.side-photo-add`): `--sidebar-grey`, a 1px dashed `--black-25` stroke drawn by `PhotoAddFrame` (3px dashes, 2px gaps, since a CSS border can't set either), `--radius-control`, hover `--grey`, and the 18px camera in `--black-50`. A context sets only its size, with `--side-photo-size` (56px by default, 87px in an editor popup). A location, in a field or beside a name, uses the `location` pin icon, not the house. The body stacks its rows 25px apart (`--space-25`) in every editor popup. The rule under the header has 10px above and below it, and the body pads 12px top and bottom. An unset dropdown shows its placeholder, muted.
 
 Width is `652px`, or the screen when that is narrower. Height starts at `554px`, the Details tab. Areas uses that same height. The box grows when the content is taller than `554px`. It stops at the viewport, inside `--space-25` of the scrim.
 
 ## Pill editor
 
-- When: creating or editing one record that is a title, a description, and a few choices from lists that already exist, such as a to-do, a complaint, or a found item. Complaints, Lost & found, Cash counts, new and edited, and a new reading use it. To-dos use it when the Dev bar's Pill editor switch is on.
+- When: creating or editing one record that is a title, a description, and a few choices from lists that already exist, such as a to-do, a complaint, or a found item. Complaints, Lost & found, Cash counts, new and edited, and a new reading use it. To-dos use it, new and edited.
 - When not: a record with steps, tabs, a table of values, or a long answer. Template, Readings source, and Knowledge use the editor popup's fields or the page. A record that opens beside the table is the detail panel.
 - Default: `EditorDialog` with `layout="pills"`, and an `EditorPills` body.
 - States: rest, a pill hovered or open, a placeholder pill, and a required pill left empty after Save.
@@ -421,7 +421,7 @@ Save names the item, and checks the required pills first. A required pill left e
 - Default: open, in the gallery section `#inset-card`.
 - States: open and closed. The title row is the same in both.
 
-The shell is `--sidebar-grey`, with 6px of padding, a 1px `--grey` border, and a 10px radius. The head is at least 56px, padded `11px 22px`, and pulled up 6px so it sits in that shell padding. The title is `--text-16` with a 21px line-height. Page actions sit in the tools, and the chevron stays last. Each tool button is 28px with `--radius-control`. Hover fills `--grey`.
+The shell is `--sidebar-grey`, with 6px of padding, a 1px `--line-card` border, and a 10px radius. The head is at least 56px, padded `11px 22px`, and pulled up 6px so it sits in that shell padding. The title is `--text-16` with a 21px line-height. Page actions sit in the tools, and the chevron stays last. Each tool button is 28px with `--radius-control`. Hover fills `--grey`.
 
 The chevron points down while the card is open. Closed, it turns −90 degrees over 160ms on `--ease-out`. The body is a white inset with a 1px `--grey` border and `--radius-control`. Its padding is `30px 30px 40px`, and the contents stack with a 40px gap. Below 720px that padding is `--space-16` and the gap is `--space-25`. The page supplies the body. The card does not restyle for one page’s fields.
 
@@ -461,7 +461,7 @@ A comment is the gallery comment. The row is at least 49px. The photo is 21px. T
 - Default: `Message`. Incoming, and you.
 - States: incoming and you. A single line is rounded on every corner.
 
-The name and the time sit above the bubble, 4px clear of it. Both are 12px, weight 400, `--text-muted`. Incoming is left, with a 35px photo. Yours is right, with no photo, and the name reads You. A yours bubble stops where the other person's picture starts: its widest left edge lines up with that picture. The bubble is 32px on one line, side padding `--space-10`, radius `--radius-card`. Incoming is `--sidebar-grey`. Yours is `--action`, with white text. A longer line grows. The words wrap inside the column.
+The name and the time sit above the bubble, 4px clear of it. Both are 12px, weight 400, `--text-muted`. Incoming is left, with a 35px photo. Yours is right, with no photo, and the name reads You. A yours bubble stops where the other person's picture starts: its widest left edge lines up with that picture. The bubble is 32px on one line, side padding `--space-10`, radius `--radius-card`. Incoming is `--sidebar-grey`. Yours is `--action`, with white text. A reply that goes out for a team, like Lance answering a guest, is yours, and the name reads the team, like Front desk. A longer line grows. The words wrap inside the column.
 
 ## Message group
 
@@ -492,12 +492,12 @@ Three dots in the same bubble as a message, with that person's photo.
 
 ## Resolved
 
-- When: a conversation with Gavin is finished.
+- When: a conversation with Gavin is finished, or a thread is answered somewhere else, like a Sales guest thread.
 - When not: a department thread, or a conversation that is still open. Those keep the reply field.
 - Default: `Resolved`.
-- States: one.
+- States: resolved, and answered elsewhere.
 
-The reply field is gone. The note is 12px `--text-muted`, centered on `--sidebar-grey`. Start a new chat is tertiary. Reopen to reply is secondary.
+The reply field is gone. The note is 12px `--text-muted`, centered on `--sidebar-grey`. Start a new chat is tertiary. Reopen to reply is secondary. Answered elsewhere, the note says where replies go out from, and the one action is secondary and opens the thread there, like Open in Sales.
 
 ## Ticket
 
@@ -524,7 +524,7 @@ The number, the title, and the status. The close sits in the top corner. It floa
 - Default: `Empty`.
 - States: a title and a line, and the same thing with one action under them.
 
-The mark is 18px in `--text-muted`. The title is 16px weight 500. The line is 14px weight 400 in `--text-muted`. The gap inside the group is `--space-4`. The action sits `--space-16` below the group. It is centered, and it fills the space it is given.
+The mark is 24px in `--text-muted`. The title is 16px weight 500. The line is 14px weight 400 in `--text-muted`. The gap inside the group is `--space-4`. The action sits `--space-16` below the group. It is centered, and it fills the space it is given.
 
 ## Meter
 
@@ -551,16 +551,25 @@ Its own component, not Meter. A plain bar, 8px tall with fully round ends, and n
 - Default: `Widget`, holding a `WidgetList`. `WidgetEmpty` holds an `Empty` when there is nothing to show.
 - States: rows and a more link, rows only, and empty. A widget that lists rows goes empty when it has no rows: `WidgetEmpty` replaces its summary and its list, and the head stays. A widget that only shows figures, a meter, a share bar, or a chart has no empty. It shows its zeros, because zero is a reading.
 
-One card: a 1px `--grey` border, a 10px radius, and a `--sidebar-grey` head over a `--white` list. The head is a 16px icon in `--text-muted`, `--space-8` from the title, the same gap as a Lance suggestion. The title is 14px weight 400, the count in `--text-muted`, and one action on the right. The action is a plus that starts a new record, as a `TextIcon` or a link with the `text-icon sm` class. A leaderboard puts its top three on a podium over the rows, second, first, third, each on a `--sidebar-grey` step, and the rows go on from fourth to sixth. First place's step is `--filter-chip-bg` with its place in `--action`, a 1px `--action` stroke on the top and sides, and `--shadow-card`. The step has no bottom stroke, so it does not double the rule it stands on. First place's avatar takes `--shadow-card` too. Every podium avatar keeps the named ring, 1px `--black-12`. A widget whose rows change with a time window, such as a leaderboard, takes segments there instead, sized to their labels: Today, 7d, and 30d, or 24h, 7d, and 30d. A `Menu` trigger on the grey head hovers `--grey`, one step from the head. Segments in the head take a `--grey` track so they do not fade into it, and an unselected segment hovers `--black-12`. In dark mode the list is `--white`, the page, edged by the card's border, and the head is `--grey-low`, halfway from the page to `--grey`. Lifting the list off the page read too heavy. Everything inside the list moves with it. A row hovers `--grey`, a pill in a row rests `--grey` and is `--black-12` on a hovered row, and the room map's cells, the podium steps, and a day's hover are `--grey`, with a room's hover `--black-12`. A head trigger hovers `--black-12`, and the segment track is `--white`, the page, so it sits below the head and the `--grey` selected pill still shows. The head is 52px, the height of a row. With the Depth switch on, the card takes the drop under its hairline.
+One card: a 1px `--line-card` border, a 10px radius, and a `--sidebar-grey` head over a `--white` list. The head is a 16px icon in `--text-muted`, `--space-8` from the title, the same gap as a Lance suggestion. The title is 14px weight 400, the count in `--text-muted`, and one action on the right. The action is a plus that starts a new record, as a `TextIcon` or a link with the `text-icon sm` class. A leaderboard puts its top three on a podium over the rows, second, first, third, each on a `--sidebar-grey` step, and the rows go on from fourth to sixth. First place's step is `--filter-chip-bg` with its place in `--action`, a 1px `--action` stroke on the top and sides, and `--shadow-card`. The step has no bottom stroke, so it does not double the rule it stands on. First place's avatar takes `--shadow-card` too. Every podium avatar keeps the named ring, 1px `--black-12`. A widget whose rows change with a time window, such as a leaderboard, takes segments there instead, sized to their labels: Today, 7d, and 30d, or 24h, 7d, and 30d. A `Menu` trigger on the grey head hovers `--grey`, one step from the head. Segments in the head take a `--grey` track so they do not fade into it, and an unselected segment hovers `--black-12`. In dark mode the list is `--white`, the page, edged by the card's border, and the head is `--grey-low`, halfway from the page to `--grey`. Lifting the list off the page read too heavy. Everything inside the list moves with it. A row hovers `--grey`, a pill in a row rests `--grey` and is `--black-12` on a hovered row, and the room map's cells, the podium steps, and a day's hover are `--grey`, with a room's hover `--black-12`. A head trigger hovers `--black-12`, and the segment track is `--white`, the page, so it sits below the head and the `--grey` selected pill still shows. The head is 52px, the height of a row. The card takes the depth drop under its hairline.
 
-## Widget gallery
+## Widget summary
+
+- When: a widget leads with a number, such as a count, a score out of a total, or a time, with its totals beside it and a meter or a chart under it.
+- When not: a widget that only lists rows. That is Widget list.
+- Default: `WidgetSummary` holding a `WidgetFigure`, then `WidgetStats`, then a `Meter` with `className="widget-summary-meter"`, which spans both columns. `alone` drops the rule when nothing sits under it. A tally is `WidgetTally`, over a chart, in the widget's 16px padding. A fact in the head beside the action is `WidgetNote`, passed as the widget's `action`.
+- States: a figure with stats and a meter, a part of a whole, a tally over a chart, and a tally whose fact is a problem.
+
+`WidgetFigure` is 24px weight 500 in `--black`, its label under it in 14px `--text-muted`, 4px apart, on one line. `of` adds " / total" in `--black-25`. In a narrow card the stats wrap and the figure does not. `WidgetStats` puts each value over its label, 16px weight 500 then 12px `--text-muted`, 2px apart and 25px between stats, and keeps label then value in the markup for a screen reader. A stat that names a part of the meter takes a `key`: `action` for the part done, `strong` for the part set aside, such as DND, `muted` and `quiet` for the lighter greys. A chart's legend uses `WidgetKey` on its own. `WidgetTally` puts the figure and its answer on one line, 8px apart, with a 14px fact on the right. `asideTone="warn"` turns the fact `--urgency-urgent`. `WidgetNote` is 12px `--text-muted` with 8px on its right.
+
+## Add widgets
 
 - When: Edit on the Widgets section of Home. It chooses which widgets Home shows.
-- When not: a modal or anything with a scrim. The widgets above must stay in reach for their remove marks.
-- Default: `WidgetGallery` (`(screens)/home/widget-gallery.tsx`), with every widget listed once in `HOME_WIDGETS` (`widget-catalog.tsx`) under its department.
+- When not: a sidebar or a drop-down. Choosing from 42 widgets needs to see them, so the gallery takes the whole screen.
+- Default: `AddWidgets` (`(screens)/home/widget-gallery.tsx`), with every widget listed once in `HOME_WIDGETS` (`widget-catalog.tsx`) under its department.
 - States: Edit turns into Done, a secondary button with the check. Each widget shakes, `--ease-in-out`, 0.4deg either way, at its own phase and speed, 250 to 320ms, picked from its place so no two neighbors move in step, and the room map 0.1deg because it spans the row. A widget takes no clicks while it shakes. A 20px round remove mark sits 8px over its top-left corner: `--white` with `--stroke` and `--shadow-card`, hover `--sidebar-grey`, and `--grey` then `--black-12` in dark mode. Removing takes the widget off Home and the columns close the gap. It is not a delete, so it does not ask first. Reduced motion keeps the marks and drops the shake.
 
-The gallery docks on the bottom of Home and stays there while the page scrolls. It is 48px wider than the widgets on each side, never past the page's side inset, so a narrow page keeps it inside the card, 294px tall, and its bottom edge meets the bottom of the page card, so its top corners take `--radius-card` and its bottom corners are square. It is a card with `--stroke`, `--ring-menu`, and `--elevation-menu`, and it rises 25px into place on `--ease-out`. Opening it makes room: the nav and Lance collapse to their rails and an open inbox closes. Done puts the nav and Lance back the way they were. Its left column is `--sidebar-grey`, 220px: search with a `--grey` fill, then All widgets and one row per department. A department row is the plain department tag and its count in `--black-25`, 30px high like a sidebar link. Hover and selected are `--grey`. The column is the nav's surface, so search, hover, and selected match the nav's search and current link in both themes, `--grey` on `--sidebar-grey`. Selected turns the label `--black` and the count `--text-muted`. The right side is a section label in `--text-muted`, then the widgets themselves at half size, clipped to 136px, each with its title in 12px under it. A tile hovers `--sidebar-grey`. A check in `--action` after the title means it is on Home. Pressing a tile adds that widget in its place in the catalog order, or removes it when it is already there. The footer has one line of help in `--text-muted` and Done, the primary. Escape is Done too. What someone removes is kept in this browser, so a widget added to the catalog later still shows.
+Edit shows Add Widgets, the primary with a plus, before Done in the section head. The head wraps, so on a narrow screen both buttons drop under the title instead of clipping. Add Widgets opens the gallery on `EditorDialog`, the same popup as a record's editor: the scrim over the whole screen, then the card at 1120px wide and 90% of the screen high. On a phone, 640px and under, the card takes the whole screen with no radius. There is no kicker line or subtitle: the title, Add widgets, sits in the top row beside the close mark. The departments are the dialog's tabs: All, then one per department, each with its count. The tab bar scrolls sideways when it outruns the card, and each label stays on one line. The search is first in the body, focused on open, and it stays on top while the gallery scrolls under it. Switching tabs keeps the search. Each department is a 14px weight 500 heading: its plain department tag, the colored circle and the name with no stroke, then its count in `--text-muted`, over a grid of tiles at least 220px wide, 12px apart, two to a row on a phone. A tile is a `--sidebar-grey` card, `--grey` in dark mode, like a board column: its title on top at 14px weight 500, 10px by 12px in, with a check in `--action` when the widget is on Home. Under the title is the live widget, laid out 480px wide, about a Home column, so it lays out as it does on Home, and shown at 55%, set 12px in from the left, at 70% opacity so the title leads, and at full opacity when the widget is on Home, with its own drop: a 1px `--black-12` contact shadow under `--shadow-menu`. The tile's right and bottom edges crop it to 160px, 120px on a phone, so only its top-left corner shows. A preview is only built once its tile comes within a screen of view, and stays built, so 42 live widgets are never mounted at once. A tile hovers `--grey`, `--black-12` in dark mode, and presses to 0.98. Every tile has a 1px `--black-12` stroke, drawn above the preview so the crop never covers it. A widget on Home turns its tile `--action-tint` and its stroke `--action`, hovered or not. Selecting fades the blue in. Deselecting drops it at once, and hover has no fade. Pressing a tile adds that widget in its place in the catalog order, or removes it when it is already there, and the gallery stays open. A search with no match shows the search empty state. The footer is Done, the primary. Done, the close mark, the scrim, and Escape all close the gallery and return focus to Add Widgets, with edit mode still on. A second Escape is Done for edit mode. What someone removes is kept in this browser, so a widget added to the catalog later still shows.
 
 ## Widget list
 

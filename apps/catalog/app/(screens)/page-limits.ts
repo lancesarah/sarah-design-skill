@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useLayoutEffect, useRef, useState } from "react";
+import { startTransition, useCallback, useLayoutEffect, useRef, useState } from "react";
 
 // Open widths are 277 and 392. Rails are 54 and 62.
 // The center keeps the 375px list and a 520px note (895).
@@ -70,19 +70,21 @@ export function usePageLimits() {
     return () => window.removeEventListener("resize", apply);
   }, [apply]);
 
+  // The body class starts the fold in the same frame. The state only tells the panels which way they are,
+  // and re-renders the whole shell, so it is a transition: React does it in slices between the fold's frames.
   const chooseSide = (next: boolean) => {
     side.current.chosen = next;
     side.current.heldOpen = !next && window.innerWidth < SIDE_OPEN_AT;
     rememberSide(side.current);
     setSideCollapsed(next);
-    setSide(next);
+    startTransition(() => setSide(next));
   };
 
   const chooseLance = (next: boolean) => {
     lance.current.chosen = next;
     lance.current.heldOpen = !next && window.innerWidth < LANCE_OPEN_AT;
     setLanceCollapsed(next);
-    setLance(next);
+    startTransition(() => setLance(next));
   };
 
   return { sideCollapsed, lanceCollapsed, chooseSide, chooseLance };

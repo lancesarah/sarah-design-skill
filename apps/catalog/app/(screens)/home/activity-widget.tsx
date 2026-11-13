@@ -1,6 +1,6 @@
 "use client";
 
-import { SegmentedControl, Widget } from "@lance-live/gallery-ui";
+import { SegmentedControl, Widget, WidgetKey, WidgetTally, type WidgetKeyTone } from "@lance-live/gallery-ui";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 
 type Period = "24h" | "7d" | "30d";
@@ -14,6 +14,8 @@ const KINDS: { id: Kind; label: string; one: string; many: string }[] = [
   { id: "email", label: "Email", one: "email", many: "emails" },
   { id: "sms", label: "SMS", one: "SMS", many: "SMS" },
 ];
+
+const KIND_KEY: Record<Kind, WidgetKeyTone> = { call: "action", email: "strong", sms: "muted" };
 
 const PERIODS: { value: Period; label: string }[] = [
   { value: "24h", label: "24h" },
@@ -93,19 +95,12 @@ export function ActivityWidget() {
       action={<SegmentedControl aria-label="Period" className="home-activity-period" value={period} onValueChange={(value) => setPeriod(value as Period)} options={PERIODS} />}
     >
       <div className="home-tally-summary home-activity-body">
-        <p className="home-tally-top">
-          <span>
-            <span className="home-summary-figure">{total}</span>
-            <span className="home-tally-label">
-              {total === 1 ? "touch" : "touches"} {WINDOW[period]}
-            </span>
-          </span>
-        </p>
+        <WidgetTally value={total} label={`${total === 1 ? "touch" : "touches"} ${WINDOW[period]}`} />
         <dl className="home-key">
           {totals.map((kind) => (
             <div key={kind.id}>
               <dt>
-                <span className={`home-summary-key is-${kind.id}`} aria-hidden="true" />
+                <WidgetKey tone={KIND_KEY[kind.id]} />
                 {kind.label}
               </dt>
               <dd>{kind.value}</dd>

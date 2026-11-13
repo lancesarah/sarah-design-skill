@@ -8,6 +8,7 @@ export {
 export { Chip, type ChipProps } from "./components/Chip";
 export { DepartmentChip, DEPARTMENTS, type DepartmentValue } from "./components/DepartmentChip";
 export { TextIcon, type TextIconProps } from "./components/TextIcon";
+export { IconButton, type IconButtonProps } from "./components/IconButton";
 export { Menu, type MenuItem, type MenuProps } from "./components/Menu";
 export { ViewedMenu, type Viewer } from "./components/ViewedMenu";
 export { OverlayMenu, menuPoint, placeAtPoint, placeMenu, type MenuPoint } from "./components/OverlayMenu";
@@ -31,7 +32,22 @@ export { Day, Message, MessageGroup, Resolved, Ticket, TicketNote, Typing, type 
 export { Empty } from "./components/Empty";
 export { Meter } from "./components/Meter";
 export { ShareBar, type Share, type ShareTone } from "./components/ShareBar";
-export { Widget, WidgetEmpty, WidgetFacts, WidgetList, WidgetMore, WidgetRow } from "./components/Widget";
+export {
+  Widget,
+  WidgetEmpty,
+  WidgetFacts,
+  WidgetFigure,
+  WidgetKey,
+  WidgetList,
+  WidgetMore,
+  WidgetNote,
+  WidgetRow,
+  WidgetStats,
+  WidgetSummary,
+  WidgetTally,
+  type WidgetKeyTone,
+  type WidgetStat,
+} from "./components/Widget";
 export { RoomMark, isRoomNumber } from "./components/RoomMark";
 export { ActivityFeed, type ActivityComment, type ActivityItem, type ActivityStatus } from "./components/ActivityFeed";
 export { Status, Urgency, Toast, Tooltip } from "./components/Feedback";

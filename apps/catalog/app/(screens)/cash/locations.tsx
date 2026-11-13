@@ -3,6 +3,7 @@
 import { Button, Checkbox, ConfirmDialog, DEPARTMENTS, DepartmentChip, Icon, OverlayMenu, captureClose, playEnter } from "@lance-live/gallery-ui";
 import { forwardRef, useEffect, useId, useLayoutEffect, useRef, useState, type ButtonHTMLAttributes } from "react";
 import { flushSync } from "react-dom";
+import { putBack, useNotify } from "../action-toast";
 import { InsetCard } from "../inset-card";
 import { PageLayout, PageTitle } from "../page-layout";
 import { createLocation, formatMoney, type CashLine, type CashLocation, type DepartmentName, type LineGroup } from "./model";
@@ -37,6 +38,7 @@ export function LocationsEditor({
   onBack: () => void;
   onChange: (locations: CashLocation[]) => void;
 }) {
+  const notify = useNotify();
   const [draft, setDraft] = useState(locations);
   const [baseline] = useState(locations);
   const dirty = JSON.stringify(draft) !== JSON.stringify(baseline);
@@ -62,11 +64,14 @@ export function LocationsEditor({
   }
 
   function removeLocation(id: string) {
+    const index = draft.findIndex((location) => location.id === id);
+    const removed = draft[index];
     const play = captureClose(document.querySelector(`[data-location="${CSS.escape(id)}"]`));
     flushSync(() => {
       setDraft((current) => current.filter((location) => location.id !== id));
     });
     play();
+    if (removed) notify({ message: "Location deleted", action: "Undo", onAction: () => setDraft((current) => putBack(current, removed, index)) });
   }
 
   function addLocation() {
@@ -75,6 +80,7 @@ export function LocationsEditor({
     setFocusId(id);
     setEnterId(id);
     scroller.current?.scrollTo({ top: 0 });
+    notify("Location created");
   }
 
   return (
@@ -88,7 +94,13 @@ export function LocationsEditor({
       actions={
         <>
           {dirty ? <p className="cash-save-note">Changes apply to new counts only.</p> : null}
-          <Button variant="secondary" onClick={onBack}>
+          <Button
+            variant="secondary"
+            onClick={() => {
+              if (dirty) notify("Locations saved");
+              onBack();
+            }}
+          >
             {dirty ? null : <Icon name="chevron" size={14} className="cash-back-icon" />}
             {dirty ? "Save" : "Back"}
           </Button>

@@ -1,6 +1,6 @@
 "use client";
 
-import { Widget } from "@lance-live/gallery-ui";
+import { Widget, WidgetFigure, WidgetSummary } from "@lance-live/gallery-ui";
 import { CheckStatus } from "./check-status";
 
 /** A scheduled round of readings. `due` is past once its time has come; a later round is still to come. */
@@ -37,15 +37,9 @@ export function ReadingsOnTimeWidget() {
         )
       }
     >
-      <div className="home-summary is-alone">
-        <p className="home-summary-hero">
-          <span className="home-summary-figure">
-            {logged}
-            <span className="home-summary-of"> / {expected}</span>
-          </span>
-          <span className="home-summary-label">readings logged so far</span>
-        </p>
-      </div>
+      <WidgetSummary alone>
+        <WidgetFigure value={logged} of={expected} label="readings logged so far" />
+      </WidgetSummary>
     </Widget>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  Chip,
   Button,
   ConfirmDialog,
   DataTable,
@@ -13,8 +14,8 @@ import {
   type DataColumn,
 } from "@lance-live/gallery-ui";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useNotify } from "../action-toast";
 import { FilterMenu, SearchBox } from "../chrome";
-import { Glyph } from "../glyph";
 import type { Measure, Source } from "./page";
 
 const KINDS = ["Boiler", "Utility Meter", "Pool"];
@@ -141,6 +142,7 @@ function SourceDialog({
   onClose: () => void;
   onDelete: () => void;
 }) {
+  const notify = useNotify();
   const [tab, setTab] = useState("details");
   const [menu, setMenu] = useState<string | null>(null);
   const [draft, setDraft] = useState("");
@@ -195,7 +197,7 @@ function SourceDialog({
             { value: "measurements", label: "Measurements", count: source.measures.length },
           ],
         }}
-        footer={<Button onClick={onClose}>Save source</Button>}
+        footer={<Button onClick={() => { notify("Source saved"); onClose(); }}>Save source</Button>}
       >
         {tab === "details" ? (
           <>
@@ -425,7 +427,9 @@ function SourceDialog({
         onConfirm={() => {
           const current = pending;
           setPending(null);
-          current?.run();
+          if (!current) return;
+          current.run();
+          notify(current.noun === "measurement" ? "Measurement deleted" : "Source deleted");
         }}
       />
     </>
@@ -470,6 +474,7 @@ export function SourceEditor({
   focusId: string | null;
   onAdded: (id: string) => void;
 }) {
+  const notify = useNotify();
   const [query, setQuery] = useState("");
   const [statuses, setStatuses] = useState<string[]>([]);
   const [deadline, setDeadline] = useState("11:00 PM");
@@ -541,6 +546,7 @@ export function SourceEditor({
     ]);
     setOpenId(id);
     onAdded(id);
+    notify("Source created");
   }
 
   const editing = sources.find((source) => source.id === openId) ?? null;
@@ -552,9 +558,7 @@ export function SourceEditor({
         <FilterMenu value={statuses} onValueChange={setStatuses} options={["Active", "Inactive"]} />
         <div className="filter-chips">
           {statuses.map((value) => (
-            <button key={value} className="chip chip-filter" type="button" onClick={() => setStatuses((current) => current.filter((item) => item !== value))}>
-              <span className="chip-k">Status</span>: {value} <Glyph name="plus" size={10} className="x" />
-            </button>
+            <Chip key={value} filter={{ name: "Status", value }} onClick={() => setStatuses((current) => current.filter((item) => item !== value))} />
           ))}
         </div>
         <div className="readings-toolbar-end">
@@ -608,6 +612,7 @@ export function SourceEditor({
           onDelete={(source) => {
             onChange(sources.filter((item) => item.id !== source.id));
             if (openId === source.id) setOpenId(null);
+            notify("Source deleted");
           }}
           deleteNoun="source"
           rowName={(row) => row.name.trim() || "Source"}

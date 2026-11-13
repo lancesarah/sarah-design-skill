@@ -1,6 +1,6 @@
 "use client";
 
-import { ShareBar, Widget, type Share } from "@lance-live/gallery-ui";
+import { ShareBar, Widget, WidgetTally, type Share } from "@lance-live/gallery-ui";
 
 /** The pipeline, earliest stage first. Stages keep their order on the bar instead of going busiest first. */
 const STAGES: Share[] = [
@@ -17,12 +17,7 @@ export function LeadsWidget() {
   return (
     <Widget icon="users" title="Active leads">
       <div className="home-tally-summary home-tickets-body">
-        <p className="home-tally-top">
-          <span>
-            <span className="home-summary-figure">{total}</span>
-            <span className="home-tally-label">{total === 1 ? "open lead" : "open leads"}</span>
-          </span>
-        </p>
+        <WidgetTally value={total} label={total === 1 ? "open lead" : "open leads"} />
         <ShareBar shares={STAGES} />
       </div>
     </Widget>

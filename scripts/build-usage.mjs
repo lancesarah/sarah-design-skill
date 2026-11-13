@@ -71,6 +71,7 @@ export const SOURCES = {
   meter: [c("Meter")],
   "share-bar": [c("Share bar")],
   widget: [c("Widget")],
+  "widget-summary": [c("Widget summary")],
   "widget-list": [c("Widget list")],
   "widget-row": [c("Widget row")],
   "room-mark": [c("Room mark")],

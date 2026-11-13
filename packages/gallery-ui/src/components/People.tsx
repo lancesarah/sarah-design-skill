@@ -64,7 +64,7 @@ export function Avatar({
   }, [hovered]);
 
   const classes = ["sds", "avatar", size === "md" ? "" : size, empty ? "is-empty" : "", photo ? "is-photo" : "", name ? "tip-host" : "", className].filter(Boolean).join(" ");
-  const face = photo ? <img src={photo} alt="" /> : empty ? null : initials;
+  const face = photo ? <img src={photo} alt="" /> : empty ? null : initials || (size === "mini" ? null : <Icon name="user" size={size === "lg" ? 18 : 16} />);
   if (!name) {
     return (
       <span className={classes} aria-hidden="true">

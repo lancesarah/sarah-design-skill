@@ -1,6 +1,6 @@
 "use client";
 
-import { Widget } from "@lance-live/gallery-ui";
+import { Widget, WidgetNote } from "@lance-live/gallery-ui";
 
 /** One guestroom program this cycle. `late` is rooms past their cadence. */
 const PROGRAM = { name: "Guestroom sweep", done: 2, total: 3, late: 1 };
@@ -30,15 +30,15 @@ function Ring({ value, max }: { value: number; max: number }) {
 export function GuestroomPmWidget() {
   const { name, done, total, late } = PROGRAM;
   return (
-    <Widget icon="wrench" title="Guestroom PMs" action={<span className="home-pm-today">{name} · this cycle</span>}>
+    <Widget icon="wrench" title="Guestroom PMs" action={<WidgetNote>{name} · this cycle</WidgetNote>}>
       <div className="home-ring-summary">
         <Ring value={done} max={total} />
-        <p className="home-summary-hero">
-          <span className="home-summary-figure">
+        <p className="widget-figure">
+          <span className="widget-figure-value">
             {done}
-            <span className="home-summary-of"> / {total}</span>
+            <span className="widget-figure-of"> / {total}</span>
           </span>
-          <span className="home-summary-label">rooms done</span>
+          <span className="widget-figure-label">rooms done</span>
           {late ? <span className="home-pm-behind home-ring-late">{late} past cadence</span> : null}
         </p>
       </div>

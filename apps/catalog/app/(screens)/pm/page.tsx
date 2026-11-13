@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  Chip,
   ASSIGNEE_PEOPLE,
   ActivityFeed,
   Avatar,
@@ -23,7 +24,6 @@ import {
   TITLE_TEXT_INSET,
   TableChip,
   TaskAssignee,
-  Toast,
   captureClose,
   taskMenuItem,
   useTableMenu,
@@ -33,8 +33,8 @@ import {
 } from "@lance-live/gallery-ui";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode, type RefObject } from "react";
 import { createPortal, flushSync } from "react-dom";
+import { putBack, useNotify } from "../action-toast";
 import { FilterMenu, SearchBox } from "../chrome";
-import { Glyph } from "../glyph";
 import { EditText } from "../edit-text";
 import { EditorPick } from "../editor-pick";
 import { PageLayout, PageTitle, type TitlePage } from "../page-layout";
@@ -1737,9 +1737,7 @@ function AreasPage({
                 <FilterMenu value={statuses} onValueChange={onStatusesChange} options={[...AREA_STATUSES]} />
                 <div className="filter-chips">
                   {statuses.map((value) => (
-                    <button key={value} className="chip chip-filter" type="button" onClick={() => onStatusesChange(statuses.filter((item) => item !== value))}>
-                      <span className="chip-k">Status</span>: {value} <Glyph name="plus" size={10} className="x" />
-                    </button>
+                    <Chip key={value} filter={{ name: "Status", value }} onClick={() => onStatusesChange(statuses.filter((item) => item !== value))} />
                   ))}
                 </div>
               </div>
@@ -2041,9 +2039,7 @@ function HistoryPage({ rows, onBack, onOpen }: { rows: HistoryRow[]; onBack: () 
           <FilterMenu value={cadences} onValueChange={setCadences} options={CADENCES.map((item) => item.label)} />
           <div className="filter-chips">
             {cadences.map((value) => (
-              <button key={value} className="chip chip-filter" type="button" onClick={() => setCadences((current) => current.filter((item) => item !== value))}>
-                <span className="chip-k">Cadence</span>: {value} <Glyph name="plus" size={10} className="x" />
-              </button>
+              <Chip key={value} filter={{ name: "Cadence", value }} onClick={() => setCadences((current) => current.filter((item) => item !== value))} />
             ))}
           </div>
           <Button variant="secondary" className="pm-download" onClick={() => downloadHistory(visible)}>
@@ -2146,9 +2142,7 @@ function TemplatesPage({
           <FilterMenu value={statuses} onValueChange={setStatuses} options={["Active", "Inactive"]} />
           <div className="filter-chips">
             {statuses.map((value) => (
-              <button key={value} className="chip chip-filter" type="button" onClick={() => setStatuses((current) => current.filter((item) => item !== value))}>
-                <span className="chip-k">Status</span>: {value} <Glyph name="plus" size={10} className="x" />
-              </button>
+              <Chip key={value} filter={{ name: "Status", value }} onClick={() => setStatuses((current) => current.filter((item) => item !== value))} />
             ))}
           </div>
           <Button onClick={onCreate}>
@@ -2191,18 +2185,8 @@ export default function PreventiveMaintenancePage() {
   const [selected, setSelected] = useState<string | null>(null);
   const [present, setPresent] = useState(false);
   const [hidden, setHidden] = useState(true);
-  const [notice, setNotice] = useState<{ id: number; message: string; action: string | null; onAction?: () => void } | null>(null);
+  const tell = useNotify();
   const retained = useRef<Template | null>(null);
-
-  function tell(next: { message: string; action?: string | null; onAction?: () => void }) {
-    setNotice({ id: Date.now(), message: next.message, action: next.action ?? null, onAction: next.onAction });
-  }
-
-  useEffect(() => {
-    if (!notice) return;
-    const timer = window.setTimeout(() => setNotice((current) => (current?.id === notice.id ? null : current)), 4000);
-    return () => window.clearTimeout(timer);
-  }, [notice]);
 
   useEffect(() => {
     if (view !== "templates" || !pickedId) return;
@@ -2316,26 +2300,12 @@ export default function PreventiveMaintenancePage() {
     setNameId(id);
     setPickedId(id);
     setEnteringId(id);
+    tell("Template created");
   }
 
   const openCheck = view === "check" || view === "areas" || view === "edit" ? templates.find((template) => template.id === checkId) ?? null : null;
 
-  const noticeNode = notice ? createPortal(
-    <div className="pm-toast">
-      <Toast
-        key={notice.id}
-        message={notice.message}
-        action={notice.action}
-        onAction={() => {
-          notice.onAction?.();
-          setNotice(null);
-        }}
-      />
-    </div>,
-    document.body,
-  ) : null;
-
-  if (view === "history") return <>{noticeNode}<HistoryPage rows={historyRows} onBack={() => setView("list")} onOpen={(row) => {
+  if (view === "history") return <><HistoryPage rows={historyRows} onBack={() => setView("list")} onOpen={(row) => {
     const template = templates.find((item) => item.id === row.id) ?? templates.find((item) => item.name === row.name);
     if (!template) return;
     shiftPage("forward", () => {
@@ -2350,7 +2320,6 @@ export default function PreventiveMaintenancePage() {
     const editing = templates.find((template) => template.id === editingId) ?? null;
     return (
       <>
-      {noticeNode}
       <TemplatesPage
         templates={templates}
         onBack={() => {
@@ -2362,9 +2331,11 @@ export default function PreventiveMaintenancePage() {
         onPatch={patch}
         onCreate={createTemplate}
         onDelete={(template) => {
+          const index = templates.findIndex((item) => item.id === template.id);
           remove(template);
           if (editingId === template.id) setEditingId(null);
           if (pickedId === template.id) setPickedId(null);
+          tell({ message: "Template deleted", action: "Undo", onAction: () => setTemplates((list) => putBack(list, template, index)) });
         }}
         onOpen={(template) => {
           setEditingId(template.id);
@@ -2471,7 +2442,6 @@ export default function PreventiveMaintenancePage() {
             onNotice={tell}
           />
         ) : null}
-        {noticeNode}
       </>
     );
   }
@@ -2598,7 +2568,6 @@ export default function PreventiveMaintenancePage() {
 
   return (
     <>
-    {noticeNode}
     <PageLayout
       className="sheet-page pm-page"
       data-view="head"
@@ -2635,9 +2604,7 @@ export default function PreventiveMaintenancePage() {
           <FilterMenu value={frequencies} onValueChange={setFrequencies} options={CADENCES.map((item) => item.label)} />
           <div className="filter-chips">
             {frequencies.map((value) => (
-              <button key={value} className="chip chip-filter" type="button" onClick={() => setFrequencies((current) => current.filter((item) => item !== value))}>
-                <span className="chip-k">Frequency</span>: {value} <Glyph name="plus" size={10} className="x" />
-              </button>
+              <Chip key={value} filter={{ name: "Frequency", value }} onClick={() => setFrequencies((current) => current.filter((item) => item !== value))} />
             ))}
           </div>
         </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { Widget, type Share } from "@lance-live/gallery-ui";
+import { Widget, WidgetTally, type Share } from "@lance-live/gallery-ui";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 
 /** Busiest first, so the bars read from the tallest down. */
@@ -37,13 +37,7 @@ export function TicketsWidget() {
   return (
     <Widget icon="tag" title="Tickets by channel">
       <div className="home-tally-summary home-tickets-body">
-        <p className="home-tally-top">
-          <span>
-            <span className="home-summary-figure">{total}</span>
-            <span className="home-tally-label">{total === 1 ? "ticket recorded" : "tickets recorded"}</span>
-          </span>
-          <span className="home-tally-aside">today</span>
-        </p>
+        <WidgetTally value={total} label={total === 1 ? "ticket recorded" : "tickets recorded"} aside="today" />
         <dl ref={chart} className={seen ? "home-bars is-seen" : "home-bars"}>
           {CHANNELS.map((channel, at) => (
             <div key={channel.id} className={`is-${channel.tone}`} style={{ "--bar": channel.value / busiest, "--at": at } as CSSProperties}>

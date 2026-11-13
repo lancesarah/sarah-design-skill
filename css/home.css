@@ -35,8 +35,21 @@
 .home-hello {
   margin-bottom: calc(var(--space-16) - var(--space-25));
   display: flex;
+  flex-wrap: wrap;
   align-items: baseline;
-  gap: var(--space-25);
+  gap: var(--space-8) var(--space-25);
+}
+/* With no pattern left to show, the widget actions move up to the greeting's line, on its right. */
+.home-hello-actions {
+  align-self: center;
+  margin-left: auto;
+  animation: home-actions-in 240ms var(--ease-out) 120ms both;
+}
+@keyframes home-actions-in { from { opacity: 0; transform: translateY(4px); } }
+@media (prefers-reduced-motion: reduce) {
+  .home-hello-actions,
+  .home-lance-stack.is-arriving,
+  .home-section-head.is-arriving { animation: none; }
 }
 .home-hello h1 {
   margin: 0;
@@ -66,10 +79,17 @@
   grid-template-rows: 48px auto;
   border-radius: var(--radius-card);
   background: var(--white);
-  box-shadow: var(--stroke), var(--shadow-card);
+  box-shadow: var(--stroke-card), var(--shadow-card);
 }
 /* More patterns wait under this one. */
 .home-lance-stack.has-more { margin-bottom: var(--space-16); }
+/* The last pattern fades up and out before the widgets slide up into its place. */
+.home-lance-stack.is-leaving { animation: home-lance-out 200ms var(--ease-out) forwards; }
+/* Brought back, the patterns and the Widgets head drop in while the widgets slide down. */
+.home-lance-stack.is-arriving,
+.home-section-head.is-arriving { animation: home-lance-in 320ms var(--ease-out) both; }
+@keyframes home-lance-out { to { opacity: 0; transform: translateY(-8px) scale(0.98); } }
+@keyframes home-lance-in { from { opacity: 0; transform: translateY(-8px); } }
 .home-lance-stack.has-more::before {
   content: "";
   position: absolute;
@@ -78,7 +98,7 @@
   border-radius: var(--radius-card);
   /* The Actions grey lines up with the card in front. Its column is the wider of 280px and 2fr of 5. */
   background: linear-gradient(to left, var(--home-lance-side) calc(max(280px, 40cqw) - var(--space-20)), var(--white) 0);
-  box-shadow: var(--stroke), var(--shadow-card);
+  box-shadow: var(--stroke-card), var(--shadow-card);
 }
 .home-lance-head {
   display: flex;
@@ -296,80 +316,11 @@ html[data-theme="dark"] .home-week-day[aria-selected="true"] { background: var(-
   .home-col { display: contents; }
 }
 
-/* A widget's summary: one figure leads, its totals sit beside it, a meter runs underneath. Housekeeping and Knowledge health share it. */
-.home-summary {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) max-content;
-  align-items: end;
-  gap: var(--space-16);
-  padding: var(--space-16);
-  border-bottom: 1px solid var(--grey);
-}
-.home-summary-hero {
-  display: flex;
-  flex-direction: column;
-  margin: 0;
-}
-.home-summary-figure {
-  color: var(--black);
-  font-size: var(--text-24);
-  font-weight: 500;
-  line-height: 1;
-  letter-spacing: -0.01em;
-  font-variant-numeric: var(--numeric);
-}
-.home-summary-of { color: var(--black-25); }
-/* A summary with nothing under it needs no rule. */
-.home-summary.is-alone { border-bottom: 0; }
-.home-summary-label {
-  margin-top: var(--space-4);
-  color: var(--text-muted);
-  font-size: var(--text-14);
-  line-height: 20px;
-}
 /* A figure inside the label, such as the rating, takes strong ink so it reads before its words. */
 .home-summary-label-figure {
   color: var(--black);
   font-variant-numeric: var(--numeric);
 }
-/* Clean fills in blue, left stays light grey, DND takes the end in the meter's darker grey. */
-.home-summary-meter { grid-column: 1 / -1; }
-.home-summary-key.is-dnd { background: var(--black-50); }
-.home-summary-stats {
-  display: flex;
-  gap: var(--space-25);
-  margin: 0;
-}
-/* The figure leads and its label sits under it. The markup keeps label then figure, so a screen reader still reads "Clean, 52". */
-.home-summary-stats > div {
-  display: flex;
-  flex-direction: column-reverse;
-  gap: var(--space-2);
-}
-.home-summary-stats dt {
-  display: flex;
-  align-items: center;
-  gap: var(--space-4);
-  color: var(--text-muted);
-  font-size: var(--text-12);
-  line-height: 16px;
-}
-.home-summary-stats dd {
-  margin: 0;
-  color: var(--black);
-  font-size: var(--text-16);
-  font-weight: 500;
-  line-height: 24px;
-  font-variant-numeric: var(--numeric);
-}
-.home-summary-key {
-  width: 8px;
-  height: 8px;
-  border-radius: 999px;
-}
-.home-summary-key.is-clean { background: var(--action); }
-/* The meter's light grey ticks, so the key matches the part it names. */
-.home-summary-key.is-waiting { background: var(--black-12); }
 .home-dnd-state {
   display: inline-flex;
   align-items: center;
@@ -433,23 +384,6 @@ html[data-theme="dark"] .home-week-day[aria-selected="true"] { background: var(-
 }
 /* A tally: one figure and its answer share a line, then one line per part. Readings and Tickets by channel share it. */
 .home-tally-summary { padding: var(--space-16) var(--space-16) var(--space-8); }
-.home-tally-top {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: var(--space-16);
-  margin: 0;
-}
-.home-tally-label {
-  margin-left: var(--space-8);
-  color: var(--text-muted);
-  font-size: var(--text-14);
-}
-.home-tally-aside {
-  color: var(--text-muted);
-  font-size: var(--text-14);
-}
-.home-tally-aside.is-warn { color: var(--urgency-urgent); }
 .home-readings-dot {
   width: 6px;
   height: 6px;
@@ -566,9 +500,6 @@ html[data-theme="dark"] .home-week-day[aria-selected="true"] { background: var(-
   line-height: 16px;
   font-variant-numeric: var(--numeric);
 }
-.home-summary-key.is-call { background: var(--action); }
-.home-summary-key.is-email { background: var(--black-50); }
-.home-summary-key.is-sms { background: var(--black-25); }
 /* One bar per stretch of time on the Tickets bars' hatched track. The stack fills from the bottom, calls first, the busiest stretch at full height. */
 .home-activity-chart {
   display: grid;
@@ -723,7 +654,8 @@ html[data-theme="dark"] .home-week-day[aria-selected="true"] { background: var(-
   display: flex;
   flex-direction: column;
   gap: var(--space-8);
-  max-height: 360px;
+  /* Four floors of 40px rooms, then half of Floor 6, cut by the edge so the scroll shows. */
+  max-height: calc(var(--space-8) + 4 * (40px + var(--space-8)) + 20px);
   padding: var(--space-8) var(--space-16) var(--space-16);
   overflow-y: auto;
 }
@@ -891,7 +823,7 @@ html[data-theme="dark"] button.home-map-room:not(.is-occupied):hover { backgroun
   line-height: 16px;
 }
 /* The line sits over the button, at the bottom of the card, instead of under the summary. */
-.home-summary:has(~ .home-summary-cta) { border-bottom: 0; }
+.widget-summary:has(~ .home-summary-cta) { border-bottom: 0; }
 .home-summary-cta {
   margin-top: auto;
   padding: var(--space-16);
@@ -903,13 +835,7 @@ html[data-theme="dark"] button.home-map-room:not(.is-occupied):hover { backgroun
   font-weight: 500;
   font-variant-numeric: var(--numeric);
 }
-/* PMs: today's areas in the head, and each program's pace on its row. */
-.home-pm-today {
-  padding-right: var(--space-8);
-  color: var(--text-muted);
-  font-size: var(--text-12);
-  font-variant-numeric: var(--numeric);
-}
+/* PMs: each program's pace on its row. */
 .home-pm-behind,
 .home-pm-on-track {
   font-size: var(--text-12);
@@ -1102,12 +1028,12 @@ html[data-theme="dark"] .is-1 > .home-podium-step {
   align-items: center;
   margin: 0;
 }
-.home-gauge-read .home-summary-label { margin-top: var(--space-2); }
-.home-gauge .home-summary-stats {
+.home-gauge-read .widget-figure-label { margin-top: var(--space-2); }
+.home-gauge .widget-stats {
   justify-content: center;
   text-align: center;
 }
-.home-gauge .home-summary-stats dt { justify-content: center; }
+.home-gauge .widget-stats dt { justify-content: center; }
 .home-pm-on-track { color: var(--text-muted); }
 /* A figure in a row's trail, such as a ticket count or a charge, in strong ink. */
 .home-trail-figure {
@@ -1125,6 +1051,7 @@ html[data-theme="dark"] .is-1 > .home-podium-step {
 .home-section-head {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   justify-content: space-between;
   gap: var(--space-8);
   min-height: 28px;
@@ -1281,97 +1208,56 @@ body.is-widget-dragging,
 body.is-widget-dragging * { cursor: grabbing; }
 body.is-widget-dragging { user-select: none; }
 
-/* The widget gallery. It docks on the bottom of the page, a little wider than the widgets, and meets the page's edge square. */
-.home-content:has(> .home-gallery) { padding-bottom: 0; }
-.home-page .home-body:has(.home-gallery) { margin-bottom: calc(var(--space-2) * -1); }
-.home-gallery {
-  position: sticky;
-  bottom: 0;
-  display: flex;
-  flex-direction: column;
-  height: 294px;
-  margin: 0 calc(min(var(--space-16) * 3, var(--home-inset)) * -1);
-  overflow: hidden;
-  border-radius: var(--radius-card) var(--radius-card) 0 0;
-  background: var(--white);
-  box-shadow: var(--stroke), var(--ring-menu), var(--elevation-menu);
-  animation: home-gallery-in 240ms var(--ease-out);
-}
-@keyframes home-gallery-in {
-  from { transform: translateY(var(--space-25)); opacity: 0; }
-  to { transform: none; opacity: 1; }
-}
-.home-gallery-body {
-  display: flex;
-  flex: 1;
-  min-height: 0;
-}
-.home-gallery-side {
+/* Edit mode's actions sit together on the right of the Widgets head: Add Widgets, then Done where Edit was. */
+.home-section-actions {
   display: flex;
   flex: none;
-  flex-direction: column;
-  gap: var(--space-12);
-  width: 220px;
-  padding: var(--space-12);
-  background: var(--sidebar-grey);
-}
-.home-gallery-side .search {
-  width: 100%;
-  height: 32px;
-  background: var(--grey);
-}
-.home-gallery-cats {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-}
-.home-gallery-cat {
-  display: flex;
   align-items: center;
   gap: var(--space-8);
-  min-height: 30px;
-  padding: var(--space-4) var(--space-8);
-  border: 0;
-  border-radius: var(--radius-control);
-  background: transparent;
-  color: var(--black-50);
-  font: inherit;
-  font-size: var(--text-14);
-  text-align: left;
-  cursor: pointer;
 }
-.home-gallery-cat .dept {
-  flex: 1;
-  min-width: 0;
-  color: inherit;
-  font-size: var(--text-14);
+.home-section-actions .btn { white-space: nowrap; }
+
+/* Add Widgets. The editor dialog, widened into a gallery: departments as its tabs, search on top, previews in a grid. */
+.editor-dialog-card.home-add-dialog { width: min(1120px, 100%); }
+/* No kicker line: the title moves up beside the close mark. The kicker still names the dialog. */
+.home-add-dialog .editor-dialog-head { flex-direction: row-reverse; align-items: center; }
+.home-add-dialog .editor-dialog-kicker p { display: none; }
+.home-add-dialog .editor-dialog-body { gap: var(--space-25); padding-top: 0; }
+/* Five departments outrun a phone, so the tab bar scrolls sideways and each label stays on one line. */
+.home-add-dialog .editor-dialog-main .tabs-scroll { overflow-x: auto; }
+.home-add-dialog .editor-dialog-main .tabs { width: max-content; min-width: 100%; }
+.home-add-dialog .tab { flex: none; white-space: nowrap; }
+/* The search stays on top while the gallery scrolls under it. */
+.home-add-search {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding-block: var(--space-12) var(--space-4);
+  background: var(--white);
 }
-.home-gallery-cat:hover,
-.home-gallery-cat[aria-selected="true"] { background: var(--grey); }
-.home-gallery-cat[aria-selected="true"] { color: var(--black); }
-.home-gallery-cat-name { flex: 1; min-width: 0; }
-.home-gallery-cat-count {
-  color: var(--black-25);
+.home-add-search .search { width: 100%; max-width: none; }
+.home-add-group { display: flex; flex-direction: column; gap: var(--space-10); }
+/* The department's own tag, its circle and name with no stroke, at the heading's size. */
+.home-add-label .dept { font: inherit; line-height: inherit; }
+.home-add-label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin: 0;
+  font-size: var(--text-14);
+  font-weight: 500;
+  line-height: 20px;
+}
+.home-add-count {
+  color: var(--text-muted);
+  font-weight: 400;
   font-variant-numeric: var(--numeric);
 }
-.home-gallery-cat[aria-selected="true"] .home-gallery-cat-count { color: var(--text-muted); }
-.home-gallery-main {
-  flex: 1;
-  min-width: 0;
-  padding: var(--space-12) var(--space-16) var(--space-16);
-  overflow-y: auto;
-}
-.home-gallery-title {
-  margin: 0 0 var(--space-12);
-  color: var(--text-muted);
-  font-size: var(--text-12);
-  font-weight: 500;
-  line-height: 16px;
-}
+
 .home-gallery-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: var(--space-8);
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: var(--space-12);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -1380,28 +1266,53 @@ body.is-widget-dragging { user-select: none; }
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: var(--space-8);
   min-width: 0;
-  padding: var(--space-8);
-  border-radius: var(--radius-control);
-  transition: background-color var(--motion-hover) ease;
-}
-.home-gallery-tile:hover { background: var(--sidebar-grey); }
-html[data-theme="dark"] .home-gallery-tile:hover { background: var(--grey); }
-.home-gallery-tile:has(> .home-gallery-pick[aria-pressed="true"]),
-html[data-theme="dark"] .home-gallery-tile:has(> .home-gallery-pick[aria-pressed="true"]) { background: var(--action-tint); }
-.home-gallery-tile:active { scale: 0.98; }
-/* A live widget at half size. The frame clips it to a glance. */
-.home-gallery-preview {
-  height: 136px;
   overflow: hidden;
   border-radius: var(--radius-card);
+  background: var(--sidebar-grey);
+  transition: scale 160ms var(--ease-out);
+}
+.home-gallery-tile:hover { background: var(--grey); }
+html[data-theme="dark"] .home-gallery-tile { background: var(--grey); }
+html[data-theme="dark"] .home-gallery-tile:hover { background: var(--black-12); }
+/* A widget already on Home tints its tile blue, hovered or not. Selecting fades the blue in. Deselecting drops it at once. */
+.home-gallery-tile:has(> .home-gallery-pick[aria-pressed="true"]),
+html[data-theme="dark"] .home-gallery-tile:has(> .home-gallery-pick[aria-pressed="true"]) {
+  background: var(--action-tint);
+  transition: background-color var(--motion-hover) ease, scale 160ms var(--ease-out);
+}
+.home-gallery-tile:active { scale: 0.98; }
+/* The stroke sits above the preview, so the cropped widget never covers it on the right and bottom edges. */
+.home-gallery-tile::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 1px solid var(--black-12);
+  border-radius: inherit;
   pointer-events: none;
 }
+.home-gallery-tile:has(> .home-gallery-pick[aria-pressed="true"])::after {
+  border-color: var(--action);
+  transition: border-color var(--motion-hover) ease;
+}
+/* The live widget at full size, set in from the tile's top and left. The tile's right and bottom edges
+   crop it, not the preview, so its top-left corner shows with its shadow, like a card peeking out of a column. */
+.home-gallery-preview {
+  height: 160px;
+  margin-left: var(--space-12);
+  pointer-events: none;
+  /* Greyed a touch, so the preview reads as a picture of the widget and the tile's title leads. */
+  opacity: 0.7;
+}
+/* A widget already on Home shows its preview at full strength. */
+.home-gallery-tile:has(> .home-gallery-pick[aria-pressed="true"]) .home-gallery-preview { opacity: 1; }
 .home-gallery-scale {
-  width: 200%;
-  transform: scale(0.5);
+  /* About a Home column wide, so every widget lays out as it does on Home, then shown small. */
+  width: 480px;
+  transform: scale(0.55);
   transform-origin: top left;
+  border-radius: var(--radius-card);
+  box-shadow: 0 1px 2px var(--black-12), var(--shadow-menu);
 }
 .home-gallery-scale > * { width: 100%; }
 .home-gallery-name {
@@ -1409,9 +1320,11 @@ html[data-theme="dark"] .home-gallery-tile:has(> .home-gallery-pick[aria-pressed
   align-items: center;
   gap: var(--space-4);
   min-width: 0;
+  padding: var(--space-10) var(--space-12);
   color: var(--black);
-  font-size: var(--text-12);
-  line-height: 16px;
+  font-size: var(--text-14);
+  font-weight: 500;
+  line-height: 20px;
 }
 .home-gallery-name > span {
   min-width: 0;
@@ -1429,21 +1342,17 @@ html[data-theme="dark"] .home-gallery-tile:has(> .home-gallery-pick[aria-pressed
   background: transparent;
   cursor: pointer;
 }
-.home-gallery-foot {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-12);
-  padding: var(--space-10) var(--space-12) var(--space-10) var(--space-16);
-  border-top: 1px solid var(--line);
+.home-gallery-pick:focus-visible { outline: 2px solid var(--action); outline-offset: -2px; }
+
+/* A phone gets the whole screen, and two previews to a row. */
+@media (max-width: 640px) {
+  .editor-dialog:has(> .home-add-dialog) { padding: 0; }
+  .editor-dialog-card.home-add-dialog { height: 100%; max-height: none; border-radius: 0; }
+  .home-gallery-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .home-gallery-preview { height: 120px; }
 }
-.home-gallery-foot p {
-  margin: 0;
-  color: var(--text-muted);
-  font-size: var(--text-12);
-}
+
 @media (prefers-reduced-motion: reduce) {
   .home-widgets.is-editing .home-edit-item,
-  .home-edit-remove,
-  .home-gallery { animation: none; }
+  .home-edit-remove { animation: none; }
 }

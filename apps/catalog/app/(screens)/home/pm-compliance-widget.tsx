@@ -1,6 +1,6 @@
 "use client";
 
-import { Widget } from "@lance-live/gallery-ui";
+import { Widget, WidgetNote, WidgetStats } from "@lance-live/gallery-ui";
 
 /** One program's PMs that came due in the window, and how many of those were completed. */
 type Program = { id: string; name: string; due: number; done: number };
@@ -61,35 +61,22 @@ export function PmComplianceWidget() {
   const missed = due - done;
   const value = share(done, due);
   return (
-    <Widget icon="wrench" title="PM compliance" action={<span className="home-pm-today">{WINDOW}</span>}>
+    <Widget icon="wrench" title="PM compliance" action={<WidgetNote>{WINDOW}</WidgetNote>}>
       <div className="home-gauge">
         <div className="home-gauge-dial" role="img" aria-label={`${Math.floor(value * 100)}% completed, ${done} of ${due} PMs, ${missed} missed`}>
           <Dial value={value} />
           <p className="home-gauge-read" aria-hidden="true">
-            <span className="home-summary-figure">{Math.floor(value * 100)}%</span>
-            <span className="home-summary-label">completed</span>
+            <span className="widget-figure-value">{Math.floor(value * 100)}%</span>
+            <span className="widget-figure-label">completed</span>
           </p>
         </div>
-        <dl className="home-summary-stats">
-          <div>
-            <dt>
-              <span className="home-summary-key is-clean" aria-hidden="true" />
-              Done
-            </dt>
-            <dd>{done}</dd>
-          </div>
-          <div>
-            <dt>
-              <span className="home-summary-key is-waiting" aria-hidden="true" />
-              Missed
-            </dt>
-            <dd>{missed}</dd>
-          </div>
-          <div>
-            <dt>Due</dt>
-            <dd>{due}</dd>
-          </div>
-        </dl>
+        <WidgetStats
+          items={[
+            { label: "Done", value: done, key: "action" },
+            { label: "Missed", value: missed, key: "quiet" },
+            { label: "Due", value: due },
+          ]}
+        />
       </div>
     </Widget>
   );

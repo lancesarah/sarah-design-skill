@@ -135,7 +135,8 @@ The nav and the chat stay darker than the page. The page is the lighter surface,
 | Subtext | `--black-50`, and `--text-muted` follows it | `#B5B5B5` |
 | Quiet grey | `--black-25` | halfway from `--black-50` toward `--sidebar-grey` |
 | Quiet fill and hover outline | `--black-12` | `#3a3a3a` |
-| Card and panel stroke | `--line`, `--stroke` | `#313131` |
+| Hairline and control stroke | `--line`, `--stroke` | `#313131` |
+| Card and table outer stroke | `--line-card`, `--stroke-card` | `--black-12`, `#3a3a3a` |
 
 `--line` is `--grey` in light mode, so light borders stay the same. In dark mode it is `#313131`: lighter than the page (`--page-mid`) and still lighter than a hovered row (`--grey`, `#292929`). A divider or chip stroke painted in `--grey` or the old `--black-12` matches that hover fill and disappears. `--black-12` is the next step, `#3a3a3a`, for hover outlines and the pressed chip stroke. Accent colors stay.
 
@@ -147,7 +148,7 @@ A control on the page takes `--grey`. A control on a hovered row, which is alrea
 
 A hairline uses `--line`. A chip ring uses `--black-12` at rest. A pressed stroke chip on a dark hovered row uses `--black-25`, which stays lighter than the `--black-12` fill. A divider painted in the same token as the fill behind it disappears. Menu rules use `--line`.
 
-The table frame is the 1px padding around the sheet. Light mode keeps `--grey`. Dark mode uses `--black-12`. Row and column rules inside the frame stay `--line`.
+The outer edge of a card or a table is `--line-card` (a border) or `--stroke-card` (a ring): `--black-12` in both themes, one step past the hairlines inside it. That covers the widget, the Lance pattern card, the table frame, the notifications column, the ticket card, the inset card, the readings and PM cards, the call transcript and thread, and the gallery's docs card. Rules inside a card or a table stay `--line`, and a control's ring stays `--stroke`.
 
 `--bg-surface` follows `--white`. `--text-muted` follows `--black-50`. The blue and the red stay. Button fills stay on the button table above. The secondary hover is `--grey`, lighter than the card. It is not a white button.
 
@@ -184,7 +185,7 @@ Sidebar icon buttons stay unfilled. The switch under Settings uses `--action` an
 ## Elevation and stroke
 
 - `--elevation-menu`: menus and popovers. It is the `--shadow-menu` value.
-- `--stroke`: 1px `--grey` ring. The page card and the notifications column are one step darker, 1px `--black-12`. In dark mode that step is the dark `--black-12`.
+- `--stroke`: 1px `--grey` ring, for controls. A card or a table takes `--stroke-card`, one step darker, 1px `--black-12`. The page card is 1px `--black-12` too.
 - `--outline-image`: 1px pure black at 10% opacity, inset on photographs. In dark mode it is pure white at 10% opacity, not the hairline and not a tinted grey.
 - `--icon-stroke`: `calc(1 / 0.95)`. Icons with class `i` are scaled to 0.95, and this keeps the painted stroke at `1`. Every icon is the line construction `#i-calendar` and `#i-camera` use, on a 14 grid with round ends and joins. See [polish.md](polish.md).
 - `--hit` / `--hit-touch`: 40px and 44px hit areas. The visible control stays its gallery size.

@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  Chip,
   ASSIGNEE_PEOPLE,
   ActivityFeed,
   Button,
@@ -35,8 +36,8 @@ import {
 } from "@lance-live/gallery-ui";
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { flushSync } from "react-dom";
+import { putBack, useNotify } from "../action-toast";
 import { FilterMenu, SearchBox } from "../chrome";
-import { Glyph } from "../glyph";
 import { PageLayout } from "../page-layout";
 
 type Complaint = {
@@ -374,6 +375,7 @@ function ComplaintEditor({
 }
 
 export default function ComplaintsPage() {
+  const notify = useNotify();
   const [records, setRecords] = useState(STARTER);
   const [bucket, setBucket] = useState("open");
   const [query, setQuery] = useState("");
@@ -469,6 +471,8 @@ export default function ComplaintsPage() {
   }
 
   function removeComplaint(id: string) {
+    const index = records.findIndex((row) => row.id === id);
+    const removed = records[index];
     const play = captureClose(document.querySelector(`[data-record="${CSS.escape(id)}"]`));
     flushSync(() => {
       setRecords((list) => list.filter((row) => row.id !== id));
@@ -476,6 +480,7 @@ export default function ComplaintsPage() {
       setEditing((current) => (current?.id === id ? null : current));
     });
     play();
+    if (removed) notify({ message: "Complaint deleted", action: "Undo", onAction: () => setRecords((list) => putBack(list, removed, index)) });
   }
 
   const edited = editing ? records.find((row) => row.id === editing.id) ?? null : null;
@@ -518,9 +523,7 @@ export default function ComplaintsPage() {
           <FilterMenu value={urgencies} onValueChange={setUrgencies} options={["urgent", "high", "standard", "low"]} />
           <div className="filter-chips">
             {urgencies.map((value) => (
-              <button key={value} className="chip chip-filter" type="button" onClick={() => setUrgencies((current) => current.filter((item) => item !== value))}>
-                <span className="chip-k">Urgency</span>: {URGENCY[value]} <Glyph name="plus" size={10} className="x" />
-              </button>
+              <Chip key={value} filter={{ name: "Urgency", value: URGENCY[value] }} onClick={() => setUrgencies((current) => current.filter((item) => item !== value))} />
             ))}
           </div>
         </div>
@@ -583,6 +586,7 @@ export default function ComplaintsPage() {
             onClose={() => setEditing(null)}
             onSave={(next) => {
               setRecords((list) => list.map((row) => (row.id === next.id ? next : row)));
+              notify(editing?.creating ? "Complaint created" : "Complaint updated");
               setEditing(null);
             }}
             onDelete={() => removeComplaint(edited.id)}

@@ -1,7 +1,8 @@
 "use client";
 
-import { Avatar, Button, Checkbox, ConfirmDialog, Day, Empty, Icon, Message, OverlayMenu, Person, Resolved, SegmentedControl, Status, Ticket, TicketNote, Typing, type IconName } from "@lance-live/gallery-ui";
+import { Chip, Avatar, Button, Checkbox, ConfirmDialog, Day, Empty, Icon, Message, OverlayMenu, Person, Resolved, SegmentedControl, Status, Ticket, TicketNote, Typing, type IconName } from "@lance-live/gallery-ui";
 import { Fragment, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore, type ReactNode, type RefObject } from "react";
+import { useNotify } from "./action-toast";
 import { clockTime, continuesRun, useChat, type ChatLine } from "./chat-data";
 import { SearchBox } from "./chrome";
 import { Glyph } from "./glyph";
@@ -505,8 +506,19 @@ export function MessageField({ label, value, onValueChange, onSubmit }: { label:
   useLayoutEffect(() => {
     const field = ref.current;
     if (!field) return;
-    field.style.height = "0px";
-    field.style.height = `${field.scrollHeight}px`;
+    const fit = () => {
+      field.style.height = "0px";
+      field.style.height = `${field.scrollHeight}px`;
+    };
+    fit();
+    let width = field.offsetWidth;
+    const observer = new ResizeObserver(() => {
+      if (field.offsetWidth === width) return;
+      width = field.offsetWidth;
+      fit();
+    });
+    observer.observe(field);
+    return () => observer.disconnect();
   }, [value]);
 
   return (
@@ -527,7 +539,7 @@ export function MessageField({ label, value, onValueChange, onSubmit }: { label:
   );
 }
 
-function ThreadReply({ draft, setDraft, send, placeholder = "Write a message" }: { draft: string; setDraft: (value: string) => void; send: () => void; placeholder?: string }) {
+export function ThreadReply({ draft, setDraft, send, placeholder = "Write a message" }: { draft: string; setDraft: (value: string) => void; send: () => void; placeholder?: string }) {
   return (
     <form
       className={["sds", "msg", "is-fill", draft.trim() ? "has-value" : ""].filter(Boolean).join(" ")}
@@ -642,9 +654,7 @@ function NewMessage({ threads, openId, onOpen, onStart }: { threads: Thread[]; o
         {to.length > 0 ? (
           <div className="filter-chips">
             {to.map((item) => (
-              <button key={item.key} className="chip chip-filter" type="button" onClick={() => toggle(item)}>
-                <span className="chip-k">To</span>: {item.name} <Glyph name="plus" size={10} className="x" />
-              </button>
+              <Chip key={item.key} filter={{ name: "To", value: item.name }} onClick={() => toggle(item)} />
             ))}
           </div>
         ) : null}
@@ -939,6 +949,7 @@ export function MessagesBoard({
   onNew: () => void;
   bindActions: (actions: { resolve: () => void } | null) => void;
 }) {
+  const notify = useNotify();
   const threads = useThreads();
   const tickets = useTickets();
   const thread = openId ? threads.find((item) => item.id === openId) ?? null : null;
@@ -955,9 +966,9 @@ export function MessagesBoard({
       ) : deleted ? (
         <DeletedThread thread={deleted} board />
       ) : showDetails && thread ? (
-        <BoardDetails thread={thread} onBack={() => onDetails(null)} onDelete={() => removeThread(thread.id)} />
+        <BoardDetails thread={thread} onBack={() => onDetails(null)} onDelete={() => { removeThread(thread.id); notify("Conversation deleted"); }} />
       ) : thread && !thread.support && !thread.muted ? (
-        <BoardThread thread={thread} onDelete={() => removeThread(thread.id)} onOpenDetails={() => onDetails(thread.id)} />
+        <BoardThread thread={thread} onDelete={() => { removeThread(thread.id); notify("Conversation deleted"); }} onOpenDetails={() => onDetails(thread.id)} />
       ) : (
         <Empty
           icon="bubble"
@@ -1161,6 +1172,7 @@ export function MessagesSide({
   onExpand: () => void;
   onCollapse: () => void;
 }) {
+  const notify = useNotify();
   const [query, setQuery] = useState("");
   const [source, setSource] = useState<SourceFilter>("All");
   const [filtersOpen, setFiltersOpen] = useState(false);
@@ -1543,7 +1555,10 @@ export function MessagesSide({
         noun={pending?.noun}
         onCancel={() => setPending(null)}
         onConfirm={() => {
-          pending?.run();
+          if (pending) {
+            pending.run();
+            notify(pending.noun === "ticket" ? "Ticket deleted" : "Conversation deleted");
+          }
           setPending(null);
         }}
       />

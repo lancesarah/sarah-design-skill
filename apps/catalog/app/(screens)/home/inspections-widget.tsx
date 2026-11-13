@@ -1,6 +1,6 @@
 "use client";
 
-import { Avatar, Empty, Meter, Widget, WidgetEmpty, WidgetList, WidgetMore, WidgetRow } from "@lance-live/gallery-ui";
+import { Avatar, Empty, Meter, Widget, WidgetEmpty, WidgetFigure, WidgetList, WidgetMore, WidgetRow, WidgetStats, WidgetSummary } from "@lance-live/gallery-ui";
 import Link from "next/link";
 
 type Inspector = { id: string; name: string; initials: string; done: number; left: number };
@@ -30,46 +30,24 @@ export function InspectionsWidget() {
     <Widget icon="eye" title="Inspections">
       {INSPECTORS.length ? (
         <>
-          <div className="home-summary">
-            <p className="home-summary-hero">
-              <span className="home-summary-figure">{cleaned}</span>
-              <span className="home-summary-label">rooms to inspect</span>
-            </p>
-            <dl className="home-summary-stats">
-              <div>
-                <dt>
-                  <span className="home-summary-key is-clean" aria-hidden="true" />
-                  Done
-                </dt>
-                <dd>{done}</dd>
-              </div>
-              <div>
-                <dt>
-                  <span className="home-summary-key is-waiting" aria-hidden="true" />
-                  Cleaned
-                </dt>
-                <dd>{cleaned}</dd>
-              </div>
-              <div>
-                <dt>
-                  <span className="home-summary-key is-dnd" aria-hidden="true" />
-                  Not ready
-                </dt>
-                <dd>{NOT_READY}</dd>
-              </div>
-              <div>
-                <dt>Sent back</dt>
-                <dd>{SENT_BACK}</dd>
-              </div>
-            </dl>
+          <WidgetSummary>
+            <WidgetFigure value={cleaned} label="rooms to inspect" />
+            <WidgetStats
+              items={[
+                { label: "Done", value: done, key: "action" },
+                { label: "Cleaned", value: cleaned, key: "quiet" },
+                { label: "Not ready", value: NOT_READY, key: "strong" },
+                { label: "Sent back", value: SENT_BACK },
+              ]}
+            />
             <Meter
-              className="home-summary-meter"
+              className="widget-summary-meter"
               value={done}
               max={total}
               end={NOT_READY}
               label={`${done} done, ${cleaned} cleaned and waiting, ${NOT_READY} not ready, of ${total} rooms`}
             />
-          </div>
+          </WidgetSummary>
           <WidgetList>
             {shown.map((person) => (
               <WidgetRow

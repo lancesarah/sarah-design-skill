@@ -1,8 +1,9 @@
 "use client";
 
-import { Button, DataTable, DetailPanel, FactRow, Icon, Meter, OverlayMenu, TITLE_TEXT_INSET, Tabs, captureClose, dateColumn, taskMenuItem, textColumn, type DataColumn } from "@lance-live/gallery-ui";
+import { Chip, Button, DataTable, DetailPanel, FactRow, Icon, Meter, OverlayMenu, TITLE_TEXT_INSET, Tabs, captureClose, dateColumn, taskMenuItem, textColumn, type DataColumn } from "@lance-live/gallery-ui";
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { flushSync } from "react-dom";
+import { putBack, useNotify } from "../action-toast";
 import { FilterMenu, RangeControl, SearchBox } from "../chrome";
 import { EditText } from "../edit-text";
 import { Glyph } from "../glyph";
@@ -236,6 +237,7 @@ function AnswerDetail({
 }
 
 export default function KnowledgePage() {
+  const notify = useNotify();
   const [answers, setAnswers] = useState(STARTER);
   const [bucket, setBucket] = useState("all");
   const [query, setQuery] = useState("");
@@ -294,6 +296,19 @@ export default function KnowledgePage() {
     setAnswers((list) => [blank, ...list]);
     setSelected(id);
     setEnteringId(id);
+    notify("Question added");
+  }
+
+  function removeAnswer(id: string) {
+    const index = answers.findIndex((row) => row.id === id);
+    const removed = answers[index];
+    const play = captureClose(document.querySelector(`[data-record="${CSS.escape(id)}"]`));
+    flushSync(() => {
+      setAnswers((list) => list.filter((row) => row.id !== id));
+      setSelected((current) => (current === id ? null : current));
+    });
+    play();
+    if (removed) notify({ message: "Question deleted", action: "Undo", onAction: () => setAnswers((list) => putBack(list, removed, index)) });
   }
 
   return (
@@ -330,9 +345,7 @@ export default function KnowledgePage() {
           <FilterMenu value={categories} onValueChange={setCategories} options={CATEGORIES} />
           <div className="filter-chips">
             {categories.map((value) => (
-              <button key={value} className="chip chip-filter" type="button" onClick={() => setCategories((current) => current.filter((item) => item !== value))}>
-                <span className="chip-k">Category</span>: {value} <Glyph name="plus" size={10} className="x" />
-              </button>
+              <Chip key={value} filter={{ name: "Category", value }} onClick={() => setCategories((current) => current.filter((item) => item !== value))} />
             ))}
           </div>
           <RangeControl label="Activity window" value={range} onValueChange={setRange} />
@@ -390,14 +403,7 @@ export default function KnowledgePage() {
               enteringId={enteringId}
               onRowClick={(row) => setSelected((current) => (current === row.id ? null : row.id))}
               onRowContextMenu={(row) => setSelected(row.id)}
-              onDelete={(row) => {
-                const play = captureClose(document.querySelector(`[data-record="${CSS.escape(row.id)}"]`));
-                flushSync(() => {
-                  setAnswers((list) => list.filter((item) => item.id !== row.id));
-                  setSelected((current) => (current === row.id ? null : current));
-                });
-                play();
-              }}
+              onDelete={(row) => removeAnswer(row.id)}
               deleteNoun="question"
               rowName={(row) => row.question.trim() || "Question"}
             />
@@ -418,13 +424,7 @@ export default function KnowledgePage() {
           }}
           onDeleted={() => {
             const id = retained.current?.id;
-            if (!id) return;
-            const play = captureClose(document.querySelector(`[data-record="${CSS.escape(id)}"]`));
-            flushSync(() => {
-              setAnswers((list) => list.filter((row) => row.id !== id));
-              setSelected(null);
-            });
-            play();
+            if (id) removeAnswer(id);
           }}
         />
       ) : null}

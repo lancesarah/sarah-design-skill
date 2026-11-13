@@ -24,7 +24,6 @@ body .side {
   max-width: 277px;
   padding-bottom: var(--space-8);
   overflow-x: hidden;
-  border-right: 0;
   transition: flex-basis 150ms ease, width 150ms ease, min-width 150ms ease, max-width 150ms ease, padding 150ms ease, gap 150ms ease;
 }
 

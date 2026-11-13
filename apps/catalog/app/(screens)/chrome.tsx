@@ -1,75 +1,11 @@
 "use client";
 
-import { OverlayMenu, SegmentedControl, Sidebar, type SidebarGroup, type SidebarLink } from "@lance-live/sds";
+import { OverlayMenu, SegmentedControl, Sidebar, type SidebarLink } from "@lance-live/sds";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import { Glyph } from "./glyph";
-import { MESSAGE_COUNT } from "./messages";
-import { NOTICE_COUNT } from "./notifications";
+import { NAV_FIXED, NAV_GROUPS } from "./nav";
 import { useHtmlSlide } from "./slide";
-
-const FIXED: SidebarLink[] = [
-  { href: "/home", icon: "home", label: "Home" },
-  { icon: "bubble", label: "Messages", tip: "Opt M", count: MESSAGE_COUNT },
-  { icon: "bell", label: "Notifications", tip: "Opt N", count: NOTICE_COUNT },
-  { href: "/notes", icon: "doc", label: "Internal notes" },
-];
-
-const GROUPS: SidebarGroup[] = [
-  {
-    title: "Pinned",
-    pinned: true,
-    open: true,
-    links: [
-      { icon: "grid", label: "Boards" },
-      { href: "/todos", icon: "clipboard", label: "To-Dos" },
-      { href: "/complaints", icon: "alert", label: "Complaints" },
-      { href: "/cash", icon: "card", label: "Cash & bank" },
-      { icon: "calendar", label: "Schedule" },
-    ],
-  },
-  {
-    title: "Guest",
-    open: true,
-    links: [
-      { href: "/calls", icon: "phone", label: "Calls" },
-      { href: "/guest-messages", icon: "bubble-lines", label: "Guest messages" },
-    ],
-  },
-  {
-    title: "Operations",
-    open: false,
-    links: [
-      { icon: "grid", label: "Boards" },
-      { href: "/todos", icon: "clipboard", label: "To-Dos" },
-      { href: "/complaints", icon: "alert", label: "Complaints" },
-      { icon: "calendar", label: "Schedule" },
-      { href: "/lost-found", icon: "tag", label: "Lost & found" },
-      { href: "/cash", icon: "card", label: "Cash & bank" },
-    ],
-  },
-  {
-    title: "Facilities",
-    open: false,
-    links: [
-      { href: "/pm", icon: "wrench", label: "PM" },
-      { href: "/readings", icon: "gauge", label: "Readings" },
-    ],
-  },
-  {
-    title: "Records",
-    open: true,
-    links: [
-      { href: "/notes", icon: "doc", label: "Internal notes" },
-      { href: "/knowledge", icon: "book", label: "Knowledge base" },
-    ],
-  },
-  {
-    title: "Sales",
-    open: false,
-    links: [{ icon: "share", label: "Sales" }],
-  },
-];
 
 export function WorkspaceSide({
   collapsed,
@@ -99,8 +35,8 @@ export function WorkspaceSide({
       avatarSrc="/avatar-sarah.png"
       collapsed={collapsed}
       onCollapsedChange={onCollapsedChange}
-      fixed={FIXED.map(mark)}
-      groups={GROUPS.map((group) => ({ ...group, links: group.links.map(mark) }))}
+      fixed={NAV_FIXED.map(mark)}
+      groups={NAV_GROUPS.map((group) => ({ ...group, links: group.links.map(mark) }))}
     />
   );
 }

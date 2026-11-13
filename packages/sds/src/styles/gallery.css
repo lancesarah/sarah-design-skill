@@ -990,7 +990,6 @@ body.is-side-collapsed :where(.sds) .side-frame, body.is-side-collapsed :where(.
   padding: 16px 0 12px;
   overflow: hidden;
   background: var(--sidebar-grey);
-  border-right: 1px solid var(--line);
   font-family: var(--font);
   color: var(--black);
   transition: flex-basis 150ms ease, width 150ms ease, min-width 150ms ease, max-width 150ms ease, padding 150ms ease, gap 150ms ease;

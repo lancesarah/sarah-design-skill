@@ -109,6 +109,7 @@ import {
 } from "@lance-live/sds";
 import { DocPage, Example } from "./docs-example";
 import { TodosWidget } from "./(screens)/home/todos-widget";
+import { NAV_FIXED, NAV_GROUPS } from "./(screens)/nav";
 
 const menuItems = [
   { value: "Share", label: "Share", icon: "share" as const },
@@ -161,67 +162,9 @@ function PhotoThumbsDemo() {
   );
 }
 
-const sidebarFixed: SidebarLink[] = [
-  { icon: "home", label: "Home" },
-  { icon: "bubble", label: "Messages", tip: "Opt M" },
-  { icon: "bell", label: "Notifications", tip: "Opt N" },
-  { icon: "doc", label: "Internal notes" },
-];
-
-const sidebarGroups: SidebarGroup[] = [
-  {
-    title: "Pinned",
-    pinned: true,
-    open: true,
-    links: [
-      { label: "Boards", icon: "grid" },
-      { label: "To-Dos", icon: "clipboard", current: true },
-      { label: "Complaints", icon: "alert" },
-      { label: "Schedule", icon: "calendar" },
-    ],
-  },
-  {
-    title: "Guest",
-    open: true,
-    links: [
-      { label: "Calls", icon: "phone" },
-      { label: "Guest messages", icon: "bubble-lines" },
-    ],
-  },
-  {
-    title: "Operations",
-    open: false,
-    links: [
-      { label: "Boards", icon: "grid" },
-      { label: "To-Dos", icon: "clipboard" },
-      { label: "Complaints", icon: "alert" },
-      { label: "Schedule", icon: "calendar" },
-      { label: "Lost & found", icon: "tag" },
-      { label: "Cash & bank", icon: "card" },
-    ],
-  },
-  {
-    title: "Facilities",
-    open: false,
-    links: [
-      { label: "PM", icon: "wrench" },
-      { label: "Readings", icon: "gauge" },
-    ],
-  },
-  {
-    title: "Records",
-    open: true,
-    links: [
-      { label: "Internal notes", icon: "doc" },
-      { label: "Knowledge base", icon: "book" },
-    ],
-  },
-  {
-    title: "Sales",
-    open: false,
-    links: [{ label: "Sales", icon: "share" }],
-  },
-];
+const specimenLink = ({ href: _href, ...link }: SidebarLink): SidebarLink => link;
+const sidebarFixed = NAV_FIXED.map((link) => ({ ...specimenLink(link), current: link.label === "Home" }));
+const sidebarGroups: SidebarGroup[] = NAV_GROUPS.map((group) => ({ ...group, links: group.links.map(specimenLink) }));
 
 const tabs = [
   { value: "open", label: "Open", count: 8 },

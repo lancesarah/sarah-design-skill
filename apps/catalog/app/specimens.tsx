@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Button, IconButton, SegmentedControl, ThemeSwitch, type ButtonVariant } from "@lance-live/gallery-ui";
+import { Button, IconButton, SegmentedControl, ThemeSwitch, type ButtonVariant } from "@lance-live/sds";
 import { DocPage, Example } from "./docs-example";
 
 function Plus() {
@@ -14,7 +14,7 @@ function Plus() {
 
 function VariantBlock({ variant, name, description }: { variant: ButtonVariant; name: string; description: string }) {
   const label = variant === "danger" || variant === "danger-light" ? "Delete" : variant === "tertiary" ? "Required" : "New";
-  const code = `import { Button } from "@lance-live/gallery-ui";
+  const code = `import { Button } from "@lance-live/sds";
 
 export function ${name.replace(/\s/g, "")}() {
   return (
@@ -84,7 +84,7 @@ export function ThemeToggle() {
   );
 }
 
-const SEGMENT_CODE = `import { SegmentedControl } from "@lance-live/gallery-ui";
+const SEGMENT_CODE = `import { SegmentedControl } from "@lance-live/sds";
 
 export function StatusSegments() {
   return (
@@ -109,7 +109,7 @@ export function Specimens({ page }: { page: string }) {
         <VariantBlock variant="tertiary" name="Tertiary" description="Use a tertiary button for a choice that is on, such as Required on a step. It reads as selected without a stroke or a dark fill." />
         <VariantBlock variant="danger" name="Danger" description="Use a danger button for a destructive action, such as delete." />
         <VariantBlock variant="danger-light" name="Danger light" description="The quieter delete: red text and icon on a light red fill, with no hairline. It still opens the delete confirmation." />
-        <Example id="icon" title="Icon only" description="An action with no room for a label, or a tool in a row. It needs an aria-label, and it is never the primary action." code={`import { Button } from "@lance-live/gallery-ui";
+        <Example id="icon" title="Icon only" description="An action with no room for a label, or a tool in a row. It needs an aria-label, and it is never the primary action." code={`import { Button } from "@lance-live/sds";
 
 export function AddButton() {
   return (
@@ -122,7 +122,7 @@ export function AddButton() {
             <Plus />
           </Button>
         </Example>
-        <Example id="icon-button" title="Header icon" description="A tool in a header or a panel bar, such as a panel toggle. The glyph is grey, with no fill or stroke until hover. Every panel toggle uses it." code={`import { IconButton } from "@lance-live/gallery-ui";
+        <Example id="icon-button" title="Header icon" description="A tool in a header or a panel bar, such as a panel toggle. The glyph is grey, with no fill or stroke until hover. Every panel toggle uses it." code={`import { IconButton } from "@lance-live/sds";
 
 export function DetailsToggle({ onClick }: { onClick: () => void }) {
   return <IconButton icon="panel" aria-label="Show details" onClick={onClick} />;
@@ -132,7 +132,7 @@ export function DetailsToggle({ onClick }: { onClick: () => void }) {
           <IconButton icon="fullscreen" aria-label="Expand" />
           <IconButton icon="clock" aria-label="History" />
         </Example>
-        <Example id="disabled" title="Disabled" description="An action that is not available yet. Every variant keeps its shape and fades." code={`import { Button } from "@lance-live/gallery-ui";
+        <Example id="disabled" title="Disabled" description="An action that is not available yet. Every variant keeps its shape and fades." code={`import { Button } from "@lance-live/sds";
 
 export function SaveLater() {
   return <Button disabled>Save</Button>;
@@ -146,7 +146,7 @@ export function SaveLater() {
   if (page === "switch") {
     return (
       <DocPage title="Switch" description="A switch turns one setting on or off. The label says what it sets. On is the one blue.">
-        <Example id="switch-example" title="Default" description="Dark mode. This one switches the gallery." code={`import { ThemeSwitch } from "@lance-live/gallery-ui";
+        <Example id="switch-example" title="Default" description="Dark mode. This one switches the gallery." code={`import { ThemeSwitch } from "@lance-live/sds";
 
 export function DarkMode() {
   const [dark, setDark] = useState(false);
@@ -163,7 +163,7 @@ export function DarkMode() {
         <Example id="segments-default" title="Default" description="The selected segment is the current view. The others stay quiet until they are chosen." code={SEGMENT_CODE}>
           <InteractiveSegments />
         </Example>
-        <Example id="segments-count" title="With counts" description="Each segment can carry a count, drawn like a tab count: a separate figure after the label." code={`import { SegmentedControl } from "@lance-live/gallery-ui";
+        <Example id="segments-count" title="With counts" description="Each segment can carry a count, drawn like a tab count: a separate figure after the label." code={`import { SegmentedControl } from "@lance-live/sds";
 
 export function CountedSegments() {
   return (

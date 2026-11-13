@@ -1,6 +1,6 @@
 "use client";
 
-import { Widget } from "@lance-live/gallery-ui";
+import { Widget } from "@lance-live/sds";
 
 /** `savedMinutes` is an estimate from the replies Lance drafted. */
 const WEEK = { replies: 17, inquiries: 11, savedMinutes: 265 };

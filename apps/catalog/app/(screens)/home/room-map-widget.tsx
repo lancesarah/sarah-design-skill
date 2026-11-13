@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Empty, Icon, OverlayMenu, Widget, WidgetEmpty } from "@lance-live/gallery-ui";
+import { Button, Empty, Icon, OverlayMenu, Widget, WidgetEmpty } from "@lance-live/sds";
 import { useEffect, useRef, useState } from "react";
 
 type View = "all" | "checkouts" | "dnd" | "minibar";

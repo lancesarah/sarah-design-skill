@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Empty, RoomMark, Widget, WidgetEmpty } from "@lance-live/gallery-ui";
+import { Button, Empty, RoomMark, Widget, WidgetEmpty } from "@lance-live/sds";
 import { useEffect, useRef, useState } from "react";
 
 type Upsell = { id: string; room: string; offer: string; guest: string; price: number };

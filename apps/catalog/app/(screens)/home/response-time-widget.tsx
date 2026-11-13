@@ -1,6 +1,6 @@
 "use client";
 
-import { ASSIGNEE_PEOPLE, Empty, isRoomNumber, Person, RoomMark, Widget, WidgetEmpty, WidgetFigure, WidgetList, WidgetMore, WidgetNote, WidgetRow, WidgetSummary } from "@lance-live/gallery-ui";
+import { ASSIGNEE_PEOPLE, Empty, isRoomNumber, Person, RoomMark, Widget, WidgetEmpty, WidgetFigure, WidgetList, WidgetMore, WidgetNote, WidgetRow, WidgetSummary } from "@lance-live/sds";
 import Link from "next/link";
 /** A maintenance ticket closed in the past 24h. `minutes` is from opened to resolved. */
 type Resolved = { id: string; room: string; item: string; minutes: number; resolver: string };

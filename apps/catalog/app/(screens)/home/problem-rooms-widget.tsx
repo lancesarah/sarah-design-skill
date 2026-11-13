@@ -1,6 +1,6 @@
 "use client";
 
-import { Empty, RoomMark, Widget, WidgetEmpty, WidgetList, WidgetMore, WidgetNote, WidgetRow } from "@lance-live/gallery-ui";
+import { Empty, RoomMark, Widget, WidgetEmpty, WidgetList, WidgetMore, WidgetNote, WidgetRow } from "@lance-live/sds";
 import Link from "next/link";
 /** A room's tickets over the last 90d. `issue` is the one that keeps coming back; `last` is the age of the newest ticket. */
 type ProblemRoom = { room: string; issue: string; tickets: number; last: string };

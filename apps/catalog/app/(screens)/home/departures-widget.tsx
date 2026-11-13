@@ -1,6 +1,6 @@
 "use client";
 
-import { Widget } from "@lance-live/gallery-ui";
+import { Widget } from "@lance-live/sds";
 import { CheckStatus } from "./check-status";
 
 /** Occupied: the guest hasn't checked out yet. Dirty: they left and the room waits for housekeeping. Clean: turned and ready. */

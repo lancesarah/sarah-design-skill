@@ -1,6 +1,6 @@
 "use client";
 
-import { ShareBar, Widget, WidgetFigure, type Share } from "@lance-live/gallery-ui";
+import { ShareBar, Widget, WidgetFigure, type Share } from "@lance-live/sds";
 
 /** Who finished each call: Lance on its own, or the desk after a handoff. */
 const OUTCOMES: Share[] = [

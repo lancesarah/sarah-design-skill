@@ -1,6 +1,6 @@
 "use client";
 
-import { Empty, Widget, WidgetEmpty, WidgetList, WidgetRow, WidgetTally } from "@lance-live/gallery-ui";
+import { Empty, Widget, WidgetEmpty, WidgetList, WidgetRow, WidgetTally } from "@lance-live/sds";
 import Link from "next/link";
 
 type ReadingGroup = { id: string; name: string; readings: number; recorded: number; outOfRange: number };

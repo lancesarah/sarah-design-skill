@@ -12,7 +12,7 @@ import {
   TITLE_TEXT_INSET,
   taskMenuItem,
   type DataColumn,
-} from "@lance-live/gallery-ui";
+} from "@lance-live/sds";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useNotify } from "../action-toast";
 import { FilterMenu, SearchBox } from "../chrome";

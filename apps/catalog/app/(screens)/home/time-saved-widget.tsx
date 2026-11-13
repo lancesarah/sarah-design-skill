@@ -1,6 +1,6 @@
 "use client";
 
-import { Widget, WidgetFigure, WidgetNote, WidgetStats, WidgetSummary } from "@lance-live/gallery-ui";
+import { Widget, WidgetFigure, WidgetNote, WidgetStats, WidgetSummary } from "@lance-live/sds";
 
 /** Estimated from what Lance did this week, at the time each would take by hand. */
 const WEEK = { savedMinutes: 265, replies: 17, triaged: 23, calls: 31 };

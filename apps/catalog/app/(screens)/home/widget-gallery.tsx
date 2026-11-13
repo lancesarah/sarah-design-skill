@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, DepartmentChip, EditorDialog, Empty, Icon, SearchField } from "@lance-live/gallery-ui";
+import { Button, DepartmentChip, EditorDialog, Empty, Icon, SearchField } from "@lance-live/sds";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { HOME_WIDGETS, WIDGET_CATEGORIES } from "./widget-catalog";
 

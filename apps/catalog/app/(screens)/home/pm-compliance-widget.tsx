@@ -1,6 +1,6 @@
 "use client";
 
-import { Widget, WidgetNote, WidgetStats } from "@lance-live/gallery-ui";
+import { Widget, WidgetNote, WidgetStats } from "@lance-live/sds";
 
 /** One program's PMs that came due in the window, and how many of those were completed. */
 type Program = { id: string; name: string; due: number; done: number };

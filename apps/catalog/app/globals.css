@@ -1,8 +1,8 @@
 @layer theme, base, gallery-ui, utilities;
 @import "tailwindcss/theme.css" layer(theme);
 @import "tailwindcss/preflight.css" layer(base);
-@import "@lance-live/gallery-ui/tokens.css" layer(gallery-ui);
-@import "@lance-live/gallery-ui/styles.css" layer(gallery-ui);
+@import "@lance-live/sds/tokens.css" layer(gallery-ui);
+@import "@lance-live/sds/styles.css" layer(gallery-ui);
 @import "tailwindcss/utilities.css" layer(utilities);
 
 input:not([type]),

@@ -30,7 +30,7 @@ import {
   type ActivityItem,
   type DataColumn,
   type StatusValue,
-} from "@lance-live/gallery-ui";
+} from "@lance-live/sds";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode, type RefObject } from "react";
 import { createPortal, flushSync } from "react-dom";
 import { putBack, useNotify } from "../action-toast";

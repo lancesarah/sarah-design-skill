@@ -30,7 +30,7 @@ import {
   taskMenuItem,
   useTableMenu,
   type DataColumn,
-} from "@lance-live/gallery-ui";
+} from "@lance-live/sds";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { putBack, useNotify } from "../action-toast";

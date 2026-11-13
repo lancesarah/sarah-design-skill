@@ -1,6 +1,6 @@
 "use client";
 
-import { Chip, Button, DataTable, DetailPanel, FactRow, Icon, Meter, OverlayMenu, TITLE_TEXT_INSET, Tabs, captureClose, dateColumn, taskMenuItem, textColumn, type DataColumn } from "@lance-live/gallery-ui";
+import { Chip, Button, DataTable, DetailPanel, FactRow, Icon, Meter, OverlayMenu, TITLE_TEXT_INSET, Tabs, captureClose, dateColumn, taskMenuItem, textColumn, type DataColumn } from "@lance-live/sds";
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { flushSync } from "react-dom";
 import { putBack, useNotify } from "../action-toast";

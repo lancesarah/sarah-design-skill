@@ -1,6 +1,6 @@
 "use client";
 
-import { Toast } from "@lance-live/gallery-ui";
+import { Toast } from "@lance-live/sds";
 import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 

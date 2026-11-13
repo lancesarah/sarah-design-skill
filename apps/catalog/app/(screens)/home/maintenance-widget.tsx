@@ -1,6 +1,6 @@
 "use client";
 
-import { Widget, WidgetNote, WidgetTally } from "@lance-live/gallery-ui";
+import { Widget, WidgetNote, WidgetTally } from "@lance-live/sds";
 
 const WINDOW = "Past 7d";
 

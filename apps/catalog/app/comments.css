@@ -1,0 +1,270 @@
+/* Review comments. Dev chrome, like the dev bar: it sits over the product, not in it. */
+
+html[data-commenting],
+html[data-commenting] * { cursor: crosshair; }
+
+html[data-commenting] .cmt-ui *,
+html[data-commenting] .dev-switch * { cursor: auto; }
+
+html[data-commenting] .cmt-ui button,
+html[data-commenting] .dev-switch button { cursor: pointer; }
+
+.dev-switch .cmt-count {
+  display: inline-block;
+  min-width: 16px;
+  margin-left: 6px;
+  padding: 0 4px;
+  border-radius: 8px;
+  background: var(--action);
+  color: var(--white);
+  font-variant-numeric: tabular-nums;
+  line-height: 16px;
+  text-align: center;
+}
+
+.cmt-ui {
+  font-family: var(--font);
+  font-size: 13px;
+  color: var(--black);
+}
+
+.cmt-bar {
+  position: fixed;
+  z-index: 2147483002;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 4px 4px 12px;
+  border-radius: var(--radius-control);
+  background: var(--black);
+  color: var(--white);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.cmt-bar button {
+  border: 0;
+  border-radius: var(--radius-control);
+  background: transparent;
+  color: var(--white);
+  font: inherit;
+  padding: 4px 8px;
+}
+
+.cmt-bar button:hover { background: rgb(255 255 255 / 14%); }
+
+.cmt-bar button[aria-pressed="true"] {
+  background: var(--white);
+  color: var(--black);
+}
+
+.cmt-pin {
+  position: fixed;
+  z-index: 2147483000;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  margin: -26px 0 0 0;
+  padding: 0;
+  border: 2px solid var(--white);
+  border-radius: 13px 13px 13px 2px;
+  background: var(--action);
+  color: var(--white);
+  font: 600 12px/1 var(--font);
+  box-shadow: 0 2px 6px rgb(0 0 0 / 25%);
+  transition: scale 120ms var(--ease-out);
+}
+
+.cmt-pin:hover,
+.cmt-pin.is-open { scale: 1.12; }
+
+.cmt-pin.is-resolved { background: var(--black-50); }
+
+.cmt-pin.is-draft {
+  background: var(--action);
+  pointer-events: none;
+}
+
+.cmt-card {
+  position: fixed;
+  z-index: 2147483003;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: min(480px, calc(100vh - 16px));
+  padding: 12px;
+  overflow: auto;
+  border-radius: var(--radius-card);
+  background: var(--white);
+  box-shadow: var(--stroke-card), var(--shadow-menu);
+}
+
+.cmt-close {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 24px;
+  height: 24px;
+  border: 0;
+  border-radius: var(--radius-control);
+  background: transparent;
+  color: var(--black-50);
+  font-size: 16px;
+  line-height: 1;
+}
+
+.cmt-close:hover { background: var(--grey); }
+
+.cmt-thread {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-right: 20px;
+}
+
+.cmt-message {
+  display: grid;
+  grid-template-columns: 24px 1fr;
+  gap: 8px;
+}
+
+.cmt-avatar {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 12px;
+  background: var(--grey);
+  color: var(--black);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.cmt-meta,
+.cmt-text,
+.cmt-note,
+.cmt-as,
+.cmt-error { margin: 0; }
+
+.cmt-meta { line-height: 20px; }
+
+.cmt-meta time {
+  margin-left: 4px;
+  color: var(--black-50);
+  font-size: 12px;
+}
+
+.cmt-text {
+  line-height: 18px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.cmt-note {
+  color: var(--black-50);
+  font-size: 12px;
+}
+
+.cmt-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cmt-thread + .cmt-form {
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+}
+
+.cmt-name {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-right: 20px;
+  color: var(--black-50);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.cmt-form input,
+.cmt-form textarea {
+  width: 100%;
+  padding: 6px 8px;
+  border: 0;
+  border-radius: var(--radius-control);
+  background: var(--white);
+  box-shadow: var(--stroke);
+  color: var(--black);
+  font: 13px/18px var(--font);
+  outline: none;
+  resize: vertical;
+}
+
+.cmt-form input:focus,
+.cmt-form textarea:focus { box-shadow: 0 0 0 1px var(--action); }
+
+.cmt-as {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-right: 20px;
+  color: var(--black-50);
+  font-size: 12px;
+}
+
+.cmt-as strong { color: var(--black); font-weight: 500; }
+
+.cmt-as button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--action);
+  font: inherit;
+}
+
+.cmt-error {
+  color: var(--destructive);
+  font-size: 12px;
+}
+
+.cmt-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.cmt-actions .cmt-post { margin-left: auto; }
+
+.cmt-post,
+.cmt-quiet {
+  padding: 5px 10px;
+  border: 0;
+  border-radius: var(--radius-control);
+  font: 500 12px/16px var(--font);
+}
+
+.cmt-post {
+  background: var(--action);
+  color: var(--white);
+}
+
+.cmt-post:hover:not(:disabled) { background: var(--action-hover); }
+
+.cmt-quiet {
+  background: transparent;
+  color: var(--black-50);
+}
+
+.cmt-quiet:hover:not(:disabled) { background: var(--grey); color: var(--black); }
+
+.cmt-quiet.is-delete:hover:not(:disabled) { color: var(--destructive); }
+
+.cmt-post:disabled,
+.cmt-quiet:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}

@@ -1,6 +1,6 @@
 "use client";
 
-import { Avatar, Icon, Widget, WidgetList, WidgetRow } from "@lance-live/gallery-ui";
+import { Avatar, Icon, Widget, WidgetList, WidgetRow } from "@lance-live/sds";
 import Link from "next/link";
 
 type HomeNote = { id: string; initials: string; name: string; time: string; title: string; preview: string };

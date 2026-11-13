@@ -1,5 +1,5 @@
 import { Fragment, type HTMLAttributes, type ReactNode } from "react";
-import { PageHeader, type IconName } from "@lance-live/gallery-ui";
+import { PageHeader, type IconName } from "@lance-live/sds";
 
 /** A page in the title. The last one is the page you are on. Earlier ones stay and go back. */
 export type TitlePage = { label: string; onClick?: () => void };

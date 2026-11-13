@@ -1,6 +1,6 @@
 "use client";
 
-import { Avatar, Empty, Widget, WidgetEmpty, WidgetList, WidgetMore, WidgetRow } from "@lance-live/gallery-ui";
+import { Avatar, Empty, Widget, WidgetEmpty, WidgetList, WidgetMore, WidgetRow } from "@lance-live/sds";
 import Link from "next/link";
 
 type Waiting = { id: string; lead: string; initials: string; last: string; waiting: string; late: boolean };

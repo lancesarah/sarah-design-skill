@@ -1,6 +1,6 @@
 "use client";
 
-import { Chip, ASSIGNEE_PEOPLE, ActivityFeed, Button, DepartmentChip, DetailPanel, FactRow, Icon, Person, PhotoThumb, PhotoViewer, SideRoom, StatusCell, Tabs, TaskTable, UrgencyCell, captureClose, type ActivityItem } from "@lance-live/gallery-ui";
+import { Chip, ASSIGNEE_PEOPLE, ActivityFeed, Button, DepartmentChip, DetailPanel, FactRow, Icon, Person, PhotoThumb, PhotoViewer, SideRoom, StatusCell, Tabs, TaskTable, UrgencyCell, captureClose, type ActivityItem } from "@lance-live/sds";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { putBack, useNotify } from "../action-toast";

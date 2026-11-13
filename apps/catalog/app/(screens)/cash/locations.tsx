@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Checkbox, ConfirmDialog, DEPARTMENTS, DepartmentChip, Icon, OverlayMenu, captureClose, playEnter } from "@lance-live/gallery-ui";
+import { Button, Checkbox, ConfirmDialog, DEPARTMENTS, DepartmentChip, Icon, OverlayMenu, captureClose, playEnter } from "@lance-live/sds";
 import { forwardRef, useEffect, useId, useLayoutEffect, useRef, useState, type ButtonHTMLAttributes } from "react";
 import { flushSync } from "react-dom";
 import { putBack, useNotify } from "../action-toast";

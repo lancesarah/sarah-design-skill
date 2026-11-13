@@ -1,6 +1,6 @@
 "use client";
 
-import { SegmentedControl, Widget, WidgetKey, WidgetTally, type WidgetKeyTone } from "@lance-live/gallery-ui";
+import { SegmentedControl, Widget, WidgetKey, WidgetTally, type WidgetKeyTone } from "@lance-live/sds";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 
 type Period = "24h" | "7d" | "30d";

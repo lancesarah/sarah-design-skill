@@ -1,6 +1,6 @@
 "use client";
 
-import { Widget, WidgetTally, type Share } from "@lance-live/gallery-ui";
+import { Widget, WidgetTally, type Share } from "@lance-live/sds";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 
 /** Busiest first, so the bars read from the tallest down. */

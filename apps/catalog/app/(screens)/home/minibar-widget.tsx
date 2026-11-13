@@ -1,6 +1,6 @@
 "use client";
 
-import { Empty, RoomMark, Widget, WidgetEmpty, WidgetList, WidgetMore, WidgetNote, WidgetRow } from "@lance-live/gallery-ui";
+import { Empty, RoomMark, Widget, WidgetEmpty, WidgetList, WidgetMore, WidgetNote, WidgetRow } from "@lance-live/sds";
 import Link from "next/link";
 
 type MinibarRoom = { room: string; items: string; charge: number; out: string };

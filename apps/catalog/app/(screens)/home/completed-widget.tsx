@@ -1,6 +1,6 @@
 "use client";
 
-import { ASSIGNEE_PEOPLE, Avatar, Empty, Widget, WidgetEmpty, WidgetFigure, WidgetList, WidgetMore, WidgetRow, WidgetSummary } from "@lance-live/gallery-ui";
+import { ASSIGNEE_PEOPLE, Avatar, Empty, Widget, WidgetEmpty, WidgetFigure, WidgetList, WidgetMore, WidgetRow, WidgetSummary } from "@lance-live/sds";
 import Link from "next/link";
 
 /** A closed ticket. `ago` is minutes since it was completed. */

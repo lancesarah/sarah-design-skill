@@ -1,4 +1,4 @@
-import { Icon } from "@lance-live/gallery-ui";
+import { Icon } from "@lance-live/sds";
 import type { ReactNode } from "react";
 
 /** Pencil that appears when editable detail text is hovered. Not for table cells. */

@@ -1,6 +1,6 @@
 "use client";
 
-import { Avatar, Empty, Icon, OverlayMenu, Tabs } from "@lance-live/gallery-ui";
+import { Avatar, Empty, Icon, OverlayMenu, Tabs } from "@lance-live/sds";
 import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import { SearchBox } from "./chrome";
 import { Glyph } from "./glyph";

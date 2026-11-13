@@ -106,7 +106,7 @@ import {
   TitleSubtitle,
   type IconName,
   type Photo,
-} from "@lance-live/gallery-ui";
+} from "@lance-live/sds";
 import { DocPage, Example } from "./docs-example";
 import { TodosWidget } from "./(screens)/home/todos-widget";
 
@@ -186,7 +186,6 @@ const sidebarGroups: SidebarGroup[] = [
     links: [
       { label: "Calls", icon: "phone" },
       { label: "Guest messages", icon: "bubble-lines" },
-      { label: "Wake-up calls", icon: "clock" },
     ],
   },
   {
@@ -644,7 +643,7 @@ function DataTableSpecimen() {
         id="cell-status"
         title="Status"
         description="Status says what the record is now: Open, In progress, or Completed."
-        code={`import { StatusCell } from "@lance-live/gallery-ui";
+        code={`import { StatusCell } from "@lance-live/sds";
 
 export function Status() {
   return <StatusCell defaultValue="open" />;
@@ -656,7 +655,7 @@ export function Status() {
         id="cell-room"
         title="Room"
         description="Room is a dropdown of rooms that already exist. The number is not typed."
-        code={`import { RoomCell } from "@lance-live/gallery-ui";
+        code={`import { RoomCell } from "@lance-live/sds";
 
 export function Room() {
   return <RoomCell defaultValue="426" options={["426", "244", "103", "436"]} />;
@@ -668,7 +667,7 @@ export function Room() {
         id="side-room"
         title="Detail room"
         description="The room on a to-do detail. The same list of rooms, in the panel's room control."
-        code={`import { SideRoom } from "@lance-live/gallery-ui";
+        code={`import { SideRoom } from "@lance-live/sds";
 
 export function DetailRoom() {
   return <SideRoom value="426" options={["426", "244", "103", "436"]} />;
@@ -680,7 +679,7 @@ export function DetailRoom() {
         id="side-fact"
         title="Fact row"
         description="A short label and the value beside it. Location uses this."
-        code={`import { FactField, FactRow } from "@lance-live/gallery-ui";
+        code={`import { FactField, FactRow } from "@lance-live/sds";
 
 export function Location() {
   return (
@@ -698,7 +697,7 @@ export function Location() {
         id="side-line"
         title="Fact line"
         description="A typed fact in a detail panel. The line field sits beside the label."
-        code={`import { FactLine, FactRow } from "@lance-live/gallery-ui";
+        code={`import { FactLine, FactRow } from "@lance-live/sds";
 
 export function Stored() {
   return (
@@ -716,7 +715,7 @@ export function Stored() {
         id="side-photos"
         title="Photos"
         description="A record can hold photos. None is allowed, and another photo is added beside the ones already there."
-        code={`import { SidePhotos } from "@lance-live/gallery-ui";
+        code={`import { SidePhotos } from "@lance-live/sds";
 
 export function Photos() {
   return <SidePhotos />;
@@ -728,7 +727,7 @@ export function Photos() {
         id="side-photo-add"
         title="Add photo"
         description="The tile that adds a photo. PhotoAddFrame draws its dashed stroke, 3px dashes with 2px gaps, which a CSS border can't set."
-        code={`import { Icon, PhotoAddFrame } from "@lance-live/gallery-ui";
+        code={`import { Icon, PhotoAddFrame } from "@lance-live/sds";
 
 export function AddPhoto({ onAdd }: { onAdd: () => void }) {
   return (
@@ -750,7 +749,7 @@ export function AddPhoto({ onAdd }: { onAdd: () => void }) {
         id="cell-urgency"
         title="Urgency"
         description="Urgency hugs the word. Urgent keeps its icon."
-        code={`import { UrgencyCell } from "@lance-live/gallery-ui";
+        code={`import { UrgencyCell } from "@lance-live/sds";
 
 export function Urgency() {
   return <UrgencyCell defaultValue="high" />;
@@ -762,7 +761,7 @@ export function Urgency() {
         id="cell-type"
         title="Type"
         description="Type is the department. The fill stays the department color."
-        code={`import { TypeCell } from "@lance-live/gallery-ui";
+        code={`import { TypeCell } from "@lance-live/sds";
 
 export function Type() {
   return <TypeCell defaultValue="Housekeeping" />;
@@ -774,7 +773,7 @@ export function Type() {
         id="cell-assignee"
         title="Assignee"
         description="Assignee is the person. An empty cell is the dashed avatar."
-        code={`import { AssigneeCell } from "@lance-live/gallery-ui";
+        code={`import { AssigneeCell } from "@lance-live/sds";
 
 export function Assignee() {
   return <AssigneeCell name="Mark" initials="MJ" />;
@@ -786,7 +785,7 @@ export function Assignee() {
         id="cell-assigned-dropdown"
         title="Assigned dropdown"
         description="Assigned on its own. It opens the people who already exist, including Unassigned."
-        code={`import { AssignedDropdown } from "@lance-live/gallery-ui";
+        code={`import { AssignedDropdown } from "@lance-live/sds";
 
 export function Assigned() {
   return <AssignedDropdown value="Mark" initials="MJ" />;
@@ -798,7 +797,7 @@ export function Assigned() {
         id="cell-named-assignee"
         title="Named assignee"
         description="The assignee with the name beside the photo. Complaints use this."
-        code={`import { TaskAssignee } from "@lance-live/gallery-ui";
+        code={`import { TaskAssignee } from "@lance-live/sds";
 
 export function NamedAssignee() {
   return <TaskAssignee named name="Mark" initials="MJ" />;
@@ -810,7 +809,7 @@ export function NamedAssignee() {
         id="cell-chip-dropdown"
         title="Chip dropdown"
         description="A chip that opens a list of values that already exist. Lost and found uses it for the category."
-        code={`import { ChipDropdown, taskMenuItem } from "@lance-live/gallery-ui";
+        code={`import { ChipDropdown, taskMenuItem } from "@lance-live/sds";
 
 export function Category({ open, onToggle, value, onPick }) {
   return (
@@ -830,7 +829,7 @@ export function Category({ open, onToggle, value, onPick }) {
         id="cell-fact"
         title="Fact"
         description="A short value with a chevron, for a fact that opens a choice."
-        code={`import { TaskFact } from "@lance-live/gallery-ui";
+        code={`import { TaskFact } from "@lance-live/sds";
 
 export function Place() {
   return <TaskFact>Guestroom</TaskFact>;
@@ -842,7 +841,7 @@ export function Place() {
         id="cell-date"
         title="Date"
         description="Opened is the date the record started. The column is already as wide as a full date."
-        code={`import { DateCell } from "@lance-live/gallery-ui";
+        code={`import { DateCell } from "@lance-live/sds";
 
 export function Opened() {
   return <DateCell value="now" />;
@@ -854,7 +853,7 @@ export function Opened() {
         id="cell-dropdown-title"
         title="Dropdown title"
         description="A to-do title is two dropdowns, location and item, with the note under them."
-        code={`import { TitleSubtitle } from "@lance-live/gallery-ui";
+        code={`import { TitleSubtitle } from "@lance-live/sds";
 
 export function DropdownTitle() {
   return (
@@ -887,7 +886,7 @@ export function DropdownTitle() {
         id="cell-editable-title"
         title="Editable title"
         description="Some records type the title. The detail sits under it and stays one field."
-        code={`import { TitleSubtitle } from "@lance-live/gallery-ui";
+        code={`import { TitleSubtitle } from "@lance-live/sds";
 
 export function EditableTitle() {
   return (
@@ -916,7 +915,7 @@ export function EditableTitle() {
         id="table"
         title="Table"
         description="A row opens its detail. The selected row keeps the blue fill while another row can still hover."
-        code={`import { DataTable } from "@lance-live/gallery-ui";
+        code={`import { DataTable } from "@lance-live/sds";
 
 export function TodoTable() {
   return <DataTable rows={rows} selectedId="426" interactive columns={columns} />;
@@ -946,7 +945,7 @@ export function TodoTable() {
         id="table-chip"
         title="Table chip"
         description="A cell that opens a menu, such as Status, Room, Urgency, or Type. The chevron shows on hover and while the menu is open, and the menu overlays the page."
-        code={`import { TableChip, taskMenuItem } from "@lance-live/gallery-ui";
+        code={`import { TableChip, taskMenuItem } from "@lance-live/sds";
 
 export function LocationCell({ value, open, onToggle, onChange }: LocationCellProps) {
   return (
@@ -966,7 +965,7 @@ export function LocationCell({ value, open, onToggle, onChange }: LocationCellPr
         id="table-simple"
         title="Simple table"
         description="A table that only shows text. Each column is a title and what to show for a row."
-        code={`import { SheetTable } from "@lance-live/gallery-ui";
+        code={`import { SheetTable } from "@lance-live/sds";
 
 export function Found() {
   return (
@@ -995,7 +994,7 @@ export function GallerySections({ page }: { page: string }) {
     <>
       {page === "color" && (
         <DocPage title="Color" description="Color is the palette. Components use a role, and the role points at one of these swatches.">
-          <Example id="color-example" title="Palette" description="The named colors, from the page surface to the action blue." code={`import { ColorSwatches } from "@lance-live/gallery-ui";
+          <Example id="color-example" title="Palette" description="The named colors, from the page surface to the action blue." code={`import { ColorSwatches } from "@lance-live/sds";
 
 export function Palette() {
   return <ColorSwatches />;
@@ -1006,7 +1005,7 @@ export function Palette() {
       )}
       {page === "spacing" && (
         <DocPage title="Spacing" description="Space is a scale. A gap inside a group stays smaller than the gap between groups.">
-          <Example id="spacing-example" title="Scale" description="Steps from 2px through 25px." code={`import { SpacingScale } from "@lance-live/gallery-ui";
+          <Example id="spacing-example" title="Scale" description="Steps from 2px through 25px." code={`import { SpacingScale } from "@lance-live/sds";
 
 export function Spacing() {
   return <SpacingScale />;
@@ -1017,7 +1016,7 @@ export function Spacing() {
       )}
       {page === "type" && (
         <DocPage title="Typography" description="Type has a small set of sizes. A page title, a record, and a label do not invent a size between them.">
-          <Example id="type-example" title="Scale" description="The sizes already in use, from a label to a page title." code={`import { TypeScale } from "@lance-live/gallery-ui";
+          <Example id="type-example" title="Scale" description="The sizes already in use, from a label to a page title." code={`import { TypeScale } from "@lance-live/sds";
 
 export function Type() {
   return <TypeScale />;
@@ -1030,28 +1029,28 @@ export function Type() {
       )}
       {page === "text-icon" && (
         <DocPage title="Text and icon" description="A text button is a quiet action: a label, an icon, and no fill until hover.">
-          <Example id="text-icon-example" title="Default" description="Label, small, and delete." code={`import { TextIcon } from "@lance-live/gallery-ui";
+          <Example id="text-icon-example" title="Default" description="Label, small, and delete." code={`import { TextIcon } from "@lance-live/sds";
 
 export function ShareAction() {
   return <TextIcon>Share</TextIcon>;
 }`}>
           <TextIcon>Share</TextIcon>
           </Example>
-          <Example id="text-icon-icon" title="Icon" description="Any icon can lead the label. Pick the one that names the action." code={`import { TextIcon } from "@lance-live/gallery-ui";
+          <Example id="text-icon-icon" title="Icon" description="Any icon can lead the label. Pick the one that names the action." code={`import { TextIcon } from "@lance-live/sds";
 
 export function EditAction() {
   return <TextIcon icon="edit">Edit</TextIcon>;
 }`}>
             <TextIcon icon="edit">Edit</TextIcon>
           </Example>
-          <Example id="text-icon-small" title="Small" description="A 14px icon and tighter padding, for a dense row or a panel header." code={`import { TextIcon } from "@lance-live/gallery-ui";
+          <Example id="text-icon-small" title="Small" description="A 14px icon and tighter padding, for a dense row or a panel header." code={`import { TextIcon } from "@lance-live/sds";
 
 export function SmallShare() {
   return <TextIcon size="sm">Share</TextIcon>;
 }`}>
             <TextIcon size="sm">Share</TextIcon>
           </Example>
-          <Example id="text-icon-delete" title="Delete" description="The destructive text button. The word and the icon stay red, and the press opens the delete confirmation." code={`import { TextIcon } from "@lance-live/gallery-ui";
+          <Example id="text-icon-delete" title="Delete" description="The destructive text button. The word and the icon stay red, and the press opens the delete confirmation." code={`import { TextIcon } from "@lance-live/sds";
 
 export function DeleteAction() {
   return <TextIcon icon="trash" tone="delete">Delete</TextIcon>;
@@ -1062,14 +1061,14 @@ export function DeleteAction() {
       )}
       {page === "chip" && (
         <DocPage title="Chip" description="A chip is a compact action. The filter chip is a separate variant, used only for a chosen filter.">
-          <Example id="chip-example" title="Default" description="A label, with or without an icon." code={`import { Chip } from "@lance-live/gallery-ui";
+          <Example id="chip-example" title="Default" description="A label, with or without an icon." code={`import { Chip } from "@lance-live/sds";
 
 export function NewChip() {
   return <Chip>New</Chip>;
 }`}>
           <Chip>New</Chip>
           </Example>
-          <Example id="chip-icon" title="With icon" description="An icon before the label. Plus is the default glyph; pass another to name the action." code={`import { Chip } from "@lance-live/gallery-ui";
+          <Example id="chip-icon" title="With icon" description="An icon before the label. Plus is the default glyph; pass another to name the action." code={`import { Chip } from "@lance-live/sds";
 
 export function AddChip() {
   return (
@@ -1082,7 +1081,7 @@ export function AddChip() {
             <Chip icon>New</Chip>
             <Chip glyph="calendar">Schedule</Chip>
           </Example>
-          <Example id="chip-icon-only" title="Icon only" description="The chip with only its icon, for a tool with no room for a label. It needs an aria-label." code={`import { Chip } from "@lance-live/gallery-ui";
+          <Example id="chip-icon-only" title="Icon only" description="The chip with only its icon, for a tool with no room for a label. It needs an aria-label." code={`import { Chip } from "@lance-live/sds";
 
 export function AddChip() {
   return <Chip icon aria-label="New" />;
@@ -1093,7 +1092,7 @@ export function AddChip() {
             id="chip-filter"
             title="Filter"
             description="A filter chip shows the field and the chosen value. It hugs that value, and it is only used on a filter row."
-            code={`import { Chip } from "@lance-live/gallery-ui";
+            code={`import { Chip } from "@lance-live/sds";
 
 export function RoomFilter() {
   return <Chip filter={{ name: "Room", value: "Room 12" }} />;
@@ -1105,7 +1104,7 @@ export function RoomFilter() {
       )}
       {page === "department" && (
         <DocPage title="Department tag" description="A department keeps one color wherever it appears: a tag, a filter, or a table.">
-          <Example id="department-example" title="Default" description="Every department, then the tag as a menu." code={`import { DepartmentChip } from "@lance-live/gallery-ui";
+          <Example id="department-example" title="Default" description="Every department, then the tag as a menu." code={`import { DepartmentChip } from "@lance-live/sds";
 
 export function DepartmentTag() {
   return <DepartmentChip name="Front desk" />;
@@ -1116,7 +1115,7 @@ export function DepartmentTag() {
             id="department-label"
             title="Label"
             description="The department as a fact: the colored circle and the name. It is not a control, so it has no stroke."
-            code={`import { DepartmentChip } from "@lance-live/gallery-ui";
+            code={`import { DepartmentChip } from "@lance-live/sds";
 
 export function DepartmentLabel() {
   return <DepartmentChip name="Front desk" plain />;
@@ -1134,7 +1133,7 @@ export function DepartmentLabel() {
       )}
       {page === "menu" && (
         <DocPage title="Drop down menu" description="A menu hugs its longest label, then leaves 16px to the edge. Delete is last, in red.">
-          <Example id="menu-example" title="Default" description="Closed, open, hover, and search." code={`import { Menu } from "@lance-live/gallery-ui";
+          <Example id="menu-example" title="Default" description="Closed, open, hover, and search." code={`import { Menu } from "@lance-live/sds";
 
 const items = [
   { value: "Share", label: "Share", icon: "share" },
@@ -1147,7 +1146,7 @@ export function ShareMenu() {
 }`}>
           <Menu items={menuItems} value={menu} onValueChange={setMenu} searchable />
           </Example>
-          <Example id="menu-placeholder" title="Placeholder" description="Nothing is chosen yet, so the trigger shows a quiet placeholder. An item can carry a line of description under its label." code={`import { Menu } from "@lance-live/gallery-ui";
+          <Example id="menu-placeholder" title="Placeholder" description="Nothing is chosen yet, so the trigger shows a quiet placeholder. An item can carry a line of description under its label." code={`import { Menu } from "@lance-live/sds";
 
 const items = [
   { value: "Daily", label: "Daily", description: "Every morning at 8" },
@@ -1164,7 +1163,7 @@ export function CadenceMenu() {
             title="Anchored"
             description="The menu opened from any control, such as the three dots. It floats over the page and lines up with that control."
             code={`import { useRef, useState } from "react";
-import { Icon, OverlayMenu } from "@lance-live/gallery-ui";
+import { Icon, OverlayMenu } from "@lance-live/sds";
 
 export function MoreMenu() {
   const [open, setOpen] = useState(false);
@@ -1187,7 +1186,7 @@ export function MoreMenu() {
             id="menu-viewed"
             title="Viewed"
             description="The viewed list is its own menu. It shows who has opened the record, and who has not."
-            code={`import { ViewedMenu } from "@lance-live/gallery-ui";
+            code={`import { ViewedMenu } from "@lance-live/sds";
 
 export function Viewed() {
   return (
@@ -1218,7 +1217,7 @@ export function Viewed() {
       )}
       {page === "filter-menu" && (
         <DocPage title="Filter menu" description="Each field opens a submenu. A chosen value becomes a chip on the row.">
-          <Example id="filter-menu-example" title="Default" description="The field list, with Type open, and the submenus beside it." code={`import { FilterMenu } from "@lance-live/gallery-ui";
+          <Example id="filter-menu-example" title="Default" description="The field list, with Type open, and the submenus beside it." code={`import { FilterMenu } from "@lance-live/sds";
 
 export function Filters() {
   return <FilterMenu />;
@@ -1229,7 +1228,7 @@ export function Filters() {
             id="filter-status"
             title="Status"
             description="Status is the words Open, In progress, and Completed."
-            code={`import { FilterSubmenu } from "@lance-live/gallery-ui";
+            code={`import { FilterSubmenu } from "@lance-live/sds";
 
 export function StatusFilter() {
   return <FilterSubmenu field="Status" selected={["In progress"]} />;
@@ -1241,7 +1240,7 @@ export function StatusFilter() {
             id="filter-urgency"
             title="Urgency"
             description="Urgency is the colored word. Urgent keeps the warning icon."
-            code={`import { FilterSubmenu } from "@lance-live/gallery-ui";
+            code={`import { FilterSubmenu } from "@lance-live/sds";
 
 export function UrgencyFilter() {
   return <FilterSubmenu field="Urgency" selected={["High"]} />;
@@ -1253,7 +1252,7 @@ export function UrgencyFilter() {
             id="filter-assigned"
             title="Assigned"
             description="Assigned is the people who already exist, including Unassigned."
-            code={`import { FilterSubmenu } from "@lance-live/gallery-ui";
+            code={`import { FilterSubmenu } from "@lance-live/sds";
 
 export function AssignedFilter() {
   return <FilterSubmenu field="Assigned" selected={["Mark"]} />;
@@ -1265,7 +1264,7 @@ export function AssignedFilter() {
             id="filter-room"
             title="Room"
             description="Room is a list of rooms that already exist."
-            code={`import { FilterSubmenu } from "@lance-live/gallery-ui";
+            code={`import { FilterSubmenu } from "@lance-live/sds";
 
 export function RoomFilter() {
   return <FilterSubmenu field="Room" selected={["426"]} />;
@@ -1277,7 +1276,7 @@ export function RoomFilter() {
       )}
       {page === "confirm" && (
         <DocPage title="Delete confirmation" description="Delete asks for the name of the record before it removes it.">
-          <Example id="confirm-example" title="Default" description="The dialog at rest, and the same dialog open." code={`import { Confirm } from "@lance-live/gallery-ui";
+          <Example id="confirm-example" title="Default" description="The dialog at rest, and the same dialog open." code={`import { Confirm } from "@lance-live/sds";
 
 export function DeleteNote() {
   return <Confirm name="test" noun="note" />;
@@ -1288,7 +1287,7 @@ export function DeleteNote() {
             id="confirm-dialog"
             title="Dialog"
             description="The confirmation as a modal over the page. A delete button opens it. Cancel and Escape close it."
-            code={`import { ConfirmDialog } from "@lance-live/gallery-ui";
+            code={`import { ConfirmDialog } from "@lance-live/sds";
 
 export function DeleteNote({ open, onClose }) {
   return <ConfirmDialog open={open} name="Eligible Enrollments" noun="note" onCancel={onClose} onConfirm={onClose} />;
@@ -1300,7 +1299,7 @@ export function DeleteNote({ open, onClose }) {
       )}
       {page === "search" && (
         <DocPage title="Search" description="Search is a field. On a sheet it sits with the filter control. On its own it can be the icon.">
-          <Example id="search-example" title="Default" description="Empty, filled, and the icon button." code={`import { SearchField } from "@lance-live/gallery-ui";
+          <Example id="search-example" title="Default" description="Empty, filled, and the icon button." code={`import { SearchField } from "@lance-live/sds";
 
 export function Search() {
   return <SearchField />;
@@ -1311,7 +1310,7 @@ export function Search() {
       )}
       {page === "checkbox" && (
         <DocPage title="Checkbox" description="A checkbox selects one item in a list. The check is the selection, and hover is one step.">
-          <Example id="checkbox-example" title="Default" description="A short list, then the checked, empty, and hover states." code={`import { Checkbox } from "@lance-live/gallery-ui";
+          <Example id="checkbox-example" title="Default" description="A short list, then the checked, empty, and hover states." code={`import { Checkbox } from "@lance-live/sds";
 
 export function CashCount() {
   return (
@@ -1327,7 +1326,7 @@ export function CashCount() {
             <Checkbox>Deposit/drop</Checkbox>
           </span>
           </Example>
-          <Example id="checkbox-large" title="Large" description="An 18px box with a 12px check. It is for a row picked from a list of people, where the box sits alone at the end of the row." code={`import { Checkbox } from "@lance-live/gallery-ui";
+          <Example id="checkbox-large" title="Large" description="An 18px box with a 12px check. It is for a row picked from a list of people, where the box sits alone at the end of the row." code={`import { Checkbox } from "@lance-live/sds";
 
 export function PickPerson() {
   return <Checkbox size="lg" defaultChecked aria-label="Mark" />;
@@ -1339,42 +1338,42 @@ export function PickPerson() {
       )}
       {page === "profile" && (
         <DocPage title="Profile" description="A person has one drawing. Each variant is a different place that drawing shows up.">
-          <Example id="profile-name" title="Picture and name" description="The author on a note or a comment." code={`import { Person } from "@lance-live/gallery-ui";
+          <Example id="profile-name" title="Picture and name" description="The author on a note or a comment." code={`import { Person } from "@lance-live/sds";
 
 export function Author() {
   return <Person name="Sarah Mou" />;
 }`}>
             <Person name="Sarah Mou" />
           </Example>
-          <Example id="profile-mini" title="Miniature" description="A name beside a small photo, on one line." code={`import { Person } from "@lance-live/gallery-ui";
+          <Example id="profile-mini" title="Miniature" description="A name beside a small photo, on one line." code={`import { Person } from "@lance-live/sds";
 
 export function MiniName() {
   return <Person name="Sarah" variant="mini" />;
 }`}>
             <Person name="Sarah" variant="mini" />
           </Example>
-          <Example id="profile-pill" title="Pill" description="The assigned person in a table or a filter." code={`import { Person } from "@lance-live/gallery-ui";
+          <Example id="profile-pill" title="Pill" description="The assigned person in a table or a filter." code={`import { Person } from "@lance-live/sds";
 
 export function AssigneePill() {
   return <Person name="Sarah" variant="pill" />;
 }`}>
             <Person name="Sarah" variant="pill" />
           </Example>
-          <Example id="profile-unassigned" title="Unassigned" description="No one is assigned. The avatar is the dashed empty circle." code={`import { Person } from "@lance-live/gallery-ui";
+          <Example id="profile-unassigned" title="Unassigned" description="No one is assigned. The avatar is the dashed empty circle." code={`import { Person } from "@lance-live/sds";
 
 export function Unassigned() {
   return <Person name="Sarah" variant="unassigned" />;
 }`}>
             <Person name="Sarah" variant="unassigned" />
           </Example>
-          <Example id="profile-role" title="Picture and role" description="A person and the job they do." code={`import { Person } from "@lance-live/gallery-ui";
+          <Example id="profile-role" title="Picture and role" description="A person and the job they do." code={`import { Person } from "@lance-live/sds";
 
 export function Housekeeper() {
   return <Person name="Sarah Mou" role="Housekeeper" variant="role" />;
 }`}>
             <Person name="Sarah Mou" role="Housekeeper" variant="role" />
           </Example>
-          <Example id="profile-title" title="Picture and title" description="A note card: the author, the time, and the title." code={`import { Person } from "@lance-live/gallery-ui";
+          <Example id="profile-title" title="Picture and title" description="A note card: the author, the time, and the title." code={`import { Person } from "@lance-live/sds";
 
 export function NoteAuthor() {
   return (
@@ -1388,7 +1387,7 @@ export function NoteAuthor() {
 }`}>
             <Person name="Sarah Mou" variant="title" time="Today ·10:38 AM" title="Eligible Enrollments 10/16/26" />
           </Example>
-          <Example id="profile-message" title="Message" description="The sender on a message." code={`import { Person } from "@lance-live/gallery-ui";
+          <Example id="profile-message" title="Message" description="The sender on a message." code={`import { Person } from "@lance-live/sds";
 
 export function MessageSender() {
   return <Person name="Sarah" variant="message" />;
@@ -1399,28 +1398,28 @@ export function MessageSender() {
       )}
       {page === "avatar" && (
         <DocPage title="Avatar" description="The picture of a person: their photo, or their initials in a ringed circle. Hover names them when the name is not written beside it.">
-          <Example id="avatar-initials" title="Initials" description="No photo yet. The initials sit in the circle." code={`import { Avatar } from "@lance-live/gallery-ui";
+          <Example id="avatar-initials" title="Initials" description="No photo yet. The initials sit in the circle." code={`import { Avatar } from "@lance-live/sds";
 
 export function Initials() {
   return <Avatar initials="SM" name="Sarah Mou" />;
 }`}>
             <Avatar initials="SM" name="Sarah Mou" />
           </Example>
-          <Example id="avatar-photo" title="Photo" description="A portrait fills the circle. The edge is the image outline, not the ring." code={`import { Avatar } from "@lance-live/gallery-ui";
+          <Example id="avatar-photo" title="Photo" description="A portrait fills the circle. The edge is the image outline, not the ring." code={`import { Avatar } from "@lance-live/sds";
 
 export function Photo() {
   return <Avatar photo="/avatar-sarah.png" name="Sarah Mou" />;
 }`}>
             <Avatar photo="/avatar-sarah.png" name="Sarah Mou" />
           </Example>
-          <Example id="avatar-empty" title="Empty" description="No one. The dashed circle, as in Unassigned." code={`import { Avatar } from "@lance-live/gallery-ui";
+          <Example id="avatar-empty" title="Empty" description="No one. The dashed circle, as in Unassigned." code={`import { Avatar } from "@lance-live/sds";
 
 export function NoOne() {
   return <Avatar empty />;
 }`}>
             <Avatar empty />
           </Example>
-          <Example id="avatar-sizes" title="Sizes" description="Mini sits beside a name on one line. Large is a record's own picture." code={`import { Avatar } from "@lance-live/gallery-ui";
+          <Example id="avatar-sizes" title="Sizes" description="Mini sits beside a name on one line. Large is a record's own picture." code={`import { Avatar } from "@lance-live/sds";
 
 export function Sizes() {
   return (
@@ -1441,14 +1440,14 @@ export function Sizes() {
       )}
       {page === "task-table" && (
         <DocPage title="To-do table" description="The data table with the to-do columns already set. Each cell edits in place, and a row opens its detail.">
-          <Example id="task-table-todo" title="To-dos" description="Room, the to-do, status, urgency, type, assigned, and when it opened." code={`import { TaskTable } from "@lance-live/gallery-ui";
+          <Example id="task-table-todo" title="To-dos" description="Room, the to-do, status, urgency, type, assigned, and when it opened." code={`import { TaskTable } from "@lance-live/sds";
 
 export function Todos() {
   return <TaskTable rows={rows} selectedId={selected} onRowClick={(row) => setSelected(row.id)} />;
 }`}>
             <TaskTableDemo layout="todo" />
           </Example>
-          <Example id="task-table-complaint" title="Complaints" description="Room, guest, the complaint, status, urgency, assigned, and when it was completed." code={`import { TaskTable } from "@lance-live/gallery-ui";
+          <Example id="task-table-complaint" title="Complaints" description="Room, guest, the complaint, status, urgency, assigned, and when it was completed." code={`import { TaskTable } from "@lance-live/sds";
 
 export function Complaints() {
   return <TaskTable layout="complaint" rows={rows} />;
@@ -1459,7 +1458,7 @@ export function Complaints() {
       )}
       {page === "detail-panel" && (
         <DocPage title="Detail panel" description="The record a row opens. It slides in on the right, over the table. Its options menu holds Delete, which asks first.">
-          <Example id="detail-panel-example" title="Default" description="A to-do, view-only: the room and title, its facts, then the activity. Edit opens the editor popup." code={`import { DetailPanel } from "@lance-live/gallery-ui";
+          <Example id="detail-panel-example" title="Default" description="A to-do, view-only: the room and title, its facts, then the activity. Edit opens the editor popup." code={`import { DetailPanel } from "@lance-live/sds";
 
 export function TodoDetail({ onClose, onEdit }) {
   return (
@@ -1470,7 +1469,7 @@ export function TodoDetail({ onClose, onEdit }) {
 }`}>
             <DetailPanelDemo />
           </Example>
-          <Example id="detail-panel-photos" title="Photos" description="A record's photos as thumbnails. A thumbnail opens the viewer: one photo full size, arrows step through the rest, and Escape closes only the viewer." code={`import { PhotoThumb, PhotoViewer } from "@lance-live/gallery-ui";
+          <Example id="detail-panel-photos" title="Photos" description="A record's photos as thumbnails. A thumbnail opens the viewer: one photo full size, arrows step through the rest, and Escape closes only the viewer." code={`import { PhotoThumb, PhotoViewer } from "@lance-live/sds";
 
 export function Photos({ photos }) {
   const [viewing, setViewing] = useState(null);
@@ -1487,7 +1486,7 @@ export function Photos({ photos }) {
       )}
       {page === "editor" && (
         <DocPage title="Editor popup" description="The popup for editing one record: a name, tabs, a body that scrolls, and Save at the bottom.">
-          <Example id="editor-example" title="Default" description="Edit opens it. Close, the scrim, and Escape close it. Delete asks first." code={`import { Button, EditorDialog } from "@lance-live/gallery-ui";
+          <Example id="editor-example" title="Default" description="Edit opens it. Close, the scrim, and Escape close it. Delete asks first." code={`import { Button, EditorDialog } from "@lance-live/sds";
 
 export function EditSource({ onClose }) {
   return (
@@ -1514,7 +1513,7 @@ export function EditSource({ onClose }) {
             id="pill-editor-example"
             title="Default"
             description="Location and description are required. Save with them empty to see the red pills and the toast. Guestroom slides out a room field."
-            code={`import { EditorDialog, EditorField, EditorFields, EditorPill, EditorPillRow, EditorPills, PhotoPill, EditorPhotos, RequiredToast, RoomPill } from "@lance-live/gallery-ui";
+            code={`import { EditorDialog, EditorField, EditorFields, EditorPill, EditorPillRow, EditorPills, PhotoPill, EditorPhotos, RequiredToast, RoomPill } from "@lance-live/sds";
 
 <EditorDialog
   kicker="Create to-do"
@@ -1538,7 +1537,7 @@ export function EditSource({ onClose }) {
           >
             <PillEditorDemo />
           </Example>
-          <Example id="pill-editor-place" title="Fixed place" description="Where the place cannot change, such as editing a cash count or recording a reading, the lead is a PlacePill. It has no menu and no hover." code={`import { EditorPill, EditorPills, PlacePill } from "@lance-live/gallery-ui";
+          <Example id="pill-editor-place" title="Fixed place" description="Where the place cannot change, such as editing a cash count or recording a reading, the lead is a PlacePill. It has no menu and no hover." code={`import { EditorPill, EditorPills, PlacePill } from "@lance-live/sds";
 
 <EditorPills>
   <PlacePill>Front Desk</PlacePill>
@@ -1552,7 +1551,7 @@ export function EditSource({ onClose }) {
       )}
       {page === "lance" && (
         <DocPage title="Lance" description="Lance is the assistant composer. The field grows when there is a question in it.">
-          <Example id="lance-example" title="Default" description="Empty, hover, and a typed question." code={`import { Composer } from "@lance-live/gallery-ui";
+          <Example id="lance-example" title="Default" description="Empty, hover, and a typed question." code={`import { Composer } from "@lance-live/sds";
 
 export function AskLance() {
   return <Composer kind="lance" placeholder="Ask Lance anything..." />;
@@ -1563,7 +1562,7 @@ export function AskLance() {
       )}
       {page === "lance-side" && (
         <DocPage title="Lance sidebar" description="The Lance panel is the assistant beside the page. It uses the same composer.">
-          <Example id="lance-side-example" title="Default" description="The panel, open." code={`import { LancePanel } from "@lance-live/gallery-ui";
+          <Example id="lance-side-example" title="Default" description="The panel, open." code={`import { LancePanel } from "@lance-live/sds";
 
 export function LanceSide() {
   return <LancePanel />;
@@ -1576,7 +1575,7 @@ export function LanceSide() {
       )}
       {page === "messaging" && (
         <DocPage title="Messaging" description="A message composer sits under a thread. The send action stays at the end of the field.">
-          <Example id="messaging-example" title="Default" description="Empty, hover, and a typed message." code={`import { Composer } from "@lance-live/gallery-ui";
+          <Example id="messaging-example" title="Default" description="Empty, hover, and a typed message." code={`import { Composer } from "@lance-live/sds";
 
 export function MessageField() {
   return <Composer kind="message" placeholder="Write a message..." />;
@@ -1587,7 +1586,7 @@ export function MessageField() {
       )}
       {page === "comment" && (
         <DocPage title="Comment" description="A comment is the author, the time, and the body. Hover shows the actions on that row.">
-          <Example id="comment-example" title="Default" description="Rest, and hover." code={`import { Comment } from "@lance-live/gallery-ui";
+          <Example id="comment-example" title="Default" description="Rest, and hover." code={`import { Comment } from "@lance-live/sds";
 
 export function CommentRow() {
   return <Comment name="Sarah" initials="SM" time="now" body="okay" />;
@@ -1600,7 +1599,7 @@ export function CommentRow() {
       )}
       {page === "message" && (
         <DocPage title="Message" description="One line in a conversation. The name and the time sit above the bubble. Yours is on the right, in the one blue.">
-          <Example id="message-example" title="Default" description="Someone else, and you." code={`import { Message } from "@lance-live/gallery-ui";
+          <Example id="message-example" title="Default" description="Someone else, and you." code={`import { Message } from "@lance-live/sds";
 
 export function Incoming() {
   return <Message name="Gavin from Lance" time="9:25 AM" initials="GV" body="Hi, how can I help?" />;
@@ -1618,7 +1617,7 @@ export function Incoming() {
       )}
       {page === "message-group" && (
         <DocPage title="Message group" description="Messages from the same person inside two minutes share one name and sit 2px apart. Only the last bubble squares its outer bottom corner.">
-          <Example id="message-group-example" title="Default" description="An incoming run, and yours." code={`import { MessageGroup } from "@lance-live/gallery-ui";
+          <Example id="message-group-example" title="Default" description="An incoming run, and yours." code={`import { MessageGroup } from "@lance-live/sds";
 
 export function Run() {
   return (
@@ -1643,7 +1642,7 @@ export function Run() {
       )}
       {page === "day" && (
         <DocPage title="Day" description="The rule between days. The clock sits on this line, not beside the name.">
-          <Example id="day-example" title="Default" description="Today, with the time." code={`import { Day } from "@lance-live/gallery-ui";
+          <Example id="day-example" title="Default" description="Today, with the time." code={`import { Day } from "@lance-live/sds";
 
 export function Today() {
   return <Day label="Today 9:25 AM" />;
@@ -1656,7 +1655,7 @@ export function Today() {
       )}
       {page === "typing" && (
         <DocPage title="Typing" description="The other person is writing. Three dots, in the same bubble as a message.">
-          <Example id="typing-example" title="Default" description="Gavin is typing." code={`import { Typing } from "@lance-live/gallery-ui";
+          <Example id="typing-example" title="Default" description="Gavin is typing." code={`import { Typing } from "@lance-live/sds";
 
 export function GavinTyping() {
   return <Typing initials="GV" label="Gavin is typing" />;
@@ -1669,7 +1668,7 @@ export function GavinTyping() {
       )}
       {page === "resolved" && (
         <DocPage title="Resolved" description="A finished conversation. The reply field is gone. The next step is a new chat, or reopening this one.">
-          <Example id="resolved-example" title="Default" description="The note and the two actions." code={`import { Resolved } from "@lance-live/gallery-ui";
+          <Example id="resolved-example" title="Default" description="The note and the two actions." code={`import { Resolved } from "@lance-live/sds";
 
 export function Finished() {
   return <Resolved />;
@@ -1680,7 +1679,7 @@ export function Finished() {
       )}
       {page === "ticket" && (
         <DocPage title="Ticket" description="The ticket as a record inside its conversation. Finished steps are marked. The one still to come is empty.">
-          <Example id="ticket-example" title="Default" description="An issue, partway through." code={`import { Ticket } from "@lance-live/gallery-ui";
+          <Example id="ticket-example" title="Default" description="An issue, partway through." code={`import { Ticket } from "@lance-live/sds";
 
 export function OpenTicket() {
   return (
@@ -1713,7 +1712,7 @@ export function OpenTicket() {
       )}
       {page === "ticket-note" && (
         <DocPage title="Ticket note" description="A glance at an open ticket, under the header: the number, the title, and where it stands.">
-          <Example id="ticket-note-example" title="Default" description="In progress." code={`import { TicketNote } from "@lance-live/gallery-ui";
+          <Example id="ticket-note-example" title="Default" description="In progress." code={`import { TicketNote } from "@lance-live/sds";
 
 export function Note() {
   return <TicketNote number="2709" title="Unable to take or view pictures on mobile app" status="progress" />;
@@ -1724,7 +1723,7 @@ export function Note() {
       )}
       {page === "empty" && (
         <DocPage title="Empty" description="A page or a list with nothing in it. The title and the line are one group. An action, when there is one, sits below.">
-          <Example id="empty-example" title="Default" description="Nothing is open, and there is a next step." code={`import { Button, Empty, Icon } from "@lance-live/gallery-ui";
+          <Example id="empty-example" title="Default" description="Nothing is open, and there is a next step." code={`import { Button, Empty, Icon } from "@lance-live/sds";
 
 export function PickOne() {
   return (
@@ -1747,7 +1746,7 @@ export function PickOne() {
               </Empty>
             </div>
           </Example>
-          <Example id="empty-quiet" title="No action" description="Nothing to restore." code={`import { Empty } from "@lance-live/gallery-ui";
+          <Example id="empty-quiet" title="No action" description="Nothing to restore." code={`import { Empty } from "@lance-live/sds";
 
 export function Deleted() {
   return (
@@ -1766,7 +1765,7 @@ export function Deleted() {
       )}
       {page === "meter" && (
         <DocPage title="Meter" description="How far along something is. The done part fills in blue over light grey ticks.">
-          <Example id="meter-example" title="Default" description="A score out of a total." code={`import { Meter } from "@lance-live/gallery-ui";
+          <Example id="meter-example" title="Default" description="A score out of a total." code={`import { Meter } from "@lance-live/sds";
 
 export function Health() {
   return <Meter value={41} max={80} label="41 out of 80" />;
@@ -1775,7 +1774,7 @@ export function Health() {
               <Meter value={41} max={80} label="41 out of 80" />
             </div>
           </Example>
-          <Example id="meter-end" title="With an end part" description="Rooms cleaned, rooms left, and rooms on DND at the end in a darker grey." code={`import { Meter } from "@lance-live/gallery-ui";
+          <Example id="meter-end" title="With an end part" description="Rooms cleaned, rooms left, and rooms on DND at the end in a darker grey." code={`import { Meter } from "@lance-live/sds";
 
 export function Rooms() {
   return <Meter value={52} max={96} end={6} label="52 clean, 38 left, 6 on DND, of 96 rooms" />;
@@ -1788,7 +1787,7 @@ export function Rooms() {
       )}
       {page === "share-bar" && (
         <DocPage title="Share bar" description="One whole split into shares. A plain bar with a solid part per share, in its own tone, and a key that names each one.">
-          <Example id="share-bar-example" title="Default" description="Today's tickets by channel, busiest first." code={`import { ShareBar } from "@lance-live/gallery-ui";
+          <Example id="share-bar-example" title="Default" description="Today's tickets by channel, busiest first." code={`import { ShareBar } from "@lance-live/sds";
 
 export function TicketsByChannel() {
   return (
@@ -1817,7 +1816,7 @@ export function TicketsByChannel() {
       )}
       {page === "widget" && (
         <DocPage title="Widget" description="A glance at a list on a dashboard. A grey head with the title, the count, and one action, over a few rows and a link to the rest.">
-          <Example id="widget-example" title="Default" description="Open to-dos, most urgent first, with who has each one." code={`import { Person, Status, TextIcon, Widget, WidgetList, WidgetMore, WidgetRow } from "@lance-live/gallery-ui";
+          <Example id="widget-example" title="Default" description="Open to-dos, most urgent first, with who has each one." code={`import { Person, Status, TextIcon, Widget, WidgetList, WidgetMore, WidgetRow } from "@lance-live/sds";
 
 export function OpenTodos() {
   return (
@@ -1842,7 +1841,7 @@ export function OpenTodos() {
               </Widget>
             </div>
           </Example>
-          <Example id="widget-empty" title="Empty" description="Nothing to show. The head stays, and the empty fills the list." code={`import { Empty, TextIcon, Widget, WidgetEmpty } from "@lance-live/gallery-ui";
+          <Example id="widget-empty" title="Empty" description="Nothing to show. The head stays, and the empty fills the list." code={`import { Empty, TextIcon, Widget, WidgetEmpty } from "@lance-live/sds";
 
 export function NoTodos() {
   return (
@@ -1869,7 +1868,7 @@ export function NoTodos() {
       )}
       {page === "widget-summary" && (
         <DocPage title="Widget summary" description="The top of a widget that leads with a number. One figure, its totals beside it, and a meter or a chart under it.">
-          <Example id="widget-summary-example" title="Default" description="Rooms left to clean, with the clean and DND totals keyed to the meter." code={`import { Meter, Widget, WidgetFigure, WidgetStats, WidgetSummary } from "@lance-live/gallery-ui";
+          <Example id="widget-summary-example" title="Default" description="Rooms left to clean, with the clean and DND totals keyed to the meter." code={`import { Meter, Widget, WidgetFigure, WidgetStats, WidgetSummary } from "@lance-live/sds";
 
 export function Housekeeping() {
   return (
@@ -1902,7 +1901,7 @@ export function Housekeeping() {
               </Widget>
             </div>
           </Example>
-          <Example id="widget-summary-of" title="Part of a whole" description="A score out of its total, with its parts beside it and no keys." code={`import { Widget, WidgetFigure, WidgetStats, WidgetSummary } from "@lance-live/gallery-ui";
+          <Example id="widget-summary-of" title="Part of a whole" description="A score out of its total, with its parts beside it and no keys." code={`import { Widget, WidgetFigure, WidgetStats, WidgetSummary } from "@lance-live/sds";
 
 export function KnowledgeHealth() {
   return (
@@ -1935,7 +1934,7 @@ export function KnowledgeHealth() {
               </Widget>
             </div>
           </Example>
-          <Example id="widget-tally" title="Tally" description="The figure and its answer share a line, with a fact on the right, over a chart. The note in the head names the window." code={`import { ShareBar, Widget, WidgetNote, WidgetTally } from "@lance-live/gallery-ui";
+          <Example id="widget-tally" title="Tally" description="The figure and its answer share a line, with a fact on the right, over a chart. The note in the head names the window." code={`import { ShareBar, Widget, WidgetNote, WidgetTally } from "@lance-live/sds";
 
 export function TicketsByChannel() {
   return (
@@ -1963,7 +1962,7 @@ export function TicketsByChannel() {
               </Widget>
             </div>
           </Example>
-          <Example id="widget-tally-warn" title="Tally with a problem" description="The fact turns red when it needs attention, such as readings overdue." code={`import { WidgetTally } from "@lance-live/gallery-ui";
+          <Example id="widget-tally-warn" title="Tally with a problem" description="The fact turns red when it needs attention, such as readings overdue." code={`import { WidgetTally } from "@lance-live/sds";
 
 export function MissingReadings() {
   return <WidgetTally value={3} label="missing" aside="2 overdue" asideTone="warn" />;
@@ -1980,7 +1979,7 @@ export function MissingReadings() {
       )}
       {page === "widget-list" && (
         <DocPage title="Widget list" description="The rows inside a widget, 2px in from the card like a menu, and the link to the rest.">
-          <Example id="widget-list-more" title="With more" description="A few rows, and how many wait behind them." code={`import { Person, Status, Widget, WidgetList, WidgetMore, WidgetRow } from "@lance-live/gallery-ui";
+          <Example id="widget-list-more" title="With more" description="A few rows, and how many wait behind them." code={`import { Person, Status, Widget, WidgetList, WidgetMore, WidgetRow } from "@lance-live/sds";
 
 export function Rows() {
   return (
@@ -2005,7 +2004,7 @@ export function Rows() {
               </Widget>
             </div>
           </Example>
-          <Example id="widget-list-all" title="All rows" description="Every record fits, so there is no more link." code={`import { Avatar, Widget, WidgetList, WidgetRow } from "@lance-live/gallery-ui";
+          <Example id="widget-list-all" title="All rows" description="Every record fits, so there is no more link." code={`import { Avatar, Widget, WidgetList, WidgetRow } from "@lance-live/sds";
 
 export function Notes() {
   return (
@@ -2032,7 +2031,7 @@ export function Notes() {
       )}
       {page === "widget-row" && (
         <DocPage title="Widget row" description="One record in a widget, two lines: what and where on the left, age and owner on the right.">
-          <Example id="widget-row-todo" title="Status and person" description="A to-do: its status, the room, the item, the age, and who has it." code={`import { Person, Status, WidgetRow } from "@lance-live/gallery-ui";
+          <Example id="widget-row-todo" title="Status and person" description="A to-do: its status, the room, the item, the age, and who has it." code={`import { Person, Status, WidgetRow } from "@lance-live/sds";
 
 export function TodoRow() {
   return (
@@ -2047,7 +2046,7 @@ export function TodoRow() {
               </div>
             </div>
           </Example>
-          <Example id="widget-row-note" title="Avatar and preview" description="A note: who wrote it, the title, and a muted first line." code={`import { Avatar, WidgetRow } from "@lance-live/gallery-ui";
+          <Example id="widget-row-note" title="Avatar and preview" description="A note: who wrote it, the title, and a muted first line." code={`import { Avatar, WidgetRow } from "@lance-live/sds";
 
 export function NoteRow() {
   return (
@@ -2062,7 +2061,7 @@ export function NoteRow() {
               </div>
             </div>
           </Example>
-          <Example id="widget-row-facts" title="Facts" description="An event: the name, then the room and the head count, muted with a dot between." code={`import { WidgetFacts, WidgetRow } from "@lance-live/gallery-ui";
+          <Example id="widget-row-facts" title="Facts" description="An event: the name, then the room and the head count, muted with a dot between." code={`import { WidgetFacts, WidgetRow } from "@lance-live/sds";
 
 export function EventRow() {
   return (
@@ -2081,7 +2080,7 @@ export function EventRow() {
       )}
       {page === "room-mark" && (
         <DocPage title="Room mark" description="A room's square that leads a widget row, with the number typed in. The description sits beside it, centered.">
-          <Example id="room-mark-number" title="Room" description="A room number. The title is the issue, and the facts stay on the right." code={`import { Person, RoomMark, WidgetRow } from "@lance-live/gallery-ui";
+          <Example id="room-mark-number" title="Room" description="A room number. The title is the issue, and the facts stay on the right." code={`import { Person, RoomMark, WidgetRow } from "@lance-live/sds";
 
 export function SlowTicketRow() {
   return (
@@ -2097,7 +2096,7 @@ export function SlowTicketRow() {
               </div>
             </div>
           </Example>
-          <Example id="room-mark-place" title="Place" description="A place has no number, so the square holds the location icon and the title says the place first." code={`import { Person, RoomMark, WidgetRow } from "@lance-live/gallery-ui";
+          <Example id="room-mark-place" title="Place" description="A place has no number, so the square holds the location icon and the title says the place first." code={`import { Person, RoomMark, WidgetRow } from "@lance-live/sds";
 
 export function PlaceRow() {
   return (
@@ -2112,7 +2111,7 @@ export function PlaceRow() {
               </div>
             </div>
           </Example>
-          <Example id="room-mark-single" title="One fact" description="A row with only a meta, such as a room on do not disturb." code={`import { RoomMark, WidgetRow } from "@lance-live/gallery-ui";
+          <Example id="room-mark-single" title="One fact" description="A row with only a meta, such as a room on do not disturb." code={`import { RoomMark, WidgetRow } from "@lance-live/sds";
 
 export function DndRow() {
   return <WidgetRow href="/rooms" lead={<RoomMark room="512" />} title="Do not disturb" meta="3h" />;
@@ -2142,7 +2141,7 @@ export function Home() {
       )}
       {page === "activity" && (
         <DocPage title="Activity" description="Activity is the thread of comments and status changes on a record, newest first.">
-          <Example id="activity-example" title="Default" description="A thread that starts with a comment, and one that is only status." code={`import { ActivityFeed } from "@lance-live/gallery-ui";
+          <Example id="activity-example" title="Default" description="A thread that starts with a comment, and one that is only status." code={`import { ActivityFeed } from "@lance-live/sds";
 
 export function Activity() {
   return (
@@ -2179,7 +2178,7 @@ export function Activity() {
       )}
       {page === "toast" && (
         <DocPage title="Toast" description="A toast confirms an action that already happened. It does not ask a question.">
-          <Example id="toast-example" title="Default" description="The confirmation after a to-do is created." code={`import { Toast } from "@lance-live/gallery-ui";
+          <Example id="toast-example" title="Default" description="The confirmation after a to-do is created." code={`import { Toast } from "@lance-live/sds";
 
 export function Created() {
   return <Toast message="New to-do created" />;
@@ -2190,7 +2189,7 @@ export function Created() {
       )}
       {page === "tip" && (
         <DocPage title="Tooltip" description="A tooltip names the control under the pointer, and can show its shortcut. It sits above everything else.">
-          <Example id="tip-example" title="Default" description="The label and the shortcut." code={`import { Tooltip } from "@lance-live/gallery-ui";
+          <Example id="tip-example" title="Default" description="The label and the shortcut." code={`import { Tooltip } from "@lance-live/sds";
 
 export function MessagesTip() {
   return <Tooltip label="Messages" shortcut="Opt M" />;
@@ -2201,7 +2200,7 @@ export function MessagesTip() {
       )}
       {page === "status" && (
         <DocPage title="Status" description="Status says what the record is now: Open, In progress, or Completed.">
-          <Example id="status-example" title="Default" description="The three states." code={`import { Status } from "@lance-live/gallery-ui";
+          <Example id="status-example" title="Default" description="The three states." code={`import { Status } from "@lance-live/sds";
 
 export function OpenStatus() {
   return <Status status="open" />;
@@ -2214,7 +2213,7 @@ export function OpenStatus() {
                       </div>
                     </div>
           </Example>
-          <Example id="status-icon" title="Icon only" description="Just the mark, for a column where every row is the same state, such as PM history. The word stays as the tooltip and for screen readers." code={`import { Status } from "@lance-live/gallery-ui";
+          <Example id="status-icon" title="Icon only" description="Just the mark, for a column where every row is the same state, such as PM history. The word stays as the tooltip and for screen readers." code={`import { Status } from "@lance-live/sds";
 
 export function DoneMark() {
   return <Status status="complete" iconOnly />;
@@ -2227,7 +2226,7 @@ export function DoneMark() {
       )}
       {page === "urgency" && (
         <DocPage title="Urgency" description="Urgency is a colored word. Urgent also carries the warning icon. Standard stays quiet.">
-          <Example id="urgency-example" title="Default" description="Urgent, high, standard, and low." code={`import { Urgency } from "@lance-live/gallery-ui";
+          <Example id="urgency-example" title="Default" description="Urgent, high, standard, and low." code={`import { Urgency } from "@lance-live/sds";
 
 export function HighUrgency() {
   return <Urgency level="high" />;
@@ -2245,7 +2244,7 @@ export function HighUrgency() {
       )}
       {page === "header" && (
         <DocPage title="Header" description="The header is the title row: a page icon, the title, and a count. A main page can put its one primary action on the right.">
-          <Example id="header-example" title="Default" description="The title row. A page adds its own action on the right." code={`import { PageHeader } from "@lance-live/gallery-ui";
+          <Example id="header-example" title="Default" description="The title row. A page adds its own action on the right." code={`import { PageHeader } from "@lance-live/sds";
 
 export function TodosHeader() {
   return <PageHeader title="To-Dos" count="6" actions={null} />;
@@ -2258,14 +2257,14 @@ export function TodosHeader() {
       )}
       {page === "sidebar" && (
         <DocPage title="Sidebar" description="The sidebar is shared chrome. A page does not restyle it. The current item is the one step of selection.">
-          <Example id="sidebar-example" title="Default" description="Pinned, guest, and the collapsed groups." code={`import { Sidebar } from "@lance-live/gallery-ui";
+          <Example id="sidebar-example" title="Default" description="Pinned, guest, and the collapsed groups." code={`import { Sidebar } from "@lance-live/sds";
 
 export function AppSidebar() {
   return <Sidebar avatarSrc="/avatar-sarah.png" fixed={fixed} groups={groups} />;
 }`}>
           <Sidebar avatarSrc="/avatar-sarah.png" fixed={sidebarFixed} groups={sidebarGroups} />
           </Example>
-          <Example id="sidebar-item" title="Item" description="One link in the sidebar. Hover shows reorder and pin. A count sits at the end." code={`import { SidebarItem } from "@lance-live/gallery-ui";
+          <Example id="sidebar-item" title="Item" description="One link in the sidebar. Hover shows reorder and pin. A count sits at the end." code={`import { SidebarItem } from "@lance-live/sds";
 
 export function MessagesLink() {
   return <SidebarItem icon="bubble" label="Messages" count={4} />;
@@ -2281,7 +2280,7 @@ export function MessagesLink() {
       )}
       {page === "tabs" && (
         <DocPage title="Tabs" description="Tabs filter a page by a status. The selected tab is one step from the bar, and its count stays readable.">
-          <Example id="tabs-example" title="Default" description="The tabs on the page. The selected tab takes one step from the page." code={`import { Tabs } from "@lance-live/gallery-ui";
+          <Example id="tabs-example" title="Default" description="The tabs on the page. The selected tab takes one step from the page." code={`import { Tabs } from "@lance-live/sds";
 
 const items = [
   { value: "open", label: "Open", count: 8 },
@@ -2294,7 +2293,7 @@ export function StatusTabs() {
 }`}>
             <Tabs items={tabs} value={tab} onValueChange={setTab} />
           </Example>
-          <Example id="tabs-bar" title="On a bar" description="The tabs on the department bar. The selected tab takes one step from the bar." code={`import { Tabs } from "@lance-live/gallery-ui";
+          <Example id="tabs-bar" title="On a bar" description="The tabs on the department bar. The selected tab takes one step from the bar." code={`import { Tabs } from "@lance-live/sds";
 
 const items = [
   { value: "open", label: "Open", count: 8 },
@@ -2311,7 +2310,7 @@ export function StatusTabsBar() {
       )}
       {page === "icons" && (
         <DocPage title="Icons" description="Icons share one construction: a 14px grid and a hairline stroke. A menu uses the same set.">
-          <Example id="icons-example" title="Set" description="Every icon in the set." code={`import { Icon } from "@lance-live/gallery-ui";
+          <Example id="icons-example" title="Set" description="Every icon in the set." code={`import { Icon } from "@lance-live/sds";
 
 export function ShareIcon() {
   return <Icon name="share" />;

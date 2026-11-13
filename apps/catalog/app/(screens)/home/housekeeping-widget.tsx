@@ -1,6 +1,6 @@
 "use client";
 
-import { Avatar, Empty, Meter, Widget, WidgetEmpty, WidgetFigure, WidgetList, WidgetMore, WidgetRow, WidgetStats, WidgetSummary } from "@lance-live/gallery-ui";
+import { Avatar, Empty, Meter, Widget, WidgetEmpty, WidgetFigure, WidgetList, WidgetMore, WidgetRow, WidgetStats, WidgetSummary } from "@lance-live/sds";
 import Link from "next/link";
 
 type Housekeeper = { id: string; name: string; initials: string; done: number; left: number };

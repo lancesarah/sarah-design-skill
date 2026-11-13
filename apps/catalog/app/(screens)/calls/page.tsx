@@ -1,6 +1,6 @@
 "use client";
 
-import { Chip, DataTable, Tabs, captureClose, dateColumn, textColumn, type DataColumn } from "@lance-live/gallery-ui";
+import { Chip, DataTable, Tabs, captureClose, dateColumn, textColumn, type DataColumn } from "@lance-live/sds";
 import { useEffect, useMemo, useState } from "react";
 import { flushSync } from "react-dom";
 import { putBack, useNotify } from "../action-toast";

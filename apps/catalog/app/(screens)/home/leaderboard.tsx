@@ -1,6 +1,6 @@
 "use client";
 
-import { Avatar, SegmentedControl } from "@lance-live/gallery-ui";
+import { Avatar, SegmentedControl } from "@lance-live/sds";
 
 export type Range = "7d" | "14d";
 

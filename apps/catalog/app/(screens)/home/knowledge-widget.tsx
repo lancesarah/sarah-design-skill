@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Meter, Widget, WidgetFigure, WidgetStats, WidgetSummary } from "@lance-live/gallery-ui";
+import { Button, Meter, Widget, WidgetFigure, WidgetStats, WidgetSummary } from "@lance-live/sds";
 import { useRouter } from "next/navigation";
 
 const SCORE = 41;

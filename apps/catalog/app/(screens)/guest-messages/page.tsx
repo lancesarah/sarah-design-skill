@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Chip, Day, DepartmentChip, Empty, FactRow, Icon, IconButton, Message, Resolved, Tabs } from "@lance-live/gallery-ui";
+import { Button, Chip, Day, DepartmentChip, Empty, FactRow, Icon, IconButton, Message, Resolved, Tabs } from "@lance-live/sds";
 import { useRouter } from "next/navigation";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { flushSync } from "react-dom";

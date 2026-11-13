@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, EditorDialog, EditorField, EditorFields, EditorPill, EditorPills, PlacePill, RequiredToast, taskMenuItem } from "@lance-live/gallery-ui";
+import { Button, EditorDialog, EditorField, EditorFields, EditorPill, EditorPills, PlacePill, RequiredToast, taskMenuItem } from "@lance-live/sds";
 import { useCallback, useMemo, useState } from "react";
 import type { Measure, Source } from "./page";
 

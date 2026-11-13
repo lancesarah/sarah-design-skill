@@ -1,6 +1,6 @@
 "use client";
 
-import { Icon } from "@lance-live/gallery-ui";
+import { Icon } from "@lance-live/sds";
 import { useLayoutEffect, useRef, type HTMLAttributes, type ReactNode } from "react";
 
 const EASE_OUT = "cubic-bezier(0.23, 1, 0.32, 1)";

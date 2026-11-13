@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Icon, OverlayMenu } from "@lance-live/gallery-ui";
+import { Button, Icon, OverlayMenu } from "@lance-live/sds";
 import { useRef, type ReactNode } from "react";
 
 /** A dropdown field in the editor popup's fields layout. The pill layout uses `EditorPill`. The menu holds `taskMenuItem` rows. */

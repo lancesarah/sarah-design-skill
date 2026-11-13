@@ -1,6 +1,6 @@
 "use client";
 
-import { Empty, Status, Widget, WidgetEmpty, WidgetList, WidgetMore, WidgetNote, WidgetRow, type StatusValue } from "@lance-live/gallery-ui";
+import { Empty, Status, Widget, WidgetEmpty, WidgetList, WidgetMore, WidgetNote, WidgetRow, type StatusValue } from "@lance-live/sds";
 import Link from "next/link";
 
 /** `behind` is how many areas the program trails its pace by. Zero is on track. */

@@ -1,6 +1,6 @@
 "use client";
 
-import { ASSIGNEE_PEOPLE, Empty, Person, Status, TextIcon, Widget, WidgetEmpty, WidgetList, WidgetMore, WidgetRow, type StatusValue, type UrgencyValue } from "@lance-live/gallery-ui";
+import { ASSIGNEE_PEOPLE, Empty, Person, Status, TextIcon, Widget, WidgetEmpty, WidgetList, WidgetMore, WidgetRow, type StatusValue, type UrgencyValue } from "@lance-live/sds";
 import Link from "next/link";
 import { useState } from "react";
 import { useNotify } from "../action-toast";

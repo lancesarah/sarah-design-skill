@@ -11,7 +11,7 @@ import {
   Tabs,
   type DataColumn,
   type DataSort,
-} from "@lance-live/gallery-ui";
+} from "@lance-live/sds";
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { flushSync } from "react-dom";
 import { useNotify } from "../action-toast";

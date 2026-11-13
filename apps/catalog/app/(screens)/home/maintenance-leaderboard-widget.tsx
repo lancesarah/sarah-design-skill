@@ -1,6 +1,6 @@
 "use client";
 
-import { ASSIGNEE_PEOPLE, Empty, Widget, WidgetEmpty, WidgetList, WidgetMore, WidgetRow } from "@lance-live/gallery-ui";
+import { ASSIGNEE_PEOPLE, Empty, Widget, WidgetEmpty, WidgetList, WidgetMore, WidgetRow } from "@lance-live/sds";
 import Link from "next/link";
 import { useState } from "react";
 import { Podium, Rank, RangeSegments, initialsFrom, type Range } from "./leaderboard";

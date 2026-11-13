@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Icon, TextIcon, type IconName } from "@lance-live/gallery-ui";
+import { Button, Icon, TextIcon, type IconName } from "@lance-live/sds";
 import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type MouseEvent, type PointerEvent, type ReactNode, type Ref } from "react";
 import { useNotify } from "../action-toast";
 import { PageLayout } from "../page-layout";
@@ -170,11 +170,14 @@ function LanceCard({
   );
 }
 
-/** The widgets someone took off Home, kept in this browser. A widget added later shows until it is removed. */
-const HIDDEN_KEY = "home-hidden-widgets";
+/** The widgets someone took off Home, kept in this browser. A widget added to the catalog later shows until it is removed. */
+const HIDDEN_KEY = "home-hidden-widgets-v2";
 /** Where each widget sits, kept in this browser. A widget added to the catalog later takes its catalog place. */
 const ORDER_KEY = "home-widget-order";
 const CATALOG = HOME_WIDGETS.map((widget) => widget.id);
+/** A first visit shows one widget per operations team. The rest wait in Add widgets. */
+const STARTERS = ["room-map", "todos", "housekeeping", "maintenance-todos"];
+const STARTER_HIDDEN = CATALOG.filter((id) => !STARTERS.includes(id));
 const BY_ID = new Map(HOME_WIDGETS.map((widget) => [widget.id, widget]));
 /**
  * One element per widget, made once. A widget takes no props, so handing React the same element each render lets it
@@ -271,11 +274,11 @@ export default function HomePage() {
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [editing]);
-  const [layout, setLayout] = useState<Layout>(() => ({ order: CATALOG, hidden: new Set() }));
+  const [layout, setLayout] = useState<Layout>(() => ({ order: CATALOG, hidden: new Set(STARTER_HIDDEN) }));
   useEffect(() => {
     const hidden = window.localStorage.getItem(HIDDEN_KEY);
     const order = window.localStorage.getItem(ORDER_KEY);
-    setLayout({ order: savedOrder(order ? (JSON.parse(order) as string[]) : CATALOG), hidden: new Set(hidden ? (JSON.parse(hidden) as string[]) : []) });
+    setLayout({ order: savedOrder(order ? (JSON.parse(order) as string[]) : CATALOG), hidden: new Set(hidden ? (JSON.parse(hidden) as string[]) : STARTER_HIDDEN) });
   }, []);
   const saveLayout = (next: Layout) => {
     setLayout(next);

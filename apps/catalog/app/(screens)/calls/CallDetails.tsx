@@ -1,6 +1,6 @@
 "use client";
 
-import { ConfirmDialog, DepartmentChip, DetailPanel, FactRow, Icon, OverlayMenu, captureClose, type MenuPoint } from "@lance-live/gallery-ui";
+import { ConfirmDialog, DepartmentChip, DetailPanel, FactRow, Icon, OverlayMenu, captureClose, type MenuPoint } from "@lance-live/sds";
 import { useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { useNotify } from "../action-toast";

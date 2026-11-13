@@ -1,6 +1,6 @@
 "use client";
 
-import { Empty, Widget, WidgetEmpty, WidgetFacts, WidgetList, WidgetMore, WidgetRow } from "@lance-live/gallery-ui";
+import { Empty, Widget, WidgetEmpty, WidgetFacts, WidgetList, WidgetMore, WidgetRow } from "@lance-live/sds";
 import Link from "next/link";
 
 type HotelEvent = { id: string; name: string; kind: "BEO" | "Group resume"; where: string; guests: number; day: "Today" | "Tomorrow"; time: string };

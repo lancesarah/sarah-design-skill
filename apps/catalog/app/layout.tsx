@@ -3,6 +3,8 @@ import { Libre_Baskerville, Plus_Jakarta_Sans } from "next/font/google";
 import { VercelToolbar } from "@vercel/toolbar/next";
 import "./globals.css";
 import "./docs.css";
+import "./comments.css";
+import { CommentLayer } from "./comments";
 import { DevBadge } from "./dev-badge";
 import { SpacingTool } from "./spacing-tool";
 
@@ -39,6 +41,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         {children}
         <DevBadge />
         <SpacingTool />
+        <CommentLayer />
         {process.env.NODE_ENV === "development" ? <VercelToolbar /> : null}
       </body>
     </html>

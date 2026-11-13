@@ -1,6 +1,6 @@
 "use client";
 
-import { ShareBar, Widget, WidgetTally, type Share } from "@lance-live/gallery-ui";
+import { ShareBar, Widget, WidgetTally, type Share } from "@lance-live/sds";
 
 /** The pipeline, earliest stage first. Stages keep their order on the bar instead of going busiest first. */
 const STAGES: Share[] = [

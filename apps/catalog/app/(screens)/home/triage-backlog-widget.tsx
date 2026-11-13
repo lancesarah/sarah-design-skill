@@ -1,6 +1,6 @@
 "use client";
 
-import { Empty, Widget, WidgetEmpty, WidgetList, WidgetMore, WidgetRow } from "@lance-live/gallery-ui";
+import { Empty, Widget, WidgetEmpty, WidgetList, WidgetMore, WidgetRow } from "@lance-live/sds";
 import Link from "next/link";
 
 type Conversation = { id: string; from: string; channel: "Email" | "SMS" | "Call"; preview: string; age: string };

@@ -1,6 +1,6 @@
 "use client";
 
-import { Widget, WidgetFigure, WidgetSummary } from "@lance-live/gallery-ui";
+import { Widget, WidgetFigure, WidgetSummary } from "@lance-live/sds";
 import { CheckStatus } from "./check-status";
 
 /** A scheduled round of readings. `due` is past once its time has come; a later round is still to come. */

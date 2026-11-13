@@ -1,6 +1,6 @@
 "use client";
 
-import { Empty, TextIcon, Widget, WidgetEmpty, WidgetList, WidgetMore, WidgetNote, WidgetRow } from "@lance-live/gallery-ui";
+import { Empty, TextIcon, Widget, WidgetEmpty, WidgetList, WidgetMore, WidgetNote, WidgetRow } from "@lance-live/sds";
 import Link from "next/link";
 import { useState } from "react";
 

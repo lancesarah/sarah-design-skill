@@ -12,15 +12,15 @@ import { stale } from "./sync-catalog.mjs";
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const ts = createRequire(import.meta.url)("typescript");
 
-const DIRS = ["css", "apps/catalog/app", "packages/gallery-ui/src"];
+const DIRS = ["css", "apps/catalog/app", "packages/sds/src"];
 const SKIP_DIRS = new Set(["node_modules", "dist", ".next"]);
 const TOKEN_FILES = /(^|\/)tokens\.css$/;
 const DEV_ONLY = new Set(["apps/catalog/app/spacing-tool.css", "apps/catalog/app/spacing-tool.tsx", "apps/catalog/app/font-switch.tsx"]);
-const GENERATED = new Set(["packages/gallery-ui/src/styles/gallery.css"]);
+const GENERATED = new Set(["packages/sds/src/styles/gallery.css"]);
 const GALLERY_SPECIMENS = new Set([
   "apps/catalog/app/gallery.tsx",
   "apps/catalog/app/specimens.tsx",
-  "packages/gallery-ui/src/components/Foundations.tsx",
+  "packages/sds/src/components/Foundations.tsx",
 ]);
 const HEADERS = new Set(["PageLayout", "PageHeader"]);
 const ALLOW = /design-check:\s*allow/;

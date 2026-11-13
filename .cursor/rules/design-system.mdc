@@ -1,6 +1,6 @@
 ---
 description: Every UI change follows the design-system skill and passes the design check
-globs: apps/**/*.tsx,apps/**/*.css,packages/gallery-ui/src/**/*.tsx,packages/gallery-ui/src/**/*.css,css/**/*.css
+globs: apps/**/*.tsx,apps/**/*.css,packages/sds/src/**/*.tsx,packages/sds/src/**/*.css,css/**/*.css
 alwaysApply: false
 ---
 
@@ -8,7 +8,7 @@ alwaysApply: false
 
 Before editing a screen, component, or style, read `.cursor/skills/design-system/SKILL.md`, then the section in `references/components.md` for every component you touch or add. The gallery's Usage tab is built from those sections, so they are the rules people see.
 
-- Use the gallery component as it is (`@lance-live/gallery-ui`). Do not restyle it to fit a screen.
+- Use the gallery component as it is (`@lance-live/sds`). Do not restyle it to fit a screen.
 - Pick the component by its When and When not lines. If none fits, say so before inventing one.
 - Colors come from `tokens.css` roles. No hex, `rgb()`, or `hsl()` outside the token files.
 - A header button always has an icon. A header holds one primary at most.

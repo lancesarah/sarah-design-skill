@@ -1,6 +1,6 @@
 "use client";
 
-import { Icon, PageHeader } from "@lance-live/gallery-ui";
+import { Icon, PageHeader } from "@lance-live/sds";
 import { useEffect, useRef } from "react";
 import { continuesRun, useChat } from "./chat-data";
 import { MessageField, messageThread } from "./messages";

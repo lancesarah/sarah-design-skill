@@ -1,6 +1,6 @@
 "use client";
 
-import { Widget, WidgetFigure, WidgetNote, WidgetStats, WidgetSummary } from "@lance-live/gallery-ui";
+import { Widget, WidgetFigure, WidgetNote, WidgetStats, WidgetSummary } from "@lance-live/sds";
 
 const WINDOW = "Past 7d";
 

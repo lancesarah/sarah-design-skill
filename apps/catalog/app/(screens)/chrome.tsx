@@ -1,6 +1,6 @@
 "use client";
 
-import { OverlayMenu, SegmentedControl, Sidebar, type SidebarGroup, type SidebarLink } from "@lance-live/gallery-ui";
+import { OverlayMenu, SegmentedControl, Sidebar, type SidebarGroup, type SidebarLink } from "@lance-live/sds";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import { Glyph } from "./glyph";
@@ -34,7 +34,6 @@ const GROUPS: SidebarGroup[] = [
     links: [
       { href: "/calls", icon: "phone", label: "Calls" },
       { href: "/guest-messages", icon: "bubble-lines", label: "Guest messages" },
-      { href: "/#sidebar", icon: "clock", label: "Wake-up calls" },
     ],
   },
   {

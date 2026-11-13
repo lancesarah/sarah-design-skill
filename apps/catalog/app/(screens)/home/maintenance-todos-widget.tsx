@@ -1,6 +1,6 @@
 "use client";
 
-import { Widget } from "@lance-live/gallery-ui";
+import { Widget } from "@lance-live/sds";
 
 /** What maintenance has in front of it right now. */
 const QUEUE = { tickets: 9, readings: 2, suggested: 6 };

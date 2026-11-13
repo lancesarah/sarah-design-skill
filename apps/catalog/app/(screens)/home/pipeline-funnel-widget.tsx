@@ -1,6 +1,6 @@
 "use client";
 
-import { ShareBar, Widget, WidgetNote, WidgetTally, type Share } from "@lance-live/gallery-ui";
+import { ShareBar, Widget, WidgetNote, WidgetTally, type Share } from "@lance-live/sds";
 
 /** This week's conversations, earliest stage first. Won takes the blue. */
 const STAGES: Share[] = [

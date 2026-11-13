@@ -1,4 +1,4 @@
-# @lance-live/gallery-ui
+# @lance-live/sds
 
 React 19 components for the gallery design system. This package replaces `@lance-live/ds-web` later. It does not modify that package.
 
@@ -10,21 +10,21 @@ Tokens and component CSS are copied from the gallery (`css/tokens.css`, the butt
 @layer theme, base, gallery-ui, utilities;
 @import "tailwindcss/theme.css" layer(theme);
 @import "tailwindcss/preflight.css" layer(base);
-@import "@lance-live/gallery-ui/tokens.css" layer(gallery-ui);
-@import "@lance-live/gallery-ui/styles.css" layer(gallery-ui);
+@import "@lance-live/sds/tokens.css" layer(gallery-ui);
+@import "@lance-live/sds/styles.css" layer(gallery-ui);
 @import "tailwindcss/utilities.css" layer(utilities);
 ```
 
 Keep the Tailwind entry split. A single `@import "tailwindcss"` drops the imports after it on Tailwind 4.3, and a layer statement that arrives late lets component CSS beat utilities.
 
 ```tsx
-import { Button, SegmentedControl } from "@lance-live/gallery-ui";
+import { Button, SegmentedControl } from "@lance-live/sds";
 ```
 
 Until this package is published, point the app at the workspace:
 
 ```json
-"@lance-live/gallery-ui": "file:../../sarah-design-skill/packages/gallery-ui"
+"@lance-live/sds": "file:../../sarah-design-skill/packages/sds"
 ```
 
 Dark mode is `html[data-theme="dark"]`, the same attribute `tokens.css` already uses. `data-lance-theme` belongs to `@lance-live/ds-web` and is a later migration.

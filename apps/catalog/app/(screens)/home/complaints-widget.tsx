@@ -1,6 +1,6 @@
 "use client";
 
-import { ASSIGNEE_PEOPLE, Empty, Icon, Person, Status, Widget, WidgetEmpty, WidgetList, WidgetMore, WidgetRow, type StatusValue, type UrgencyValue } from "@lance-live/gallery-ui";
+import { ASSIGNEE_PEOPLE, Empty, Icon, Person, Status, Widget, WidgetEmpty, WidgetList, WidgetMore, WidgetRow, type StatusValue, type UrgencyValue } from "@lance-live/sds";
 import Link from "next/link";
 
 type HomeComplaint = { id: string; room: string; title: string; urgency: UrgencyValue; status: StatusValue; assignee: string; opened: string };

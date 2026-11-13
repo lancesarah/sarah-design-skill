@@ -1,6 +1,6 @@
 "use client";
 
-import { Widget, WidgetFigure, WidgetNote, WidgetStats, WidgetSummary } from "@lance-live/gallery-ui";
+import { Widget, WidgetFigure, WidgetNote, WidgetStats, WidgetSummary } from "@lance-live/sds";
 
 /** In dollars. Open is every live lead's value, won and the rate are this quarter. */
 const PIPELINE = { open: 248_000, won: 86_000, winRate: 0.34 };

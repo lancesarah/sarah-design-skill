@@ -1,6 +1,6 @@
 "use client";
 
-import { Widget, WidgetNote } from "@lance-live/gallery-ui";
+import { Widget, WidgetNote } from "@lance-live/sds";
 
 /** Submission rate is inquiries that became a submitted lead. Voice completions are calls Lance finished with a lead. */
 const WEEK = { inquiries: 42, submitted: 0.68, voice: 19 };

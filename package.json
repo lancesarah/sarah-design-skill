@@ -6,9 +6,9 @@
     "apps/*"
   ],
   "scripts": {
-    "build": "npm run build -w @lance-live/gallery-ui",
-    "test": "npm run test -w @lance-live/gallery-ui",
-    "typecheck": "npm run typecheck -w @lance-live/gallery-ui && npm run typecheck -w gallery-catalog",
+    "build": "npm run build -w @lance-live/sds",
+    "test": "npm run test -w @lance-live/sds",
+    "typecheck": "npm run typecheck -w @lance-live/sds && npm run typecheck -w gallery-catalog",
     "dev": "npm run dev -w gallery-catalog",
     "usage": "node scripts/build-usage.mjs",
     "sync": "node scripts/sync-catalog.mjs",

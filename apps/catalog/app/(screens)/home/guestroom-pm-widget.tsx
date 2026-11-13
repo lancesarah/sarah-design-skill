@@ -1,6 +1,6 @@
 "use client";
 
-import { Widget, WidgetNote } from "@lance-live/gallery-ui";
+import { Widget, WidgetNote } from "@lance-live/sds";
 
 /** One guestroom program this cycle. `late` is rooms past their cadence. */
 const PROGRAM = { name: "Guestroom sweep", done: 2, total: 3, late: 1 };

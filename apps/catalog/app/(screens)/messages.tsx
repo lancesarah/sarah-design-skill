@@ -1,6 +1,6 @@
 "use client";
 
-import { Chip, Avatar, Button, Checkbox, ConfirmDialog, Day, Empty, Icon, Message, OverlayMenu, Person, Resolved, SegmentedControl, Status, Ticket, TicketNote, Typing, type IconName } from "@lance-live/gallery-ui";
+import { Chip, Avatar, Button, Checkbox, ConfirmDialog, Day, Empty, Icon, Message, OverlayMenu, Person, Resolved, SegmentedControl, Status, Ticket, TicketNote, Typing, type IconName } from "@lance-live/sds";
 import { Fragment, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore, type ReactNode, type RefObject } from "react";
 import { useNotify } from "./action-toast";
 import { clockTime, continuesRun, useChat, type ChatLine } from "./chat-data";

@@ -1,6 +1,6 @@
 "use client";
 
-import { Chip, Button, ConfirmDialog, DEPARTMENTS, DepartmentChip, Empty, Icon, OverlayMenu, Tabs, ViewedMenu, captureClose, type Viewer } from "@lance-live/gallery-ui";
+import { Chip, Button, ConfirmDialog, DEPARTMENTS, DepartmentChip, Empty, Icon, OverlayMenu, Tabs, ViewedMenu, captureClose, type Viewer } from "@lance-live/sds";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { putBack, useNotify } from "../action-toast";

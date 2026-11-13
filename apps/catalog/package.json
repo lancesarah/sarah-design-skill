@@ -11,7 +11,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@lance-live/gallery-ui": "*",
+    "@lance-live/sds": "*",
+    "@vercel/blob": "^2.9.0",
     "@vercel/toolbar": "^0.2.7",
     "next": "16.4.2",
     "react": "19.2.3",

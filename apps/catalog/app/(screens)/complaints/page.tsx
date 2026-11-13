@@ -33,7 +33,7 @@ import {
   type StatusValue,
   type TaskRow,
   type UrgencyValue,
-} from "@lance-live/gallery-ui";
+} from "@lance-live/sds";
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { flushSync } from "react-dom";
 import { putBack, useNotify } from "../action-toast";

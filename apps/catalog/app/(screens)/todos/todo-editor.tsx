@@ -1,6 +1,6 @@
 "use client";
 
-import { ASSIGNEE_PEOPLE, Button, ConfirmDialog, DEPARTMENTS, DepartmentChip, EditorDialog, EditorPhotos, EditorPill, EditorPillRow, EditorPills, Icon, Person, PhotoPill, RequiredToast, RoomPill, Status, Urgency, taskMenuItem, type ActivityItem, type Photo, type TaskRow } from "@lance-live/gallery-ui";
+import { ASSIGNEE_PEOPLE, Button, ConfirmDialog, DEPARTMENTS, DepartmentChip, EditorDialog, EditorPhotos, EditorPill, EditorPillRow, EditorPills, Icon, Person, PhotoPill, RequiredToast, RoomPill, Status, Urgency, taskMenuItem, type ActivityItem, type Photo, type TaskRow } from "@lance-live/sds";
 import { Fragment, useCallback, useState, type ReactNode } from "react";
 
 export type Todo = TaskRow & { bucket: "open" | "scheduled" | "completed"; activity: ActivityItem[]; photos?: Photo[] };

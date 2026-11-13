@@ -13,7 +13,7 @@ import {
   captureClose,
   type DataColumn,
   type DataSort,
-} from "@lance-live/gallery-ui";
+} from "@lance-live/sds";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { putBack, useNotify } from "../action-toast";

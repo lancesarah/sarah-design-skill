@@ -1,5 +1,5 @@
 import type { ComponentType } from "react";
-import type { DepartmentValue } from "@lance-live/gallery-ui";
+import type { DepartmentValue } from "@lance-live/sds";
 import { ActivityWidget } from "./activity-widget";
 import { AwaitingReplyWidget } from "./awaiting-reply-widget";
 import { CompletedWidget } from "./completed-widget";

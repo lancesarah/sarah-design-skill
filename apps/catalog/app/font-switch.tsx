@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { CommentButton } from "./comments";
 import { useDevDrag } from "./dev-drag";
 
 const faces = [
@@ -181,6 +182,7 @@ export function FontSwitch() {
       <button type="button" aria-pressed={softInk} onClick={toggleSoftInk}>
         Soft black
       </button>
+      <CommentButton />
     </div>
   );
 }

@@ -64,10 +64,7 @@ function readSymbols(file) {
   return icons;
 }
 
-const icons = {
-  ...readSymbols(resolve(root, "apps/catalog/public/icons.svg")),
-  ...readSymbols(resolve(root, "index.html")),
-};
+const icons = readSymbols(resolve(root, "apps/catalog/public/icons.svg"));
 writeFileSync(
   resolve(here, "../src/icons.tsx"),
   `"use client";

@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, ConfirmDialog, EditorDialog, EditorField, EditorPill, EditorPills, PlacePill, RequiredToast, SegmentedControl, taskMenuItem } from "@lance-live/gallery-ui";
+import { Button, ConfirmDialog, EditorDialog, EditorField, EditorPill, EditorPills, PlacePill, RequiredToast, SegmentedControl, taskMenuItem } from "@lance-live/sds";
 import { useCallback, useMemo, useState } from "react";
 import {
   LINE_GROUPS,

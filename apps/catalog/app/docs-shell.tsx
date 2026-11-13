@@ -1,6 +1,7 @@
 "use client";
 
-import { SearchField } from "@lance-live/gallery-ui";
+import { Icon, SearchField } from "@lance-live/sds";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { DocsContext, type DocsView } from "./docs-example";
 import { GallerySections } from "./gallery";
@@ -213,7 +214,13 @@ export function DocsShell() {
         <a className="docs-mark" href="#button">
           Gallery
         </a>
-        <ThemeToggle />
+        <span className="docs-top-actions">
+          <Link className="sds btn btn-secondary" href="/home">
+            <Icon name="home" size={14} />
+            Open the app
+          </Link>
+          <ThemeToggle />
+        </span>
       </header>
       <div className="docs-body">
         <nav className="docs-nav" aria-label="Components">

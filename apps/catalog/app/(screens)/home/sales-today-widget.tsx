@@ -1,6 +1,6 @@
 "use client";
 
-import { ASSIGNEE_PEOPLE, Empty, Person, Widget, WidgetEmpty, WidgetList, WidgetMore, WidgetRow } from "@lance-live/gallery-ui";
+import { ASSIGNEE_PEOPLE, Empty, Person, Widget, WidgetEmpty, WidgetList, WidgetMore, WidgetRow } from "@lance-live/sds";
 import Link from "next/link";
 
 /** A sales task due today or earlier. `late` is how far past due, and a task due today has its time instead. */

@@ -1779,13 +1779,17 @@ body.is-side-settling .side-user .avatar {
 }
 .lance-suggest {
   display: inline-flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 8px;
   min-height: 32px;
-  padding: 4px 2px;
+  padding: 6px 2px;
   color: var(--black-50);
   font-size: 14px;
+  line-height: 20px;
+  text-align: left;
 }
+/* Sits on the first line when the question wraps. */
+.lance-suggest > .i { flex: none; margin-top: 3px; }
 .lance-suggest:hover { color: var(--black); }
 .lance-dock { margin-top: auto; }
 .lance-side .lance { width: 100%; }

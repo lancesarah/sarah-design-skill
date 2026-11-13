@@ -1,5 +1,5 @@
 {
-  "name": "@lance-live/gallery-ui",
+  "name": "@lance-live/sds",
   "version": "0.1.0",
   "private": true,
   "description": "React components ported from the gallery design system. Distinct from @lance-live/ds-web.",

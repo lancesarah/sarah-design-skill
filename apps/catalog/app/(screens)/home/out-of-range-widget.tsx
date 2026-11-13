@@ -1,6 +1,6 @@
 "use client";
 
-import { Empty, Widget, WidgetEmpty, WidgetList, WidgetMore, WidgetNote, WidgetRow } from "@lance-live/gallery-ui";
+import { Empty, Widget, WidgetEmpty, WidgetList, WidgetMore, WidgetNote, WidgetRow } from "@lance-live/sds";
 import Link from "next/link";
 
 type Reading = { id: string; source: string; target: string; value: string; when: string };

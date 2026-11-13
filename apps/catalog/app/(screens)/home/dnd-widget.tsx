@@ -1,6 +1,6 @@
 "use client";
 
-import { Empty, Icon, RoomMark, Widget, WidgetEmpty, WidgetFigure, WidgetList, WidgetMore, WidgetRow, WidgetStats, WidgetSummary } from "@lance-live/gallery-ui";
+import { Empty, Icon, RoomMark, Widget, WidgetEmpty, WidgetFigure, WidgetList, WidgetMore, WidgetRow, WidgetStats, WidgetSummary } from "@lance-live/sds";
 import Link from "next/link";
 import { CheckStatus } from "./check-status";
 type RoomStatus = "OD" | "OC";

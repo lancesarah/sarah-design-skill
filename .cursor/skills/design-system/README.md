@@ -48,7 +48,13 @@ It also sets a working posture: make the smallest change that fixes it, reuse be
 
 **In this repo,** it's already active: Cursor finds it in `.cursor/skills/`, and `.cursor/rules/design-system.mdc` points every UI edit at it. Here, `css/` at the repo root is the source and `catalog/` is a copy. Edit `css/`, then run `npm run sync`.
 
-**In another project,** copy this whole `design-system` folder into that project's `.cursor/skills/`. The agent then reads values from `catalog/` and applies them in whatever styling the project already uses. If the project has the live files (`css/tokens.css` and so on), those take precedence over the copy.
+**In another project,** install it from GitHub:
+
+```bash
+npx skills add lancesarah/sarah-design-skill --skill design-system
+```
+
+This installs what's on GitHub, so push changes before installing them elsewhere. Run the same command again to update. You can also copy this whole `design-system` folder into that project's `.cursor/skills/` by hand. The agent then reads values from `catalog/` and applies them in whatever styling the project already uses. If the project has the live files (`css/tokens.css` and so on), those take precedence over the copy.
 
 ## Changing a rule
 

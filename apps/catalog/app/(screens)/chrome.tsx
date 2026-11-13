@@ -10,8 +10,8 @@ import { useHtmlSlide } from "./slide";
 
 const FIXED: SidebarLink[] = [
   { href: "/home", icon: "home", label: "Home" },
-  { href: "/#sidebar", icon: "bubble", label: "Messages", tip: "Opt M", count: MESSAGE_COUNT },
-  { href: "/#sidebar", icon: "bell", label: "Notifications", tip: "Opt N", count: NOTICE_COUNT },
+  { icon: "bubble", label: "Messages", tip: "Opt M", count: MESSAGE_COUNT },
+  { icon: "bell", label: "Notifications", tip: "Opt N", count: NOTICE_COUNT },
   { href: "/notes", icon: "doc", label: "Internal notes" },
 ];
 
@@ -21,11 +21,11 @@ const GROUPS: SidebarGroup[] = [
     pinned: true,
     open: true,
     links: [
-      { href: "/#sidebar", icon: "grid", label: "Boards" },
+      { icon: "grid", label: "Boards" },
       { href: "/todos", icon: "clipboard", label: "To-Dos" },
       { href: "/complaints", icon: "alert", label: "Complaints" },
       { href: "/cash", icon: "card", label: "Cash & bank" },
-      { href: "/#sidebar", icon: "calendar", label: "Schedule" },
+      { icon: "calendar", label: "Schedule" },
     ],
   },
   {
@@ -40,10 +40,10 @@ const GROUPS: SidebarGroup[] = [
     title: "Operations",
     open: false,
     links: [
-      { href: "/#sidebar", icon: "grid", label: "Boards" },
+      { icon: "grid", label: "Boards" },
       { href: "/todos", icon: "clipboard", label: "To-Dos" },
       { href: "/complaints", icon: "alert", label: "Complaints" },
-      { href: "/#sidebar", icon: "calendar", label: "Schedule" },
+      { icon: "calendar", label: "Schedule" },
       { href: "/lost-found", icon: "tag", label: "Lost & found" },
       { href: "/cash", icon: "card", label: "Cash & bank" },
     ],
@@ -67,7 +67,7 @@ const GROUPS: SidebarGroup[] = [
   {
     title: "Sales",
     open: false,
-    links: [{ href: "/#sidebar", icon: "share", label: "Sales" }],
+    links: [{ icon: "share", label: "Sales" }],
   },
 ];
 
@@ -90,6 +90,7 @@ export function WorkspaceSide({
     if (link.label === "Messages") {
       return { ...link, current: inbox === "messages", onClick: () => onToggleInbox("messages") };
     }
+    if (!link.href) return { ...link, onClick: () => {} };
     return { ...link, current: inbox ? false : pathname === link.href };
   };
   return (

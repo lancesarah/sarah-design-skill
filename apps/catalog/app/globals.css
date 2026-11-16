@@ -22,7 +22,7 @@ body {
   margin: 0;
   background: var(--sidebar-grey);
   color: var(--black);
-  --font: "Switzer", var(--font-sans), sans-serif;
+  --font: "Switzer", sans-serif;
   --serif: var(--font-serif), "Libre Baskerville", "Times New Roman", serif;
   font-family: var(--font);
   font-size: 14px;
@@ -31,9 +31,6 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-html[data-font="jakarta"] body {
-  --font: var(--font-sans), "Plus Jakarta Sans", sans-serif;
-}
 
 /* Grey icons. An icon that sits beside a label is muted. An icon that stands alone (a close or
    chevron button), and one that carries its own color (white on a primary button, a department or

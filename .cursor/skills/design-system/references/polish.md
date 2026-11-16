@@ -93,7 +93,7 @@ Truncation in markup is the `…` character. Three periods are not an ellipsis.
 
 An uppercase label loosens its letter-spacing. Tight capitals read as a block.
 
-The UI face is Switzer. The dev switch can put Plus Jakarta Sans back for a comparison. The fallback is a face with a similar x-height and weight, so a missing font does not reflow the line. Product pages set `-webkit-font-smoothing: var(--font-smoothing)` on `body`. Libre Baskerville is for editorial moments only.
+The UI face is Switzer. The fallback is a face with a similar x-height and weight, so a missing font does not reflow the line. Product pages set `-webkit-font-smoothing: var(--font-smoothing)` on `body`. Libre Baskerville is for editorial moments only.
 
 An underline is a link. Emphasis in the interface is weight or color. Bold is for that emphasis. Italic is for a citation or a linguistic stress, and it stays in the editorial face.
 

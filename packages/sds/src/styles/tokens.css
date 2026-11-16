@@ -147,9 +147,6 @@
   --sk-ripple: 32ms;
 }
 
-html[data-font="jakarta"] {
-  --font: "Plus Jakarta Sans", sans-serif;
-}
 
 /* Dark mode. Layout, type, and sizes stay on the light tokens.
    These are the cheatsheet neutrals only. */

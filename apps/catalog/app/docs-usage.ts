@@ -43,7 +43,7 @@ export const USAGE: Record<string, Usage> = {
     "when": [],
     "whenNot": [],
     "rules": [
-      "Face: Switzer, 400 and 500. Plus Jakarta Sans is the dev switch only. Libre Baskerville is an editorial moment the gallery already uses.",
+      "Face: Switzer, 400 and 500. Libre Baskerville is an editorial moment the gallery already uses.",
       "Record title: 16 / 500. Not the name of a table. A table's own title is on Table in components.md.",
       "Editor title: 24 / 500, line-height 28px. The pill editor's title. Its description is 14px, line-height 20px, in --text-muted. See Pill editor.",
       "Page title, body, button: 14 / 400. The page title is `--black`, including the parent you click to go back. The count is 14 / 400 in `--text-muted`.",
@@ -57,7 +57,7 @@ export const USAGE: Record<string, Usage> = {
       "A measured length of time uses that form. `40m`, `1h`, `1h 2m`, `7d`, and `36s` are the form. Dates keep their date format. A running timer stays `mm:ss`.",
       "Clock times use `h:mmAM/PM`, with uppercase AM or PM, two-digit minutes, no leading zero on the hour, and no space before the suffix. Use `9:00AM`, `9:11AM`, and `4:09PM`. Apply this everywhere a clock time appears, including chart axes, tooltips, shift hours, activity timestamps, and time ranges. A range reads `9:00AM – 5:00PM`. Normalize ordinary and nonbreaking whitespace from locale formatters.",
       "A component's own type, including a chip, a menu option, and a lesson title, is on that component.",
-      "`--font`: Switzer, weights 400 and 500. Switzer is the UI face. Plus Jakarta Sans stays on the dev switch (`html[data-font=\"jakarta\"]`) so the two can be compared. Libre Baskerville is for editorial moments only, where the gallery already uses it.",
+      "`--font`: Switzer, weights 400 and 500. Switzer is the UI face. Libre Baskerville is for editorial moments only, where the gallery already uses it.",
       "Sizes: `--text-10`, `--text-12`, `--text-13`, `--text-14`, `--text-16`, `--text-20`, `--text-24`. Which size a component uses is on that component in components.md. The shared scale is in SKILL.md.",
       "`--font-smoothing`: `antialiased` on product pages.",
       "`--text-wrap-title`: `balance` for headings. `--text-wrap-copy`: `pretty` for short copy.",

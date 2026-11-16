@@ -162,7 +162,7 @@ Sidebar icon buttons stay unfilled. The switch under Settings uses `--action` an
 
 ## Type
 
-- `--font`: Switzer, weights 400 and 500. Switzer is the UI face. Plus Jakarta Sans stays on the dev switch (`html[data-font="jakarta"]`) so the two can be compared. Libre Baskerville is for editorial moments only, where the gallery already uses it.
+- `--font`: Switzer, weights 400 and 500. Switzer is the UI face. Libre Baskerville is for editorial moments only, where the gallery already uses it.
 - Sizes: `--text-10`, `--text-12`, `--text-13`, `--text-14`, `--text-16`, `--text-20`, `--text-24`. Which size a component uses is on that component in [components.md](components.md). The shared scale is in [SKILL.md](../SKILL.md).
 - `--font-smoothing`: `antialiased` on product pages.
 - `--text-wrap-title`: `balance` for headings. `--text-wrap-copy`: `pretty` for short copy.

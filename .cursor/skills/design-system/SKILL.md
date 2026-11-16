@@ -96,7 +96,7 @@ Every part comes from the parent. Hover and selected share one step. If that ste
 
 | Role | Default | Rule |
 | --- | --- | --- |
-| Face | Switzer, 400 and 500 | Plus Jakarta Sans is the dev switch only. Libre Baskerville is an editorial moment the gallery already uses |
+| Face | Switzer, 400 and 500 | Libre Baskerville is an editorial moment the gallery already uses |
 | Record title | 16 / 500 | Not the name of a table. A table's own title is on Table in [components.md](references/components.md) |
 | Editor title | 24 / 500, line-height 28px | The pill editor's title. Its description is 14px, line-height 20px, in --text-muted. See Pill editor |
 | Page title, body, button | 14 / 400 | The page title is `--black`, including the parent you click to go back. The count is 14 / 400 in `--text-muted` |

@@ -7,12 +7,10 @@
     try {
       if (localStorage.getItem("theme") === "dark") document.documentElement.dataset.theme = "dark";
       if (localStorage.getItem("dept-chip") === "dot") document.documentElement.dataset.deptChip = "dot";
-      if (localStorage.getItem("font") === "jakarta") document.documentElement.dataset.font = "jakarta";
     } catch (error) {}
   </script>
   <title>Internal notes</title>
   <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=switzer@400,500,600&display=swap">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&display=swap">
   <link rel="stylesheet" href="tokens.css">
   <link rel="stylesheet" href="gallery.css">
 </head>
@@ -416,7 +414,6 @@ Food and Bev 52.7/57.9</p>
     <button type="button" data-dept-chip="fill" aria-pressed="true">Color</button>
     <button type="button" data-dept-chip="dot" aria-pressed="false">Stroke</button>
     <span class="dev-rule" aria-hidden="true"></span>
-    <button type="button" data-font="jakarta" aria-pressed="false">Jakarta</button>
     <button type="button" data-font="switzer" aria-pressed="true">Switzer</button>
   </div>
   <dialog class="confirm-dialog" aria-labelledby="confirm-title">

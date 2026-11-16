@@ -49,6 +49,8 @@ export const SOURCES = {
   department: [c("Department tag")],
   segments: [c("Segments")],
   menu: [c("Menu")],
+  "settings-card": [c("Settings card")],
+  "time-picker": [c("Time picker")],
   "filter-menu": [{ file: "patterns", heading: "Filter row" }],
   confirm: [c("Delete confirmation")],
   search: [c("Search")],

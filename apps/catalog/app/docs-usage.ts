@@ -54,7 +54,8 @@ export const USAGE: Record<string, Usage> = {
       "Chip: 13 / 400, line-height 16px. A department, an urgency, a status, and a name, outside a menu. Inside a menu every option is `--text-14`. See Menu in components.md.",
       "Figures: `--numeric`. Counts and prices. Not a phone, a zip, or a version.",
       "Duration: `36s`, `30m`, `1h`, `1h 2m`. One letter, no space between the number and the letter. `s` seconds, `m` minutes, `h` hours, `d` days. A zero unit is left out. Units keep one space: `1h 2m`, `1h 10m`, `1m 30s`.",
-      "A measured length of time uses that form. `40m`, `1h`, `1h 2m`, `7d`, and `36s` are the form. A clock, a date, and a running timer stay as they are.",
+      "A measured length of time uses that form. `40m`, `1h`, `1h 2m`, `7d`, and `36s` are the form. Dates keep their date format. A running timer stays `mm:ss`.",
+      "Clock times use `h:mmAM/PM`, with uppercase AM or PM, two-digit minutes, no leading zero on the hour, and no space before the suffix. Use `9:00AM`, `9:11AM`, and `4:09PM`. Apply this everywhere a clock time appears, including chart axes, tooltips, shift hours, activity timestamps, and time ranges. A range reads `9:00AM – 5:00PM`. Normalize ordinary and nonbreaking whitespace from locale formatters.",
       "A component's own type, including a chip, a menu option, and a lesson title, is on that component.",
       "`--font`: Switzer, weights 400 and 500. Switzer is the UI face. Plus Jakarta Sans stays on the dev switch (`html[data-font=\"jakarta\"]`) so the two can be compared. Libre Baskerville is for editorial moments only, where the gallery already uses it.",
       "Sizes: `--text-10`, `--text-12`, `--text-13`, `--text-14`, `--text-16`, `--text-20`, `--text-24`. Which size a component uses is on that component in components.md. The shared scale is in SKILL.md.",
@@ -66,14 +67,14 @@ export const USAGE: Record<string, Usage> = {
   "button": {
     "when": [
       "Primary: the one action that creates or commits on that view.",
-      "Secondary: an action beside the primary, or Cancel. A section's own action on the page, such as Edit beside a section title, with its icon.",
+      "Secondary: an action beside the primary, or Cancel. A section's own action on the page, such as Edit beside a section title, with its icon. Every labeled action on the page or in a toolbar: the filter row, a selection toolbar (Move to, Mark clean, Unassign), a header button that is not the primary, a menu trigger with a label, and a labeled action in a widget's or card's grey head (Auto-assign, Collect). This is the default for any labeled action that is not the primary.",
       "Tertiary: a choice is on, and it should read as selected without a stroke or a dark fill. Required on a step is this.",
       "Danger: a delete control. The button on the page, the confirming control on the delete card, and an icon that removes a row. The icon is `--destructive` with or without a label.",
       "Icon button: a tool in a header or a panel bar with no room for a label: show or hide a panel, expand, pin, history, new chat. Every panel toggle is this button, in every header."
     ],
     "whenNot": [
       "Primary: a second action, a filter, a fact, or the confirming delete. A page that only views leaves that corner empty.",
-      "Secondary: the main action, or a fact.",
+      "Secondary: the main action, or a fact. The widget's plus that starts a record, which is the text button.",
       "Tertiary: the primary, a secondary action, or a choice that is off. Off stays secondary.",
       "Danger: the primary. A menu’s last item stays red text, not this button.",
       "Icon button: the primary action. That button has a label. An action on the page itself, such as New beside a table. That is the secondary icon-only button, with its stroke."
@@ -95,10 +96,10 @@ export const USAGE: Record<string, Usage> = {
   },
   "text-icon": {
     "when": [
-      "a quiet action that should not compete with the page: a label, an icon, and no fill until hover. A tool in a row, or a control in a widget's grey head."
+      "only the plus that starts a record in a widget's grey head."
     ],
     "whenNot": [
-      "the main action on a view. That is the primary button. A button in the header with no icon. A section's action on the page, such as Edit beside a section title. That is the secondary button."
+      "anywhere else. An action on the page, in the filter row, in a selection toolbar, in the header, or a labeled action in a card's grey head (Auto-assign, Collect) is the secondary button. \"Quiet\" is not a reason to drop the stroke. If you are unsure, it is secondary. The main action on a view is the primary button."
     ],
     "rules": [
       "Default: `TextIcon`. Label, small, and delete.",
@@ -156,12 +157,40 @@ export const USAGE: Record<string, Usage> = {
       "creating a record. That happens on the page."
     ],
     "rules": [
+      "Anchored dropdowns stay below their trigger and scroll within the available viewport height. Long lists do not shift the menu upward to fit. Do not flip above the trigger; constrain the scroll area to the remaining space below. Option rows retain their standard height while scrolling.",
       "Default: the gallery menu, with `--elevation-menu`.",
       "Width: hug the longest label, then leave 16px (`--space-16`) to the edge. The menu's 2px padding counts toward that 16px, so the row's trailing padding is 14px. The row is the icon and the label. A check sits at the end of that row and does not add a second gap. Less than 16px feels cramped. A fixed width leaves dead space after a short label. Short labels use `--menu-min` (132px). Past `--menu-max` (240px) the label truncates with an ellipsis, and the icon stays. When the menu opens from a form field that is wider than that menu, the menu takes the field's width. It does not stay narrower than the box it opened from, and `--menu-max` does not pull it back under the field. The calendar is not this menu.",
       "Trailing icon: the check, the submenu chevron, and the trigger chevron share one inset, 6px from the row edge. The row's 14px padding stays for the label. The icon draws 8px into that padding (`margin-right: -8px`) so it lands on the trigger's 6px. The chevron is `--black-50`.",
       "Delete: Delete is the last item, in `--destructive`. A hairline runs the full width of the opening above it, through the menu's 2px padding. Search separators stay inset.",
       "Type: every option label is `--text-14`, the same size as the category row (Type, Status, Urgency, Assigned). A department chip, an urgency, a status, a name, and a plain label all use that size inside the menu. The 13px chip size stays outside the menu. A description under an option stays `--text-12`.",
       "States: option names are `--black`, descriptions stay `--text-muted`, and the check stays centered on the row. The trigger keeps its hover fill while the menu is open. A closed menu shows the selected option's icon. A thing that has a more menu opens that same menu on right-click. The items match the more button. The menu opens at the pointer. The open note is not that target. The note card is. Icons in one menu share the Internal notes construction in polish.md."
+    ]
+  },
+  "settings-card": {
+    "when": [
+      "editing related preferences or configuration, with a label on the left and a control on the right."
+    ],
+    "whenNot": [
+      "dashboard summaries (Widget), record lists (DataTable), or navigation."
+    ],
+    "rules": [
+      "Components: `SettingsCard`, `SettingsRow`, `SettingsToggleRow`, `SettingsMenuRow`, `SettingsInputRow`, and `SectionHeader` from `@lance-live/sds`.",
+      "Live gallery: Settings card (`#settings-card`), with interactive examples of every row variant.",
+      "A `SectionHeader` is a sibling immediately above the card, on the page surface: 16px shared icon, 8px icon gap, 14px medium grey title, optional 12px muted context aligned right. The existing `--space-8` token gives 8px between the header box and the outer edge of the following card or table; the surface’s 1px border is separate. Headers with trailing controls use the same gap measured from the complete header box. Do not put the header inside a filled card strip. A standalone setting, such as language, uses a one-row card with no repeated section title. Cards do not add spacing between sections; the page owns that spacing.",
+      "The card uses the existing white surface, 1px `--line-card` edge, and 10px radius. Rows are at least 48px tall with 8px vertical and 16px horizontal padding, 14px normal labels, and hairline separators between rows. Supporting copy is 12px muted, directly below the label or inline via `inlineDescription`. Stacked copy uses a 2px title-to-subtitle gap and 6px vertical padding; longer copy can grow. When an icon accompanies stacked copy, it sits in its own leading column, vertically centered beside both lines with a 16px gap. Both text lines share the same left edge. Icon-only labels retain the compact 8px gap. Hover uses the existing surface step without a fade.",
+      "`SettingsToggleRow` owns a labeled ThemeSwitch; clicking the row toggles it once, while info controls remain separate. Keyboard activation remains on the switch. `SettingsMenuRow` composes the shared Menu, including suffixes and groups. `SettingsInputRow` composes the outlined text input and accepts native input props for text, number, validation, and disabled states. `SettingsRow` is the composition variant for ranges, day buttons, actions, or other controls; it does not make the entire row interactive. Supply accessible names for custom controls. The `info` slot accepts an existing tooltip trigger. All values remain controlled by the consumer.",
+      "Use `SettingsCard variant=\"destructive\"` for destructive options such as offboarding or resetting preferences. It uses the standard 1px `--line-card` grey border and 16px vertical row padding at all viewport sizes, including rows with subtitles. Use `--destructive` red for the row title and leading icon, retain muted supporting copy, and pair it with a danger action button. Confirmation behavior belongs to the consumer."
+    ]
+  },
+  "time-picker": {
+    "when": [],
+    "whenNot": [],
+    "rules": [
+      "Use `TimePicker` for an editable time of day. It composes the 32px line field, muted clock and chevron icons, and shared overlay menu with half-hour suggestions. Use the normal field font, padding, radius, stroke, and focus treatment. Display `9:00AM`; store controlled values as `09:00`. Typing supports every minute, including 24-hour input. Invalid text stays visible with feedback instead of silently changing the saved value. Arrow Down opens suggestions; arrows navigate; Enter selects; Escape dismisses. The consumer owns date, timezone, and cross-window validation. Gallery: `#time-picker`.",
+      "### Single-selector cards and rows",
+      "When a card or row has one primary selector (checkbox, switch, or selection control), its background and label activate that same selector exactly once. Clicking the control itself must not trigger a second change through bubbling. Preserve keyboard activation and independent help/info actions. Do not delegate background clicks on rows containing multiple independent controls, such as a time range. Availability day tiles open the editor when an available day is not already open. A second click on the open day deselects it. Clicking an unavailable day enables it and opens its editor; the checkbox always toggles directly. All other days and saved time windows remain unchanged.",
+      "### Info tooltip",
+      "Use `InfoTooltip` for info-icon help everywhere. Its shared 14px muted icon is focusable and displays the tooltip above the icon, separated by `--space-8`. The component owns placement and exposes no below-placement override. Hover and focus show it; Escape and blur dismiss it. Use the popover top layer so card overflow does not clip help. Do not build local info-icon wrappers with different placement."
     ]
   },
   "filter-menu": {
@@ -179,14 +208,14 @@ export const USAGE: Record<string, Usage> = {
   },
   "confirm": {
     "when": [
-      "any destructive action was pressed. A labeled Delete button and a trash icon with no label are the same press. A menu’s Delete item is the same press."
+      "any destructive action was pressed. Destructive is any word that takes something away: Delete, Remove, Unassign all, Clear, Take off, Discard. A labeled button, a trash icon with no label, and a menu item are the same press. Every red menu item is destructive, so every red menu item opens this card. An undo toast after the fact does not replace it."
     ],
     "whenNot": [
-      "before that press. The press opens this card. It does not remove the record, the row, the step, the category, or the area."
+      "before that press. The press opens this card. It does not remove the record, the row, the step, the category, the person, or the area. A move that keeps the thing, such as Move to or Unassign on a few picked rooms, is not destructive."
     ],
     "rules": [
-      "Default: `.confirm`.",
-      "States: the title is “Delete this ______?” and the line under it says the named thing will be permanently removed for the whole team. Cancel closes the card. The confirming control is `.btn-danger`."
+      "Default: `ConfirmDialog` (`.confirm`).",
+      "States: the title is “Delete this ______?” and the line under it says the named thing will be permanently removed for the whole team. For another verb, `action` names it on both the title and the confirming button: “Remove Fred Salas?” and Remove, not Delete. When the action is not a permanent delete, `detail` says what happens instead, such as “their rooms go back to Unassigned.” Cancel closes the card. The confirming control is `.btn-danger`."
     ]
   },
   "search": {
@@ -415,7 +444,7 @@ export const USAGE: Record<string, Usage> = {
     "rules": [
       "Default: `Meter`, with `value`, `max`, and a `label` that says the figures.",
       "States: a fill, and a fill with an end part.",
-      "A 42px bar of 2px ticks every 4px. The done part is `--action` over `--black-12`. An end part, such as rooms on DND, takes the right end in `--black-50`. It spans the whole bar and is clipped, so its ticks line up with the ones under it. The bar is one image to a screen reader, and `label` is what it reads."
+      "A 42px bar of 2px ticks every 4px. The done part is `--action` over `--grey`, the light track. An end part, such as rooms on DND, takes the right end in `--black-50`. It spans the whole bar and is clipped, so its ticks line up with the ones under it. The bar is one image to a screen reader, and `label` is what it reads."
     ]
   },
   "share-bar": {
@@ -441,6 +470,7 @@ export const USAGE: Record<string, Usage> = {
     "rules": [
       "Default: `Widget`, holding a `WidgetList`. `WidgetEmpty` holds an `Empty` when there is nothing to show.",
       "States: rows and a more link, rows only, and empty. A widget that lists rows goes empty when it has no rows: `WidgetEmpty` replaces its summary and its list, and the head stays. A widget that only shows figures, a meter, a share bar, or a chart has no empty. It shows its zeros, because zero is a reading.",
+      "Widget and data-table headers share `--section-header-height` (43px minimum, border-box). Keep controls vertically centered; wrapped content may grow the header. This is independent of widget body-row heights.",
       "One card: a 1px `--line-card` border, a 10px radius, and a `--sidebar-grey` head over a `--white` list. The head is a 16px icon in `--text-muted`, `--space-8` from the title, the same gap as a Lance suggestion. The title is 14px weight 400, the count in `--text-muted`, and one action on the right. The action is a plus that starts a new record, as a `TextIcon` or a link with the `text-icon sm` class. A leaderboard puts its top three on a podium over the rows, second, first, third, each on a `--sidebar-grey` step, and the rows go on from fourth to sixth. First place's step is `--filter-chip-bg` with its place in `--action`, a 1px `--action` stroke on the top and sides, and `--shadow-card`. The step has no bottom stroke, so it does not double the rule it stands on. First place's avatar takes `--shadow-card` too. Every podium avatar keeps the named ring, 1px `--black-12`. A widget whose rows change with a time window, such as a leaderboard, takes segments there instead, sized to their labels: Today, 7d, and 30d, or 24h, 7d, and 30d. A `Menu` trigger on the grey head hovers `--grey`, one step from the head. Segments in the head take a `--grey` track so they do not fade into it, and an unselected segment hovers `--black-12`. In dark mode the list is `--white`, the page, edged by the card's border, and the head is `--grey-low`, halfway from the page to `--grey`. Lifting the list off the page read too heavy. Everything inside the list moves with it. A row hovers `--grey`, a pill in a row rests `--grey` and is `--black-12` on a hovered row, and the room map's cells, the podium steps, and a day's hover are `--grey`, with a room's hover `--black-12`. A head trigger hovers `--black-12`, and the segment track is `--white`, the page, so it sits below the head and the `--grey` selected pill still shows. The head is 52px, the height of a row. The card takes the depth drop under its hairline."
     ]
   },
@@ -656,7 +686,7 @@ export const USAGE: Record<string, Usage> = {
       "The panel is 392px and sits over the right of the table. The table keeps its width. It does not shrink to sit beside the panel. Entering is `--motion-panel` (400ms) on `--ease-drawer`. Leaving is `--motion-panel-out` (320ms). Reduced motion skips the slide. A page does not restyle the width, the header, or the slide.",
       "Every page uses the same header. The back button sits on the left and closes the panel. The right-hand group holds any page action, then Edit on a view-only panel, then the more button. Edit is a secondary button with the edit icon, set with `onEdit`. The more button is clear at rest. Its grey fill shows only while the pointer is on it. Its menu is Delete only, and it opens again after it closes. A right-click on the panel opens that same menu. The body is the page’s fields. A description or notes field is the text well, 96px. A typed fact is the line field inside the fact row: one line, 32px, placeholder Empty. Phone, email, loyalty, and where an item is stored use it.",
       "Editable text in the panel shows a pencil on hover. The pencil is the edit icon, 14px, in `--black-50`. It sits after the text on the first line. The text does not move when it appears. Clicking the field removes the pencil. The table does not show this pencil. A text well does not show it either. The field is already a box.",
-      "The body stacks its sections 24px apart. The scroll padding is `--space-16` on top and `--space-25` on the sides and the bottom. A rule between sections is 1px `--line` and runs the full width of the panel, through that side padding. A section label is `--text-12`, weight 500, and `--black-50`. A fact row is a 70px label and the value, `--space-16` apart, at least 20px tall, in `--text-14`. In dark mode the detail uses `--grey`.",
+      "The body stacks its sections 24px apart. The scroll padding is `--space-16` on top and `--space-25` on the sides and the bottom. A rule between sections is 1px `--line` and runs the full width of the panel, through that side padding. A section label is `--text-12`, weight 500, and `--black-50`. A fact row is a 70px label and the value, `--space-16` apart, at least 20px tall, in `--text-14`. The vertical gap between fact rows is `--space-12` (12px). In dark mode the detail uses `--grey`.",
       "A view-only panel reads its facts and keeps Activity live. Edit opens the editor popup for that record. Nothing else in the body edits. The room is the static square. A typed fact, such as the description, location, or item, is plain `--text-14` text (`.todo-side-value`). An empty one is a quiet dash. The description sits 4px under the title with no label, in `--text-muted` (`.todo-side-heading`). The panel body starts 40px below the header actions. An empty one reads No description in `--black-25`. Type, status, and urgency are their chips with `editable={false}`. The assignee is the person pill, or Unassigned. None of them show a chevron or a pencil.",
       "On a to-do, the panel opens and closes from the task row. It is view-only: Schedule for future, then Edit. The side title is the typed title, or the location and item as text, joined by a middle dot. An empty one is New to-do. The table's To-do cell shows a typed title as text, and without one it shows the Location and Item chips. A new to-do opens the editor popup with the name selected. The rules below are for a panel that edits in place, such as a complaint. The side title is the location and item chips, empty or filled. An empty title is Location and Item, not the word “To-do”. The title chips use the task row’s box and the same hover. In the side panel, guest mood, type, assigned, status, and urgency share one type: `--font`, `--text-14`, weight 400, and a 16px line-height. The control is 20px tall, with padding `2px 4px` and a 4px radius. The status icon is 16px so the word stays on that line. Table chips stay 13px. A menu option stays `--text-14`. The assignee keeps the miniature avatar, the name, and a `--sidebar-grey` fill. Hover and an open menu keep that fill and show the down chevron. Unassigned is clear at rest. Hover and an open menu use that same `--sidebar-grey` fill, and `--grey` in dark mode. Status keeps its icon and label and has no fill at rest. Type is the department chip. It rests clear with the `--black-12` ring. Hover and an open menu fill `--sidebar-grey`, and `--grey` in dark mode. The ring stays. The room uses the task row’s room control. Location and Item are dropdowns. At rest they are the value with no fill. Hover and an open menu show a `--sidebar-grey` pill and a down chevron after the value. The room, title, and date use `--space-16`. The Description label is `--text-12`. The note under it is `--text-14`. Activity reads heading, thread, then reply, as in Activity. The reply field is `--text-14`. Guest mood, phone, email, and a page’s other facts use this same panel. They do not get a second header or a second width."
     ]
@@ -687,6 +717,7 @@ export const USAGE: Record<string, Usage> = {
       "Pill editor: Required: a required description left empty after Save turns its placeholder red, the same red as a required pill.",
       "Pill editor: This is not the text well and not Record title. The 96px text well is for a notes field inside a form, not for a record's own description.",
       "Pill editor: Every choice is one `EditorPill`: 28px tall, padding `0 var(--space-10)`, `--radius-control`, `--white` with `--stroke`, `--text-14`. Hover and an open menu fill `--sidebar-grey`. Its menu is the gallery menu, with `taskMenuItem` rows. A leading icon is 14px in `--text-muted`, 6px from the value. An unset pill shows its placeholder, muted: Location, Item, Category. Every pill sits on one line, `--space-8` apart, in this order: the place, then the item or category, then the remaining choices, then status and the person. The line wraps only when the card runs out of width. It never breaks on purpose to group a pair. `EditorPillRow` is not used.",
+      "Pill editor: A toggle inside an editor pill inherits the pill’s default 14px strong-text label styling; only its track and knob use the switch drawing.",
       "Pill editor: A value inside a pill is its component, at `--text-14`, with no ring, padding, or fill of its own: the department tag is `plain`, and the urgency and person pill lose their padding and fill. Status keeps its icon and label.",
       "Pill editor: A Guestroom puts the room number in a grey track behind the location pill (`RoomPill`). The track slides out when Guestroom is chosen and folds away for any other place. Where the place cannot change, the lead is `PlacePill`. The room field hugs its placeholder, Room, and grows with the number. Once Guestroom is chosen the room is required: left empty after Save, the grey track takes the red ring and a faint red tint, and Room turns red (`RoomPill` `invalid`). The red is on the track, not a second box inside it.",
       "Pill editor: A typed fact that is not a choice, such as a guest's phone or email, is an `EditorField` in `EditorFields`: a 12px `--black-50` label over the 32px field, two to a row, `--space-16` apart, above the pills. A Cash count is the one place with many: its line amounts sit below the pills in three columns, coins, bills, and other. Its title is the counted total, read-only, and the line above it is the expected amount and the variance, once a location is set. Location starts on its placeholder unless there is only one. Editing a count keeps its location, as a fixed `PlacePill`, and its shift, notes, and line amounts. Its kicker is Edit count, Save count replaces Post count, and it can delete the count. Count or Amount is not a pill: it is the segmented control, at the end of the pill line.",
@@ -712,6 +743,7 @@ export const USAGE: Record<string, Usage> = {
       "Required: a required description left empty after Save turns its placeholder red, the same red as a required pill.",
       "This is not the text well and not Record title. The 96px text well is for a notes field inside a form, not for a record's own description.",
       "Every choice is one `EditorPill`: 28px tall, padding `0 var(--space-10)`, `--radius-control`, `--white` with `--stroke`, `--text-14`. Hover and an open menu fill `--sidebar-grey`. Its menu is the gallery menu, with `taskMenuItem` rows. A leading icon is 14px in `--text-muted`, 6px from the value. An unset pill shows its placeholder, muted: Location, Item, Category. Every pill sits on one line, `--space-8` apart, in this order: the place, then the item or category, then the remaining choices, then status and the person. The line wraps only when the card runs out of width. It never breaks on purpose to group a pair. `EditorPillRow` is not used.",
+      "A toggle inside an editor pill inherits the pill’s default 14px strong-text label styling; only its track and knob use the switch drawing.",
       "A value inside a pill is its component, at `--text-14`, with no ring, padding, or fill of its own: the department tag is `plain`, and the urgency and person pill lose their padding and fill. Status keeps its icon and label.",
       "A Guestroom puts the room number in a grey track behind the location pill (`RoomPill`). The track slides out when Guestroom is chosen and folds away for any other place. Where the place cannot change, the lead is `PlacePill`. The room field hugs its placeholder, Room, and grows with the number. Once Guestroom is chosen the room is required: left empty after Save, the grey track takes the red ring and a faint red tint, and Room turns red (`RoomPill` `invalid`). The red is on the track, not a second box inside it.",
       "A typed fact that is not a choice, such as a guest's phone or email, is an `EditorField` in `EditorFields`: a 12px `--black-50` label over the 32px field, two to a row, `--space-16` apart, above the pills. A Cash count is the one place with many: its line amounts sit below the pills in three columns, coins, bills, and other. Its title is the counted total, read-only, and the line above it is the expected amount and the variance, once a location is set. Location starts on its placeholder unless there is only one. Editing a count keeps its location, as a fixed `PlacePill`, and its shift, notes, and line amounts. Its kicker is Edit count, Save count replaces Post count, and it can delete the count. Count or Amount is not a pill: it is the segmented control, at the end of the pill line.",

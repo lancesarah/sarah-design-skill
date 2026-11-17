@@ -7,7 +7,6 @@ import {
   Icon,
   Person,
   SegmentedControl,
-  Status,
   TextIcon,
   Widget,
   WidgetList,
@@ -21,8 +20,6 @@ const statusOptions = [
   { value: "scheduled", label: "Scheduled" },
   { value: "completed", label: "Completed" },
 ];
-
-export type WorkspaceIntroVariant = "compact" | "showcase";
 
 const showcaseTodos = [
   { title: "Hallway", subtitle: "Ice machine", age: "20m", assigned: true },
@@ -53,10 +50,8 @@ function WorkspacePreview() {
 }
 
 export function WorkspaceIntro({
-  variant,
   onDismiss,
 }: {
-  variant: WorkspaceIntroVariant;
   onDismiss: () => void;
 }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -65,8 +60,7 @@ export function WorkspaceIntro({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const titleId = useId();
   const descriptionId = useId();
-  const showcase = variant === "showcase";
-  const title = showcase ? "Lance has a new look." : "Meet your new workspace";
+  const title = "Lance has a new look.";
 
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -128,14 +122,12 @@ export function WorkspaceIntro({
 
   return (
     <>
-      {showcase ? (
-        <div ref={backdropRef} className="workspace-intro-transition" aria-hidden="true" inert hidden>
-          <canvas ref={canvasRef} />
-        </div>
-      ) : null}
+      <div ref={backdropRef} className="workspace-intro-transition" aria-hidden="true" inert hidden>
+        <canvas ref={canvasRef} />
+      </div>
       <dialog
         ref={dialogRef}
-        className={`sds workspace-intro workspace-intro-${variant}`}
+        className="sds workspace-intro workspace-intro-showcase"
         aria-labelledby={titleId}
         aria-describedby={descriptionId}
         onClose={onDismiss}
@@ -150,7 +142,7 @@ export function WorkspaceIntro({
                 <div className="workspace-intro-todos">
                   <Widget icon="clipboard" title="To-dos" count={9} action={<TextIcon icon="plus-bold" size="sm" aria-label="Add to-do" />}>
                     <WidgetList>
-                      {showcase ? showcaseTodos.map(({ title, subtitle, age, assigned }) => (
+                      {showcaseTodos.map(({ title, subtitle, age, assigned }) => (
                         <WidgetRow
                           key={title}
                           as="div"
@@ -159,14 +151,12 @@ export function WorkspaceIntro({
                           meta={age}
                           trail={assigned ? <Person name="Sarah" initials="SM" variant="pill" /> : <Person name="Unassigned" variant="unassigned" />}
                         />
-                      )) : (
-                        <WidgetRow as="div" lead={<Status status="open" iconOnly />} title="Hallway" subtitle="Ice machine" />
-                      )}
+                      ))}
                     </WidgetList>
                   </Widget>
                 </div>
               </div>
-              {showcase ? <WorkspacePreview /> : null}
+              <WorkspacePreview />
               <div className="workspace-intro-preview-controls">
                 <DepartmentChip name="Front desk" />
                 <SegmentedControl aria-label="To-do status" value="open" options={statusOptions} readOnly />

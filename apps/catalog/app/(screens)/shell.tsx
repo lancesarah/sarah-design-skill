@@ -9,7 +9,7 @@ import { MessagesBoard, MessagesSide, openDirectThread } from "./messages";
 import { NotificationsSide } from "./notifications";
 import { usePageLimits } from "./page-limits";
 import { OpenDirectMessageContext, ShellPanelsContext } from "./shell-panels";
-import { WorkspaceIntro, type WorkspaceIntroVariant } from "./workspace-intro";
+import { WorkspaceIntro } from "./workspace-intro";
 
 let openedIntroOnPageLoad = false;
 
@@ -24,7 +24,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   const [deletedId, setDeletedId] = useState<string | null>(null);
   const [detailsFor, setDetailsFor] = useState<string | null>(null);
   const [conversationActions, setConversationActions] = useState<{ resolve: () => void } | null>(null);
-  const [intro, setIntro] = useState<WorkspaceIntroVariant | null>(null);
+  const [intro, setIntro] = useState(false);
 
   useEffect(() => {
     const [navigation] = performance.getEntriesByType("navigation") as PerformanceNavigationTiming[];
@@ -34,7 +34,7 @@ export function AppShell({ children }: { children: ReactNode }) {
     if (navigation?.type !== "reload" && document.referrer.startsWith(`${window.location.origin}/`)) return;
     // A preview refresh can load a fresh document without reporting a "reload".
     openedIntroOnPageLoad = true;
-    setIntro("showcase");
+    setIntro(true);
   }, []);
 
   useLayoutEffect(() => {
@@ -119,10 +119,9 @@ export function AppShell({ children }: { children: ReactNode }) {
       </ChatProvider>
       <LanceSide collapsed={lanceCollapsed} onCollapsedChange={chooseLance} />
       <FontSwitch>
-        <button type="button" className="workspace-intro-trigger" aria-haspopup="dialog" onClick={() => setIntro("compact")}>Intro 1</button>
-        <button type="button" className="workspace-intro-trigger" aria-haspopup="dialog" onClick={() => setIntro("showcase")}>Intro 2</button>
+        <button type="button" className="workspace-intro-trigger" aria-haspopup="dialog" onClick={() => setIntro(true)}>Intro 2</button>
       </FontSwitch>
-      {intro ? <WorkspaceIntro variant={intro} onDismiss={() => setIntro(null)} /> : null}
+      {intro ? <WorkspaceIntro onDismiss={() => setIntro(false)} /> : null}
       </ToastProvider>
     </ShellPanelsContext.Provider>
   );

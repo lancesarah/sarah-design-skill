@@ -180,6 +180,16 @@ export function messageThread(id: string) {
   return THREADS.find((thread) => thread.id === id) ?? started.find((thread) => thread.id === id) ?? null;
 }
 
+export function openDirectThread(name: string, initials: string) {
+  const existing = [...THREADS, ...started].find((thread) =>
+    thread.source === "Direct" && !thread.groupChat && thread.title === name && !removedIds.includes(thread.id),
+  );
+  if (existing) return existing.id;
+  const id = `direct-${crypto.randomUUID()}`;
+  startThread({ id, group: "Direct", title: name, source: "Direct", time: "", read: true, initials });
+  return id;
+}
+
 /** One person is a direct message. More than one person is a group chat, so the name opens the people. */
 const DEPT_ICON: Record<NonNullable<Thread["dept"]>, IconName> = {
   "Food & Beverage": "cup",

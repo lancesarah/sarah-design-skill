@@ -53,6 +53,10 @@ export const icons = {
     "viewBox": "0 0 14 14",
     "body": "<g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" style=\"stroke-width: var(--icon-stroke)\"><circle cx=\"7\" cy=\"5\" r=\"2.2\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"var(--icon-stroke)\"/><path d=\"M3 11.5c.6-1.8 2-2.7 4-2.7s3.4.9 4 2.7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"var(--icon-stroke)\"/></g>"
   },
+  "user-x": {
+    "viewBox": "0 0 14 14",
+    "body": "<g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" style=\"stroke-width: var(--icon-stroke)\"><circle cx=\"4.5\" cy=\"4.5\" r=\"2.2\"/><path d=\"M1 11.5c.5-1.8 1.7-2.7 3.5-2.7S7.5 9.7 8 11.5M9.5 4.5l3 3M12.5 4.5l-3 3\"/></g>"
+  },
   "users": {
     "viewBox": "0 0 14 14",
     "body": "<g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" style=\"stroke-width: var(--icon-stroke)\"><circle cx=\"5.2\" cy=\"4.8\" r=\"2\"/><path d=\"M1.5 11.5c.4-1.9 1.8-3 3.7-3s3.3 1.1 3.7 3M9.2 2.9a2 2 0 0 1 0 3.8M10.6 8.7c1 .4 1.7 1.4 1.9 2.8\"/></g>"
@@ -213,6 +217,14 @@ export const icons = {
     "viewBox": "0 0 14 14",
     "body": "<g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" style=\"stroke-width: var(--icon-stroke)\"><path d=\"M5 3.5v7M9 3.5v7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"var(--icon-stroke)\" stroke-linecap=\"round\"/></g>"
   },
+  "paw": {
+    "viewBox": "0 0 14 14",
+    "body": "<g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" style=\"stroke-width: var(--icon-stroke)\"><ellipse cx=\"2.5\" cy=\"5.6\" rx=\"1\" ry=\"1.3\"/><ellipse cx=\"5.2\" cy=\"3.1\" rx=\"1.1\" ry=\"1.35\"/><ellipse cx=\"8.8\" cy=\"3.1\" rx=\"1.1\" ry=\"1.35\"/><ellipse cx=\"11.5\" cy=\"5.6\" rx=\"1\" ry=\"1.3\"/><path d=\"M7 7.1c1.1 0 1.4 1.2 2.8 2.1 1.4.9.8 3-1 3-.7 0-1.2-.4-1.8-.4s-1.1.4-1.8.4c-1.8 0-2.4-2.1-1-3C5.6 8.3 5.9 7.1 7 7.1Z\"/></g>"
+  },
+  "minibar": {
+    "viewBox": "0 0 14 14",
+    "body": "<g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" style=\"stroke-width: var(--icon-stroke)\"><path d=\"M2.5 5h9M3.4 5l1.3 7h4.6l1.3-7M4 8.5h6M7 5l1-3.5h2\"/></g>"
+  },
   "cup": {
     "viewBox": "0 0 14 14",
     "body": "<g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" style=\"stroke-width: var(--icon-stroke)\"><path d=\"M2.6 2.6h6.4v5.6a3.2 3.2 0 0 1-6.4 0V2.6Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"var(--icon-stroke)\"/><path d=\"M9 4h1.6a1.7 1.7 0 0 1 0 3.4H9\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"var(--icon-stroke)\" stroke-linecap=\"round\"/></g>"
@@ -222,8 +234,8 @@ export const icons = {
     "body": "<g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" style=\"stroke-width: var(--icon-stroke)\"><path d=\"M1.5 3v8M1.5 8.5h11V11M6 8.5V5.3h4.7a1.8 1.8 0 0 1 1.8 1.8v1.4\"/><rect x=\"2.9\" y=\"5.3\" width=\"1.9\" height=\"1.7\" rx=\".85\"/></g>"
   },
   "moon": {
-    "viewBox": "0 0 24 24",
-    "body": "<path fill=\"currentColor\" d=\"M12,21q-3.75,0-6.38-2.63T3,12T5.63,5.63T12,3q0.35,0 0.69,0.02q0.34,0.02 0.66,0.07q-1.03,0.73-1.64,1.89T11.1,7.5q0,2.25 1.57,3.82T16.5,12.9q1.38,0 2.53-0.61t1.88-1.64q0.05,0.33 0.07,0.66T21,12q0,3.75-2.63,6.38T12,21Zm0-2q2.2,0 3.95-1.21t2.55-3.16q-0.5,0.13-1,0.2t-1,0.08q-3.07,0-5.24-2.16Q9.1,10.58 9.1,7.5q0-0.5 0.08-1t0.2-1Q7.43,6.3 6.21,8.05T5,12q0,2.9 2.05,4.95T12,19Z\"/>"
+    "viewBox": "0 0 14 14",
+    "body": "<g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" style=\"stroke-width: var(--icon-stroke)\"><path d=\"M12 6.87A5 5 0 1 1 7.13 2A3.5 3.5 0 0 0 12 6.87Z\"/></g>"
   },
   "tablet": {
     "viewBox": "0 0 14 14",
@@ -252,6 +264,34 @@ export const icons = {
   "sparkle": {
     "viewBox": "0 0 14 14",
     "body": "<g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" style=\"stroke-width: var(--icon-stroke)\"><path d=\"M6 3Q6.6 6.9 10.5 7.5 6.6 8.1 6 12 5.4 8.1 1.5 7.5 5.4 6.9 6 3Z\"/><path d=\"M11 1.2Q11.25 2.75 12.8 3 11.25 3.25 11 4.8 10.75 3.25 9.2 3 10.75 2.75 11 1.2Z\"/></g>"
+  },
+  "clean-checkout": {
+    "viewBox": "0 0 14 14",
+    "body": "<g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" style=\"stroke-width: var(--icon-stroke)\"><path d=\"M6 2H2.5v10H6M5 7h7M9.5 4.5 12 7l-2.5 2.5\"/><path d=\"M5 10.5v.1\"/></g>"
+  },
+  "clean-refresh": {
+    "viewBox": "0 0 14 14",
+    "body": "<g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" style=\"stroke-width: var(--icon-stroke)\"><path d=\"M11.5 5A4.7 4.7 0 0 0 3 3.5L1.5 5M1.5 2.5V5H4M2.5 9a4.7 4.7 0 0 0 8.5 1.5L12.5 9M10 9h2.5v2.5\"/></g>"
+  },
+  "clean-full": {
+    "viewBox": "0 0 14 14",
+    "body": "<g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" style=\"stroke-width: var(--icon-stroke)\"><path d=\"M1.5 6v6M12.5 8v4M1.5 10h11M1.5 7h7a4 4 0 0 1 4 3M3 7V5h3v2M10 1.5l.6 1.9 1.9.6-1.9.6L10 6.5l-.6-1.9L7.5 4l1.9-.6Z\"/></g>"
+  },
+  "clean-deep": {
+    "viewBox": "0 0 14 14",
+    "body": "<g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" style=\"stroke-width: var(--icon-stroke)\"><path d=\"M3.5 5h4v2l1 2v3h-6V9l1-2ZM4.5 5V2h4v1.5h-2V5M7 3.5 8.5 5M10 2.5h1M10 4l1 .5M9.5 6l.5 1M5 8.5v1.5\"/></g>"
+  },
+  "clean-well": {
+    "viewBox": "0 0 14 14",
+    "body": "<g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" style=\"stroke-width: var(--icon-stroke)\"><path d=\"m7 1.5 4.5 2v3.7c0 2.3-2 4.3-4.5 5.3-2.5-1-4.5-3-4.5-5.3V3.5Z\"/><path d=\"m4.7 7 1.5 1.5 3.2-3.2\"/></g>"
+  },
+  "globe": {
+    "viewBox": "0 0 14 14",
+    "body": "<g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" style=\"stroke-width: var(--icon-stroke)\"><circle cx=\"7\" cy=\"7\" r=\"5.5\"/><ellipse cx=\"7\" cy=\"7\" rx=\"2.5\" ry=\"5.5\"/><path d=\"M1.5 7h11M2.5 4h9M2.5 10h9\"/></g>"
+  },
+  "mail": {
+    "viewBox": "0 0 14 14",
+    "body": "<g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" style=\"stroke-width: var(--icon-stroke)\"><rect x=\"1.5\" y=\"3\" width=\"11\" height=\"8\" rx=\"1.3\"/><path d=\"m2 3.5 5 4 5-4\"/></g>"
   }
 } as const;
 

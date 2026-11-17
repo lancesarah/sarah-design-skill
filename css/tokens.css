@@ -1,4 +1,6 @@
 :root {
+  /* Shared minimum height for table and widget headers. */
+  --section-header-height: 43px;
   /* Primitives. Neutrals, the blue, and the red. Roles point at these. */
   --sidebar-grey: #f8f8f8;
   --grey: #eeeeee;
@@ -21,6 +23,7 @@
   --destructive: var(--red);
   --text-muted: var(--black-50);
   --bg-surface: var(--white);
+  --surface-hover: var(--sidebar-grey);
 
   /* Department tags. Each department is its own text color on a 15% fill. */
   --tag-text: #ffc130;
@@ -67,6 +70,7 @@
   --shadow-menu: 0 4px 20px rgb(0 0 0 / 10%);
   --shadow-card: 0 3px 7px rgb(0 0 0 / 4%);
   /* The photo viewer's backdrop. Dark in both themes, so a photo reads the same in each. */
+  --scrim-modal: rgb(0 0 0 / 40%);
   --scrim-photo: rgb(0 0 0 / 80%);
   --stroke: 0 0 0 1px var(--grey);
   /* Hairline. Matches --grey in light. Dark mode sets its own. */
@@ -151,6 +155,8 @@
 /* Dark mode. Layout, type, and sizes stay on the light tokens.
    These are the cheatsheet neutrals only. */
 html[data-theme="dark"] {
+  --scrim-modal: rgb(0 0 0 / 65%);
+  --surface-hover: var(--grey);
   /* The page is lighter than the nav and chat. Chrome stays the darker surface. */
   --sidebar-grey: #1A1A1A;
   /* Halfway from the chrome to #212121. #212121 against the nav read too heavy, so the page card sits one half step up. */

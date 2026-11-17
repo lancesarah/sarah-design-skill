@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { CommentButton } from "./comments";
 import { useDevDrag } from "./dev-drag";
 
-export function FontSwitch() {
+export function FontSwitch({ children }: { children?: ReactNode }) {
   const [lines, setLines] = useState(true);
   const [underline, setUnderline] = useState(false);
   const [softInk, setSoftInk] = useState(false);
@@ -120,6 +120,7 @@ export function FontSwitch() {
         Soft black
       </button>
       <CommentButton />
+      {children}
     </div>
   );
 }

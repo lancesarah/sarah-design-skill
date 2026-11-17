@@ -78,6 +78,8 @@ export type TaskTableLayout = "todo" | "complaint";
 
 export type TaskTableProps = {
   hover?: boolean;
+  /** Minimum title-column width for embedded lists; remaining width still expands it. */
+  todoMinWidth?: number;
   chips?: Array<{ name: string; value: string }>;
   rows?: TaskRow[];
   total?: number;
@@ -285,6 +287,7 @@ function taskColumns(
 
 function SheetGrid({
   hover = false,
+  todoMinWidth,
   rows,
   total,
   selectedId,
@@ -305,6 +308,8 @@ function SheetGrid({
   enteringId,
 }: {
   hover?: boolean;
+  /** Minimum title-column width for embedded lists; remaining width still expands it. */
+  todoMinWidth?: number;
   rows: TaskRow[];
   total?: number;
   selectedId?: string | null;
@@ -331,6 +336,7 @@ function SheetGrid({
   const items = itemOptions ?? Array.from(new Set(rows.map((row) => row.item).filter((value): value is string => Boolean(value))));
   const titles = titleOptions ?? COMPLAINT_TITLES;
   const columns = taskColumns(layout, rooms, menu, places, items, titles, onAssigneeChange, onCopyChange, onRoomChange);
+  if (todoMinWidth !== undefined) columns.find(column => column.id === "todo")!.minWidth = todoMinWidth;
   return (
     <DataTable
       columns={columns}
@@ -351,12 +357,12 @@ function SheetGrid({
 }
 
 
-export function TaskTable({ hover = false, chips = [], rows, total, selectedId, onRowClick, onRowContextMenu, onDelete, deleteNoun, rowName, onAssigneeChange, onCopyChange, onRoomChange, layout = "todo", empty, placeOptions, itemOptions, titleOptions, roomOptions, enteringId }: TaskTableProps) {
+export function TaskTable({ hover = false, todoMinWidth, chips = [], rows, total, selectedId, onRowClick, onRowContextMenu, onDelete, deleteNoun, rowName, onAssigneeChange, onCopyChange, onRoomChange, layout = "todo", empty, placeOptions, itemOptions, titleOptions, roomOptions, enteringId }: TaskTableProps) {
   if (rows) {
     return (
       <div className="sheet-list sheet-page" data-view="head">
         <div className="stage sheet-stage">
-          <SheetGrid rows={rows} total={total} selectedId={selectedId} onRowClick={onRowClick} onRowContextMenu={onRowContextMenu} onDelete={onDelete} deleteNoun={deleteNoun} rowName={rowName} onAssigneeChange={onAssigneeChange} onCopyChange={onCopyChange} onRoomChange={onRoomChange} layout={layout} empty={empty} placeOptions={placeOptions} itemOptions={itemOptions} titleOptions={titleOptions} roomOptions={roomOptions} enteringId={enteringId} />
+          <SheetGrid todoMinWidth={todoMinWidth} rows={rows} total={total} selectedId={selectedId} onRowClick={onRowClick} onRowContextMenu={onRowContextMenu} onDelete={onDelete} deleteNoun={deleteNoun} rowName={rowName} onAssigneeChange={onAssigneeChange} onCopyChange={onCopyChange} onRoomChange={onRoomChange} layout={layout} empty={empty} placeOptions={placeOptions} itemOptions={itemOptions} titleOptions={titleOptions} roomOptions={roomOptions} enteringId={enteringId} />
         </div>
       </div>
     );

@@ -62,7 +62,7 @@ Press stays 160ms. It is not `--motion-hover`.
 
 ## Hover on a neutral surface
 
-Hover and selected fills step one darker than the surface they sit on. Never use the same token as the background behind the control.
+Hover and selected fills take the next neutral step from the surface they sit on. In light mode the step is darker. In dark mode it is lighter. Never use the same token as the background behind the control.
 
 `--white` → `--sidebar-grey` → `--grey` → `--black-12` → `--black-25`
 
@@ -140,7 +140,7 @@ The nav and the chat stay darker than the page. The page is the lighter surface,
 
 `--line` is `--grey` in light mode, so light borders stay the same. In dark mode it is `#313131`: lighter than the page (`--page-mid`) and still lighter than a hovered row (`--grey`, `#292929`). A divider or chip stroke painted in `--grey` or the old `--black-12` matches that hover fill and disappears. `--black-12` is the next step, `#3a3a3a`, for hover outlines and the pressed chip stroke. Accent colors stay.
 
-Hover lightens. A card or table row whose resting fill is the page steps from `--white` (`--page-mid`) to `--grey` (`#292929`). It does not fall back onto the darker chrome. A selected note uses that same lighter fill, so the selected card is `--grey` in dark mode.
+Hover lightens. Use `--surface-hover` for cards and table rows on the page. It steps from `--white` (`--page-mid`) to `--grey` (`#292929`) in dark mode. A selected note uses that same lighter fill, so the selected card is `--grey` in dark mode.
 
 `--sidebar-grey` is darker than the page in dark mode. It is chrome. A hover painted in it goes darker, so it is off the dark ladder. The dark steps are `--white` → `--grey` → `--black-12` → `--grey-up`.
 

@@ -9,6 +9,7 @@ const HREFS: Record<string, string> = {
   "Cash & bank": "/cash",
   "Lost & found": "/lost-found",
   PM: "/pm",
+  Boards: "/boards",
 };
 
 export function hrefFor(label: string) {
@@ -26,6 +27,7 @@ const PAGES: Record<string, string> = {
   "/cash": "Cash & bank",
   "/lost-found": "Lost & found",
   "/pm": "PM",
+  "/boards": "Boards",
 };
 
 export function pageLabel(pathname: string) {

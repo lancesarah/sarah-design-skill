@@ -1,7 +1,7 @@
 "use client";
 
-import { OverlayMenu, SegmentedControl, Sidebar, type SidebarLink } from "@lance-live/sds";
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { FilterPicker, OverlayMenu, SegmentedControl, Sidebar, type SidebarLink } from "@lance-live/sds";
+import { useRef, useState, type ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import { Glyph } from "./glyph";
 import { NAV_FIXED, NAV_GROUPS } from "./nav";
@@ -140,29 +140,7 @@ export function LanceSide({ collapsed, onCollapsedChange }: { collapsed: boolean
   );
 }
 
-export function SearchBox({
-  placeholder,
-  label,
-  value,
-  onValueChange,
-  className,
-}: {
-  placeholder: string;
-  label: string;
-  value: string;
-  onValueChange: (value: string) => void;
-  className?: string;
-}) {
-  return (
-    <form className={["search", value ? "has-value" : "", className].filter(Boolean).join(" ")} role="search" onSubmit={(event) => event.preventDefault()}>
-      <Glyph name="search" size={18} />
-      <input type="search" placeholder={placeholder} aria-label={label} value={value} onChange={(event) => onValueChange(event.target.value)} />
-      <button className="clear" type="button" hidden={value.length === 0} aria-label="Clear search" onClick={() => onValueChange("")}>
-        <Glyph name="close" />
-      </button>
-    </form>
-  );
-}
+export { SearchField as SearchBox } from "@lance-live/sds";
 
 export function ReplyForm({ label, className, onReply, locked = false }: { label: string; className?: string; onReply?: (text: string) => void; locked?: boolean }) {
   return (
@@ -211,58 +189,15 @@ export function FilterMenu({
   sortId?: string | null;
   onSortChange?: (id: string) => void;
 }) {
-  const [open, setOpen] = useState(false);
-  const anchorRef = useRef<HTMLButtonElement>(null);
-  return (
-    <div className="drop">
-      <button ref={anchorRef} className="trigger" type="button" aria-expanded={open} aria-haspopup="menu" aria-label="Filters" onClick={() => setOpen((next) => !next)}>
-        <span className="pair">
-          <Glyph name="filter" />
-          <span className="fit-label">Filters</span>
-        </span>
-        <Glyph name="chevron" />
-      </button>
-      <OverlayMenu open={open} anchorRef={anchorRef}>
-        {options.map((option) => {
-          const checked = value.includes(option);
-          return (
-            <button
-              key={option}
-              className="menu-item"
-              type="button"
-              role="menuitemcheckbox"
-              aria-checked={checked}
-              onClick={() => onValueChange(checked ? value.filter((item) => item !== option) : [...value, option])}
-            >
-              {option}
-              <Glyph name="check" className="check" />
-            </button>
-          );
-        })}
-        {sorts && sorts.length > 0 ? (
-          <>
-            <div className="menu-rule" role="separator" />
-            {sorts.map((option) => {
-              const checked = sortId === option.id;
-              return (
-                <button
-                  key={option.id}
-                  className="menu-item"
-                  type="button"
-                  role="menuitemradio"
-                  aria-checked={checked}
-                  onClick={() => onSortChange?.(option.id)}
-                >
-                  {option.label}
-                  <Glyph name="check" className="check" />
-                </button>
-              );
-            })}
-          </>
-        ) : null}
-      </OverlayMenu>
-    </div>
-  );
+  return <FilterPicker sections={[
+    { options: options.map(value => ({ value, label: value })), selected: value, onSelectedChange: onValueChange },
+    ...(sorts?.length ? [{
+      options: sorts.map(({ id, label }) => ({ value: id, label })),
+      selected: sortId ? [sortId] : [],
+      mode: "single" as const,
+      onSelectedChange: ([id]: string[]) => onSortChange?.(id),
+    }] : []),
+  ]} />;
 }
 
 export type FilterGroup = {
@@ -276,85 +211,14 @@ export type FilterGroup = {
 
 /** Filters by category. Each category row opens its options to the side, like the gallery filter menu. */
 export function FilterGroupsMenu({ groups }: { groups: FilterGroup[] }) {
-  const [open, setOpen] = useState(false);
-  const [branch, setBranch] = useState<string | null>(null);
-  const anchorRef = useRef<HTMLButtonElement>(null);
-  const branchRef = useRef<HTMLButtonElement>(null);
-  const active = groups.find((group) => group.name === branch) ?? null;
-
-  useEffect(() => {
-    if (!open) return;
-    const close = (event: PointerEvent) => {
-      const target = event.target;
-      if (!(target instanceof Element)) return;
-      if (anchorRef.current?.contains(target) || target.closest('[data-menu="filters"]')) return;
-      setOpen(false);
-      setBranch(null);
-    };
-    document.addEventListener("pointerdown", close);
-    return () => document.removeEventListener("pointerdown", close);
-  }, [open]);
-
-  return (
-    <div className="drop">
-      <button
-        ref={anchorRef}
-        className="trigger"
-        type="button"
-        aria-expanded={open}
-        aria-haspopup="menu"
-        aria-label="Filters"
-        onClick={() => {
-          setOpen((next) => !next);
-          setBranch(null);
-        }}
-      >
-        <span className="pair">
-          <Glyph name="filter" />
-          <span className="fit-label">Filters</span>
-        </span>
-        <Glyph name="chevron" />
-      </button>
-      <OverlayMenu open={open} anchorRef={anchorRef} className="filter-menu" label="Filters" marker="filters">
-        {groups.map((group) => (
-          <div key={group.name} className={branch === group.name ? "menu-branch is-open" : "menu-branch"} onMouseEnter={() => setBranch(group.name)}>
-            <button
-              ref={branch === group.name ? branchRef : undefined}
-              className="menu-item"
-              type="button"
-              aria-haspopup="menu"
-              aria-expanded={branch === group.name}
-              onClick={() => setBranch(group.name)}
-            >
-              {group.name}
-              <Glyph name="chevron" className="menu-next" />
-            </button>
-          </div>
-        ))}
-      </OverlayMenu>
-      <OverlayMenu key={branch ?? "closed"} open={open && active != null} anchorRef={branchRef} className="filter-sub" label={active?.name} placement="side" marker="filters">
-        {active?.options.map((option) => {
-          const checked = active.value.includes(option);
-          return (
-            <button
-              key={option}
-              className="menu-item"
-              type="button"
-              role={active.single ? "menuitemradio" : "menuitemcheckbox"}
-              aria-checked={checked}
-              onClick={() => {
-                if (active.single) active.onValueChange(checked ? [] : [option]);
-                else active.onValueChange(checked ? active.value.filter((item) => item !== option) : [...active.value, option]);
-              }}
-            >
-              {option}
-              <Glyph name="check" className="check" />
-            </button>
-          );
-        })}
-      </OverlayMenu>
-    </div>
-  );
+  return <FilterPicker groups={groups.map(group => ({
+    id: group.name,
+    label: group.name,
+    options: group.options.map(value => ({ value, label: value })),
+    selected: group.value,
+    mode: group.single ? "single-toggle" : "multiple",
+    onSelectedChange: group.onValueChange,
+  }))} />;
 }
 
 export function TabBar({

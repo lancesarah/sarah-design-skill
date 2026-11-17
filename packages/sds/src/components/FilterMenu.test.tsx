@@ -1,8 +1,14 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { FilterMenu, FilterSubmenu } from "./FilterMenu";
 
 describe("FilterMenu", () => {
+  beforeEach(() => {
+    vi.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockReturnValue(new DOMRect(40, 40, 132, 32));
+  });
+
+  afterEach(() => vi.restoreAllMocks());
+
   it("opens the type submenu with the department chip and the check", () => {
     render(<FilterMenu open branch="Type" selected={{ Type: ["Housekeeping"] }} readOnly />);
     const housekeeping = screen.getByRole("menuitemcheckbox", { name: "Housekeeping" });
@@ -35,7 +41,7 @@ describe("FilterMenu", () => {
     expect(trigger).toHaveAttribute("aria-expanded", "false");
     fireEvent.click(trigger);
     expect(trigger).toHaveAttribute("aria-expanded", "true");
-    expect(screen.getByRole("button", { name: "Room" })).toBeTruthy();
+    expect(screen.getByRole("menuitem", { name: "Room" })).toBeTruthy();
   });
 
   it("checks a room when the menu is interactive", () => {

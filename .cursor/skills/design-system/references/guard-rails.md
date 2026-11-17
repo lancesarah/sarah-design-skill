@@ -56,6 +56,18 @@ Every icon is the line construction in [polish.md](polish.md), the one `#i-calen
 
 Forced by: "why are the share and delete icons so different? they should follow the style guide." and "for all icons can you match the camera/calendar formatting? make this change everywhere"
 
+## A labeled action is secondary
+
+A labeled action that is not the primary is the secondary button: white, `--stroke`, the depth drop, and an icon. That holds in the filter row, a selection toolbar, the header, beside a section title, and in a card's grey head. The text button, with no fill at rest, is only the widget's plus that starts a record. Do not pick the text button because an action should feel quiet, because it sits in a toolbar, or because it sits in a grey head. When unsure, use secondary.
+
+Forced by: the boards selection toolbar shipped Move to, Service, Mark clean, and Unassign as text buttons. Then, "these should all be secondary buttons... it keeps putting buttons that should be secondary as ghost." Then Auto-assign and Collect shipped as text buttons in the board heads, and they were made secondary too.
+
+## Every destructive action confirms
+
+Delete, Remove, Unassign all, Clear, and any red menu item open Delete confirmation before anything is taken away. The word does not have to be Delete. A red item in a menu, a trash icon, and a labeled button are the same press. An undo toast is not a substitute. Before shipping a screen, find every `danger` item and every trash icon and check that each one opens the card. The card names the verb: Remove on a Remove, not Delete.
+
+Forced by: the boards card menu's Remove and the room menu's Delete from board acted on the press. Then, "all destructive buttons and actions like remove and delete need the secondary popup."
+
 ## The more menu on right-click
 
 See Menu in [components.md](components.md).

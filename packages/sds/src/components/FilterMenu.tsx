@@ -1,9 +1,9 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { DEPARTMENTS, DepartmentChip } from "./DepartmentChip";
 import { Icon } from "../icons";
-import { OverlayMenu } from "./OverlayMenu";
+import { FilterOptions, FilterPicker } from "./FilterPicker";
 import { Person } from "./People";
 import { ASSIGNEE_PEOPLE } from "./table-columns";
 
@@ -97,26 +97,8 @@ export type FilterSubmenuProps = {
 };
 
 export function FilterSubmenu({ field, selected = [], onSelectedChange, readOnly = false, className, bare = false }: FilterSubmenuProps & { bare?: boolean }) {
-  const items = OPTIONS[field].map((value) => {
-        const checked = selected.includes(value);
-        return (
-          <button
-            key={value}
-            className="menu-item"
-            type="button"
-            role="menuitemcheckbox"
-            aria-checked={checked}
-            onClick={() => {
-              if (readOnly) return;
-              const next = checked ? selected.filter((item) => item !== value) : [...selected, value];
-              onSelectedChange?.(next);
-            }}
-          >
-            <OptionBody field={field} value={value} />
-            <Icon name="check" size={14} className="check" />
-          </button>
-        );
-      });
+  const items = <FilterOptions options={OPTIONS[field].map(value => ({ value, label: value, content: <OptionBody field={field} value={value} /> }))}
+    selected={selected} onSelectedChange={readOnly ? undefined : onSelectedChange} />;
   if (bare) return <>{items}</>;
   return (
     <div className={["sds", "menu", "filter-sub", className].filter(Boolean).join(" ")} role="menu" aria-label={field}>
@@ -147,24 +129,14 @@ export function FilterMenu({
   className,
 }: FilterMenuProps) {
   const [internalOpen, setInternalOpen] = useState(false);
-  const [internalBranch, setInternalBranch] = useState<FilterField | null>(null);
   const [internalSelected, setInternalSelected] = useState<FilterSelection>({});
-  const anchorRef = useRef<HTMLButtonElement>(null);
-  const branchRef = useRef<HTMLButtonElement>(null);
   const shown = open ?? internalOpen;
-  const active = branch === undefined ? internalBranch : branch;
   const picks = selected ?? internalSelected;
 
   const setShown = (next: boolean) => {
     if (readOnly) return;
     if (open === undefined) setInternalOpen(next);
     onOpenChange?.(next);
-  };
-
-  const setBranch = (next: FilterField | null) => {
-    if (readOnly) return;
-    if (branch === undefined) setInternalBranch(next);
-    onBranchChange?.(next);
   };
 
   const setPicks = (field: FilterField, values: string[]) => {
@@ -176,45 +148,16 @@ export function FilterMenu({
   return (
     <div className={["sds", "sheet-page", "filter-menu-host", shown ? "is-open" : "", className].filter(Boolean).join(" ")}>
       <div className="filter-row">
-        <div className={shown ? "drop is-open" : "drop"}>
-          <button
-            ref={anchorRef}
-            className={shown ? "trigger is-hover" : "trigger"}
-            type="button"
-            aria-expanded={shown}
-            aria-haspopup="menu"
-            aria-label="Filters"
-            onClick={() => setShown(!shown)}
-          >
-            <span className="pair">
-              <Icon name="filter" size={14} />
-              <span>Filters</span>
-            </span>
-            <Icon name="chevron" size={14} />
-          </button>
-          <OverlayMenu open={shown} anchorRef={anchorRef} className="filter-menu" label="Filters">
-            {FILTER_FIELDS.map((field) => (
-              <div key={field} className={active === field ? "menu-branch is-open" : "menu-branch"} onMouseEnter={() => setBranch(field)}>
-                <button
-                  ref={active === field ? branchRef : undefined}
-                  className="menu-item"
-                  type="button"
-                  aria-haspopup="menu"
-                  aria-expanded={active === field}
-                  onClick={() => setBranch(field)}
-                >
-                  {field}
-                  <Icon name="chevron" size={14} className="menu-next" />
-                </button>
-              </div>
-            ))}
-          </OverlayMenu>
-          <OverlayMenu key={active ?? "closed"} open={shown && active != null} anchorRef={branchRef} className="filter-sub" label={active ?? undefined} placement="side">
-            {active ? (
-              <FilterSubmenu field={active} selected={picks[active]} readOnly={readOnly} onSelectedChange={(values) => setPicks(active, values)} bare />
-            ) : null}
-          </OverlayMenu>
-        </div>
+        <FilterPicker open={shown} onOpenChange={setShown} branch={branch}
+          onBranchChange={next => onBranchChange?.(next as FilterField | null)} readOnly={readOnly}
+          groups={FILTER_FIELDS.map(field => ({
+            id: field,
+            label: field,
+            options: OPTIONS[field].map(value => ({ value, label: value, content: <OptionBody field={field} value={value} /> })),
+            selected: picks[field] ?? [],
+            onSelectedChange: values => setPicks(field, values),
+          }))}
+        />
       </div>
     </div>
   );

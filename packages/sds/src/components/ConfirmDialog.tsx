@@ -8,12 +8,18 @@ export function ConfirmDialog({
   open,
   name,
   noun = "record",
+  action,
+  title,
+  detail,
   onCancel,
   onConfirm,
 }: {
   open: boolean;
   name: string;
   noun?: string;
+  action?: string;
+  title?: string;
+  detail?: string;
   onCancel?: () => void;
   onConfirm?: () => void;
 }) {
@@ -80,6 +86,9 @@ export function ConfirmDialog({
           titleId={titleId}
           name={name}
           noun={noun}
+          action={action}
+          title={title}
+          detail={detail}
           onCancel={() => settle(false)}
           onConfirm={() => settle(true)}
         />

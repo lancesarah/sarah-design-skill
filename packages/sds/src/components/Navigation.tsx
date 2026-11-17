@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, type ReactNode, type RefObject } from "rea
 import { Button } from "./Button";
 import { Icon, type IconName } from "../icons";
 import { ThemeSwitch } from "./Fields";
+import { hideTooltip, placeTooltip, showTooltip } from "./TooltipTarget";
 
 export function PageHeader({
   title,
@@ -67,6 +68,12 @@ export type SidebarGroup = {
   pinned?: boolean;
 };
 
+function SideTip({ label, shortcut }: { label: string; shortcut?: string }) {
+  return <span className="tip" popover="manual" aria-hidden="true">
+    {label}{shortcut ? <> <span>{shortcut}</span></> : null}
+  </span>;
+}
+
 export function SidebarItem({
   label,
   icon,
@@ -78,13 +85,15 @@ export function SidebarItem({
   pinned,
   onPin,
   actions = true,
-}: SidebarLink & { pinned?: boolean; onPin?: () => void; actions?: boolean }) {
+  showLabelTip = false,
+}: SidebarLink & { pinned?: boolean; onPin?: () => void; actions?: boolean; showLabelTip?: boolean }) {
+  const hasTip = Boolean(tip) || showLabelTip;
   return (
     <div className="side-item" data-label={label}>
       <a
         href={href}
         aria-current={current ? "page" : undefined}
-        className={tip ? "tip-host" : undefined}
+        className={hasTip ? "tip-host" : undefined}
         onClick={
           onClick
             ? (event) => {
@@ -97,11 +106,7 @@ export function SidebarItem({
         <Icon name={icon} size={18} />
         {label}
         {count ? <span className="side-count">{count}</span> : null}
-        {tip ? (
-          <span className="tip" popover="manual" aria-hidden="true">
-            {label} <span>{tip}</span>
-          </span>
-        ) : null}
+        {hasTip ? <SideTip label={label} shortcut={tip} /> : null}
       </a>
       {actions ? (
         <span className="side-actions">
@@ -123,34 +128,8 @@ export function SidebarItem({
   );
 }
 
-function placeSideTip(host: HTMLElement) {
-  const tip = host.querySelector<HTMLElement>(":scope > .tip");
-  if (!tip || host.classList.contains("is-quiet")) return;
-  const rect = host.getBoundingClientRect();
-  const gap = Number.parseFloat(getComputedStyle(host).getPropertyValue("--tip-gap")) || 8;
-  tip.style.left = `${rect.right + gap}px`;
-  tip.style.top = `${rect.top + rect.height / 2}px`;
-}
-
 function revealSideTip(host: HTMLElement) {
-  const tip = host.querySelector<HTMLElement>(":scope > .tip");
-  if (!tip || host.classList.contains("is-quiet")) return;
-  placeSideTip(host);
-  try {
-    if (!tip.matches(":popover-open")) tip.showPopover();
-  } catch {
-    // The tip can already be opening as the pointer crosses the row.
-  }
-}
-
-function hideSideTip(host: HTMLElement) {
-  const tip = host.querySelector<HTMLElement>(":scope > .tip");
-  if (!tip?.matches(":popover-open")) return;
-  try {
-    tip.hidePopover();
-  } catch {
-    // The tip can already be closed when the pointer leaves.
-  }
+  if (!host.classList.contains("is-quiet")) showTooltip(host, "right");
 }
 
 function tipDelay(host: HTMLElement) {
@@ -175,7 +154,7 @@ function useSideTips(rootRef: RefObject<HTMLElement | null>) {
     const follow = (host: HTMLElement, until: number) => {
       const tick = (now: number) => {
         if (followUntil !== until) return;
-        placeSideTip(host);
+        placeTooltip(host, "right");
         if (now < until) requestAnimationFrame(tick);
       };
       requestAnimationFrame(tick);
@@ -203,10 +182,10 @@ function useSideTips(rootRef: RefObject<HTMLElement | null>) {
       if (next && next !== host && root.contains(next) && !next.classList.contains("is-quiet")) {
         host.classList.remove("is-tip-source", "is-quiet", "is-settled");
         revealSideTip(next);
-        hideSideTip(host);
+        hideTooltip(host);
         return;
       }
-      hideSideTip(host);
+      hideTooltip(host);
       host.classList.remove("is-quiet", "is-settled");
       endWarm();
     };
@@ -217,7 +196,7 @@ function useSideTips(rootRef: RefObject<HTMLElement | null>) {
     const onFocusOut = (event: FocusEvent) => {
       const host = hostFrom(event);
       if (!host || !root.contains(host) || host.contains(event.relatedTarget as Node)) return;
-      hideSideTip(host);
+      hideTooltip(host);
     };
     const onClick = (event: MouseEvent) => {
       const host = hostFrom(event);
@@ -227,6 +206,11 @@ function useSideTips(rootRef: RefObject<HTMLElement | null>) {
       followUntil = 0;
     };
 
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") root.querySelectorAll<HTMLElement>(".tip-host").forEach(hideTooltip);
+    };
+
+    root.addEventListener("keydown", onKeyDown);
     root.addEventListener("pointerover", onOver);
     root.addEventListener("pointerout", onOut);
     root.addEventListener("focusin", onFocusIn);
@@ -236,7 +220,8 @@ function useSideTips(rootRef: RefObject<HTMLElement | null>) {
     return () => {
       endWarm();
       followUntil = 0;
-      root.querySelectorAll<HTMLElement>(".tip-host").forEach(hideSideTip);
+      root.querySelectorAll<HTMLElement>(".tip-host").forEach(hideTooltip);
+      root.removeEventListener("keydown", onKeyDown);
       root.removeEventListener("pointerover", onOver);
       root.removeEventListener("pointerout", onOut);
       root.removeEventListener("focusin", onFocusIn);
@@ -253,6 +238,7 @@ function SideList({
   onPin,
   hidden,
   actions = true,
+  showLabelTips = false,
 }: {
   links: SidebarLink[];
   pinnedLabels?: ReadonlySet<string>;
@@ -260,6 +246,7 @@ function SideList({
   hidden?: boolean;
   /** Fixed links stay put. No grip, no pin. */
   actions?: boolean;
+  showLabelTips?: boolean;
 }) {
   const listRef = useRef<HTMLDivElement>(null);
   const signature = links.map((link) => link.label).join("\0");
@@ -393,6 +380,7 @@ function SideList({
         <SidebarItem
           key={link.label}
           {...link}
+          showLabelTip={showLabelTips}
           actions={actions}
           pinned={actions ? pinnedLabels?.has(link.label) : undefined}
           onPin={actions && onPin ? () => onPin(link.label) : undefined}
@@ -504,6 +492,7 @@ export function Sidebar({
   }
 
   const fixedLinks = fixed;
+  const toggleLabel = collapsed ? "Expand sidebar" : "Collapse sidebar";
 
   return (
     <div className="sds side-frame">
@@ -515,14 +504,15 @@ export function Sidebar({
             <Icon name="chevron" size={16} />
           </button>
           <button
-            className="side-icon"
+            className="side-icon tip-host"
             type="button"
             aria-expanded={!collapsed}
             aria-controls={id}
-            aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+            aria-label={toggleLabel}
             onClick={() => setCollapsed(!collapsed)}
           >
             <Icon name="sidebar" size={18} />
+            <SideTip label={toggleLabel} />
           </button>
         </div>
         <div className="side-fixed">
@@ -531,7 +521,7 @@ export function Sidebar({
             <input type="search" placeholder="Search" aria-label="Search" />
             <kbd>⌘ K</kbd>
           </form>
-          {fixedLinks.length ? <SideList links={fixedLinks} actions={false} /> : null}
+          {fixedLinks.length ? <SideList links={fixedLinks} actions={false} showLabelTips={collapsed} /> : null}
         </div>
         <div className="side-scroll-frame">
           <div className="side-scroll" ref={scrollRef}>
@@ -561,7 +551,7 @@ export function Sidebar({
                   >
                     {group.title} <Icon name="chevron" size={14} />
                   </button>
-                  <SideList links={links} pinnedLabels={pinnedLabels} onPin={pinLabel} hidden={!expanded} />
+                  <SideList links={links} pinnedLabels={pinnedLabels} onPin={pinLabel} hidden={!expanded} showLabelTips={collapsed} />
                 </div>
               );
             })}
@@ -569,16 +559,18 @@ export function Sidebar({
           </div>
         </div>
         <div className="side-user">
-          <span className="person">
+          <span className={collapsed ? "person tip-host" : "person"}>
             {avatarSrc ? <img className="avatar" src={avatarSrc} alt="" /> : <span className="avatar">S</span>}
             <span className="person-copy">
               <span>Sarah</span>
               <span className="sub">Mobile Test</span>
             </span>
+            {collapsed ? <SideTip label="Sarah" /> : null}
           </span>
           <div className="side-settings">
-            <button className="side-icon" type="button" aria-label="Settings">
+            <button className="side-icon tip-host" type="button" aria-label="Settings">
               <Icon name="gear" size={18} />
+              <SideTip label="Settings" />
             </button>
             <ThemeSwitch
               pressed={dark}

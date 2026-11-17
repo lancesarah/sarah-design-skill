@@ -3,18 +3,7 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Icon } from "../icons";
 
-/** Centers the name above the picture. The tip is in the top layer, so a scrolling list does not clip it. */
-function placeNameTip(host: HTMLElement) {
-  const tip = host.querySelector<HTMLElement>(":scope > .tip");
-  if (!tip) return null;
-  const gap = Number.parseFloat(getComputedStyle(host).getPropertyValue("--tip-gap")) || 8;
-  const box = host.getBoundingClientRect();
-  tip.style.position = "fixed";
-  tip.style.left = `${box.left + box.width / 2}px`;
-  tip.style.top = `${box.top - gap}px`;
-  tip.style.transform = "translate(-50%, -100%)";
-  return tip;
-}
+import { hideTooltip, placeTooltip, showTooltip } from "./TooltipTarget";
 
 export function Avatar({
   initials,
@@ -42,28 +31,23 @@ export function Avatar({
   useEffect(() => {
     const host = ref.current;
     if (!hovered || !host) return;
-    const place = () => placeNameTip(host);
-    const tip = place();
-    if (!tip) return;
-    try {
-      if (!tip.matches(":popover-open")) tip.showPopover();
-    } catch {
-      // The tip can already be opening as the pointer crosses the picture.
-    }
+    const place = () => placeTooltip(host);
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") hideTooltip(host);
+    };
+    showTooltip(host);
     window.addEventListener("scroll", place, true);
     window.addEventListener("resize", place);
+    document.addEventListener("keydown", onKeyDown);
     return () => {
       window.removeEventListener("scroll", place, true);
       window.removeEventListener("resize", place);
-      try {
-        if (tip.matches(":popover-open")) tip.hidePopover();
-      } catch {
-        // The tip can already be closed when the pointer leaves.
-      }
+      document.removeEventListener("keydown", onKeyDown);
+      hideTooltip(host);
     };
   }, [hovered]);
 
-  const classes = ["sds", "avatar", size === "md" ? "" : size, empty ? "is-empty" : "", photo ? "is-photo" : "", name ? "tip-host" : "", className].filter(Boolean).join(" ");
+  const classes = ["sds", "avatar", size === "md" ? "" : size, empty ? "is-empty" : "", photo ? "is-photo" : "", name ? "tip-host tooltip-target" : "", className].filter(Boolean).join(" ");
   const face = photo ? <img src={photo} alt="" /> : empty ? null : initials || (size === "mini" ? null : <Icon name="user" size={size === "lg" ? 18 : 16} />);
   if (!name) {
     return (

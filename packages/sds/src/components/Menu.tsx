@@ -1,12 +1,21 @@
 "use client";
 
-import { Fragment, useEffect, useId, useRef, useState } from "react";
+import { Fragment, useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { Icon, type IconName } from "../icons";
 import { OverlayMenu } from "./OverlayMenu";
 
 export type MenuItem = {
   value: string;
   label: string;
+  /** Shared row content for choices such as a Person. The label still drives search. */
+  content?: ReactNode;
+  /** Optional content for the selected value in the trigger. */
+  triggerContent?: ReactNode;
+  /** Secondary text shown after the label in the trigger and options. */
+  suffix?: string;
+  /** Optional heading and divider before this option. */
+  section?: string;
+  dividerBefore?: boolean;
   icon?: IconName;
   danger?: boolean;
   description?: string;
@@ -21,6 +30,9 @@ export type MenuProps = {
   placeholderIcon?: IconName;
   searchable?: boolean;
   open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  triggerLabel?: string;
+  invalid?: boolean;
   triggerState?: "hover";
   className?: string;
 };
@@ -33,6 +45,9 @@ export function Menu({
   placeholderIcon = "clock",
   searchable = false,
   open,
+  onOpenChange,
+  triggerLabel,
+  invalid,
   triggerState,
   className,
 }: MenuProps) {
@@ -45,14 +60,17 @@ export function Menu({
   const visible = items.filter((item) => item.label.toLowerCase().includes(query.trim().toLowerCase()));
 
   useEffect(() => {
-    if (!shown || open !== undefined) return;
+    if (!shown || (open !== undefined && !onOpenChange)) return;
     const close = (event: PointerEvent) => {
       const target = event.target as HTMLElement | null;
-      if (!target?.closest?.(`[data-menu="${listId}"]`)) setInternalOpen(false);
+      if (!target?.closest?.(`[data-menu="${listId}"]`)) {
+        if (open === undefined) setInternalOpen(false);
+        onOpenChange?.(false);
+      }
     };
     document.addEventListener("pointerdown", close);
     return () => document.removeEventListener("pointerdown", close);
-  }, [shown, open, listId]);
+  }, [shown, open, listId, onOpenChange]);
 
   return (
     <div className={["sds", "drop", className].filter(Boolean).join(" ")} data-menu={listId}>
@@ -62,13 +80,18 @@ export function Menu({
         type="button"
         aria-expanded={shown}
         aria-haspopup="menu"
+        aria-label={triggerLabel}
+        aria-invalid={invalid || undefined}
         onClick={() => {
           if (open === undefined) setInternalOpen((next) => !next);
+          onOpenChange?.(!shown);
         }}
       >
         <span className="pair">
-          <Icon name={selected?.icon ?? placeholderIcon} size={14} />
-          <span className={selected ? undefined : "dim"}>{selected?.label ?? placeholder}</span>
+          {selected?.triggerContent ?? <>
+            <Icon name={selected?.icon ?? placeholderIcon} size={14} />
+            <span className={selected ? undefined : "dim"}>{selected?.label ?? placeholder}{selected?.suffix ? <span className="menu-label-suffix"> · {selected.suffix}</span> : null}</span>
+          </>}
         </span>
         <Icon name="chevron" size={14} />
       </button>
@@ -90,7 +113,8 @@ export function Menu({
         ) : null}
         {visible.map((item, index) => (
           <Fragment key={item.value}>
-            {item.danger && index > 0 && !visible[index - 1]?.danger ? <span className="menu-rule" /> : null}
+            {item.dividerBefore || (item.danger && index > 0 && !visible[index - 1]?.danger) ? <span className="menu-rule" role="separator" /> : null}
+            {item.section ? <span className="menu-section-title">{item.section}</span> : null}
             <button
               className={["menu-item", item.danger ? "danger" : "", item.state === "hover" ? "is-hover" : ""].filter(Boolean).join(" ")}
               type="button"
@@ -99,17 +123,18 @@ export function Menu({
               onClick={() => {
                 onValueChange?.(item.value);
                 if (open === undefined) setInternalOpen(false);
+                onOpenChange?.(false);
               }}
             >
-              {item.icon ? <Icon name={item.icon} size={18} /> : null}
-              {item.description ? (
+              {!item.content && item.icon ? <Icon name={item.icon} size={18} /> : null}
+              {item.content ?? (item.description ? (
                 <span className="mode-copy">
                   <b>{item.label}</b>
                   <span>{item.description}</span>
                 </span>
               ) : (
-                item.label
-              )}
+                <span>{item.label}{item.suffix ? <span className="menu-label-suffix"> · {item.suffix}</span> : null}</span>
+              ))}
               {item.danger ? null : <Icon name="check" size={14} className="check" />}
             </button>
           </Fragment>

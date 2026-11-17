@@ -13,7 +13,7 @@
   overflow: visible;
 }
 .confirm-dialog::backdrop {
-  background: color-mix(in srgb, var(--black) 40%, transparent);
+  background: var(--scrim-modal);
   animation: confirm-scrim 240ms var(--ease-out);
 }
 .confirm-dialog[open] .confirm { animation: confirm-in 240ms var(--ease-out); }

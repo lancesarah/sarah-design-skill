@@ -16,6 +16,7 @@ export type ActivityStatus = {
   initials: string;
   text: string;
   time: string;
+  details?: string[];
 };
 
 export type ActivityItem = ActivityComment | ActivityStatus;
@@ -24,10 +25,14 @@ export function ActivityFeed({
   items,
   className,
   replyLabel = "Post a reply",
+  readOnly = false,
+  emptyMessage,
 }: {
   items: ActivityItem[];
   className?: string;
   replyLabel?: string;
+  readOnly?: boolean;
+  emptyMessage?: string;
 }) {
   return (
     <section className={["sds", "activity-feed", className].filter(Boolean).join(" ")} aria-label="Activity">
@@ -35,6 +40,7 @@ export function ActivityFeed({
         <span>Activity</span>
       </div>
       <div className="activity-list">
+        {!items.length && emptyMessage ? <span className="todo-side-value is-quiet">{emptyMessage}</span> : null}
         {items.map((item, index) =>
           item.kind === "comment" ? (
             <article className="comment" key={`${item.name}-${item.time}-${index}`}>
@@ -53,13 +59,14 @@ export function ActivityFeed({
               <span className="avatar mini">{item.initials}</span>
               <span className="side-log-text">
                 <span className="who">{item.name}</span> {item.text}
+                {item.details?.map((detail) => <span key={detail} className="activity-log-detail">{detail}</span>)}
               </span>
               <time>{item.time}</time>
             </div>
           ),
         )}
       </div>
-      <Composer kind="message" fill placeholder={`${replyLabel}...`} />
+      {readOnly ? null : <Composer kind="message" fill placeholder={`${replyLabel}...`} />}
     </section>
   );
 }

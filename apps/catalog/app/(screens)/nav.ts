@@ -15,7 +15,7 @@ export const NAV_GROUPS: SidebarGroup[] = [
     pinned: true,
     open: true,
     links: [
-      { icon: "grid", label: "Boards" },
+      { href: "/boards", icon: "grid", label: "Boards" },
       { href: "/todos", icon: "clipboard", label: "To-Dos" },
       { href: "/complaints", icon: "alert", label: "Complaints" },
       { href: "/cash", icon: "card", label: "Cash & bank" },
@@ -34,7 +34,7 @@ export const NAV_GROUPS: SidebarGroup[] = [
     title: "Operations",
     open: false,
     links: [
-      { icon: "grid", label: "Boards" },
+      { href: "/boards", icon: "grid", label: "Boards" },
       { href: "/todos", icon: "clipboard", label: "To-Dos" },
       { href: "/complaints", icon: "alert", label: "Complaints" },
       { icon: "calendar", label: "Schedule" },

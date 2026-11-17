@@ -426,7 +426,8 @@ section { scroll-margin-top: 24px; }
   box-shadow: var(--stroke);
 }
 .filter .pair, .trigger .pair { display: inline-flex; align-items: center; gap: 6px; min-width: 0; }
-.trigger > .i { color: var(--black-50); }
+:is(.filter, .trigger) > .i,
+:is(.filter, .trigger) > .pair > .i { color: var(--text-muted); }
 .dim { opacity: 0.5; }
 .filter:hover, .filter.is-hover, .filter[aria-expanded="true"],
 .trigger:hover, .trigger.is-hover, .trigger[aria-expanded="true"] { background: var(--sidebar-grey); }
@@ -539,6 +540,7 @@ section { scroll-margin-top: 24px; }
   color: var(--black-50);
   font-size: 14px;
 }
+.avatar:not(img):not(.is-photo):not(.is-empty) { border: 1px solid var(--black-12); }
 html[data-theme="dark"] img.avatar,
 html[data-theme="dark"] img.note-avatar,
 html[data-theme="dark"] .note-avatar-slot img {
@@ -934,7 +936,7 @@ html[data-theme="dark"] .menu .call-resolution {
   border-radius: 6px;
   color: var(--black-50);
 }
-.tab .count { color: var(--black-25); margin: 0 0 0 4px; font-size: 14px; }
+.tab .count { color: var(--black-25); margin: 0 0 0 4px; font-size: inherit; }
 .tab[aria-selected="true"] { background: var(--sidebar-grey); color: var(--black); }
 .tab[aria-selected="true"] .count { color: var(--black-50); }
 .tab:hover, .tab.is-hover { background: var(--sidebar-grey); }
@@ -965,7 +967,7 @@ html[data-theme="dark"] .menu .call-resolution {
   color: var(--black-50);
 }
 .segment[aria-selected="true"] { background: var(--white); color: var(--black); box-shadow: var(--stroke); }
-.segment .count { color: var(--black-25); margin: 0 0 0 4px; font-size: 14px; }
+.segment .count { color: var(--black-25); margin: 0 0 0 4px; font-size: inherit; }
 .segment[aria-selected="true"] .count { color: var(--black-50); }
 .segment:hover, .segment.is-hover { background: var(--grey); color: var(--black-50); }
 .segment[aria-selected="true"]:hover, .segment[aria-selected="true"].is-hover {
@@ -2822,7 +2824,8 @@ html[data-theme="dark"] .ticket-overview {
   align-items: center;
   justify-content: space-between;
   gap: var(--space-8);
-  min-height: var(--widget-row);
+  box-sizing: border-box;
+  min-height: var(--section-header-height);
   padding: 0 var(--space-8) 0 var(--space-16);
   background: var(--sidebar-grey);
 }
@@ -2888,7 +2891,7 @@ html[data-theme="dark"] .ticket-overview {
   grid-template-areas: "title meta" "subtitle trail";
 }
 .widget-row.no-lead.is-single { grid-template-areas: "title meta"; }
-.widget-row:hover { background: var(--sidebar-grey); }
+.widget-row:hover { background: var(--surface-hover); }
 .widget-row:focus-visible,
 .widget-more:focus-visible { outline: 2px solid var(--action); outline-offset: -2px; }
 .widget-lead { display: inline-flex; grid-area: lead; }
@@ -2961,7 +2964,7 @@ html[data-theme="dark"] .ticket-overview {
 }
 /* The more link matches the rows above it. */
 .widget-list:has(.widget-row.is-single) .widget-more { min-height: var(--widget-row-single); }
-.widget-more:hover { background: var(--sidebar-grey); color: var(--black); }
+.widget-more:hover { background: var(--surface-hover); color: var(--black); }
 .widget-empty { display: flex; flex: 1; min-height: 196px; }
 /* A fact in the head, beside the action. */
 .widget-note {
@@ -3066,7 +3069,7 @@ html[data-theme="dark"] .ticket-overview {
 .meter {
   position: relative;
   height: 42px;
-  background: repeating-linear-gradient(90deg, var(--black-12) 0 var(--space-2), transparent var(--space-2) var(--space-4));
+  background: repeating-linear-gradient(90deg, var(--grey) 0 var(--space-2), transparent var(--space-2) var(--space-4));
 }
 .meter-fill {
   height: 100%;
@@ -3149,8 +3152,6 @@ html[data-theme="dark"] .ticket-overview {
 /* In dark mode the list is the page, edged by its border, and the head rises half a step above it. */
 html[data-theme="dark"] .widget { background: var(--white); }
 html[data-theme="dark"] .widget-head { background: var(--grey-low); }
-html[data-theme="dark"] .widget-row:hover,
-html[data-theme="dark"] .widget-more:hover,
 html[data-theme="dark"] .widget-row :is(.mini-pill, .avatar:not(.is-empty), .room-mark) { background: var(--grey); }
 html[data-theme="dark"] .widget-row:hover :is(.mini-pill, .avatar:not(.is-empty), .room-mark) { background: var(--black-12); }
 html[data-theme="dark"] .widget-head .segmented { background: var(--white); }
@@ -3193,3 +3194,55 @@ html[data-theme="dark"] .widget-head .trigger:is(:hover, .is-hover, [aria-expand
 }
 /* The dark segment pill has no hairline. It takes the drop alone. */
 html[data-theme="dark"] .segmented .slide-pill { box-shadow: var(--depth-drop); }
+
+.menu-label-suffix { color: var(--text-muted); }
+
+.menu-section-title { display: block; padding: var(--space-8) var(--space-8) var(--space-4); color: var(--text-muted); font-size: var(--text-12); line-height: 16px; font-weight: 400; }
+
+/* Settings cards contain controls; their section heading lives on the page surface. */
+.section-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--space-8) var(--space-16); margin-bottom: var(--space-8); }
+.section-header h2 { display: flex; align-items: center; gap: var(--space-8); margin: 0; font-family: var(--font); font-size: var(--text-14); font-weight: 500; line-height: 20px; color: var(--text-muted); }
+.section-header-aside { margin-left: auto; color: var(--text-muted); font-size: var(--text-12); line-height: 16px; }
+.settings-card { min-width: 0; overflow: hidden; border: 1px solid var(--line-card); border-radius: calc(var(--radius-control) + var(--space-4)); background: var(--white); }
+.settings-row { box-sizing: border-box; display: flex; align-items: center; justify-content: space-between; gap: var(--space-16); min-height: 48px; padding: var(--space-8) var(--space-16); font-size: var(--text-14); font-weight: 400; line-height: 20px; }
+.settings-card > .settings-row + .settings-row { border-top: 1px solid var(--line); }
+.settings-row:hover { background: var(--surface-hover); }
+.settings-row.is-toggle { cursor: pointer; }
+.settings-row-leading { display: flex; align-items: center; gap: var(--space-8); min-width: 0; }
+.settings-row-leading > .i { flex-shrink: 0; color: var(--text-muted); }
+.settings-row:not(.has-inline-description) .settings-row-leading:has(.settings-row-description) { gap: var(--space-16); }
+.settings-row-copy { display: flex; flex-direction: column; gap: var(--space-2); min-width: 0; }
+.settings-row-label { display: inline-flex; align-items: center; gap: var(--space-8); }
+.settings-row-description { color: var(--text-muted); font-size: var(--text-12); line-height: 16px; }
+.settings-row:has(.settings-row-description):not(.has-inline-description) { padding-block: 6px; }
+.settings-row.has-inline-description .settings-row-copy { flex-direction: row; align-items: baseline; flex-wrap: wrap; gap: 0 var(--space-8); }
+.settings-row-control { display: flex; align-items: center; justify-content: flex-end; gap: var(--space-8); min-width: 0; flex-shrink: 0; }
+.settings-row .theme-switch-label { display: none; }
+.settings-row .trigger { white-space: nowrap; width: max-content; }
+.settings-row .settings-input { width: 112px; }
+@media (max-width: 500px) { .settings-row:not(.is-toggle) { flex-wrap: wrap; } .settings-row-control { max-width: 100%; } }
+
+/* Destructive settings retain the standard edge with more breathing room at every width. */
+.settings-card.settings-card-destructive > .settings-row { padding-block: var(--space-16); }
+
+.settings-card-destructive .settings-row-label,
+.settings-card-destructive .settings-row-leading > .i { color: var(--destructive); }
+
+/* Time picker shares the line field and overlay menu surfaces. */
+.time-picker { min-width: 0; width: 100%; }
+.time-picker-field { box-sizing: border-box; display: flex; align-items: center; gap: var(--space-8); }
+.time-picker-field > .i { flex-shrink: 0; color: var(--text-muted); }
+.time-picker-field:focus-within { box-shadow: 0 0 0 1px var(--black-25); }
+.time-picker-field input { border: 0; outline: none; padding: 0; width: 100%; min-width: 0; background: transparent; color: inherit; font: inherit; font-variant-numeric: var(--numeric); }
+.time-picker-trigger { display: flex; align-items: center; justify-content: center; align-self: stretch; border: 0; background: transparent; color: var(--text-muted); padding: 0; cursor: pointer; }
+.time-picker-trigger:focus-visible { outline: 2px solid var(--action); border-radius: var(--radius-control); }
+.time-picker-field[data-disabled] { opacity: .5; }
+.time-picker-menu { max-height: 256px; overflow-y: auto; }
+.time-picker-error { color: var(--destructive); font-size: var(--text-12); line-height: 16px; }
+
+/* Info help has one placement: above the icon, including inside cards. */
+.info-tooltip { display: inline-flex; align-items: center; color: var(--text-muted); vertical-align: middle; }
+.info-tooltip .tip { position: fixed; transform: translate(-50%, -100%); }
+
+/* Scroll long dropdowns without compressing their option rows. */
+.menu > * { flex-shrink: 0; }

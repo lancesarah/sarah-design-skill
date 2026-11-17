@@ -192,16 +192,12 @@ html[data-theme="dark"] .sheet-page .auto-assign:not([aria-pressed="true"]):is(:
 }
 
 .sheet-fade.is-list .sheet-line:hover {
-  background: var(--sidebar-grey);
+  background: var(--surface-hover);
 }
 
 html[data-theme="dark"] .sheet-fade.is-list .sheet-line,
 html[data-theme="dark"] .sheet-fade.is-list .sheet:not(.is-open) .sheet-line:has([aria-expanded="true"]) {
   background: transparent;
-}
-
-html[data-theme="dark"] .sheet-fade.is-list .sheet-line:hover {
-  background: var(--grey);
 }
 
 .sheet-fade {
@@ -270,7 +266,8 @@ html[data-theme="dark"] .sheet-fade.is-list .sheet-line:hover {
   z-index: 2;
   display: grid;
   align-items: center;
-  min-height: calc(7px + 28px + var(--space-8));
+  box-sizing: border-box;
+  min-height: var(--section-header-height);
   margin: 0 calc(var(--space-16) * -1) 0 calc(var(--space-20) / -2);
   padding: 0 var(--space-16) 0 calc(var(--space-20) / 2);
   background: var(--sidebar-grey);
@@ -533,7 +530,7 @@ input.todo-side-room {
 }
 
 .sheet-line:hover,
-.sheet:not(.is-open) .sheet-line:has([aria-expanded="true"]) { background: var(--sidebar-grey); }
+.sheet:not(.is-open) .sheet-line:has([aria-expanded="true"]) { background: var(--surface-hover); }
 .sheet.is-open .sheet-line,
 .sheet.is-open .sheet-line:hover {
   position: relative;
@@ -1357,8 +1354,6 @@ html[data-theme="dark"] .cal-day:hover:not(:disabled) { background: var(--grey);
   mask-image: linear-gradient(to top, #000, transparent);
 }
 
-html[data-theme="dark"] .sheet-line:hover,
-html[data-theme="dark"] .sheet:not(.is-open) .sheet-line:has([aria-expanded="true"]),
 html[data-theme="dark"] .sheet.is-open .sheet-detail { background: var(--grey); }
 html[data-theme="dark"] .sheet.is-open .sheet-line,
 html[data-theme="dark"] .sheet.is-open .sheet-line:hover {
@@ -1772,17 +1767,17 @@ html[data-theme="dark"] .text-well { background: var(--grey); }
 .todo-side-meta {
   display: flex;
   flex-direction: column;
-  gap: var(--space-16);
+  gap: var(--space-12);
 }
 
 /* The line field is 32px and the menus are 20px. Titles stay on one pitch: 4px between fields, 10px where a field meets a menu. */
 .todo-side-meta > div:has(.line):has(+ div .line) {
-  margin-bottom: calc(var(--space-4) - var(--space-16));
+  margin-bottom: calc(var(--space-4) - var(--space-12));
 }
 
 .todo-side-meta > div:has(.line):not(:has(+ div .line)):not(:last-child),
 .todo-side-meta > div:not(:has(.line)):has(+ div .line) {
-  margin-bottom: calc(var(--space-10) - var(--space-16));
+  margin-bottom: calc(var(--space-10) - var(--space-12));
 }
 
 .todo-side-meta > div {

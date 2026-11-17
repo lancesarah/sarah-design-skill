@@ -2,6 +2,8 @@
 
 import { useState, type CSSProperties, type ReactNode } from "react";
 
+import { Icon } from "../icons";
+
 function CompleteMark() {
   return (
     <svg width="16" height="16" viewBox="0 0 18 18" aria-hidden="true">
@@ -85,6 +87,12 @@ export function Toast({
       ) : null}
     </div>
   );
+}
+
+export function SuccessCheck() {
+  return <span className="sds success-check-symbol" aria-hidden="true">
+    <span className="t-success-check" data-state="in"><Icon name="check" size={28} /></span>
+  </span>;
 }
 
 export function Tooltip({ label, shortcut }: { label: string; shortcut?: string }) {

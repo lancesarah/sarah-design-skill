@@ -1,6 +1,7 @@
 "use client";
 
-import { createContext, useContext, useState, type ReactNode } from "react";
+import { createContext, useContext, type ReactNode } from "react";
+import { useCopyFeedback } from "@lance-live/sds";
 import { USAGE } from "./docs-usage";
 
 const KEYWORDS = new Set(["import", "from", "export", "default", "return", "const", "function"]);
@@ -103,7 +104,7 @@ export function Example({
   code: string;
   children: ReactNode;
 }) {
-  const [copied, setCopied] = useState(false);
+  const { label, copy } = useCopyFeedback("Copy code");
   return (
     <section className="docs-example" id={id} data-example={title}>
       <h2>{title}</h2>
@@ -115,35 +116,13 @@ export function Example({
           <button
             className="docs-copy"
             type="button"
-            onClick={() => {
-              const done = () => {
-                setCopied(true);
-                window.setTimeout(() => setCopied(false), 1600);
-              };
-              const fallback = () => {
-                const area = document.createElement("textarea");
-                area.value = code;
-                area.setAttribute("readonly", "");
-                area.style.position = "fixed";
-                area.style.left = "-9999px";
-                document.body.append(area);
-                area.select();
-                const ok = document.execCommand("copy");
-                area.remove();
-                if (ok) done();
-              };
-              if (!navigator.clipboard?.writeText) {
-                fallback();
-                return;
-              }
-              navigator.clipboard.writeText(code).then(done).catch(fallback);
-            }}
+            onClick={() => void copy(code)}
           >
             <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true">
               <rect x="4.5" y="4.5" width="7" height="7" rx="1" fill="none" stroke="currentColor" strokeWidth="1" />
               <path d="M3.5 9.5h-1a1 1 0 0 1-1-1v-6a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v1" fill="none" stroke="currentColor" strokeWidth="1" />
             </svg>
-            {copied ? "Copied" : "Copy code"}
+            <span aria-live="polite">{label}</span>
           </button>
         </div>
         <pre className="docs-code">

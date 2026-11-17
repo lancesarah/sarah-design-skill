@@ -1,9 +1,12 @@
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { Menu } from "./Menu";
 
 describe("Menu", () => {
+  afterEach(() => vi.restoreAllMocks());
+
   it("draws a full-width rule before Delete and keeps Delete last", () => {
+    vi.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockReturnValue(new DOMRect(40, 40, 132, 32));
     render(
       <Menu
         open

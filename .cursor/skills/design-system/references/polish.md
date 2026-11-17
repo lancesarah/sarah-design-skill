@@ -141,8 +141,14 @@ Outline is the resting state except where the gallery already fills, such as the
 
 An icon that shares a row with a title is centered on that title. Center the icon on the text, not on the top of the line box. A taller hit target stays centered on the title and does not drop or lift the glyph.
 
+Decorative icons beside labels use `--text-muted`, including leading icons inside a dropdown or filter’s label group, trailing chevrons, and icons on menu items. Keep the label in its own text color. Primary actions and icons that convey status, urgency, destruction, or identity keep their semantic color.
+
 A control that centers its contents uses equal padding on opposite sides. The leftover on each side is a whole pixel: `(height − line-height) / 2`. A 28px button with a 20px line uses `--space-4` on the top and the bottom. Do not add 2px to one side of that box. That shifts the group by 1px. Do not correct a centered glyph with a 1px `translate`, `top`, or `margin`. A circle is square. The avatar is 35×35. The large avatar is 46×46.
 
 A pill, chip, or tag on a text row follows the same rule. Its text lines up with the neighboring text. The box can be taller. Do not leave the glyphs high or low because the control is a pill. Align the content inside the chip to the title, not the outer chip. A chip that only appears on hover still puts that content on the title.
 
 A number with no word beside it needs an icon that says what it counts. The view count uses an eye, and the number stays the count. The eye stays visible, and it is drawn at 18×18 like every other icon. Do not shrink it to the type size. The chevron on that chip still appears only on hover.
+## Repeated validation
+
+When a submit or Continue action is blocked by visible invalid fields, keep the user on the current step and focus the first invalid field. Replay the red outline and the transitions.dev Error state shake on each attempt. Use `aria-invalid="true"`, the `--destructive` token, and the shared `reoutlineInvalidFields` helper. Keep the red field ring and error copy visible until the field is corrected. With reduced motion, keep the static red feedback and focus. A button blocked by a field error should remain actionable so the user can get this feedback again.
+

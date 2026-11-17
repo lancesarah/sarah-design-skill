@@ -1356,3 +1356,11 @@ html[data-theme="dark"] .home-gallery-tile:has(> .home-gallery-pick[aria-pressed
   .home-widgets.is-editing .home-edit-item,
   .home-edit-remove { animation: none; }
 }
+/* The widget graph exposes each bucket to pointer and keyboard inspection. */
+button.home-activity-track { position: relative; width: 100%; border: 0; padding: 0; cursor: default; }
+button.home-activity-track:is(.is-active, :focus-visible) { outline: 1px solid var(--action); outline-offset: 2px; }
+
+.home-activity-chart > .is-current .home-activity-label {
+  color: var(--black);
+  font-weight: 500;
+}

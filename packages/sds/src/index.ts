@@ -1,4 +1,5 @@
 export { Button, type ButtonProps, type ButtonVariant } from "./components/Button";
+export { useCopyFeedback } from "./use-copy-feedback";
 export { Checkbox, type CheckboxProps } from "./components/Checkbox";
 export {
   SegmentedControl,
@@ -15,6 +16,7 @@ export { OverlayMenu, menuPoint, placeAtPoint, placeMenu, type MenuPoint } from 
 export { ConfirmDialog } from "./components/ConfirmDialog";
 export { EditorDialog, type EditorDialogProps, type EditorDialogTabs } from "./components/EditorDialog";
 export { captureClose, playEnter } from "./close-gap";
+export { reoutlineInvalidFields } from "./reoutline-invalid";
 export {
   FilterMenu,
   FilterSubmenu,
@@ -50,7 +52,7 @@ export {
 } from "./components/Widget";
 export { RoomMark, isRoomNumber } from "./components/RoomMark";
 export { ActivityFeed, type ActivityComment, type ActivityItem, type ActivityStatus } from "./components/ActivityFeed";
-export { Status, Urgency, Toast, Tooltip } from "./components/Feedback";
+export { Status, Urgency, Toast, Tooltip, SuccessCheck } from "./components/Feedback";
 export {
   EditorField,
   EditorFields,
@@ -90,8 +92,13 @@ export {
   type UrgencyValue,
 } from "./components/table-columns";
 export { DetailPanel } from "./components/DetailPanel";
-export { FactField, FactLine, FactRow, PhotoAddFrame, PhotoThumb, PhotoViewer, SidePhotos, SideRoom, type Photo } from "./components/SideDetail";
+export { FactField, FactLine, FactRow, FactValue, PhotoAddFrame, PhotoThumb, PhotoViewer, SidePhotos, SideRoom, type Photo } from "./components/SideDetail";
 export { TaskAssignee, TaskFact, TaskTable, TableChip, taskMenuItem, taskQuietStyle, useTaskChipFill, type TaskRow, type TaskTableProps } from "./components/TaskTable";
 export { TitleSubtitle, TITLE_TEXT_INSET, type TitleDropdownValue, type TitleSubtitleProps } from "./components/TitleSubtitle";
 export { ColorSwatches, SpacingScale, TypeScale } from "./components/Foundations";
 export { Icon, icons, type IconName } from "./icons";
+export { SectionHeader, SettingsCard, SettingsRow, SettingsToggleRow, SettingsMenuRow, SettingsInputRow, type SettingsRowProps } from "./components/SettingsCard";
+export { TimePicker, formatTime, type TimePickerProps } from "./components/TimePicker";
+export { InfoTooltip } from "./components/InfoTooltip";
+export { TooltipTarget, placeTooltip, showTooltip, hideTooltip } from "./components/TooltipTarget";
+export { FilterPicker, type FilterChoices } from "./components/FilterPicker";

@@ -13,7 +13,7 @@
   position: absolute;
   inset: 0;
   border: 0;
-  background: color-mix(in srgb, var(--black) 40%, transparent);
+  background: var(--scrim-modal);
   animation: confirm-scrim 240ms var(--ease-out);
 }
 
@@ -67,6 +67,13 @@
   color: var(--text-muted);
   font-size: var(--text-12);
   line-height: 16px;
+}
+
+.editor-dialog-kicker.is-dialog-title > p {
+  color: var(--black);
+  font-size: var(--text-20);
+  font-weight: 500;
+  line-height: 1.2;
 }
 
 .editor-dialog-actions {
@@ -342,6 +349,11 @@ html[data-theme="dark"] .editor-dialog-main .tabs .slide-pill { background: var(
   white-space: nowrap;
   cursor: pointer;
   transition: background-color 120ms ease;
+}
+/* A switch inside a pill uses the pill label typography. */
+.editor-pill > .theme-switch {
+  color: inherit;
+  font: inherit;
 }
 .editor-pill:hover,
 .editor-pill[aria-expanded="true"] { background: var(--sidebar-grey); }

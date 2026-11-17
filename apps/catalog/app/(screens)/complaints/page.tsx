@@ -14,7 +14,7 @@ import {
   EditorFields,
   EditorPill,
   EditorPills,
-  FactRow,
+  FactRow, FactValue,
   Icon,
   Person,
   PlacePill,
@@ -143,9 +143,6 @@ function isAssigned(row: Complaint) {
   return Boolean(row.assignee) && row.assignee !== "Unassigned";
 }
 
-function SideValue({ value }: { value: string }) {
-  return <span className={value ? "todo-side-value" : "todo-side-value is-quiet"}>{value || "–"}</span>;
-}
 
 function ComplaintDetail({
   row,
@@ -193,18 +190,18 @@ function ComplaintDetail({
       <div className="todo-side-rule" />
       <div className="todo-side-meta">
         <FactRow label="Phone">
-          <SideValue value={row.phone} />
+          <FactValue value={row.phone} />
         </FactRow>
         <FactRow label="Email">
-          <SideValue value={row.email} />
+          <FactValue value={row.email} />
         </FactRow>
         <FactRow label="Loyalty #">
-          <SideValue value={row.loyalty} />
+          <FactValue value={row.loyalty} />
         </FactRow>
         <FactRow label="Guest mood">
-          <SideValue value={row.mood} />
+          <FactValue value={row.mood} />
         </FactRow>
-        <FactRow label="Type">{row.type ? <DepartmentChip name={row.type} /> : <SideValue value="" />}</FactRow>
+        <FactRow label="Type">{row.type ? <DepartmentChip name={row.type} /> : <FactValue value="" />}</FactRow>
         <FactRow label="Assigned">
           {isAssigned(row) ? <Person name={row.assignee} initials={row.initials} variant="pill" /> : <Person name="Unassigned" variant="unassigned" />}
         </FactRow>

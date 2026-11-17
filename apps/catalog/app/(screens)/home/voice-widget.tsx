@@ -12,7 +12,7 @@ const RATING = 4.6;
 const STAR = "M7 1.3 8.53 5.2 12.71 5.45 9.47 8.1 10.53 12.15 7 9.9 3.47 12.15 4.53 8.1 1.29 5.45 5.47 5.2Z";
 
 /** The rating as five stars, read like a meter: the earned part in the action blue over a quiet track, the last star filled in part. The label under it says the number. */
-function Stars({ value }: { value: number }) {
+export function Stars({ value }: { value: number }) {
   return (
     <span className="home-stars" aria-hidden="true">
       {[0, 1, 2, 3, 4].map((at) => (

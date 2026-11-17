@@ -49,7 +49,7 @@ Work top to bottom. Each step constrains the next. Most weak UI comes from start
 
    Rank all other actions beneath it:  
 
-   - Secondary – white, raised button  
+   - Secondary – white, raised button. The default for every other labeled action, including the filter row, a selection toolbar, and a card's grey head. The clear text button is only the widget's plus that starts a record  
 
    - Utility – round pill or icon  
 
@@ -108,7 +108,9 @@ Every part comes from the parent. Hover and selected share one step. If that ste
 | Figures | `--numeric` | Counts and prices. Not a phone, a zip, or a version |
 | Duration | `36s`, `30m`, `1h`, `1h 2m` | One letter, no space between the number and the letter. `s` seconds, `m` minutes, `h` hours, `d` days. A zero unit is left out. Units keep one space: `1h 2m`, `1h 10m`, `1m 30s` |
 
-A measured length of time uses that form. `40m`, `1h`, `1h 2m`, `7d`, and `36s` are the form. A clock, a date, and a running timer stay as they are.
+A measured length of time uses that form. `40m`, `1h`, `1h 2m`, `7d`, and `36s` are the form. Dates keep their date format. A running timer stays `mm:ss`.
+
+Clock times use `h:mmAM/PM`, with uppercase AM or PM, two-digit minutes, no leading zero on the hour, and no space before the suffix. Use `9:00AM`, `9:11AM`, and `4:09PM`. Apply this everywhere a clock time appears, including chart axes, tooltips, shift hours, activity timestamps, and time ranges. A range reads `9:00AM – 5:00PM`. Normalize ordinary and nonbreaking whitespace from locale formatters.
 
 A component's own type, including a chip, a menu option, and a lesson title, is on that component.
 
@@ -139,7 +141,7 @@ Each surface's size is on that component in [components.md](references/component
 | Title and content | At least 40px. A title and the content it names do not sit closer than 40px. A subtitle that belongs to the title stays `--space-4` |
 | Person, room, filter | See Person and Room in [components.md](references/components.md). The filter row is in [patterns.md](references/patterns.md) |
 | Empty | The empty this product already uses: "Title" and "New note", a quiet dash, a dashed avatar, "Location" and "Item". Do not invent one |
-| Actions | One primary, where the person is already looking. Any destructive action opens Delete confirmation first. A trash icon and a Delete button are the same press. A new record is created on the page, not in a prompt |
+| Actions | One primary, where the person is already looking. Any destructive action opens Delete confirmation first: delete, remove, unassign all, clear, or anything red. A trash icon, a Delete button, and a red menu item are the same press. A new record is created on the page, not in a prompt |
 
 ### Motion
 

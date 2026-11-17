@@ -426,7 +426,7 @@ html.is-keys :where(.sds) * {
   box-shadow: var(--stroke);
 }
 :where(.sds) .filter .pair, :where(.sds).filter .pair, :where(.sds) .trigger .pair, :where(.sds).trigger .pair { display: inline-flex; align-items: center; gap: 6px; min-width: 0; }
-:where(.sds) .trigger > .i, :where(.sds).trigger > .i { color: var(--black-50); }
+:where(.sds) :is(.filter, .trigger) > .i, :where(.sds):is(.filter, .trigger) > .i, :where(.sds) :is(.filter, .trigger) > .pair > .i, :where(.sds):is(.filter, .trigger) > .pair > .i { color: var(--text-muted); }
 :where(.sds) .dim, :where(.sds).dim { opacity: 0.5; }
 :where(.sds) .filter:hover, :where(.sds).filter:hover, :where(.sds) .filter.is-hover, :where(.sds).filter.is-hover, :where(.sds) .filter[aria-expanded="true"], :where(.sds).filter[aria-expanded="true"], :where(.sds) .trigger:hover, :where(.sds).trigger:hover, :where(.sds) .trigger.is-hover, :where(.sds).trigger.is-hover, :where(.sds) .trigger[aria-expanded="true"], :where(.sds).trigger[aria-expanded="true"] { background: var(--sidebar-grey); }
 
@@ -538,6 +538,7 @@ html.is-keys :where(.sds) * {
   color: var(--black-50);
   font-size: 14px;
 }
+:where(.sds) .avatar:not(img):not(.is-photo):not(.is-empty), :where(.sds).avatar:not(img):not(.is-photo):not(.is-empty) { border: 1px solid var(--black-12); }
 html[data-theme="dark"] :where(.sds) img.avatar,
 html[data-theme="dark"] :where(.sds) img.note-avatar,
 html[data-theme="dark"] :where(.sds) .note-avatar-slot img, html[data-theme="dark"] :where(.sds).note-avatar-slot img {
@@ -932,7 +933,7 @@ html[data-theme="dark"] :where(.sds) .menu .call-resolution, html[data-theme="da
   border-radius: 6px;
   color: var(--black-50);
 }
-:where(.sds) .tab .count, :where(.sds).tab .count { color: var(--black-25); margin: 0 0 0 4px; font-size: 14px; }
+:where(.sds) .tab .count, :where(.sds).tab .count { color: var(--black-25); margin: 0 0 0 4px; font-size: inherit; }
 :where(.sds) .tab[aria-selected="true"], :where(.sds).tab[aria-selected="true"] { background: var(--sidebar-grey); color: var(--black); }
 :where(.sds) .tab[aria-selected="true"] .count, :where(.sds).tab[aria-selected="true"] .count { color: var(--black-50); }
 :where(.sds) .tab:hover, :where(.sds).tab:hover, :where(.sds) .tab.is-hover, :where(.sds).tab.is-hover { background: var(--sidebar-grey); }
@@ -963,7 +964,7 @@ html[data-theme="dark"] :where(.sds) .menu .call-resolution, html[data-theme="da
   color: var(--black-50);
 }
 :where(.sds) .segment[aria-selected="true"], :where(.sds).segment[aria-selected="true"] { background: var(--white); color: var(--black); box-shadow: var(--stroke); }
-:where(.sds) .segment .count, :where(.sds).segment .count { color: var(--black-25); margin: 0 0 0 4px; font-size: 14px; }
+:where(.sds) .segment .count, :where(.sds).segment .count { color: var(--black-25); margin: 0 0 0 4px; font-size: inherit; }
 :where(.sds) .segment[aria-selected="true"] .count, :where(.sds).segment[aria-selected="true"] .count { color: var(--black-50); }
 :where(.sds) .segment:hover, :where(.sds).segment:hover, :where(.sds) .segment.is-hover, :where(.sds).segment.is-hover { background: var(--grey); color: var(--black-50); }
 :where(.sds) .segment[aria-selected="true"]:hover, :where(.sds).segment[aria-selected="true"]:hover, :where(.sds) .segment[aria-selected="true"].is-hover, :where(.sds).segment[aria-selected="true"].is-hover {
@@ -2840,7 +2841,8 @@ html[data-theme="dark"] :where(.sds) .ticket-overview, html[data-theme="dark"] :
   align-items: center;
   justify-content: space-between;
   gap: var(--space-8);
-  min-height: var(--widget-row);
+  box-sizing: border-box;
+  min-height: var(--section-header-height);
   padding: 0 var(--space-8) 0 var(--space-16);
   background: var(--sidebar-grey);
 }
@@ -2906,7 +2908,7 @@ html[data-theme="dark"] :where(.sds) .ticket-overview, html[data-theme="dark"] :
   grid-template-areas: "title meta" "subtitle trail";
 }
 :where(.sds) .widget-row.no-lead.is-single, :where(.sds).widget-row.no-lead.is-single { grid-template-areas: "title meta"; }
-:where(.sds) .widget-row:hover, :where(.sds).widget-row:hover { background: var(--sidebar-grey); }
+:where(.sds) .widget-row:hover, :where(.sds).widget-row:hover { background: var(--surface-hover); }
 :where(.sds) .widget-row:focus-visible, :where(.sds).widget-row:focus-visible,
 :where(.sds) .widget-more:focus-visible, :where(.sds).widget-more:focus-visible { outline: 2px solid var(--action); outline-offset: -2px; }
 :where(.sds) .widget-lead, :where(.sds).widget-lead { display: inline-flex; grid-area: lead; }
@@ -2979,7 +2981,7 @@ html[data-theme="dark"] :where(.sds) .ticket-overview, html[data-theme="dark"] :
 }
 /* The more link matches the rows above it. */
 :where(.sds) .widget-list:has(.widget-row.is-single) .widget-more, :where(.sds).widget-list:has(.widget-row.is-single) .widget-more { min-height: var(--widget-row-single); }
-:where(.sds) .widget-more:hover, :where(.sds).widget-more:hover { background: var(--sidebar-grey); color: var(--black); }
+:where(.sds) .widget-more:hover, :where(.sds).widget-more:hover { background: var(--surface-hover); color: var(--black); }
 :where(.sds) .widget-empty, :where(.sds).widget-empty { display: flex; flex: 1; min-height: 196px; }
 /* A fact in the head, beside the action. */
 :where(.sds) .widget-note, :where(.sds).widget-note {
@@ -3084,7 +3086,7 @@ html[data-theme="dark"] :where(.sds) .ticket-overview, html[data-theme="dark"] :
 :where(.sds) .meter, :where(.sds).meter {
   position: relative;
   height: 42px;
-  background: repeating-linear-gradient(90deg, var(--black-12) 0 var(--space-2), transparent var(--space-2) var(--space-4));
+  background: repeating-linear-gradient(90deg, var(--grey) 0 var(--space-2), transparent var(--space-2) var(--space-4));
 }
 :where(.sds) .meter-fill, :where(.sds).meter-fill {
   height: 100%;
@@ -3167,8 +3169,6 @@ html[data-theme="dark"] :where(.sds) .ticket-overview, html[data-theme="dark"] :
 /* In dark mode the list is the page, edged by its border, and the head rises half a step above it. */
 html[data-theme="dark"] :where(.sds) .widget, html[data-theme="dark"] :where(.sds).widget { background: var(--white); }
 html[data-theme="dark"] :where(.sds) .widget-head, html[data-theme="dark"] :where(.sds).widget-head { background: var(--grey-low); }
-html[data-theme="dark"] :where(.sds) .widget-row:hover, html[data-theme="dark"] :where(.sds).widget-row:hover,
-html[data-theme="dark"] :where(.sds) .widget-more:hover, html[data-theme="dark"] :where(.sds).widget-more:hover,
 html[data-theme="dark"] :where(.sds) .widget-row :is(.mini-pill, .avatar:not(.is-empty), .room-mark), html[data-theme="dark"] :where(.sds).widget-row :is(.mini-pill, .avatar:not(.is-empty), .room-mark) { background: var(--grey); }
 html[data-theme="dark"] :where(.sds) .widget-row:hover :is(.mini-pill, .avatar:not(.is-empty), .room-mark), html[data-theme="dark"] :where(.sds).widget-row:hover :is(.mini-pill, .avatar:not(.is-empty), .room-mark) { background: var(--black-12); }
 html[data-theme="dark"] :where(.sds) .widget-head .segmented, html[data-theme="dark"] :where(.sds).widget-head .segmented { background: var(--white); }
@@ -3209,6 +3209,58 @@ html[data-theme="dark"] :where(.sds) .widget-head .trigger:is(:hover, .is-hover,
 }
 /* The dark segment pill has no hairline. It takes the drop alone. */
 html[data-theme="dark"] :where(.sds) .segmented .slide-pill, html[data-theme="dark"] :where(.sds).segmented .slide-pill { box-shadow: var(--depth-drop); }
+
+:where(.sds) .menu-label-suffix, :where(.sds).menu-label-suffix { color: var(--text-muted); }
+
+:where(.sds) .menu-section-title, :where(.sds).menu-section-title { display: block; padding: var(--space-8) var(--space-8) var(--space-4); color: var(--text-muted); font-size: var(--text-12); line-height: 16px; font-weight: 400; }
+
+/* Settings cards contain controls; their section heading lives on the page surface. */
+:where(.sds) .section-header, :where(.sds).section-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--space-8) var(--space-16); margin-bottom: var(--space-8); }
+:where(.sds) .section-header h2, :where(.sds).section-header h2 { display: flex; align-items: center; gap: var(--space-8); margin: 0; font-family: var(--font); font-size: var(--text-14); font-weight: 500; line-height: 20px; color: var(--text-muted); }
+:where(.sds) .section-header-aside, :where(.sds).section-header-aside { margin-left: auto; color: var(--text-muted); font-size: var(--text-12); line-height: 16px; }
+:where(.sds) .settings-card, :where(.sds).settings-card { min-width: 0; overflow: hidden; border: 1px solid var(--line-card); border-radius: calc(var(--radius-control) + var(--space-4)); background: var(--white); }
+:where(.sds) .settings-row, :where(.sds).settings-row { box-sizing: border-box; display: flex; align-items: center; justify-content: space-between; gap: var(--space-16); min-height: 48px; padding: var(--space-8) var(--space-16); font-size: var(--text-14); font-weight: 400; line-height: 20px; }
+:where(.sds) .settings-card > .settings-row + .settings-row, :where(.sds).settings-card > .settings-row + .settings-row { border-top: 1px solid var(--line); }
+:where(.sds) .settings-row:hover, :where(.sds).settings-row:hover { background: var(--surface-hover); }
+:where(.sds) .settings-row.is-toggle, :where(.sds).settings-row.is-toggle { cursor: pointer; }
+:where(.sds) .settings-row-leading, :where(.sds).settings-row-leading { display: flex; align-items: center; gap: var(--space-8); min-width: 0; }
+:where(.sds) .settings-row-leading > .i, :where(.sds).settings-row-leading > .i { flex-shrink: 0; color: var(--text-muted); }
+:where(.sds) .settings-row:not(.has-inline-description) .settings-row-leading:has(.settings-row-description), :where(.sds).settings-row:not(.has-inline-description) .settings-row-leading:has(.settings-row-description) { gap: var(--space-16); }
+:where(.sds) .settings-row-copy, :where(.sds).settings-row-copy { display: flex; flex-direction: column; gap: var(--space-2); min-width: 0; }
+:where(.sds) .settings-row-label, :where(.sds).settings-row-label { display: inline-flex; align-items: center; gap: var(--space-8); }
+:where(.sds) .settings-row-description, :where(.sds).settings-row-description { color: var(--text-muted); font-size: var(--text-12); line-height: 16px; }
+:where(.sds) .settings-row:has(.settings-row-description):not(.has-inline-description), :where(.sds).settings-row:has(.settings-row-description):not(.has-inline-description) { padding-block: 6px; }
+:where(.sds) .settings-row.has-inline-description .settings-row-copy, :where(.sds).settings-row.has-inline-description .settings-row-copy { flex-direction: row; align-items: baseline; flex-wrap: wrap; gap: 0 var(--space-8); }
+:where(.sds) .settings-row-control, :where(.sds).settings-row-control { display: flex; align-items: center; justify-content: flex-end; gap: var(--space-8); min-width: 0; flex-shrink: 0; }
+:where(.sds) .settings-row .theme-switch-label, :where(.sds).settings-row .theme-switch-label { display: none; }
+:where(.sds) .settings-row .trigger, :where(.sds).settings-row .trigger { white-space: nowrap; width: max-content; }
+:where(.sds) .settings-row .settings-input, :where(.sds).settings-row .settings-input { width: 112px; }
+@media (max-width: 500px) { :where(.sds) .settings-row:not(.is-toggle), :where(.sds).settings-row:not(.is-toggle) { flex-wrap: wrap; } :where(.sds) .settings-row-control, :where(.sds).settings-row-control { max-width: 100%; } }
+
+/* Destructive settings retain the standard edge with more breathing room at every width. */
+:where(.sds) .settings-card.settings-card-destructive > .settings-row, :where(.sds).settings-card.settings-card-destructive > .settings-row { padding-block: var(--space-16); }
+
+:where(.sds) .settings-card-destructive .settings-row-label, :where(.sds).settings-card-destructive .settings-row-label,
+:where(.sds) .settings-card-destructive .settings-row-leading > .i, :where(.sds).settings-card-destructive .settings-row-leading > .i { color: var(--destructive); }
+
+/* Time picker shares the line field and overlay menu surfaces. */
+:where(.sds) .time-picker, :where(.sds).time-picker { min-width: 0; width: 100%; }
+:where(.sds) .time-picker-field, :where(.sds).time-picker-field { box-sizing: border-box; display: flex; align-items: center; gap: var(--space-8); }
+:where(.sds) .time-picker-field > .i, :where(.sds).time-picker-field > .i { flex-shrink: 0; color: var(--text-muted); }
+:where(.sds) .time-picker-field:focus-within, :where(.sds).time-picker-field:focus-within { box-shadow: 0 0 0 1px var(--black-25); }
+:where(.sds) .time-picker-field input, :where(.sds).time-picker-field input { border: 0; outline: none; padding: 0; width: 100%; min-width: 0; background: transparent; color: inherit; font: inherit; font-variant-numeric: var(--numeric); }
+:where(.sds) .time-picker-trigger, :where(.sds).time-picker-trigger { display: flex; align-items: center; justify-content: center; align-self: stretch; border: 0; background: transparent; color: var(--text-muted); padding: 0; cursor: pointer; }
+:where(.sds) .time-picker-trigger:focus-visible, :where(.sds).time-picker-trigger:focus-visible { outline: 2px solid var(--action); border-radius: var(--radius-control); }
+:where(.sds) .time-picker-field[data-disabled], :where(.sds).time-picker-field[data-disabled] { opacity: .5; }
+:where(.sds) .time-picker-menu, :where(.sds).time-picker-menu { max-height: 256px; overflow-y: auto; }
+:where(.sds) .time-picker-error, :where(.sds).time-picker-error { color: var(--destructive); font-size: var(--text-12); line-height: 16px; }
+
+/* Info help has one placement: above the icon, including inside cards. */
+:where(.sds) .info-tooltip, :where(.sds).info-tooltip { display: inline-flex; align-items: center; color: var(--text-muted); vertical-align: middle; }
+:where(.sds) .info-tooltip .tip, :where(.sds).info-tooltip .tip { position: fixed; transform: translate(-50%, -100%); }
+
+/* Scroll long dropdowns without compressing their option rows. */
+:where(.sds) .menu > *, :where(.sds).menu > * { flex-shrink: 0; }
 
 /* Run sheet. Each to-do is finished on its line. The table stays in todos.css. */
 
@@ -3404,16 +3456,12 @@ html[data-theme="dark"] :where(.sds) .sheet-page .auto-assign:not([aria-pressed=
 }
 
 :where(.sds) .sheet-fade.is-list .sheet-line:hover, :where(.sds).sheet-fade.is-list .sheet-line:hover {
-  background: var(--sidebar-grey);
+  background: var(--surface-hover);
 }
 
 html[data-theme="dark"] :where(.sds) .sheet-fade.is-list .sheet-line, html[data-theme="dark"] :where(.sds).sheet-fade.is-list .sheet-line,
 html[data-theme="dark"] :where(.sds) .sheet-fade.is-list .sheet:not(.is-open) .sheet-line:has([aria-expanded="true"]), html[data-theme="dark"] :where(.sds).sheet-fade.is-list .sheet:not(.is-open) .sheet-line:has([aria-expanded="true"]) {
   background: transparent;
-}
-
-html[data-theme="dark"] :where(.sds) .sheet-fade.is-list .sheet-line:hover, html[data-theme="dark"] :where(.sds).sheet-fade.is-list .sheet-line:hover {
-  background: var(--grey);
 }
 
 :where(.sds) .sheet-fade, :where(.sds).sheet-fade {
@@ -3482,7 +3530,8 @@ html[data-theme="dark"] :where(.sds) .sheet-fade.is-list .sheet-line:hover, html
   z-index: 2;
   display: grid;
   align-items: center;
-  min-height: calc(7px + 28px + var(--space-8));
+  box-sizing: border-box;
+  min-height: var(--section-header-height);
   margin: 0 calc(var(--space-16) * -1) 0 calc(var(--space-20) / -2);
   padding: 0 var(--space-16) 0 calc(var(--space-20) / 2);
   background: var(--sidebar-grey);
@@ -3745,7 +3794,7 @@ html[data-theme="dark"] :where(.sds) .sheet-fade, html[data-theme="dark"] :where
 }
 
 :where(.sds) .sheet-line:hover, :where(.sds).sheet-line:hover,
-:where(.sds) .sheet:not(.is-open) .sheet-line:has([aria-expanded="true"]), :where(.sds).sheet:not(.is-open) .sheet-line:has([aria-expanded="true"]) { background: var(--sidebar-grey); }
+:where(.sds) .sheet:not(.is-open) .sheet-line:has([aria-expanded="true"]), :where(.sds).sheet:not(.is-open) .sheet-line:has([aria-expanded="true"]) { background: var(--surface-hover); }
 :where(.sds) .sheet.is-open .sheet-line, :where(.sds).sheet.is-open .sheet-line,
 :where(.sds) .sheet.is-open .sheet-line:hover, :where(.sds).sheet.is-open .sheet-line:hover {
   position: relative;
@@ -4567,8 +4616,6 @@ html[data-theme="dark"] :where(.sds) .cal-day:hover:not(:disabled), html[data-th
   mask-image: linear-gradient(to top, #000, transparent);
 }
 
-html[data-theme="dark"] :where(.sds) .sheet-line:hover, html[data-theme="dark"] :where(.sds).sheet-line:hover,
-html[data-theme="dark"] :where(.sds) .sheet:not(.is-open) .sheet-line:has([aria-expanded="true"]), html[data-theme="dark"] :where(.sds).sheet:not(.is-open) .sheet-line:has([aria-expanded="true"]),
 html[data-theme="dark"] :where(.sds) .sheet.is-open .sheet-detail, html[data-theme="dark"] :where(.sds).sheet.is-open .sheet-detail { background: var(--grey); }
 html[data-theme="dark"] :where(.sds) .sheet.is-open .sheet-line, html[data-theme="dark"] :where(.sds).sheet.is-open .sheet-line,
 html[data-theme="dark"] :where(.sds) .sheet.is-open .sheet-line:hover, html[data-theme="dark"] :where(.sds).sheet.is-open .sheet-line:hover {
@@ -4982,17 +5029,17 @@ html[data-theme="dark"] :where(.sds) .text-well, html[data-theme="dark"] :where(
 :where(.sds) .todo-side-meta, :where(.sds).todo-side-meta {
   display: flex;
   flex-direction: column;
-  gap: var(--space-16);
+  gap: var(--space-12);
 }
 
 /* The line field is 32px and the menus are 20px. Titles stay on one pitch: 4px between fields, 10px where a field meets a menu. */
 :where(.sds) .todo-side-meta > div:has(.line):has(+ div .line), :where(.sds).todo-side-meta > div:has(.line):has(+ div .line) {
-  margin-bottom: calc(var(--space-4) - var(--space-16));
+  margin-bottom: calc(var(--space-4) - var(--space-12));
 }
 
 :where(.sds) .todo-side-meta > div:has(.line):not(:has(+ div .line)):not(:last-child), :where(.sds).todo-side-meta > div:has(.line):not(:has(+ div .line)):not(:last-child),
 :where(.sds) .todo-side-meta > div:not(:has(.line)):has(+ div .line), :where(.sds).todo-side-meta > div:not(:has(.line)):has(+ div .line) {
-  margin-bottom: calc(var(--space-10) - var(--space-16));
+  margin-bottom: calc(var(--space-10) - var(--space-12));
 }
 
 :where(.sds) .todo-side-meta > div, :where(.sds).todo-side-meta > div {

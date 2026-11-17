@@ -13,7 +13,7 @@ export function Widget({
   children,
 }: {
   icon?: IconName;
-  title: string;
+  title: ReactNode;
   count?: number;
   /** One small control on the right of the head, such as a plus that creates a record. */
   action?: ReactNode;

@@ -74,6 +74,7 @@ export function EditorDialog({
   const closeRef = useRef(onClose);
   const escapeRef = useRef(onEscape);
   const cardRef = useRef<HTMLDivElement>(null);
+  const hasRecordTitle = Boolean(title || titlePlaceholder || onTitleChange);
   closeRef.current = onClose;
   escapeRef.current = onEscape;
 
@@ -100,6 +101,7 @@ export function EditorDialog({
     );
     if (!field) return;
     field.focus({ preventScroll: true });
+    if (field instanceof HTMLInputElement && !["text", "search", "tel", "url", "password"].includes(field.type)) return;
     const end = field.value.length;
     field.setSelectionRange(end, end);
   }, []);
@@ -125,7 +127,7 @@ export function EditorDialog({
       >
         <div className="editor-dialog-page">
           <header className="editor-dialog-head">
-            <div className="editor-dialog-kicker">
+            <div className={hasRecordTitle ? "editor-dialog-kicker" : "editor-dialog-kicker is-dialog-title"}>
               <p>{kicker}</p>
               <div className="editor-dialog-actions">
                 {onDelete ? (
@@ -144,7 +146,7 @@ export function EditorDialog({
                 </button>
               </div>
             </div>
-            <div className="editor-dialog-name">
+            {title || titlePlaceholder || onTitleChange || overline || subtitle || onSubtitleChange ? <div className="editor-dialog-name">
               {overline ? <p>{overline}</p> : null}
               {onTitleChange ? (
                 <input
@@ -183,7 +185,7 @@ export function EditorDialog({
               ) : subtitle ? (
                 <p>{subtitle}</p>
               ) : null}
-            </div>
+            </div> : null}
           </header>
           <div className="editor-dialog-main">
             {tabs ? (

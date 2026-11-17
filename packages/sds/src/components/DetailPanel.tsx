@@ -18,6 +18,7 @@ export function DetailPanel({
   name,
   noun = "record",
   onDeleted,
+  showMore = true,
   menuAt,
   /** A new record puts the cursor in the first text field. Menus stay closed. */
   focusText = false,
@@ -36,6 +37,8 @@ export function DetailPanel({
   name?: string;
   noun?: string;
   onDeleted?: () => void;
+  /** Read-only records can omit the options menu. */
+  showMore?: boolean;
   /** Opens this panel's more menu at the pointer. Same menu as the three-dot control. */
   menuAt?: MenuPoint | null;
   focusText?: boolean;
@@ -130,7 +133,7 @@ export function DetailPanel({
       hidden={hidden}
       onTransitionEnd={onExited ? onTransitionEnd : undefined}
       onContextMenu={(event) => {
-        if (confirm) return;
+        if (!showMore || confirm) return;
         const target = event.target;
         if (!(target instanceof Element)) return;
         if (target.closest(".menu, input, textarea, .confirm-dialog, .comment")) return;
@@ -152,7 +155,7 @@ export function DetailPanel({
               Edit
             </Button>
           ) : null}
-          <span className="drop">
+          {showMore ? <span className="drop">
             <button
               ref={moreAnchor}
               className="note-more"
@@ -182,11 +185,11 @@ export function DetailPanel({
                 Delete
               </button>
             </OverlayMenu>
-          </span>
+          </span> : null}
         </span>
       </header>
       <div className="todo-side-scroll">{children}</div>
-      <ConfirmDialog
+      {showMore ? <ConfirmDialog
         open={confirm}
         name={name ?? label}
         noun={noun}
@@ -195,7 +198,7 @@ export function DetailPanel({
           setConfirm(false);
           onDeleted?.();
         }}
-      />
+      /> : null}
     </aside>
   );
 }

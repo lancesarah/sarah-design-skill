@@ -3,6 +3,9 @@
 import { SegmentedControl, Widget, WidgetKey, WidgetTally, type WidgetKeyTone } from "@lance-live/sds";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 
+import { ChartTooltip } from "../chart-tooltip";
+import { useChartHover } from "../use-chart-hover";
+
 type Period = "24h" | "7d" | "30d";
 type Kind = "call" | "email" | "sms";
 /** One bar: a stretch of time and what sales logged in it. */
@@ -68,25 +71,6 @@ export function ActivityWidget() {
   const buckets = ACTIVITY[period];
   const totals = KINDS.map((kind) => ({ ...kind, value: buckets.reduce((total, bucket) => total + bucket[kind.id], 0) }));
   const total = totals.reduce((all, kind) => all + kind.value, 0);
-  const busiest = Math.max(1, ...buckets.map(sum));
-  const chart = useRef<HTMLOListElement>(null);
-  /** The bars fill the first time the chart is on screen, and again on each new period. */
-  const [seen, setSeen] = useState(false);
-
-  useEffect(() => {
-    const node = chart.current;
-    if (!node) return;
-    const watch = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry?.isIntersecting) return;
-        setSeen(true);
-        watch.disconnect();
-      },
-      { threshold: 0.5 },
-    );
-    watch.observe(node);
-    return () => watch.disconnect();
-  }, []);
 
   return (
     <Widget
@@ -107,23 +91,44 @@ export function ActivityWidget() {
             </div>
           ))}
         </dl>
-        <ol key={period} ref={chart} className={seen ? "home-activity-chart is-seen" : "home-activity-chart"} aria-label={`Activity ${WINDOW[period]}`}>
-          {buckets.map((bucket, at) => (
-            <li key={bucket.long} style={{ "--bar": sum(bucket) / busiest, "--at": at } as CSSProperties}>
-              <span className="home-activity-track" role="img" aria-label={said(bucket)}>
-                <span className="home-activity-stack">
-                  {KINDS.map((kind) =>
-                    bucket[kind.id] ? <span key={kind.id} className={`is-${kind.id}`} style={{ flexGrow: bucket[kind.id] }} /> : null,
-                  )}
-                </span>
-              </span>
-              <span className="home-activity-label" aria-hidden="true">
-                {bucket.label}
-              </span>
-            </li>
-          ))}
-        </ol>
+        <WidgetBarChart key={period} label={`Activity ${WINDOW[period]}`} bars={buckets.map(bucket => ({
+          label: bucket.label, description: said(bucket), segments: KINDS.map(kind => ({ value: bucket[kind.id], className: `is-${kind.id}` })),
+        }))} />
       </div>
     </Widget>
   );
+}
+
+/** Shared bar graph used by dashboard widgets and profile analytics. */
+export function WidgetBarChart({ bars, label }: { label: string; bars: { label: string; description: string; current?: boolean; segments: { value: number; className: string }[] }[] }) {
+  const busiest = Math.max(1, ...bars.map(bar => bar.segments.reduce((total, segment) => total + segment.value, 0)));
+  const chart = useRef<HTMLOListElement>(null);
+  useChartHover(chart, bars);
+  /** The bars fill the first time the chart is on screen, and again on each new period. */
+  const [seen, setSeen] = useState(false);
+
+  useEffect(() => {
+    const node = chart.current;
+    if (!node) return;
+    const watch = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry?.isIntersecting) return;
+        setSeen(true);
+        watch.disconnect();
+      },
+      { threshold: 0.5 },
+    );
+    watch.observe(node);
+    return () => watch.disconnect();
+  }, []);
+
+  return <ol ref={chart} className={seen ? "home-activity-chart is-seen" : "home-activity-chart"} aria-label={label}>
+    {bars.map((bar, at) => <li key={`${bar.label}-${at}`} className={bar.current ? "is-current" : undefined} aria-current={bar.current ? "date" : undefined} style={{ "--bar": bar.segments.reduce((total, segment) => total + segment.value, 0) / busiest, "--at": at } as CSSProperties}>
+      <button type="button" data-chart-point className="home-activity-track chart-tip-host" aria-label={bar.description}>
+        <span className="home-activity-stack">{bar.segments.map((segment, index) => segment.value ? <span key={index} className={segment.className} style={{ flexGrow: segment.value }} /> : null)}</span>
+        <ChartTooltip label={bar.label} value={bar.description.replace(`${bar.label}: `, "")} />
+      </button>
+      <span className="home-activity-label" aria-hidden="true">{bar.label}</span>
+    </li>)}
+  </ol>;
 }

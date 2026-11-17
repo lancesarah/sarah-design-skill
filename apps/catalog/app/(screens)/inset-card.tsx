@@ -7,25 +7,8 @@ const EASE_OUT = "cubic-bezier(0.23, 1, 0.32, 1)";
 const OPEN_MS = 240;
 const CLOSE_MS = 192;
 
-/** Grey shell with a white inset. The title row and the chevron are the same on every card. */
-export function InsetCard({
-  title,
-  actions,
-  open = true,
-  onOpenChange,
-  bodyId,
-  children,
-  className,
-  ...rest
-}: {
-  title: ReactNode;
-  /** Sits immediately before the chevron. The chevron stays last. */
-  actions?: ReactNode;
-  open?: boolean;
-  onOpenChange?: (open: boolean) => void;
-  bodyId?: string;
-  children: ReactNode;
-} & Omit<HTMLAttributes<HTMLElement>, "title">) {
+/** Grows a clip open and fades it in, or shrinks it shut. The node stays mounted while it closes. */
+export function useGrowClip(open: boolean) {
   const clip = useRef<HTMLDivElement>(null);
   const skip = useRef(true);
   const shown = useRef(open ? 1 : 0);
@@ -83,6 +66,30 @@ export function InsetCard({
       el.style.overflow = "hidden";
     };
   }, [open]);
+
+  return clip;
+}
+
+/** Grey shell with a white inset. The title row and the chevron are the same on every card. */
+export function InsetCard({
+  title,
+  actions,
+  open = true,
+  onOpenChange,
+  bodyId,
+  children,
+  className,
+  ...rest
+}: {
+  title: ReactNode;
+  /** Sits immediately before the chevron. The chevron stays last. */
+  actions?: ReactNode;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  bodyId?: string;
+  children: ReactNode;
+} & Omit<HTMLAttributes<HTMLElement>, "title">) {
+  const clip = useGrowClip(open);
 
   return (
     <article className={["inset-card", open ? "is-open" : "", className].filter(Boolean).join(" ")} {...rest}>

@@ -14,7 +14,7 @@ import {
   EditorPhotos,
   EditorPill,
   EditorPills,
-  FactRow,
+  FactRow, FactValue,
   Icon,
   PhotoPill,
   PhotoThumb,
@@ -154,9 +154,6 @@ function foundAt(row: FoundItem) {
 
 type ItemPick = "category" | "area";
 
-function SideValue({ value }: { value: string }) {
-  return <span className={value ? "todo-side-value" : "todo-side-value is-quiet"}>{value || "–"}</span>;
-}
 
 /** The pill editor for a found item. A new item joins the table only when it is saved. */
 function ItemEditor({
@@ -690,13 +687,13 @@ export default function LostFoundPage() {
           <div className="todo-side-rule" />
           <div className="todo-side-meta">
             <FactRow label="Category">
-              <SideValue value={record.category} />
+              <FactValue value={record.category} />
             </FactRow>
             <FactRow label="Found at">
-              <SideValue value={foundAt(record)} />
+              <FactValue value={foundAt(record)} />
             </FactRow>
             <FactRow label="Stored">
-              <SideValue value={record.storage} />
+              <FactValue value={record.storage} />
             </FactRow>
             <FactRow label="Photo">
               {record.photo ? (
@@ -706,7 +703,7 @@ export default function LostFoundPage() {
                   </figure>
                 </div>
               ) : (
-                <SideValue value="" />
+                <FactValue value="" />
               )}
             </FactRow>
           </div>

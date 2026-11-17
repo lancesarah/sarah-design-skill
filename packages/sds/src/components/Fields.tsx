@@ -8,8 +8,10 @@ export type SearchFieldProps = {
   label?: string;
   iconOnly?: boolean;
   state?: "hover";
+  value?: string;
   defaultValue?: string;
   onValueChange?: (value: string) => void;
+  className?: string;
 };
 
 export function SearchField({
@@ -17,13 +19,15 @@ export function SearchField({
   label = placeholder,
   iconOnly = false,
   state,
+  value: controlledValue,
   defaultValue = "",
   onValueChange,
   className,
-}: SearchFieldProps & { className?: string }) {
-  const [value, setValue] = useState(defaultValue);
+}: SearchFieldProps) {
+  const [internalValue, setValue] = useState(defaultValue);
+  const value = controlledValue ?? internalValue;
   const write = (next: string) => {
-    setValue(next);
+    if (controlledValue === undefined) setValue(next);
     onValueChange?.(next);
   };
   const classes = ["sds", "search", iconOnly ? "search-icon" : "", state === "hover" ? "is-hover" : "", value ? "has-value" : "", className]

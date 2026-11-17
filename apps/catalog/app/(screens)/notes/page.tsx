@@ -1,6 +1,6 @@
 "use client";
 
-import { Chip, Button, ConfirmDialog, DEPARTMENTS, DepartmentChip, Empty, Icon, OverlayMenu, Tabs, ViewedMenu, captureClose, type Viewer } from "@lance-live/sds";
+import { Chip, Button, ConfirmDialog, DEPARTMENTS, DepartmentChip, Empty, Icon, OverlayMenu, Tabs, ViewedMenu, captureClose, hideTooltip, placeTooltip, showTooltip, useCopyFeedback, type Viewer } from "@lance-live/sds";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { putBack, useNotify } from "../action-toast";
@@ -17,17 +17,6 @@ const PERSON = {
 
 const TITLE_PLACEHOLDER = "New note";
 const BODY_PLACEHOLDER = "Write a note...";
-
-/** The name sits above the photo. The tip is in the top layer, so the list does not clip it. */
-function placeAuthorTip(host: HTMLElement) {
-  const tip = host.querySelector<HTMLElement>(":scope > .tip");
-  if (!tip) return null;
-  const gap = Number.parseFloat(getComputedStyle(host).getPropertyValue("--tip-gap")) || 8;
-  const box = host.getBoundingClientRect();
-  tip.style.left = `${box.left + box.width / 2}px`;
-  tip.style.top = `${box.top - gap}px`;
-  return tip;
-}
 
 type Note = {
   id: string;
@@ -139,6 +128,18 @@ function revealNewCard(list: Element, id: string, before: Map<string, number>) {
   void id;
 }
 
+function CopyNoteLink({ id }: { id: string }) {
+  const { label, copy } = useCopyFeedback("Copy link");
+  return <button className="menu-item" type="button" role="menuitem" disabled={!NOTES.some(note => note.id === id)} onClick={() => {
+    const url = new URL(window.location.pathname, window.location.origin);
+    url.searchParams.set("note", id);
+    void copy(url.href);
+  }}>
+    <Glyph name="link" />
+    <span aria-live="polite">{label}</span>
+  </button>;
+}
+
 export default function NotesPage() {
   const notify = useNotify();
   const [records, setRecords] = useState(NOTES);
@@ -185,22 +186,11 @@ export default function NotesPage() {
     if (!list) return;
     let current: HTMLElement | null = null;
     const show = (host: HTMLElement) => {
-      const tip = placeAuthorTip(host);
-      if (!tip) return;
       current = host;
-      try {
-        if (!tip.matches(":popover-open")) tip.showPopover();
-      } catch {
-        // The tip can already be opening as the pointer crosses the photo.
-      }
+      showTooltip(host);
     };
     const hide = (host: HTMLElement | null) => {
-      const tip = host?.querySelector<HTMLElement>(":scope > .tip");
-      try {
-        if (tip?.matches(":popover-open")) tip.hidePopover();
-      } catch {
-        // The tip can already be closed when the pointer leaves.
-      }
+      if (host) hideTooltip(host);
       if (current === host) current = null;
     };
     const onOver = (event: PointerEvent) => {
@@ -215,14 +205,19 @@ export default function NotesPage() {
       hide(host);
     };
     const follow = () => {
-      if (current?.matches(":hover")) placeAuthorTip(current);
+      if (current?.matches(":hover")) placeTooltip(current);
     };
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") hide(current);
+    };
+    list.addEventListener("keydown", onKeyDown);
     list.addEventListener("pointerover", onOver);
     list.addEventListener("pointerout", onOut);
     list.addEventListener("scroll", follow);
     window.addEventListener("resize", follow);
     return () => {
       hide(current);
+      list.removeEventListener("keydown", onKeyDown);
       list.removeEventListener("pointerover", onOver);
       list.removeEventListener("pointerout", onOut);
       list.removeEventListener("scroll", follow);
@@ -273,13 +268,19 @@ export default function NotesPage() {
     setRecords((current) => current.map((note) => (note.id === id ? { ...note, ...patch } : note)));
   }
 
-  // Home's plus lands here with ?new and starts a note. A frame later, so the list has painted.
+  // Home's plus starts a note after the list paints. A copied link selects its note.
   const startedFromHome = useRef(false);
   useEffect(() => {
-    if (startedFromHome.current || !new URLSearchParams(window.location.search).has("new")) return;
+    if (startedFromHome.current) return;
     startedFromHome.current = true;
-    window.history.replaceState(null, "", window.location.pathname);
-    requestAnimationFrame(() => createNote());
+    const query = new URLSearchParams(window.location.search);
+    if (query.has("new")) {
+      window.history.replaceState(null, "", window.location.pathname);
+      requestAnimationFrame(() => createNote());
+      return;
+    }
+    const id = query.get("note");
+    if (NOTES.some(note => note.id === id)) setSelected(id);
   }, []);
 
   function createNote() {
@@ -463,10 +464,7 @@ export default function NotesPage() {
                       <Glyph name="share" />
                       Share
                     </button>
-                    <button className="menu-item" type="button" role="menuitem">
-                      <Glyph name="link" />
-                      Copy link
-                    </button>
+                    <CopyNoteLink key={open.id} id={open.id} />
                     <span className="menu-rule" />
                     <button
                       className="menu-item danger"

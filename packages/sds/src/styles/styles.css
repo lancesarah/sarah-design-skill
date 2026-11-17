@@ -20,6 +20,76 @@
   cursor: pointer;
 }
 
+:is(.sds, .sds *)[aria-invalid="true"]:focus {
+  outline: 2px solid var(--destructive);
+  outline-offset: 1px;
+}
+
+/* Error state shake from transitions.dev. Validation owns the red outline. */
+.t-input.is-shaking {
+  --shake-distance: 6px;
+  --shake-overshoot: var(--space-4);
+  --shake-dur-a: 80ms;
+  --shake-dur-b: 60ms;
+  --shake-ease: var(--ease-out);
+  animation: t-input-shake calc(2 * var(--shake-dur-a) + 2 * var(--shake-dur-b)) linear;
+}
+
+@keyframes t-input-shake {
+  0% { transform: translateX(0); animation-timing-function: var(--shake-ease); }
+  28.57% { transform: translateX(var(--shake-distance)); animation-timing-function: var(--shake-ease); }
+  57.14% { transform: translateX(calc(-1 * var(--shake-distance))); animation-timing-function: var(--shake-ease); }
+  78.57% { transform: translateX(var(--shake-overshoot)); animation-timing-function: var(--shake-ease); }
+  100% { transform: translateX(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .t-input.is-shaking { animation: none; }
+}
+
+/* Success check from transitions.dev. Animate the icon as it mounts. */
+@media (prefers-reduced-motion: no-preference) {
+  .t-success-check[data-state="in"] {
+    animation:
+      t-check-fade var(--check-opacity-dur, 500ms) var(--check-ease-opacity, var(--ease-out)) both,
+      t-check-rotate var(--check-rotate-dur, 500ms) var(--check-ease-rotate, var(--ease-out)) both,
+      t-check-blur var(--check-blur-dur, 500ms) var(--check-ease-out, var(--ease-out)) both,
+      t-check-bob var(--check-bob-dur, 500ms) var(--check-ease-bob, cubic-bezier(0.34, 1.35, 0.64, 1)) both;
+  }
+
+  .t-success-check[data-state="in"] svg path {
+    stroke-dasharray: var(--check-path-length, 20);
+    animation: t-check-draw var(--check-path-dur, 500ms) var(--check-ease-path, var(--ease-out)) var(--check-path-delay, 80ms) both;
+  }
+}
+
+.t-success-check svg { display: block; overflow: visible; }
+
+@keyframes t-check-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes t-check-rotate {
+  from { transform: rotate(var(--check-rotate-from, 80deg)); }
+  to { transform: rotate(0deg); }
+}
+
+@keyframes t-check-blur {
+  from { filter: blur(var(--check-blur-from, 10px)); }
+  to { filter: blur(0); }
+}
+
+@keyframes t-check-bob {
+  from { translate: 0 var(--check-y-amount, 40px); }
+  to { translate: 0 0; }
+}
+
+@keyframes t-check-draw {
+  from { stroke-dashoffset: var(--check-path-length, 20); }
+  to { stroke-dashoffset: 0; }
+}
+
 button.sds:active:not(:disabled) {
   scale: 0.98;
 }
@@ -174,7 +244,7 @@ button.sds:active:not(:disabled) {
 .sds.segmented .segment .count {
   margin: 0 0 0 4px;
   color: var(--black-25);
-  font-size: 14px;
+  font-size: inherit;
 }
 
 .sds.segmented .segment[aria-selected="true"] .count {
@@ -256,6 +326,11 @@ html[data-theme="dark"] .sds.segmented .segment[aria-selected="true"].is-hover {
   transition: color 120ms ease, background-color 120ms ease, box-shadow 120ms ease, width 200ms var(--ease-out);
 }
 
+.sds.tabs-scroll .tab {
+  flex: none;
+  white-space: nowrap;
+}
+
 .sds.tabs-scroll .tab .count {
   animation: sds-count-in 200ms var(--ease-out) both;
 }
@@ -319,7 +394,12 @@ html[data-theme="dark"] .sds.segmented.has-slide > .segment[aria-selected="true"
   }
   .sds.segmented[data-ready] .segment,
   .sds.tabs-scroll[data-ready] .tab,
-  .sds.tabs-scroll .tab .count {
+  .sds.tabs-scroll .tab {
+  flex: none;
+  white-space: nowrap;
+}
+
+.sds.tabs-scroll .tab .count {
     animation: none;
     transition: none;
   }
@@ -859,3 +939,26 @@ html[data-theme="dark"] .sds.check[aria-checked="true"].is-hover:not(:disabled) 
   margin-inline-end: 12px;
   pointer-events: auto;
 }
+
+.success-check-symbol {
+  display: grid;
+  place-items: center;
+  width: calc(var(--space-20) * 2);
+  aspect-ratio: 1;
+  border-radius: var(--radius-circle);
+  color: var(--status-complete);
+  background: color-mix(in srgb, var(--status-complete) 12%, var(--white));
+}
+
+.success-check-symbol .t-success-check {
+  --check-y-amount: var(--space-8);
+  --check-rotate-from: 24deg;
+  --check-blur-from: 2px;
+  --check-path-length: 12;
+}
+
+
+.tip-host.tooltip-target .tip { position: fixed; transform: translate(-50%, -100%); }
+.tooltip-target[data-tip-placement="below"] .tip { transform: translateX(-50%); }
+.tooltip-target[data-tip-placement="right"] .tip { transform: translateY(-50%); }
+.tooltip-target:focus-within .tip:popover-open { opacity: 1; }

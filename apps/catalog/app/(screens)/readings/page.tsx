@@ -16,6 +16,8 @@ import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "re
 import { flushSync } from "react-dom";
 import { useNotify } from "../action-toast";
 import { FilterMenu, SearchBox } from "../chrome";
+import { ChartTooltip } from "../chart-tooltip";
+import { useChartHover } from "../use-chart-hover";
 import { PageLayout, PageTitle } from "../page-layout";
 import { RecordEditor } from "./record-editor";
 import { SourceEditor, SourceEditorDialog } from "./source-editor";
@@ -320,44 +322,6 @@ function pointsFor(readings: Reading[], sourceId: string, measureId: string) {
     .sort((a, b) => (parseWhen(a.when)?.getTime() ?? 0) - (parseWhen(b.when)?.getTime() ?? 0));
 }
 
-function placePointTip(host: HTMLElement) {
-  const tip = host.querySelector<HTMLElement>(":scope > .tip");
-  if (!tip) return;
-  const box = host.getBoundingClientRect();
-  const gap = 12;
-  const tipBox = tip.getBoundingClientRect();
-  const tipWidth = tipBox.width || tip.offsetWidth;
-  const tipHeight = tipBox.height || tip.offsetHeight;
-  let left = box.right + gap;
-  if (left + tipWidth > window.innerWidth - 12) left = box.left - gap - tipWidth;
-  const top = Math.min(Math.max(8, box.top + box.height / 2 - tipHeight / 2), window.innerHeight - tipHeight - 8);
-  tip.style.position = "fixed";
-  tip.style.left = `${left}px`;
-  tip.style.top = `${top}px`;
-  tip.style.transform = "none";
-}
-
-function revealPointTip(host: HTMLElement) {
-  const tip = host.querySelector<HTMLElement>(":scope > .tip");
-  if (!tip) return;
-  try {
-    if (!tip.matches(":popover-open")) tip.showPopover();
-  } catch {
-    // The tip can already be opening as the pointer crosses the point.
-  }
-  placePointTip(host);
-}
-
-function hidePointTip(host: HTMLElement) {
-  const tip = host.querySelector<HTMLElement>(":scope > .tip");
-  if (!tip?.matches(":popover-open")) return;
-  try {
-    tip.hidePopover();
-  } catch {
-    // The tip can already be closed when the pointer leaves.
-  }
-}
-
 function ReadingChart({ measure, points }: { measure: Measure; points: Reading[] }) {
   const chartRef = useRef<HTMLElement>(null);
   const guideRef = useRef<HTMLSpanElement>(null);
@@ -387,78 +351,7 @@ function ReadingChart({ measure, points }: { measure: Measure; points: Reading[]
     if (last - before < labelEvery) labeledIndexes.splice(labeledIndexes.length - 2, 1);
   }
 
-  useEffect(() => {
-    const root = chartRef.current;
-    const guide = guideRef.current;
-    if (!root || !guide) return;
-    let current: HTMLElement | null = null;
-
-    const hosts = () => [...root.querySelectorAll<HTMLElement>(".readings-point")];
-    const nearest = (clientX: number) => {
-      let chosen: HTMLElement | null = null;
-      let best = Infinity;
-      for (const host of hosts()) {
-        const box = host.getBoundingClientRect();
-        const distance = Math.abs(box.left + box.width / 2 - clientX);
-        if (distance < best) {
-          best = distance;
-          chosen = host;
-        }
-      }
-      return chosen;
-    };
-    const show = (host: HTMLElement) => {
-      if (current && current !== host) {
-        current.classList.remove("is-active");
-        hidePointTip(current);
-      }
-      current = host;
-      host.classList.add("is-active");
-      const chart = root.getBoundingClientRect();
-      const box = host.getBoundingClientRect();
-      guide.style.left = `${box.left + box.width / 2 - chart.left}px`;
-      guide.hidden = false;
-      revealPointTip(host);
-    };
-    const clear = () => {
-      if (current) {
-        current.classList.remove("is-active");
-        hidePointTip(current);
-        current = null;
-      }
-      guide.hidden = true;
-    };
-    const onMove = (event: PointerEvent) => {
-      const host = nearest(event.clientX);
-      if (host) show(host);
-    };
-    const onLeave = (event: PointerEvent) => {
-      const next = event.relatedTarget;
-      if (next instanceof Node && root.contains(next)) return;
-      clear();
-    };
-    const onFocusIn = (event: FocusEvent) => {
-      const host = (event.target as Element | null)?.closest<HTMLElement>(".readings-point");
-      if (host && root.contains(host)) show(host);
-    };
-    const onFocusOut = (event: FocusEvent) => {
-      const host = (event.target as Element | null)?.closest<HTMLElement>(".readings-point");
-      if (!host || !root.contains(host) || host.contains(event.relatedTarget as Node)) return;
-      clear();
-    };
-
-    root.addEventListener("pointermove", onMove);
-    root.addEventListener("pointerleave", onLeave);
-    root.addEventListener("focusin", onFocusIn);
-    root.addEventListener("focusout", onFocusOut);
-    return () => {
-      clear();
-      root.removeEventListener("pointermove", onMove);
-      root.removeEventListener("pointerleave", onLeave);
-      root.removeEventListener("focusin", onFocusIn);
-      root.removeEventListener("focusout", onFocusOut);
-    };
-  }, [points]);
+  useChartHover(chartRef, points);
 
   return (
     <figure className="readings-chart" ref={chartRef}>
@@ -491,13 +384,11 @@ function ReadingChart({ measure, points }: { measure: Measure; points: Reading[]
             key={point.id}
             type="button"
             className="readings-point tip-host"
+            data-chart-point
             style={{ left: `${(xAt(index) / width) * 100}%`, top: `${(yAt(point.value) / height) * 100}%` }}
             aria-label={`${point.when}, ${point.value.toLocaleString()} ${measure.unit}`}
           >
-            <span className="tip readings-tip" role="tooltip" popover="manual">
-              <span className="readings-tip-when">{point.when}</span>
-              <strong>{point.value.toLocaleString()} {measure.unit}</strong>
-            </span>
+            <ChartTooltip label={point.when} value={`${point.value.toLocaleString()} ${measure.unit}`} />
           </button>
         ))}
       </div>

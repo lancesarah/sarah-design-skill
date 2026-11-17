@@ -52,6 +52,10 @@ export function FactRow({ label, children }: { label: ReactNode; children: React
   );
 }
 
+export function FactValue({ value }: { value?: string }) {
+  return <span className={value ? "todo-side-value" : "todo-side-value is-quiet"}>{value || "–"}</span>;
+}
+
 /** A typed fact in the detail panel. The line field, one line, beside its label. */
 export function FactLine({
   label,

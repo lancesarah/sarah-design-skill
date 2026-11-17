@@ -6,6 +6,7 @@ import { createContext, useContext } from "react";
 export type MakeRoom = () => () => void;
 
 export const ShellPanelsContext = createContext<MakeRoom>(() => () => {});
+export const OpenDirectMessageContext = createContext<((name: string, initials: string) => void) | null>(null);
 
 export function useMakeRoom() {
   return useContext(ShellPanelsContext);

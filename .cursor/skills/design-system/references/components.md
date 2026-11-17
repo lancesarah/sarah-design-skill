@@ -24,12 +24,14 @@ Forced by: "the primary button doesn't have the correct styling, it doesn't have
 
 ## Secondary button
 
-- When: an action beside the primary, or Cancel. A section's own action on the page, such as Edit beside a section title, with its icon.
-- When not: the main action, or a fact.
+- When: an action beside the primary, or Cancel. A section's own action on the page, such as Edit beside a section title, with its icon. Every labeled action on the page or in a toolbar: the filter row, a selection toolbar (Move to, Mark clean, Unassign), a header button that is not the primary, a menu trigger with a label, and a labeled action in a widget's or card's grey head (Auto-assign, Collect). This is the default for any labeled action that is not the primary.
+- When not: the main action, or a fact. The widget's plus that starts a record, which is the text button.
 - Default: `.btn-secondary`.
 - States: rest is `--white`, `--black` text, and `--stroke`. Hover is one step from the surface it sits on. Text and the hairline stay. On the page that step is `--sidebar-grey` in light mode and `--grey` in dark mode. On a `--sidebar-grey` panel it is `--grey`. On a dark `--grey` panel it is `--black-12`. Press uses the same scale as the primary. A button is 28px.
 
 Secondary button, Filter, and the trigger: rest is `--stroke` plus `--depth-drop`.
+
+Clipboard actions use `useCopyFeedback`. On success, the activated button or menu item itself briefly reads **Copied!** and then restores its original label. Announce the change with `aria-live="polite"` on the label and leave focus on the control. A failed copy reads **Copy failed** on the same control. Success does not add a separate message or toast.
 
 ## Tertiary button
 
@@ -134,6 +136,8 @@ In a table, a status never sits alone. The description sits next to it on the sa
 
 ## Menu
 
+Anchored dropdowns open below their trigger when they fit. When there is not enough room below and there is more room above, open above the trigger. Constrain the menu to the available viewport height on that side and keep option rows at their standard height while scrolling.
+
 - When: a list of options that already exist, or a more menu.
 - When not: creating a record. That happens on the page.
 - Default: the gallery menu, with `--elevation-menu`.
@@ -147,12 +151,12 @@ Forced by: hug the longest label, then 16px to the edge. Then, “if the actual 
 
 ## Delete confirmation
 
-- When: any destructive action was pressed. A labeled Delete button and a trash icon with no label are the same press. A menu’s Delete item is the same press.
-- When not: before that press. The press opens this card. It does not remove the record, the row, the step, the category, or the area.
-- Default: `.confirm`.
-- States: the title is “Delete this ______?” and the line under it says the named thing will be permanently removed for the whole team. Cancel closes the card. The confirming control is `.btn-danger`.
+- When: any destructive action was pressed. Destructive is any word that takes something away: Delete, Remove, Unassign all, Clear, Take off, Discard. A labeled button, a trash icon with no label, and a menu item are the same press. Every red menu item is destructive, so every red menu item opens this card. An undo toast after the fact does not replace it.
+- When not: before that press. The press opens this card. It does not remove the record, the row, the step, the category, the person, or the area. A move that keeps the thing, such as Move to or Unassign on a few picked rooms, is not destructive.
+- Default: `ConfirmDialog` (`.confirm`).
+- States: the title is “Delete this ______?” and the line under it says the named thing will be permanently removed for the whole team. For another verb, `action` names it on both the title and the confirming button: “Remove Fred Salas?” and Remove, not Delete. When the action is not a permanent delete, `detail` says what happens instead, such as “their rooms go back to Unassigned.” Cancel closes the card. The confirming control is `.btn-danger`.
 
-Forced by: “on any destructive action, you need the popup. Whether it's a trash can icon or a full delete button, it needs the popup.”
+Forced by: “on any destructive action, you need the popup. Whether it's a trash can icon or a full delete button, it needs the popup.” Then the boards card menu shipped Remove, and the room menu shipped Delete from board, with no card. Then, “all destructive buttons and actions like remove and delete need the secondary popup.”
 
 ## Search
 
@@ -197,8 +201,8 @@ Every editable description and notes field is this box. A complaint description,
 
 ## Text button
 
-- When: a quiet action that should not compete with the page: a label, an icon, and no fill until hover. A tool in a row, or a control in a widget's grey head.
-- When not: the main action on a view. That is the primary button. A button in the header with no icon. A section's action on the page, such as Edit beside a section title. That is the secondary button.
+- When: only the plus that starts a record in a widget's grey head.
+- When not: anywhere else. An action on the page, in the filter row, in a selection toolbar, in the header, or a labeled action in a card's grey head (Auto-assign, Collect) is the secondary button. "Quiet" is not a reason to drop the stroke. If you are unsure, it is secondary. The main action on a view is the primary button.
 - Default: `TextIcon`. Label, small, and delete.
 - States: rest is clear. Hover fills one step from the surface it sits on. The label, the icon, and the gap do not move on hover. Press scales the whole control to `0.98`. The delete variant stays `--destructive` at rest and on hover, and opens Delete confirmation first.
 
@@ -290,7 +294,7 @@ Every page uses the same header. The back button sits on the left and closes the
 
 Editable text in the panel shows a pencil on hover. The pencil is the edit icon, 14px, in `--black-50`. It sits after the text on the first line. The text does not move when it appears. Clicking the field removes the pencil. The table does not show this pencil. A text well does not show it either. The field is already a box.
 
-The body stacks its sections 24px apart. The scroll padding is `--space-16` on top and `--space-25` on the sides and the bottom. A rule between sections is 1px `--line` and runs the full width of the panel, through that side padding. A section label is `--text-12`, weight 500, and `--black-50`. A fact row is a 70px label and the value, `--space-16` apart, at least 20px tall, in `--text-14`. In dark mode the detail uses `--grey`.
+The body stacks its sections 24px apart. The scroll padding is `--space-16` on top and `--space-25` on the sides and the bottom. A rule between sections is 1px `--line` and runs the full width of the panel, through that side padding. A section label is `--text-12`, weight 500, and `--black-50`. A fact row is a 70px label and the value, `--space-16` apart, at least 20px tall, in `--text-14`. The vertical gap between fact rows is `--space-12` (12px). In dark mode the detail uses `--grey`.
 
 A view-only panel reads its facts and keeps Activity live. Edit opens the editor popup for that record. Nothing else in the body edits. The room is the static square. A typed fact, such as the description, location, or item, is plain `--text-14` text (`.todo-side-value`). An empty one is a quiet dash. The description sits 4px under the title with no label, in `--text-muted` (`.todo-side-heading`). The panel body starts 40px below the header actions. An empty one reads No description in `--black-25`. Type, status, and urgency are their chips with `editable={false}`. The assignee is the person pill, or Unassigned. None of them show a chevron or a pencil.
 
@@ -341,7 +345,7 @@ Forced by: make the title bigger; turn the step count into a progress bar on the
 - Default: `.kb-meter` and `.kb-meter-fill` in `css/knowledge.css`. Knowledge health is the reference.
 - States: empty, partial, and full. A locked or completed measure keeps the bar. Its fill is `--text-muted`.
 
-The track is 42px tall and the full width of its group. It is a stripe of `--black-12`, `--space-2` wide, repeating every `--space-4`. The fill is that same stripe in `--action`, and its width is the share that is done. The count sits with the bar, on the line above it. It does not sit inside the stripe. Do not draw a second bar, a solid fill, or a different height.
+The track is 42px tall and the full width of its group. It is a stripe of `--grey`, `--space-2` wide, repeating every `--space-4`. The fill is that same stripe in `--action`, and its width is the share that is done. The count sits with the bar, on the line above it. It does not sit inside the stripe. Do not draw a second bar, a solid fill, or a different height.
 
 ## Sidebar
 
@@ -394,7 +398,9 @@ Forced by: Delete sat inside the type and frequency card. Then, “the cards gro
 - When: Edit template and the readings source. It opens over the page. It is not a subpage.
 - When not: a record that opens beside the table. That is the detail panel. A full subpage, or a delete confirmation.
 - Dismiss: the corner close, the scrim, and Escape. Save is the primary, at the bottom right. Delete is the light danger button and opens the confirm first.
+- Modal scrims use `--scrim-modal`, translucent black in both themes. Photo viewers use the deeper `--scrim-photo`.
 - The kicker says the action and the item: Create template for a new record, Edit template for one that exists. Every editor follows the same rule.
+- When the top label is the popup’s only title, use `--text-20`, weight 500, and `--black`. A kicker above a record title keeps its supporting-text treatment.
 - Save names the item too: Save to-do, Save template, Save source. Never a bare Save.
 - Divider: a 1px `--line` runs edge to edge under the header, with or without tabs. With tabs it is the bottom of the tab bar. Without tabs the shell draws it. The pill editor is the one exception: it has no divider. See Pill editor.
 
@@ -425,6 +431,8 @@ Forced by: "the editor is not using the right formatting for the title and descr
 Every choice is one `EditorPill`: 28px tall, padding `0 var(--space-10)`, `--radius-control`, `--white` with `--stroke`, `--text-14`. Hover and an open menu fill `--sidebar-grey`. Its menu is the gallery menu, with `taskMenuItem` rows. A leading icon is 14px in `--text-muted`, 6px from the value. An unset pill shows its placeholder, muted: Location, Item, Category. Every pill sits on one line, `--space-8` apart, in this order: the place, then the item or category, then the remaining choices, then status and the person. The line wraps only when the card runs out of width. It never breaks on purpose to group a pair. `EditorPillRow` is not used.
 
 Forced by: "in the editor, bring all the drop downs to the same line."
+
+A toggle inside an editor pill inherits the pill’s default 14px strong-text label styling; only its track and knob use the switch drawing.
 
 A value inside a pill is its component, at `--text-14`, with no ring, padding, or fill of its own: the department tag is `plain`, and the urgency and person pill lose their padding and fill. Status keeps its icon and label.
 
@@ -557,7 +565,7 @@ The mark is 24px in `--text-muted`. The title is 16px weight 500. The line is 14
 - Default: `Meter`, with `value`, `max`, and a `label` that says the figures.
 - States: a fill, and a fill with an end part.
 
-A 42px bar of 2px ticks every 4px. The done part is `--action` over `--black-12`. An end part, such as rooms on DND, takes the right end in `--black-50`. It spans the whole bar and is clipped, so its ticks line up with the ones under it. The bar is one image to a screen reader, and `label` is what it reads.
+A 42px bar of 2px ticks every 4px. The done part is `--action` over `--grey`, the light track. An end part, such as rooms on DND, takes the right end in `--black-50`. It spans the whole bar and is clipped, so its ticks line up with the ones under it. The bar is one image to a screen reader, and `label` is what it reads.
 
 ## Share bar
 
@@ -574,6 +582,8 @@ Its own component, not Meter. A plain bar, 8px tall with fully round ends, and n
 - When not: the list itself. That is Table. One record. That is Section card.
 - Default: `Widget`, holding a `WidgetList`. `WidgetEmpty` holds an `Empty` when there is nothing to show.
 - States: rows and a more link, rows only, and empty. A widget that lists rows goes empty when it has no rows: `WidgetEmpty` replaces its summary and its list, and the head stays. A widget that only shows figures, a meter, a share bar, or a chart has no empty. It shows its zeros, because zero is a reading.
+
+Widget and data-table headers share `--section-header-height` (43px minimum, border-box). Keep controls vertically centered; wrapped content may grow the header. This is independent of widget body-row heights.
 
 One card: a 1px `--line-card` border, a 10px radius, and a `--sidebar-grey` head over a `--white` list. The head is a 16px icon in `--text-muted`, `--space-8` from the title, the same gap as a Lance suggestion. The title is 14px weight 400, the count in `--text-muted`, and one action on the right. The action is a plus that starts a new record, as a `TextIcon` or a link with the `text-icon sm` class. A leaderboard puts its top three on a podium over the rows, second, first, third, each on a `--sidebar-grey` step, and the rows go on from fourth to sixth. First place's step is `--filter-chip-bg` with its place in `--action`, a 1px `--action` stroke on the top and sides, and `--shadow-card`. The step has no bottom stroke, so it does not double the rule it stands on. First place's avatar takes `--shadow-card` too. Every podium avatar keeps the named ring, 1px `--black-12`. A widget whose rows change with a time window, such as a leaderboard, takes segments there instead, sized to their labels: Today, 7d, and 30d, or 24h, 7d, and 30d. A `Menu` trigger on the grey head hovers `--grey`, one step from the head. Segments in the head take a `--grey` track so they do not fade into it, and an unselected segment hovers `--black-12`. In dark mode the list is `--white`, the page, edged by the card's border, and the head is `--grey-low`, halfway from the page to `--grey`. Lifting the list off the page read too heavy. Everything inside the list moves with it. A row hovers `--grey`, a pill in a row rests `--grey` and is `--black-12` on a hovered row, and the room map's cells, the podium steps, and a day's hover are `--grey`, with a room's hover `--black-12`. A head trigger hovers `--black-12`, and the segment track is `--white`, the page, so it sits below the head and the `--grey` selected pill still shows. The head is 52px, the height of a row. The card takes the depth drop under its hairline.
 
@@ -676,3 +686,34 @@ While the rows are still loading, the same table shows the skeleton in the Loadi
 Forced by: “It should only appear when necessary, when content hasn't actually loaded. Not strictly every time.” The bars sit in the cells. The columns do not change width when the values arrive. A title with a note under it is two bars, 6px apart: the title is 12px tall and 42% of the column, and the note is 10px tall and 68%. A cell that is one line is one 12px bar, 68% of the column. A chip, a status, or a person is one bar, 64px by 20px. A short value is one 12px bar. Every bar is `--grey` with a 4px radius. The bars pulse once, opacity 1 to `--sk-pulse-min` and back, over `--sk-pulse-dur`, ease-in-out. The values then crossfade in and the bars crossfade out over `--sk-reveal-dur`, with a `--sk-reveal-blur` blur. Each column starts `--sk-ripple` after the one on its left. The row takes no hover and no press while the bars are up. `prefers-reduced-motion: reduce` skips the pulse, the blur, and the delay, and the values appear in place. Do not add a shimmer, a second grey, or a skeleton that sits outside the cell.
 
 Screen-only note layout is not in this catalog. Do not fold one-off note chrome into the gallery unless it is reused.
+
+## Page section headings
+
+Section headings on the page surface include a relevant 16px icon from the shared icon set, followed by an 8px gap and 14px, medium-weight (500) text. Both use `--text-muted`. Align the icon and text vertically. Apply this to section headings, including chart and table section titles; widget headers retain their own component formatting.
+
+## Settings card
+
+- When: editing related preferences or configuration, with a label on the left and a control on the right.
+- When not: dashboard summaries (Widget), record lists (DataTable), or navigation.
+- Components: `SettingsCard`, `SettingsRow`, `SettingsToggleRow`, `SettingsMenuRow`, `SettingsInputRow`, and `SectionHeader` from `@lance-live/sds`.
+- Live gallery: Settings card (`#settings-card`), with interactive examples of every row variant.
+
+A `SectionHeader` is a sibling immediately above the card, on the page surface: 16px shared icon, 8px icon gap, 14px medium grey title, optional 12px muted context aligned right. The existing `--space-8` token gives 8px between the header box and the outer edge of the following card or table; the surface’s 1px border is separate. Headers with trailing controls use the same gap measured from the complete header box. Do not put the header inside a filled card strip. A standalone setting, such as language, uses a one-row card with no repeated section title. Cards do not add spacing between sections; the page owns that spacing.
+
+The card uses the existing white surface, 1px `--line-card` edge, and 10px radius. Rows are at least 48px tall with 8px vertical and 16px horizontal padding, 14px normal labels, and hairline separators between rows. Supporting copy is 12px muted, directly below the label or inline via `inlineDescription`. Stacked copy uses a 2px title-to-subtitle gap and 6px vertical padding; longer copy can grow. When an icon accompanies stacked copy, it sits in its own leading column, vertically centered beside both lines with a 16px gap. Both text lines share the same left edge. Icon-only labels retain the compact 8px gap. Hover uses the existing surface step without a fade.
+
+`SettingsToggleRow` owns a labeled ThemeSwitch; clicking the row toggles it once, while info controls remain separate. Keyboard activation remains on the switch. `SettingsMenuRow` composes the shared Menu, including suffixes and groups. `SettingsInputRow` composes the outlined text input and accepts native input props for text, number, validation, and disabled states. `SettingsRow` is the composition variant for ranges, day buttons, actions, or other controls; it does not make the entire row interactive. Supply accessible names for custom controls. The `info` slot accepts an existing tooltip trigger. All values remain controlled by the consumer.
+
+Use `SettingsCard variant="destructive"` for destructive options such as offboarding or resetting preferences. It uses the standard 1px `--line-card` grey border and 16px vertical row padding at all viewport sizes, including rows with subtitles. Use `--destructive` red for the row title and leading icon, retain muted supporting copy, and pair it with a danger action button. Confirmation behavior belongs to the consumer.
+
+## Time picker
+
+Use `TimePicker` for an editable time of day. It composes the 32px line field, muted clock and chevron icons, and shared overlay menu with half-hour suggestions. Use the normal field font, padding, radius, stroke, and focus treatment. Display `9:00AM`; store controlled values as `09:00`. Typing supports every minute, including 24-hour input. Invalid text stays visible with feedback instead of silently changing the saved value. Arrow Down opens suggestions; arrows navigate; Enter selects; Escape dismisses. The consumer owns date, timezone, and cross-window validation. Gallery: `#time-picker`.
+
+### Single-selector cards and rows
+
+When a card or row has one primary selector (checkbox, switch, or selection control), its background and label activate that same selector exactly once. Clicking the control itself must not trigger a second change through bubbling. Preserve keyboard activation and independent help/info actions. Do not delegate background clicks on rows containing multiple independent controls, such as a time range. Availability day tiles open the editor when an available day is not already open. A second click on the open day deselects it. Clicking an unavailable day enables it and opens its editor; the checkbox always toggles directly. All other days and saved time windows remain unchanged.
+
+### Info tooltip
+
+Use `InfoTooltip` for info-icon help everywhere. Its shared 14px muted icon is focusable and displays the tooltip above the icon, separated by `--space-8`. The component owns placement and exposes no below-placement override. Hover and focus show it; Escape and blur dismiss it. Use the popover top layer so card overflow does not clip help. Do not build local info-icon wrappers with different placement.

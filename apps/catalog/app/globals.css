@@ -40,6 +40,10 @@ body {
   .side-brand,
   .side-fold,
   .search,
+  .filter,
+  .filter > .pair,
+  .trigger,
+  .trigger > .pair,
   .lance-suggest,
   .mode,
   .btn-secondary,
@@ -60,7 +64,8 @@ body {
   .view-pick,
   .ticket-go,
   .editor-pill,
-  .menu-item
+  .menu-item,
+  .menu-item > .pair
 ) > .i {
   color: var(--text-muted) !important;
 }

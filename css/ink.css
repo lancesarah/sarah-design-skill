@@ -1,0 +1,54 @@
+/* Grey icons. An icon that sits beside a label is muted. An icon that stands alone (a close or
+   chevron button), and one that carries its own color (white on a primary button, a department or
+   urgency color), keeps its ink. :where keeps the list at zero weight, so the exceptions below win.
+   Packaged into @lance-live/sds styles.css. */
+:where(
+  .side-links a,
+  .side-brand,
+  .side-fold,
+  .search,
+  .filter,
+  .filter > .pair,
+  .trigger,
+  .trigger > .pair,
+  .lance-suggest,
+  .mode,
+  .btn-secondary,
+  .page-mark,
+  .widget-head h2,
+  .home-insight,
+  .home-map-marks,
+  .home-key dt,
+  .home-dnd-state,
+  .room-mark,
+  .mini-pill:not(.is-empty),
+  .notice-mark,
+  .sheet-chevron,
+  .sheet-when,
+  .pm-check-edit,
+  .pm-check-range,
+  .pm-room-top,
+  .view-pick,
+  .ticket-go,
+  .editor-pill,
+  .menu-item,
+  .menu-item > .pair
+) > .i {
+  color: var(--text-muted) !important;
+}
+
+:is(.danger, .btn-danger-light, .pm-editor-remove) .i {
+  color: var(--destructive) !important;
+}
+
+.urgency-urgent .i {
+  color: var(--urgency-urgent) !important;
+}
+
+.side-links a[aria-current="page"] .i {
+  color: var(--black) !important;
+}
+
+.home-page .page-mark .i {
+  color: var(--on-image-ink) !important;
+}

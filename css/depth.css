@@ -1,0 +1,94 @@
+/* Depth, on everywhere. Light comes from above, and only a thing that takes a press is lit.
+   - The primary: lighter at the top, its own edge, and a lighter line one pixel inside that edge.
+     That line fades toward the bottom, the way the fill does.
+   - A filled danger button: the light and the edge. The inner line stays with the one primary.
+   - A white, stroked control or card that takes a press: the smallest drop under its hairline.
+   - A department chip with its ring is a control: the same drop, in a table, a menu, a filter, and a panel.
+     The plain label, the circle and the name with no ring, stays flat.
+   - The center card is the one surface that does not take a press and is still lit. It is the page, raised
+     off the grey chrome: its ring, and the same drop under it. That card is in page-frame.css.
+   - Flat: a grey fill (tertiary, filter chip, tab, row), a field or well, and a card that only groups.
+   - A menu, a toast, and a popup keep --elevation-menu. A press sets the drop down. Disabled is flat.
+   Nothing changes size, and every hairline stays where it was.
+   Packaged into @lance-live/sds styles.css. */
+html {
+  --depth-sheen: linear-gradient(to bottom, rgb(255 255 255 / 14%), rgb(0 0 0 / 6%));
+  --depth-edge: inset 0 0 0 1px rgb(0 0 0 / 14%);
+  --depth-rim: linear-gradient(to bottom, rgb(255 255 255 / 32%), rgb(255 255 255 / 8%));
+  --depth-drop: 0 1px 2px rgb(0 0 0 / 8%);
+}
+
+html[data-theme="dark"] {
+  --depth-drop: 0 1px 2px rgb(0 0 0 / 40%);
+}
+
+html .btn:not(.btn-secondary, .btn-tertiary, .btn-danger, .btn-danger-light, :disabled) {
+  background-image: var(--depth-sheen);
+  box-shadow: var(--depth-edge), var(--depth-drop);
+}
+
+/* The primary's inner line. A shadow cannot fade, so the line is its own layer: a 1px ring, one pixel
+   inside the edge, lightest at the top and fading toward the bottom with the fill.
+   The button holds it in place. :where keeps that at an element's weight, so a page that positions a button still wins. */
+html :where(.btn:not(.btn-secondary, .btn-tertiary, .btn-danger, .btn-danger-light, :disabled)) {
+  position: relative;
+}
+
+html .btn:not(.btn-secondary, .btn-tertiary, .btn-danger, .btn-danger-light, :disabled)::after {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  padding: 1px;
+  border-radius: calc(var(--radius-control) - 1px);
+  background: var(--depth-rim);
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+html .btn.btn-danger:not(:disabled) {
+  background-image: var(--depth-sheen);
+  box-shadow: var(--depth-edge), var(--depth-drop);
+}
+
+html :is(.btn-secondary, .filter, .trigger),
+html .segmented .slide-pill,
+html .segmented:not(.has-slide) > .segment[aria-selected="true"],
+html .pm-page :is(.pm-room, .pm-area-row) {
+  box-shadow: var(--stroke), var(--depth-drop);
+}
+
+html .notice-row.is-support {
+  box-shadow: var(--stroke-card), var(--depth-drop);
+}
+
+/* A vacant room draws its own darker edge. Keep it, and add the drop. */
+html .pm-page .pm-room.is-vacant {
+  box-shadow: 0 0 0 1px var(--black-12), var(--depth-drop);
+}
+
+html[data-theme="dark"] .pm-page .pm-room.is-vacant {
+  box-shadow: 0 0 0 1px var(--black-25), var(--depth-drop);
+}
+
+/* The dark segment pill has no hairline. It takes the drop alone. */
+html[data-theme="dark"] .segmented .slide-pill {
+  box-shadow: var(--depth-drop);
+}
+
+/* A widget is a white card on the page, lifted like the center card: its own hairline stays, and the drop sits under it. */
+html .widget {
+  box-shadow: var(--depth-drop);
+}
+
+/* The department chip. Its ring is 1px --black-12 in every state and both themes, and the component sets
+   that ring inline, so this needs !important. The ring is repeated here and the drop is added under it. */
+html :is(.sds.dept, .menu .dept):not(.dept-plain, .dept-sizer),
+html .sheet-type[data-type] {
+  box-shadow: 0 0 0 1px var(--black-12), var(--depth-drop) !important;
+}
+
+/* Pressed or disabled, the drop is gone. The hairline and the scale stay as they were. */
+html :is(.btn, .filter, .trigger, .notice-row.is-support, .pm-room, .pm-area-row, button.dept, .sheet-type):is(:active, :disabled) {
+  --depth-drop: 0 0 0 0 transparent;
+}

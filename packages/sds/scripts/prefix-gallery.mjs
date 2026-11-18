@@ -59,6 +59,15 @@ const page = prefix(readFileSync(resolve(root, "css/page.css"), "utf8"));
 const pageBanner = "/* Prefixed from css/page.css. The page stack inside `.notes-page`. Loads after the gallery specimen it replaces. */\n";
 writeFileSync(resolve(here, "../src/styles/page.css"), `${pageBanner}${page}\n`);
 
+// Icon ink and depth: rules for every component, kept out of gallery.css so the catalog app could own them.
+// The catalog loads them unlayered over the layered package, so they beat component rules there. Ink
+// carries !important. Depth is scoped by `.sds` itself rather than :where(.sds), so it keeps beating
+// `.sds.btn-secondary` in an app that loads everything in one layer.
+const ink = prefix(readFileSync(resolve(root, "css/ink.css"), "utf8"));
+writeFileSync(resolve(here, "../src/styles/ink.css"), `/* Prefixed from css/ink.css. */\n${ink}\n`);
+const depth = prefix(readFileSync(resolve(root, "css/depth.css"), "utf8")).replaceAll(":where(.sds)", ".sds");
+writeFileSync(resolve(here, "../src/styles/depth.css"), `/* Prefixed from css/depth.css, scoped by .sds so it outranks component rules. */\n${depth}\n`);
+
 /** Inline relative `@import "./x.css";` in source order. Skipped files drop out with their imports. */
 function inline(file, skip) {
   return readFileSync(file, "utf8").replace(/@import\s+"([^"]+\.css)";[^\S\n]*\n?/g, (_, path) => {

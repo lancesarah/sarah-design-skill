@@ -19,11 +19,16 @@
       "default": "./dist/index.js"
     },
     "./tokens.css": "./dist/tokens.css",
+    "./page": {
+      "types": "./dist/page.d.ts",
+      "import": "./dist/page.js",
+      "default": "./dist/page.js"
+    },
     "./styles.css": "./dist/styles.css",
     "./screens.css": "./dist/screens.css"
   },
   "scripts": {
-    "build": "node scripts/prefix-gallery.mjs && tsup && node scripts/copy-css.mjs",
+    "build": "node scripts/prefix-gallery.mjs && tsup && tsup --config tsup.page.config.ts && node scripts/copy-css.mjs",
     "prefix": "node scripts/prefix-gallery.mjs",
     "typecheck": "tsc --noEmit",
     "test": "vitest run"

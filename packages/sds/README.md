@@ -23,26 +23,26 @@ import { Button, SegmentedControl } from "@lance-live/sds";
 
 ## Pages
 
-A page puts `notes-page` and `sds` on its root. `PageHeader` then draws the page stack from `css/page.css`: a 60px title row with the mark, the title, the count, and the actions on the right, then the tab band under it. Without `notes-page`, `PageHeader` falls back to the gallery specimen (a grey sticky band with a serif title), which is not a built page.
+Build a page with `PageLayout`. It is the only thing a page needs from the package:
 
 ```tsx
-<div className="notes-page sds">
-  <PageHeader mark="grid" title="Boards" count="12" actions={actions} />
-  <div className="page-filters"><Tabs label="Boards" items={items} value={value} onValueChange={setValue} /></div>
-</div>
+import { PageLayout, PageTitle } from "@lance-live/sds/page";
+import { Tabs } from "@lance-live/sds";
+
+<PageLayout icon="grid" title="Boards" count={12} actions={actions} tabs={<Tabs label="Boards" items={items} value={value} onValueChange={setValue} />}>
+  {body}
+</PageLayout>
 ```
+
+`PageLayout` puts `notes-page sds` on the root and imports `tokens.css`, `styles.css`, and `screens.css` in that order, so there is no class or stylesheet to remember. A subpage passes `title={<PageTitle parent="Boards" current={name} onBack={back} />}`. Pass `as="main"` when the page is the document's main region; the default `div` suits an app shell that already has one.
+
+`PageHeader` on its own still works inside a root that has `notes-page sds` and those stylesheets. Without `notes-page` it falls back to the gallery specimen (a grey sticky band with a serif title), which is not a built page.
 
 The card frame around a page (its margin, corner radius, and outline) is not in the package. An app with its own shell keeps its own frame.
 
 ## Screen layout
 
-`styles.css` covers components and the page stack. The layout inside each screen (Boards, To-Dos, Calls, Complaints, Knowledge, Cash, Home, Notifications, the editor dialog) is in `screens.css`. Import it after `styles.css` on any page built from a catalog screen:
-
-```css
-@import "@lance-live/sds/tokens.css";
-@import "@lance-live/sds/styles.css";
-@import "@lance-live/sds/screens.css";
-```
+`styles.css` covers components and the page stack. The layout inside each screen (Boards, To-Dos, Calls, Complaints, Knowledge, Cash, Home, Notifications, the editor dialog) is in `screens.css`. `PageLayout` loads it; import it yourself only for a screen built without `PageLayout`, after `styles.css`.
 
 It is built from `apps/catalog/app/(screens)/screens.css` and every `css/` file it imports, so a rule added to a screen in the catalog ships with the next build. Every selector sits under `:where(.sds)`, so it only reaches inside an `.sds` root and an app's own rule wins at equal specificity. `css/page-frame.css` (the card frame) is left out.
 

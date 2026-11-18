@@ -42,7 +42,7 @@ export function HousekeeperSettings({ person, onChange, onOffboard }: { person: 
     <section aria-label="Work preferences"><SectionHeader variant="described" title="Work preferences" description="Set room assignments, language, and work status for this team member." />
     <SettingsSections className="hk-work-overview">
     <section className="hk-preference-section" aria-label="Assignments"><SectionHeader level={3} icon="tune" title="Assignments" /><SettingsSections><SettingsCard label="Work preferences">
-      <SettingsRow label="Preferred section" description={!validSection ? "Enter a start and an end at or above it." : undefined}><div className="hk-inline hk-section-range">
+      <SettingsRow layout="inline" label="Preferred section" description={!validSection ? "Enter a start and an end at or above it." : undefined}><div className="hk-inline hk-section-range">
         <label className="hk-number"><input className="sds line" id="hk-section-start" type="number" min="1" aria-label="Preferred section start" placeholder="Start" value={sectionStart} onChange={event => setSectionStart(event.target.value)} onBlur={saveSection} /></label><span>–</span>
         <label className="hk-number"><input className="sds line" type="number" min={sectionStart || 1} aria-label="Preferred section end" placeholder="End" value={sectionEnd} onChange={event => setSectionEnd(event.target.value)} onBlur={saveSection} /></label>
       </div></SettingsRow>
@@ -70,7 +70,7 @@ export function HousekeeperSettings({ person, onChange, onOffboard }: { person: 
       ]} />
       {toggle("Always use preferred shift", !!prefs.strictShift, strictShift => update({ strictShift }), undefined, "“Always” makes a preference a strict rule the generator can never break.")}
     </SettingsCard></section><section><SectionHeader level={3} icon="calendar" title="Days off" /><SettingsCard label="Preferred days off">
-      <SettingsRow layout="stacked" label="Preferred days off" className="hk-days-off"><div className="hk-inline">{days.map(day => <Button key={day} variant="secondary" aria-pressed={prefs.daysOff?.includes(day) ?? false} onClick={() => update({ daysOff: prefs.daysOff?.includes(day) ? prefs.daysOff.filter(item => item !== day) : [...prefs.daysOff ?? [], day] })}>{day}</Button>)}</div></SettingsRow>
+      <SettingsRow layout="inline" label="Preferred days off" className="hk-days-off"><div className="hk-inline">{days.map(day => <Button key={day} variant="secondary" aria-pressed={prefs.daysOff?.includes(day) ?? false} onClick={() => update({ daysOff: prefs.daysOff?.includes(day) ? prefs.daysOff.filter(item => item !== day) : [...prefs.daysOff ?? [], day] })}>{day}</Button>)}</div></SettingsRow>
       {toggle("Always keep preferred days off", !!prefs.strictDaysOff, strictDaysOff => update({ strictDaysOff }), undefined, "“Always” makes a preference a strict rule the generator can never break.")}
     </SettingsCard></section><section><SectionHeader level={3} icon="tune" title="Limits and availability" /><SettingsCard label="Work limits and availability">
       {numberField("Max hours / week", prefs.maxHours, maxHours => update({ maxHours }))}

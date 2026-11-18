@@ -41,7 +41,7 @@ export type SettingsRowProps = {
   label: string;
   description?: ReactNode;
   inlineDescription?: boolean;
-  /** Stack custom controls below the label and supporting copy. */
+  /** Inline keeps compact selectors to the right; stacked puts larger controls below the copy. */
   layout?: "inline" | "stacked";
   info?: ReactNode;
   icon?: IconName;
@@ -52,7 +52,7 @@ export type SettingsRowProps = {
 };
 
 export function SettingsRow({ label, description, inlineDescription, info, icon, children, className, toggle, layout = "inline" }: SettingsRowProps) {
-  return <div className={["sds settings-row", layout === "stacked" ? "settings-row-stacked" : "", inlineDescription ? "has-inline-description" : "", toggle ? "is-toggle" : "", className].filter(Boolean).join(" ")} role={layout === "stacked" ? "group" : undefined} aria-label={layout === "stacked" ? label : undefined} onClick={toggle ? event => {
+  return <div className={["sds settings-row", `settings-row-${layout}`, inlineDescription ? "has-inline-description" : "", toggle ? "is-toggle" : "", className].filter(Boolean).join(" ")} role={layout === "stacked" ? "group" : undefined} aria-label={layout === "stacked" ? label : undefined} onClick={toggle ? event => {
     if ((event.target as HTMLElement).closest("button, a, input, select, textarea, [tabindex], .board-tipped")) return;
     event.currentTarget.querySelector<HTMLButtonElement>(".theme-switch")?.click();
   } : undefined}>

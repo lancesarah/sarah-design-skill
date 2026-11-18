@@ -1274,8 +1274,8 @@ html[data-theme="dark"] .board-card .widget-head .board-card-avatar { background
 /* Screen-specific controls composed inside the shared settings rows. */
 .hk-settings .settings-row .hk-section-range { margin-top: 0; flex-wrap: nowrap; }
 .hk-settings .settings-row-label .board-tipped > .i { color: var(--black-50); }
-.hk-days-off .settings-row-control > .hk-inline { display: grid; grid-template-columns: repeat(7, 40px); }
-.hk-days-off .settings-row-control .btn { width: 100%; height: 28px; box-sizing: border-box; justify-content: center; }
+.hk-days-off .settings-row-control > .hk-inline { display: flex; flex-wrap: wrap; gap: var(--space-4); }
+.hk-days-off .settings-row-control .btn { flex: none; width: 40px; height: 28px; box-sizing: border-box; justify-content: center; }
 .hk-settings .settings-card > .hk-availability { padding: 0 var(--space-16) var(--space-8); }
 
 /* Weekly availability uses day tabs with one editor visible at a time. */

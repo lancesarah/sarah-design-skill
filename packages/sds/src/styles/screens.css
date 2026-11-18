@@ -11144,8 +11144,8 @@ html[data-theme="dark"] :where(.sds) .board-chip:not(:disabled):is(:hover, [aria
 /* Screen-specific controls composed inside the shared settings rows. */
 :where(.sds) .hk-settings .settings-row .hk-section-range, :where(.sds).hk-settings .settings-row .hk-section-range { margin-top: 0; flex-wrap: nowrap; }
 :where(.sds) .hk-settings .settings-row-label .board-tipped > .i, :where(.sds).hk-settings .settings-row-label .board-tipped > .i { color: var(--black-50); }
-:where(.sds) .hk-days-off .settings-row-control > .hk-inline, :where(.sds).hk-days-off .settings-row-control > .hk-inline { display: grid; grid-template-columns: repeat(7, 40px); }
-:where(.sds) .hk-days-off .settings-row-control .btn, :where(.sds).hk-days-off .settings-row-control .btn { width: 100%; height: 28px; box-sizing: border-box; justify-content: center; }
+:where(.sds) .hk-days-off .settings-row-control > .hk-inline, :where(.sds).hk-days-off .settings-row-control > .hk-inline { display: flex; flex-wrap: wrap; gap: var(--space-4); }
+:where(.sds) .hk-days-off .settings-row-control .btn, :where(.sds).hk-days-off .settings-row-control .btn { flex: none; width: 40px; height: 28px; box-sizing: border-box; justify-content: center; }
 :where(.sds) .hk-settings .settings-card > .hk-availability, :where(.sds).hk-settings .settings-card > .hk-availability { padding: 0 var(--space-16) var(--space-8); }
 
 /* Weekly availability uses day tabs with one editor visible at a time. */

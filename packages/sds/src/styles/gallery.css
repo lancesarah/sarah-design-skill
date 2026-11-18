@@ -3244,8 +3244,9 @@ html[data-theme="dark"] :where(.sds) .segmented .slide-pill, html[data-theme="da
 
 /* Described headings and stacked controls are settings variants, sharing the row hover. */
 :where(.sds) .section-header-description, :where(.sds).section-header-description { margin: var(--space-2) 0 0; color: var(--text-muted); font-size: var(--text-14); line-height: 20px; }
-:where(.sds) .section-header.section-header-described, :where(.sds).section-header.section-header-described { margin-bottom: var(--space-16); }
+:where(.sds) .section-header.section-header-described, :where(.sds).section-header.section-header-described { padding-top: var(--space-20); padding-bottom: var(--space-8); margin-bottom: var(--space-16); }
 :where(.sds) .section-header-described :is(h2, h3), :where(.sds).section-header-described :is(h2, h3) { color: var(--black); font-size: var(--text-16); line-height: 24px; }
+:where(.sds) .settings-row.settings-row-inline > .settings-row-control, :where(.sds).settings-row.settings-row-inline > .settings-row-control { width: max-content; max-width: 100%; }
 :where(.sds) .settings-row.settings-row-stacked, :where(.sds).settings-row.settings-row-stacked { display: flex; flex-direction: column; align-items: stretch; gap: var(--space-16); padding-block: var(--space-20); }
 :where(.sds) .settings-row.settings-row-stacked .settings-row-control, :where(.sds).settings-row.settings-row-stacked .settings-row-control { justify-content: flex-start; flex-shrink: 1; width: 100%; }
 :where(.sds) .settings-row.settings-row-stacked:has(.settings-row-description):not(.has-inline-description), :where(.sds).settings-row.settings-row-stacked:has(.settings-row-description):not(.has-inline-description) { padding-block: var(--space-20); }

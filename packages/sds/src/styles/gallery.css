@@ -3218,12 +3218,17 @@ html[data-theme="dark"] :where(.sds) .segmented .slide-pill, html[data-theme="da
 :where(.sds) .settings-sections, :where(.sds).settings-sections { display: grid; grid-template-columns: minmax(0, 1fr); align-items: start; min-width: 0; }
 :where(.sds) .settings-sections.settings-sections-subsections, :where(.sds).settings-sections.settings-sections-subsections { gap: var(--space-25); }
 :where(.sds) .settings-sections.settings-sections-areas, :where(.sds).settings-sections.settings-sections-areas { gap: calc(var(--space-20) * 2); }
+/* The stack owns external spacing; content margins must not enlarge its measured gap. */
+:where(.sds) .settings-sections > *, :where(.sds).settings-sections > * { margin-block: 0; }
+:where(.sds) .settings-sections > section > :last-child, :where(.sds).settings-sections > section > :last-child { margin-block-end: 0; }
+:where(.sds) .settings-sections > section > .section-header + p, :where(.sds).settings-sections > section > .section-header + p { margin-block-start: 0; }
 
 /* Settings cards contain controls; their section heading lives on the page surface. */
 :where(.sds) .section-header, :where(.sds).section-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--space-8) var(--space-16); margin-bottom: var(--space-8); }
 :where(.sds) .section-header :is(h2, h3), :where(.sds).section-header :is(h2, h3) { display: flex; align-items: center; gap: var(--space-8); margin: 0; font-family: var(--font); font-size: var(--text-14); font-weight: 500; line-height: 20px; color: var(--text-muted); }
 :where(.sds) .section-header-aside, :where(.sds).section-header-aside { margin-left: auto; color: var(--text-muted); font-size: var(--text-12); line-height: 16px; }
 :where(.sds) .settings-card, :where(.sds).settings-card { min-width: 0; overflow: hidden; border: 1px solid var(--line-card); border-radius: calc(var(--radius-control) + var(--space-4)); background: var(--white); }
+:where(.sds) .settings-card-actions > *, :where(.sds).settings-card-actions > * { margin-block: 0; }
 :where(.sds) .settings-card-actions, :where(.sds).settings-card-actions { display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-8); padding: var(--space-16) var(--space-25); border-top: 1px solid var(--line); }
 :where(.sds) .settings-row, :where(.sds).settings-row { box-sizing: border-box; display: flex; align-items: center; justify-content: space-between; gap: var(--space-16); min-height: 60px; padding: var(--space-16) var(--space-25); font-size: var(--text-14); font-weight: 400; line-height: 20px; }
 :where(.sds) .settings-card > .settings-row + .settings-row, :where(.sds).settings-card > .settings-row + .settings-row { border-top: 1px solid var(--line); }
@@ -3250,6 +3255,7 @@ html[data-theme="dark"] :where(.sds) .segmented .slide-pill, html[data-theme="da
 :where(.sds) .settings-row.settings-row-inline > .settings-row-control, :where(.sds).settings-row.settings-row-inline > .settings-row-control { width: max-content; max-width: 100%; }
 :where(.sds) .settings-row.settings-row-stacked, :where(.sds).settings-row.settings-row-stacked { display: flex; flex-direction: column; align-items: stretch; gap: var(--space-16); padding-block: var(--space-20); }
 :where(.sds) .settings-row.settings-row-stacked .settings-row-control, :where(.sds).settings-row.settings-row-stacked .settings-row-control { justify-content: flex-start; flex-shrink: 1; width: 100%; }
+:where(.sds) .settings-row.settings-row-stacked > .settings-row-control > *, :where(.sds).settings-row.settings-row-stacked > .settings-row-control > * { margin-block: 0; }
 :where(.sds) .settings-row.settings-row-stacked:has(.settings-row-description):not(.has-inline-description), :where(.sds).settings-row.settings-row-stacked:has(.settings-row-description):not(.has-inline-description) { padding-block: var(--space-20); }
 
 /* Destructive settings retain the standard edge with more breathing room at every width. */

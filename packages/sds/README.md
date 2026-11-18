@@ -57,3 +57,9 @@ Dark mode is `html[data-theme="dark"]`, the same attribute `tokens.css` already 
 `Button` variants are `primary`, `secondary`, and `danger`. `icon` draws the 28px square. `state="hover"` paints the frozen hover specimen. Disabled controls do not scale and do not take the hover fill.
 
 `SegmentedControl` is a tablist of at most three views. The selected segment’s fill slides: the edge facing the new option leads (220ms / 160ms on `--ease-out`). Keyboard moves and `prefers-reduced-motion: reduce` snap. Pass `readOnly` for a frozen specimen.
+
+## Settings hierarchy and spacing
+
+`SectionHeader variant="described"` introduces a whole settings area with a 16px medium title and supporting copy. Standard `SectionHeader level={3}` labels a subsection with a 14px muted title. Headings stay outside cards.
+
+Use `SettingsSections spacing="areas"` for 40px between whole areas. Nest `SettingsSections` inside an area for 25px between subsections or standalone cards. Both stay in one column. The area heading supplies 16px below its complete title/description block; a subsection header supplies 8px before its card. Consumers should not add local gaps or margins over these rules. Use `SettingsRow layout="stacked"` when custom controls belong below their label.

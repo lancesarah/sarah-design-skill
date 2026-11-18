@@ -5,19 +5,31 @@ import { Icon, type IconName } from "../icons";
 import { ThemeSwitch } from "./Fields";
 import { Menu, type MenuProps } from "./Menu";
 
-/** A page-surface heading, separate from the card it introduces. */
-export function SectionHeader({ title, icon, aside, info, description, variant = "default" }: {
+/** Described headings introduce a whole settings area; default headers label its subsections. */
+export function SectionHeader({ title, icon, aside, info, description, variant = "default", level = 2 }: {
   title: string;
   icon?: IconName;
   aside?: ReactNode;
   info?: ReactNode;
   description?: ReactNode;
   variant?: "default" | "described";
+  /** Use level 3 for a subsection beneath a described area heading. */
+  level?: 2 | 3;
 }) {
+  const Heading = level === 3 ? "h3" : "h2";
   return <header className={["sds section-header", variant === "described" ? "section-header-described" : ""].filter(Boolean).join(" ")}>
-    <div className="section-header-copy"><h2>{icon ? <Icon name={icon} size={16} /> : null}{title}{info}</h2>{description ? <p className="section-header-description">{description}</p> : null}</div>
+    <div className="section-header-copy"><Heading>{icon ? <Icon name={icon} size={16} /> : null}{title}{info}</Heading>{description ? <p className="section-header-description">{description}</p> : null}</div>
     {aside ? <span className="section-header-aside">{aside}</span> : null}
   </header>;
+}
+
+/** Shared vertical rhythm: whole areas are 40px apart; their subsections are 25px apart. */
+export function SettingsSections({ children, spacing = "subsections", className }: {
+  children: ReactNode;
+  spacing?: "areas" | "subsections";
+  className?: string;
+}) {
+  return <div className={["sds settings-sections", `settings-sections-${spacing}`, className].filter(Boolean).join(" ")}>{children}</div>;
 }
 
 /** Related editable settings; omit a header for a standalone single-row card. */

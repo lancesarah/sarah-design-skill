@@ -11041,8 +11041,7 @@ html[data-theme="dark"] :where(.sds) .board-chip:not(:disabled):is(:hover, [aria
    Target profile content explicitly so the embedded To-dos table is unchanged. */
 :where(.sds) .housekeeper-sections > section:not([aria-label="To-dos"]) > h2, :where(.sds).housekeeper-sections > section:not([aria-label="To-dos"]) > h2,
 :where(.sds) .housekeeper-charts > section > h2, :where(.sds).housekeeper-charts > section > h2,
-:where(.sds) .housekeeper-sections > .widget > .widget-head h2, :where(.sds).housekeeper-sections > .widget > .widget-head h2,
-:where(.sds) .hk-settings h2, :where(.sds).hk-settings h2 {
+:where(.sds) .housekeeper-sections > .widget > .widget-head h2, :where(.sds).housekeeper-sections > .widget > .widget-head h2 {
   font-size: var(--text-14);
   font-weight: 500;
   line-height: 20px;
@@ -11185,7 +11184,6 @@ html[data-theme="dark"] :where(.sds) .hk-availability-tabs .hk-day-tile[data-ava
 }
 html.is-keys :where(.sds) .hk-day-tile, html.is-keys :where(.sds).hk-day-tile { transition: none; }
 
-:where(.sds) .hk-language-card, :where(.sds).hk-language-card { margin-top: calc(var(--space-16) + var(--space-2)); }
 
 :where(.sds) .hk-derived-content, :where(.sds).hk-derived-content { padding: var(--space-16); }
 
@@ -11200,13 +11198,12 @@ html.is-keys :where(.sds) .hk-day-tile, html.is-keys :where(.sds).hk-day-tile { 
 :where(.sds) .hk-derived-menu-heading, :where(.sds).hk-derived-menu-heading { display: flex; flex-direction: column; gap: var(--space-2); padding: var(--space-8); max-width: 280px; }
 :where(.sds) .hk-derived-menu-heading .hk-help, :where(.sds).hk-derived-menu-heading .hk-help { margin: 0; }
 
-:where(.sds) .hk-derived-content .hk-week, :where(.sds).hk-derived-content .hk-week { grid-template-columns: repeat(7, minmax(64px, 1fr)); overflow-x: auto; padding-bottom: var(--space-4); }
-:where(.sds) .hk-derived-content .hk-week .hk-derived-day > .btn, :where(.sds).hk-derived-content .hk-week .hk-derived-day > .btn { box-sizing: border-box; min-height: 80px; align-items: stretch; justify-content: flex-end; text-align: left; padding: var(--space-8); border: 1px solid var(--line-card); box-shadow: none; }
-:where(.sds) .hk-derived-content .hk-week .hk-derived-day[data-working="true"] > .btn, :where(.sds).hk-derived-content .hk-week .hk-derived-day[data-working="true"] > .btn { background: var(--filter-chip-bg); border-color: var(--action); }
+:where(.sds) .hk-derived-card .hk-week, :where(.sds).hk-derived-card .hk-week { grid-template-columns: repeat(7, minmax(64px, 1fr)); overflow-x: auto; padding-bottom: var(--space-4); }
+:where(.sds) .hk-derived-card .hk-week .hk-derived-day > .btn, :where(.sds).hk-derived-card .hk-week .hk-derived-day > .btn { box-sizing: border-box; min-height: 80px; align-items: stretch; justify-content: flex-end; text-align: left; padding: var(--space-8); border: 1px solid var(--line-card); box-shadow: none; }
+:where(.sds) .hk-derived-card .hk-week .hk-derived-day[data-working="true"] > .btn, :where(.sds).hk-derived-card .hk-week .hk-derived-day[data-working="true"] > .btn { background: var(--filter-chip-bg); border-color: var(--action); }
 
 :where(.sds) .hk-derived-shift, :where(.sds).hk-derived-shift { font-size: var(--text-12); line-height: 16px; color: var(--text-muted); }
 
-:where(.sds) .hk-schedule-cards, :where(.sds).hk-schedule-cards { display: grid; gap: var(--space-16); }
 
 /* Keep search visible while the grouped staff list scrolls. */
 :where(.sds) .board-staff-options, :where(.sds).board-staff-options { max-height: 320px; overflow-y: auto; }
@@ -11671,12 +11668,6 @@ html[data-theme="dark"] :where(.sds) .board-limits-table tr[data-selected], html
   :where(.sds) .board-report-summary-grid > :nth-child(even):not(.board-report-full), :where(.sds).board-report-summary-grid > :nth-child(even):not(.board-report-full) { border-inline-start: 0; }
 }
 
-/* Use available profile width so open sidebars do not squeeze the settings. */
-:where(.sds) .hk-settings, :where(.sds).hk-settings { container: housekeeper-settings / inline-size; }
-:where(.sds) .hk-work-overview, :where(.sds).hk-work-overview { display: grid; align-items: start; gap: calc(var(--space-20) * 2); }
-@container housekeeper-settings (min-width: 740px) {
-  :where(.sds) .hk-work-overview, :where(.sds).hk-work-overview { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-20); }
-}
 
 :where(.sds) .hk-work-overview .hk-section-range .hk-number, :where(.sds).hk-work-overview .hk-section-range .hk-number { width: 72px; }
 

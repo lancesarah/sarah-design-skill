@@ -29,10 +29,12 @@ describe("Settings rows", () => {
     const light = vi.fn();
     const dark = vi.fn();
     render(<><SectionHeader variant="described" title="Appearance" description="Choose a theme." />
-      <SettingsCard label="Appearance"><SettingsRow layout="stacked" label="Theme" description="Applies in this browser.">
+      <SectionHeader level={3} title="Display preferences" /><SettingsCard label="Appearance"><SettingsRow layout="stacked" label="Theme" description="Applies in this browser.">
         <button onClick={light}>Light</button><button onClick={dark}>Dark</button>
       </SettingsRow></SettingsCard></>);
     expect(screen.getByRole("group", { name: "Appearance" })).not.toContainElement(screen.getByRole("heading", { name: "Appearance" }));
+    expect(screen.getByRole("heading", { name: "Appearance", level: 2 })).toBeVisible();
+    expect(screen.getByRole("heading", { name: "Display preferences", level: 3 })).toBeVisible();
     expect(screen.getByRole("group", { name: "Theme" })).toHaveTextContent("Applies in this browser.");
     fireEvent.click(screen.getByText("Theme", { selector: ".settings-row-label" }));
     expect(light).not.toHaveBeenCalled();

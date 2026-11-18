@@ -126,6 +126,7 @@ function StackedSettingsExample() {
   const [theme, setTheme] = useState("light");
   return <div style={{ width: "100%", maxWidth: 720 }}>
     <SectionHeader variant="described" title="Appearance" description="Choose how Lance looks for you." />
+    <SectionHeader level={3} title="Display preferences" icon="tune" />
     <SettingsCard label="Appearance example">
       <SettingsRow layout="stacked" label="Theme" description="Applies in this browser.">
         <div style={{ display: "flex", gap: "var(--space-25)", flexWrap: "wrap" }}>
@@ -144,7 +145,7 @@ export function Specimens({ page }: { page: string }) {
       <Example id="settings-variants" title="Row variants" description="Text entry, toggle, dropdown, grouped controls, and a standalone destructive action with the standard grey border and 16px vertical padding. Toggle rows are clickable; other rows leave interaction to their controls." code={'<SectionHeader icon="tune" title="Work preferences" aside="Optional context" />\n<SettingsCard label="Work preferences">\n  <SettingsToggleRow label="Training" value={training} onValueChange={setTraining} />\n  <SettingsInputRow label="Room limit" input={{ type: "number", value: limit, onChange: handleChange }} />\n</SettingsCard>'}>
         <SettingsExample />
       </Example>
-      <Example id="settings-stacked" title="Described heading and stacked controls" description="A heading outside the card, controls below their label, and shared row hover with more breathing room." code={'<SectionHeader variant="described" title="Appearance" description="Choose how Lance looks for you." />\n<SettingsCard label="Appearance">\n  <SettingsRow layout="stacked" label="Theme" description="Applies in this browser.">\n    {themeControls}\n  </SettingsRow>\n</SettingsCard>'}>
+      <Example id="settings-stacked" title="Area heading, subsections, and stacked controls" description="The larger described heading introduces the whole settings area. Smaller section headers label subsections; stacked rows put controls below their labels." code={'<SectionHeader variant="described" title="Appearance" description="Choose how Lance looks for you." />\n<SectionHeader level={3} title="Display preferences" icon="tune" />\n<SettingsCard label="Appearance">\n  <SettingsRow layout="stacked" label="Theme" description="Applies in this browser.">\n    {themeControls}\n  </SettingsRow>\n</SettingsCard>'}>
         <StackedSettingsExample />
       </Example>
     </DocPage>;

@@ -10,6 +10,15 @@
   font-family: var(--font);
 }
 
+/* The type the catalog sets on body. A page sets it on itself so a host body of another size cannot change it. */
+.notes-page {
+  color: var(--black);
+  font-size: var(--text-14);
+  font-weight: 400;
+  line-height: normal;
+  -webkit-font-smoothing: var(--font-smoothing);
+}
+
 .notes-page .page-head {
   flex-direction: row;
   align-items: center;

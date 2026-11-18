@@ -6,8 +6,18 @@ import { ThemeSwitch } from "./Fields";
 import { Menu, type MenuProps } from "./Menu";
 
 /** A page-surface heading, separate from the card it introduces. */
-export function SectionHeader({ title, icon, aside, info }: { title: string; icon: IconName; aside?: ReactNode; info?: ReactNode }) {
-  return <header className="sds section-header"><h2><Icon name={icon} size={16} />{title}{info}</h2>{aside ? <span className="section-header-aside">{aside}</span> : null}</header>;
+export function SectionHeader({ title, icon, aside, info, description, variant = "default" }: {
+  title: string;
+  icon?: IconName;
+  aside?: ReactNode;
+  info?: ReactNode;
+  description?: ReactNode;
+  variant?: "default" | "described";
+}) {
+  return <header className={["sds section-header", variant === "described" ? "section-header-described" : ""].filter(Boolean).join(" ")}>
+    <div className="section-header-copy"><h2>{icon ? <Icon name={icon} size={16} /> : null}{title}{info}</h2>{description ? <p className="section-header-description">{description}</p> : null}</div>
+    {aside ? <span className="section-header-aside">{aside}</span> : null}
+  </header>;
 }
 
 /** Related editable settings; omit a header for a standalone single-row card. */
@@ -19,6 +29,8 @@ export type SettingsRowProps = {
   label: string;
   description?: ReactNode;
   inlineDescription?: boolean;
+  /** Stack custom controls below the label and supporting copy. */
+  layout?: "inline" | "stacked";
   info?: ReactNode;
   icon?: IconName;
   children: ReactNode;
@@ -27,8 +39,8 @@ export type SettingsRowProps = {
   toggle?: boolean;
 };
 
-export function SettingsRow({ label, description, inlineDescription, info, icon, children, className, toggle }: SettingsRowProps) {
-  return <div className={["sds settings-row", inlineDescription ? "has-inline-description" : "", toggle ? "is-toggle" : "", className].filter(Boolean).join(" ")} onClick={toggle ? event => {
+export function SettingsRow({ label, description, inlineDescription, info, icon, children, className, toggle, layout = "inline" }: SettingsRowProps) {
+  return <div className={["sds settings-row", layout === "stacked" ? "settings-row-stacked" : "", inlineDescription ? "has-inline-description" : "", toggle ? "is-toggle" : "", className].filter(Boolean).join(" ")} role={layout === "stacked" ? "group" : undefined} aria-label={layout === "stacked" ? label : undefined} onClick={toggle ? event => {
     if ((event.target as HTMLElement).closest("button, a, input, select, textarea, [tabindex], .board-tipped")) return;
     event.currentTarget.querySelector<HTMLButtonElement>(".theme-switch")?.click();
   } : undefined}>

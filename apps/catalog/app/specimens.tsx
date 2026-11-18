@@ -122,12 +122,30 @@ function SettingsExample() {
   </div>;
 }
 
+function StackedSettingsExample() {
+  const [theme, setTheme] = useState("light");
+  return <div style={{ width: "100%", maxWidth: 720 }}>
+    <SectionHeader variant="described" title="Appearance" description="Choose how Lance looks for you." />
+    <SettingsCard label="Appearance example">
+      <SettingsRow layout="stacked" label="Theme" description="Applies in this browser.">
+        <div style={{ display: "flex", gap: "var(--space-25)", flexWrap: "wrap" }}>
+          {["light", "dark"].map(value => <Button key={value} variant="secondary" aria-pressed={theme === value} onClick={() => setTheme(value)}>{value === "light" ? "Light" : "Dark"}</Button>)}
+        </div>
+      </SettingsRow>
+      <SettingsRow label="Text size" description="Text and spacing scale together."><Button variant="secondary">Default</Button></SettingsRow>
+    </SettingsCard>
+  </div>;
+}
+
 export function Specimens({ page }: { page: string }) {
   if (page === "time-picker") return <DocPage title="Time picker" description="Type an exact time or choose a half-hour suggestion."><Example id="time-picker" title="Editable time" description="Uses the shared line field and menu. Supports AM/PM or 24-hour input, keyboard navigation, and minute precision." code={'<TimePicker label="Start time" value={time} onValueChange={setTime} />'}><TimePickerExample /></Example></DocPage>;
   if (page === "settings-card") {
     return <DocPage title="Settings card" description="Related settings in consistent rows, introduced by a separate page-surface section header.">
       <Example id="settings-variants" title="Row variants" description="Text entry, toggle, dropdown, grouped controls, and a standalone destructive action with the standard grey border and 16px vertical padding. Toggle rows are clickable; other rows leave interaction to their controls." code={'<SectionHeader icon="tune" title="Work preferences" aside="Optional context" />\n<SettingsCard label="Work preferences">\n  <SettingsToggleRow label="Training" value={training} onValueChange={setTraining} />\n  <SettingsInputRow label="Room limit" input={{ type: "number", value: limit, onChange: handleChange }} />\n</SettingsCard>'}>
         <SettingsExample />
+      </Example>
+      <Example id="settings-stacked" title="Described heading and stacked controls" description="A heading outside the card, controls below their label, and shared row hover with more breathing room." code={'<SectionHeader variant="described" title="Appearance" description="Choose how Lance looks for you." />\n<SettingsCard label="Appearance">\n  <SettingsRow layout="stacked" label="Theme" description="Applies in this browser.">\n    {themeControls}\n  </SettingsRow>\n</SettingsCard>'}>
+        <StackedSettingsExample />
       </Example>
     </DocPage>;
   }

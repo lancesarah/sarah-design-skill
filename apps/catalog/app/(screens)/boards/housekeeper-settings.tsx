@@ -79,19 +79,20 @@ export function HousekeeperSettings({ person, onChange, onOffboard }: { person: 
       {prefs.restrictedAvailability ? <Availability value={prefs.availability} onChange={availability => update({ availability })} /> : null}
     </SettingsCard></section></SettingsSections></section>
 
-    <section><SectionHeader variant="described" title="Derived schedule profile" description="Review the suggested work pattern before acknowledging it." info={<InfoTooltip label="From 35 weeks of history" />} aside={<span className="sds mini-pill">Confidence ≥ 75%</span>} /><SettingsCard label="Derived schedule profile" className="hk-derived-card"><SettingsRow layout="stacked" label="Suggested contract" description="Suggestions do not change contract or part-time status."><span className="hk-contract-summary"><span className="sds mini-pill hk-contract-pill">Full-time</span><span className="hk-help">(demo) · {formatDuration(weeklyMinutes)} / week</span></span></SettingsRow><SettingsRow layout="stacked" label="Typical week" description="Select a day to review its typical shift."><div className="hk-week">{days.map(day => <DerivedScheduleDay key={day} day={day} shift={derived[day]} cleared={prefs.derivedClearedDays?.includes(day) ?? false} onAction={action => {
+    <SettingsSections className="hk-record-sections">
+    <section><SectionHeader variant="described" title="Derived schedule profile" description="Review the suggested work pattern before acknowledging it." info={<InfoTooltip label="From 35 weeks of history" />} aside={<span className="sds mini-pill">Confidence ≥ 75%</span>} /><SettingsCard label="Derived schedule profile" className="hk-derived-card" actions={<Button variant="secondary" disabled={acknowledged} onClick={() => update({ derivedAcknowledged: derivedSnapshot })}><Icon name="check" size={14} />{acknowledged ? "Acknowledged" : "Acknowledge"}</Button>}><SettingsRow layout="stacked" label="Suggested contract" description="Suggestions do not change contract or part-time status."><span className="hk-contract-summary"><span className="sds mini-pill hk-contract-pill">Full-time</span><span className="hk-help">(demo) · {formatDuration(weeklyMinutes)} / week</span></span></SettingsRow><SettingsRow layout="stacked" label="Typical week" description="Select a day to review its typical shift."><div className="hk-week">{days.map(day => <DerivedScheduleDay key={day} day={day} shift={derived[day]} cleared={prefs.derivedClearedDays?.includes(day) ?? false} onAction={action => {
       const next = { ...derived };
       if (action === "working") next[day] = demoDerived[day] ?? { start: "09:00", end: "17:00" };
       else delete next[day];
       const cleared = (prefs.derivedClearedDays ?? []).filter(item => item !== day);
       update({ derived: next, derivedClearedDays: action === "clear" ? [...cleared, day] : cleared });
     }} />)}</div>
-    </SettingsRow><div className="hk-derived-content"><div className="hk-derived-actions"><Button variant="secondary" disabled={acknowledged} onClick={() => update({ derivedAcknowledged: derivedSnapshot })}><Icon name="check" size={14} />{acknowledged ? "Acknowledged" : "Acknowledge"}</Button></div>
-    </div></SettingsCard>
+    </SettingsRow></SettingsCard>
     </section>
     <AttendancePreview person={person} />
-    <section><h2 className="hk-heading-label"><Icon name="clock" size={16} />Time Off</h2><p className="hk-help">No time-off requests.</p></section>
+    <section><SectionHeader icon="clock" title="Time Off" /><p className="hk-help">No time-off requests.</p></section>
     <section aria-label="Offboard"><SettingsCard label="Offboard" variant="destructive"><SettingsRow label="Offboard" icon="user-x" description="Removes them from the demo board and unassigns their rooms. History is kept. Account access and future schedules are not connected."><Button variant="danger-light" disabled={!!prefs.offboarded} onClick={() => setConfirm(true)}><Icon name="close" size={14} />{prefs.offboarded ? "Offboarded" : "Offboard"}</Button></SettingsRow></SettingsCard></section>
+    </SettingsSections>
     <ConfirmDialog open={confirm} name={person.name} action="Offboard" title={`Offboard ${person.name}?`} detail="Their rooms will become unassigned and their board will be removed. Cleaning history is kept." onCancel={() => setConfirm(false)} onConfirm={() => { setConfirm(false); onOffboard(); }} />
   </SettingsSections>;
 }

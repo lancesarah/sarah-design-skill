@@ -33,8 +33,8 @@ export function SettingsSections({ children, spacing = "subsections", className 
 }
 
 /** Related editable settings; omit a header for a standalone single-row card. */
-export function SettingsCard({ children, label, className, variant = "default" }: { children: ReactNode; label: string; className?: string; variant?: "default" | "destructive" }) {
-  return <div className={["sds settings-card", variant === "destructive" ? "settings-card-destructive" : "", className].filter(Boolean).join(" ")} role="group" aria-label={label}>{children}</div>;
+export function SettingsCard({ children, label, className, variant = "default", actions }: { children: ReactNode; label: string; className?: string; variant?: "default" | "destructive"; actions?: ReactNode }) {
+  return <div className={["sds settings-card", variant === "destructive" ? "settings-card-destructive" : "", className].filter(Boolean).join(" ")} role="group" aria-label={label}>{children}{actions ? <div className="settings-card-actions">{actions}</div> : null}</div>;
 }
 
 export type SettingsRowProps = {

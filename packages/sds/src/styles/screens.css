@@ -11185,20 +11185,18 @@ html[data-theme="dark"] :where(.sds) .hk-availability-tabs .hk-day-tile[data-ava
 html.is-keys :where(.sds) .hk-day-tile, html.is-keys :where(.sds).hk-day-tile { transition: none; }
 
 
-:where(.sds) .hk-derived-content, :where(.sds).hk-derived-content { padding: var(--space-16); }
 
 :where(.sds) .hk-contract-summary, :where(.sds).hk-contract-summary { display: inline-flex; align-items: center; gap: var(--space-8); }
 
 :where(.sds) .hk-contract-pill, :where(.sds).hk-contract-pill { box-sizing: border-box; min-height: 28px; padding: var(--space-4) var(--space-10); font-size: var(--text-14); line-height: 20px; border-radius: 999px; }
 
-:where(.sds) .hk-derived-actions, :where(.sds).hk-derived-actions { margin-top: var(--space-16); }
 
 :where(.sds) .hk-derived-day, :where(.sds).hk-derived-day { min-width: 0; }
 :where(.sds) .hk-derived-day > .btn, :where(.sds).hk-derived-day > .btn { width: 100%; height: 100%; }
 :where(.sds) .hk-derived-menu-heading, :where(.sds).hk-derived-menu-heading { display: flex; flex-direction: column; gap: var(--space-2); padding: var(--space-8); max-width: 280px; }
 :where(.sds) .hk-derived-menu-heading .hk-help, :where(.sds).hk-derived-menu-heading .hk-help { margin: 0; }
 
-:where(.sds) .hk-derived-card .hk-week, :where(.sds).hk-derived-card .hk-week { grid-template-columns: repeat(7, minmax(64px, 1fr)); overflow-x: auto; padding-bottom: var(--space-4); }
+:where(.sds) .hk-derived-card .hk-week, :where(.sds).hk-derived-card .hk-week { margin-top: 0; grid-template-columns: repeat(7, minmax(64px, 1fr)); overflow-x: auto; padding-bottom: var(--space-4); }
 :where(.sds) .hk-derived-card .hk-week .hk-derived-day > .btn, :where(.sds).hk-derived-card .hk-week .hk-derived-day > .btn { box-sizing: border-box; min-height: 80px; align-items: stretch; justify-content: flex-end; text-align: left; padding: var(--space-8); border: 1px solid var(--line-card); box-shadow: none; }
 :where(.sds) .hk-derived-card .hk-week .hk-derived-day[data-working="true"] > .btn, :where(.sds).hk-derived-card .hk-week .hk-derived-day[data-working="true"] > .btn { background: var(--filter-chip-bg); border-color: var(--action); }
 
@@ -11670,6 +11668,10 @@ html[data-theme="dark"] :where(.sds) .board-limits-table tr[data-selected], html
 
 
 :where(.sds) .hk-work-overview .hk-section-range .hk-number, :where(.sds).hk-work-overview .hk-section-range .hk-number { width: 72px; }
+
+/* The shared subsection stack owns the gap after attendance and time-off content. */
+:where(.sds) .hk-record-sections > section > .hk-help:last-child, :where(.sds).hk-record-sections > section > .hk-help:last-child { margin-bottom: 0; }
+:where(.sds) .hk-record-sections .section-header + .hk-help, :where(.sds).hk-record-sections .section-header + .hk-help { margin-top: 0; }
 
 
 /* Every description and notes field is the same text well. */

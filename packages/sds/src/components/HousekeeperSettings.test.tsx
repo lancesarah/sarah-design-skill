@@ -16,5 +16,7 @@ describe("Housekeeper settings hierarchy", () => {
     expect(change).toHaveBeenLastCalledWith({ prefer: [301, 320] });
     fireEvent.click(screen.getByRole("button", { name: "Mon" }));
     expect(change).toHaveBeenLastCalledWith({ preferences: { daysOff: ["Mon"] } });
+    fireEvent.click(screen.getByRole("button", { name: "Acknowledge" }));
+    expect(change).toHaveBeenLastCalledWith({ preferences: expect.objectContaining({ derivedAcknowledged: expect.any(String) }) });
   });
 });

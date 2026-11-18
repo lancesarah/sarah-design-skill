@@ -34,6 +34,18 @@ A page puts `notes-page` and `sds` on its root. `PageHeader` then draws the page
 
 The card frame around a page (its margin, corner radius, and outline) is not in the package. An app with its own shell keeps its own frame.
 
+## Screen layout
+
+`styles.css` covers components and the page stack. The layout inside each screen (Boards, To-Dos, Calls, Complaints, Knowledge, Cash, Home, Notifications, the editor dialog) is in `screens.css`. Import it after `styles.css` on any page built from a catalog screen:
+
+```css
+@import "@lance-live/sds/tokens.css";
+@import "@lance-live/sds/styles.css";
+@import "@lance-live/sds/screens.css";
+```
+
+It is built from `apps/catalog/app/(screens)/screens.css` and every `css/` file it imports, so a rule added to a screen in the catalog ships with the next build. Every selector sits under `:where(.sds)`, so it only reaches inside an `.sds` root and an app's own rule wins at equal specificity. `css/page-frame.css` (the card frame) is left out.
+
 Until this package is published, point the app at the workspace:
 
 ```json

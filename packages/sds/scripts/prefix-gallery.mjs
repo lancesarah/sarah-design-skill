@@ -59,6 +59,22 @@ const page = prefix(readFileSync(resolve(root, "css/page.css"), "utf8"));
 const pageBanner = "/* Prefixed from css/page.css. The page stack inside `.notes-page`. Loads after the gallery specimen it replaces. */\n";
 writeFileSync(resolve(here, "../src/styles/page.css"), `${pageBanner}${page}\n`);
 
+/** Inline relative `@import "./x.css";` in source order. Skipped files drop out with their imports. */
+function inline(file, skip) {
+  return readFileSync(file, "utf8").replace(/@import\s+"([^"]+\.css)";[^\S\n]*\n?/g, (_, path) => {
+    const target = resolve(dirname(file), path);
+    return skip.has(target) ? "" : `${inline(target, skip)}\n`;
+  });
+}
+
+// Screen layout, everything the catalog's (screens) route imports. The card frame
+// stays out (an app shell draws its own) and the page stack already ships in styles.css.
+const screensEntry = resolve(root, "apps/catalog/app/(screens)/screens.css");
+const screensSkip = new Set([resolve(root, "css/page-frame.css"), resolve(root, "css/page.css")]);
+const screens = prefix(inline(screensEntry, screensSkip));
+const screensBanner = "/* Prefixed from apps/catalog/app/(screens)/screens.css and the css/ files it imports, without page-frame.css. */\n";
+writeFileSync(resolve(here, "../src/styles/screens.css"), `${screensBanner}${screens}\n`);
+
 function readSymbols(file) {
   const icons = {};
   const sprite = readFileSync(file, "utf8");

@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { SettingsToggleRow, SettingsInputRow } from "./SettingsCard";
+import { SettingsToggleRow, SettingsInputRow, SettingsRow, SettingsCard, SectionHeader } from "./SettingsCard";
 
 describe("Settings rows", () => {
   it("toggles once from the label or switch, and leaves the info action separate", () => {
@@ -25,4 +25,22 @@ describe("Settings rows", () => {
     fireEvent.change(input, { target: { value: "12" } });
     expect(change).toHaveBeenCalledTimes(1);
   });
+  it("keeps the described heading outside the group and custom choices independently interactive", () => {
+    const light = vi.fn();
+    const dark = vi.fn();
+    render(<><SectionHeader variant="described" title="Appearance" description="Choose a theme." />
+      <SectionHeader level={3} title="Display preferences" /><SettingsCard label="Appearance"><SettingsRow layout="stacked" label="Theme" description="Applies in this browser.">
+        <button onClick={light}>Light</button><button onClick={dark}>Dark</button>
+      </SettingsRow></SettingsCard></>);
+    expect(screen.getByRole("group", { name: "Appearance" })).not.toContainElement(screen.getByRole("heading", { name: "Appearance" }));
+    expect(screen.getByRole("heading", { name: "Appearance", level: 2 })).toBeVisible();
+    expect(screen.getByRole("heading", { name: "Display preferences", level: 3 })).toBeVisible();
+    expect(screen.getByRole("group", { name: "Theme" })).toHaveTextContent("Applies in this browser.");
+    fireEvent.click(screen.getByText("Theme", { selector: ".settings-row-label" }));
+    expect(light).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole("button", { name: "Dark" }));
+    expect(dark).toHaveBeenCalledTimes(1);
+    expect(light).not.toHaveBeenCalled();
+  });
+
 });

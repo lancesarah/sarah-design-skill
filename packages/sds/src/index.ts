@@ -97,7 +97,7 @@ export { TaskAssignee, TaskFact, TaskTable, TableChip, taskMenuItem, taskQuietSt
 export { TitleSubtitle, TITLE_TEXT_INSET, type TitleDropdownValue, type TitleSubtitleProps } from "./components/TitleSubtitle";
 export { ColorSwatches, SpacingScale, TypeScale } from "./components/Foundations";
 export { Icon, icons, type IconName } from "./icons";
-export { SectionHeader, SettingsCard, SettingsRow, SettingsToggleRow, SettingsMenuRow, SettingsInputRow, type SettingsRowProps } from "./components/SettingsCard";
+export { SectionHeader, SettingsSections, SettingsCard, SettingsRow, SettingsToggleRow, SettingsMenuRow, SettingsInputRow, type SettingsRowProps } from "./components/SettingsCard";
 export { TimePicker, formatTime, type TimePickerProps } from "./components/TimePicker";
 export { InfoTooltip } from "./components/InfoTooltip";
 export { TooltipTarget, placeTooltip, showTooltip, hideTooltip } from "./components/TooltipTarget";

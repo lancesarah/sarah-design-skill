@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { InfoTooltip, TimePicker, SettingsCard, SettingsRow, SettingsToggleRow, SettingsMenuRow, SettingsInputRow, SectionHeader, Button, IconButton, SegmentedControl, ThemeSwitch, type ButtonVariant } from "@lance-live/sds";
+import { InfoTooltip, TimePicker, SettingsCard, SettingsSections, SettingsRow, SettingsToggleRow, SettingsMenuRow, SettingsInputRow, SectionHeader, Button, IconButton, SegmentedControl, ThemeSwitch, type ButtonVariant } from "@lance-live/sds";
 import { DocPage, Example } from "./docs-example";
 
 function Plus() {
@@ -111,14 +111,30 @@ function SettingsExample() {
   const [limit, setLimit] = useState("15");
   const [days, setDays] = useState<string[]>([]);
   return <div style={{ width: "100%", maxWidth: 720 }}>
-    <SectionHeader icon="tune" title="Work preferences" info={<InfoTooltip label="Settings apply to this team member." />} aside="Applies to this team member." />
+    <SettingsSections><section><SectionHeader icon="tune" title="Work preferences" info={<InfoTooltip label="Settings apply to this team member." />} aside="Applies to this team member." />
     <SettingsCard label="Work preferences example">
       <SettingsInputRow label="Room limit" input={{ type: "number", min: 1, value: limit, onChange: event => setLimit(event.target.value) }} />
-      <SettingsToggleRow label="Training" value={training} onValueChange={setTraining} />
+      <SettingsToggleRow layout="inline" label="Training" value={training} onValueChange={setTraining} />
       <SettingsMenuRow label="Language preference" icon="globe" value={language} onValueChange={setLanguage} items={[{ value: "en", label: "🇺🇸 English", suffix: "EN" }, { value: "es", label: "🇪🇸 Español", suffix: "ES" }]} />
-      <SettingsRow label="Preferred days off"><div style={{ display: "flex", gap: "var(--space-4)", flexWrap: "wrap" }}>{["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map(day => <Button key={day} variant="secondary" style={{ width: 40 }} aria-pressed={days.includes(day)} onClick={() => setDays(current => current.includes(day) ? current.filter(value => value !== day) : [...current, day])}>{day}</Button>)}</div></SettingsRow>
+      <SettingsRow layout="inline" label="Preferred days off"><div style={{ display: "flex", gap: "var(--space-4)", flexWrap: "wrap" }}>{["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map(day => <Button key={day} variant="secondary" style={{ width: 40 }} aria-pressed={days.includes(day)} onClick={() => setDays(current => current.includes(day) ? current.filter(value => value !== day) : [...current, day])}>{day}</Button>)}</div></SettingsRow>
     </SettingsCard>
-    <div style={{ marginTop: "var(--space-25)" }}><SettingsCard label="Destructive setting example" variant="destructive"><SettingsRow label="Reset preferences" icon="tune" description="Restore the example values."><Button variant="danger-light" onClick={() => { setTraining(false); setLanguage("en"); setLimit("15"); setDays([]); }}>Reset</Button></SettingsRow></SettingsCard></div>
+    </section><section><SettingsCard label="Destructive setting example" variant="destructive"><SettingsRow label="Reset preferences" icon="tune" description="Restore the example values."><Button variant="danger-light" onClick={() => { setTraining(false); setLanguage("en"); setLimit("15"); setDays([]); }}>Reset</Button></SettingsRow></SettingsCard></section></SettingsSections>
+  </div>;
+}
+
+function StackedSettingsExample() {
+  const [theme, setTheme] = useState("light");
+  return <div style={{ width: "100%", maxWidth: 720 }}>
+    <SectionHeader variant="described" title="Appearance" description="Choose how Lance looks for you." />
+    <SectionHeader level={3} title="Display preferences" icon="tune" />
+    <SettingsCard label="Appearance example">
+      <SettingsRow layout="stacked" label="Theme" description="Applies in this browser.">
+        <div style={{ display: "flex", gap: "var(--space-25)", flexWrap: "wrap" }}>
+          {["light", "dark"].map(value => <Button key={value} variant="secondary" aria-pressed={theme === value} onClick={() => setTheme(value)}>{value === "light" ? "Light" : "Dark"}</Button>)}
+        </div>
+      </SettingsRow>
+      <SettingsRow label="Text size" description="Text and spacing scale together."><Button variant="secondary">Default</Button></SettingsRow>
+    </SettingsCard>
   </div>;
 }
 
@@ -126,8 +142,11 @@ export function Specimens({ page }: { page: string }) {
   if (page === "time-picker") return <DocPage title="Time picker" description="Type an exact time or choose a half-hour suggestion."><Example id="time-picker" title="Editable time" description="Uses the shared line field and menu. Supports AM/PM or 24-hour input, keyboard navigation, and minute precision." code={'<TimePicker label="Start time" value={time} onValueChange={setTime} />'}><TimePickerExample /></Example></DocPage>;
   if (page === "settings-card") {
     return <DocPage title="Settings card" description="Related settings in consistent rows, introduced by a separate page-surface section header.">
-      <Example id="settings-variants" title="Row variants" description="Text entry, toggle, dropdown, grouped controls, and a standalone destructive action with the standard grey border and 16px vertical padding. Toggle rows are clickable; other rows leave interaction to their controls." code={'<SectionHeader icon="tune" title="Work preferences" aside="Optional context" />\n<SettingsCard label="Work preferences">\n  <SettingsToggleRow label="Training" value={training} onValueChange={setTraining} />\n  <SettingsInputRow label="Room limit" input={{ type: "number", value: limit, onChange: handleChange }} />\n</SettingsCard>'}>
+      <Example id="settings-variants" title="Inline rows and compact selectors" description="Label on the left; compact controls on the right at their intrinsic width. Text entry, toggle, dropdown, grouped controls, and a standalone destructive action with the standard grey border and 16px vertical padding. Toggle rows are clickable; other rows leave interaction to their controls." code={'<SectionHeader icon="tune" title="Work preferences" aside="Optional context" />\n<SettingsCard label="Work preferences">\n  <SettingsToggleRow label="Training" value={training} onValueChange={setTraining} />\n  <SettingsInputRow label="Room limit" input={{ type: "number", value: limit, onChange: handleChange }} />\n</SettingsCard>'}>
         <SettingsExample />
+      </Example>
+      <Example id="settings-stacked" title="Area heading, subsections, and stacked controls" description="The larger described heading introduces the whole settings area. Smaller section headers label subsections; stacked rows put controls below their labels." code={'<SectionHeader variant="described" title="Appearance" description="Choose how Lance looks for you." />\n<SectionHeader level={3} title="Display preferences" icon="tune" />\n<SettingsCard label="Appearance">\n  <SettingsRow layout="stacked" label="Theme" description="Applies in this browser.">\n    {themeControls}\n  </SettingsRow>\n</SettingsCard>'}>
+        <StackedSettingsExample />
       </Example>
     </DocPage>;
   }

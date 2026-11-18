@@ -1169,8 +1169,7 @@ html[data-theme="dark"] .board-card .widget-head .board-card-avatar { background
    Target profile content explicitly so the embedded To-dos table is unchanged. */
 .housekeeper-sections > section:not([aria-label="To-dos"]) > h2,
 .housekeeper-charts > section > h2,
-.housekeeper-sections > .widget > .widget-head h2,
-.hk-settings h2 {
+.housekeeper-sections > .widget > .widget-head h2 {
   font-size: var(--text-14);
   font-weight: 500;
   line-height: 20px;
@@ -1275,8 +1274,8 @@ html[data-theme="dark"] .board-card .widget-head .board-card-avatar { background
 /* Screen-specific controls composed inside the shared settings rows. */
 .hk-settings .settings-row .hk-section-range { margin-top: 0; flex-wrap: nowrap; }
 .hk-settings .settings-row-label .board-tipped > .i { color: var(--black-50); }
-.hk-days-off .settings-row-control > .hk-inline { display: grid; grid-template-columns: repeat(7, 40px); }
-.hk-days-off .settings-row-control .btn { width: 100%; height: 28px; box-sizing: border-box; justify-content: center; }
+.hk-days-off .settings-row-control > .hk-inline { display: flex; flex-wrap: wrap; gap: var(--space-4); }
+.hk-days-off .settings-row-control .btn { flex: none; width: 40px; height: 28px; box-sizing: border-box; justify-content: center; }
 .hk-settings .settings-card > .hk-availability { padding: 0 var(--space-16) var(--space-8); }
 
 /* Weekly availability uses day tabs with one editor visible at a time. */
@@ -1315,28 +1314,24 @@ html[data-theme="dark"] .hk-availability-tabs .hk-day-tile[data-available="true"
 }
 html.is-keys .hk-day-tile { transition: none; }
 
-.hk-language-card { margin-top: calc(var(--space-16) + var(--space-2)); }
 
-.hk-derived-content { padding: var(--space-16); }
 
 .hk-contract-summary { display: inline-flex; align-items: center; gap: var(--space-8); }
 
 .hk-contract-pill { box-sizing: border-box; min-height: 28px; padding: var(--space-4) var(--space-10); font-size: var(--text-14); line-height: 20px; border-radius: 999px; }
 
-.hk-derived-actions { margin-top: var(--space-16); }
 
 .hk-derived-day { min-width: 0; }
 .hk-derived-day > .btn { width: 100%; height: 100%; }
 .hk-derived-menu-heading { display: flex; flex-direction: column; gap: var(--space-2); padding: var(--space-8); max-width: 280px; }
 .hk-derived-menu-heading .hk-help { margin: 0; }
 
-.hk-derived-content .hk-week { grid-template-columns: repeat(7, minmax(64px, 1fr)); overflow-x: auto; padding-bottom: var(--space-4); }
-.hk-derived-content .hk-week .hk-derived-day > .btn { box-sizing: border-box; min-height: 80px; align-items: stretch; justify-content: flex-end; text-align: left; padding: var(--space-8); border: 1px solid var(--line-card); box-shadow: none; }
-.hk-derived-content .hk-week .hk-derived-day[data-working="true"] > .btn { background: var(--filter-chip-bg); border-color: var(--action); }
+.hk-derived-card .hk-week { grid-template-columns: repeat(7, minmax(64px, 1fr)); overflow-x: auto; padding-bottom: var(--space-4); }
+.hk-derived-card .hk-week .hk-derived-day > .btn { box-sizing: border-box; min-height: 80px; align-items: stretch; justify-content: flex-end; text-align: left; padding: var(--space-8); border: 1px solid var(--line-card); box-shadow: none; }
+.hk-derived-card .hk-week .hk-derived-day[data-working="true"] > .btn { background: var(--filter-chip-bg); border-color: var(--action); }
 
 .hk-derived-shift { font-size: var(--text-12); line-height: 16px; color: var(--text-muted); }
 
-.hk-schedule-cards { display: grid; gap: var(--space-16); }
 
 /* Keep search visible while the grouped staff list scrolls. */
 .board-staff-options { max-height: 320px; overflow-y: auto; }
@@ -1801,11 +1796,5 @@ html[data-theme="dark"] .board-limits-table tr[data-selected] { background: var(
   .board-report-summary-grid > :nth-child(even):not(.board-report-full) { border-inline-start: 0; }
 }
 
-/* Use available profile width so open sidebars do not squeeze the settings. */
-.hk-settings { container: housekeeper-settings / inline-size; }
-.hk-work-overview { display: grid; align-items: start; gap: calc(var(--space-20) * 2); }
-@container housekeeper-settings (min-width: 740px) {
-  .hk-work-overview { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-20); }
-}
 
 .hk-work-overview .hk-section-range .hk-number { width: 72px; }

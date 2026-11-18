@@ -55,6 +55,10 @@ const table = prefix(readFileSync(resolve(root, "css/todos-alt.css"), "utf8"));
 const banner = "/* Prefixed from css/gallery.css and css/todos-alt.css. :where(.sds) keeps these rules on gallery components. */\n";
 writeFileSync(resolve(here, "../src/styles/gallery.css"), `${banner}${gallery}\n${table}\n`);
 
+const page = prefix(readFileSync(resolve(root, "css/page.css"), "utf8"));
+const pageBanner = "/* Prefixed from css/page.css. The page stack inside `.notes-page`. Loads after the gallery specimen it replaces. */\n";
+writeFileSync(resolve(here, "../src/styles/page.css"), `${pageBanner}${page}\n`);
+
 function readSymbols(file) {
   const icons = {};
   const sprite = readFileSync(file, "utf8");

@@ -4,5 +4,7 @@ mkdirSync("dist", { recursive: true });
 copyFileSync("../../css/tokens.css", "dist/tokens.css");
 writeFileSync(
   "dist/styles.css",
-  `${readFileSync("src/styles/styles.css", "utf8")}\n${readFileSync("src/styles/gallery.css", "utf8")}`,
+  ["src/styles/styles.css", "src/styles/gallery.css", "src/styles/page.css"]
+    .map((file) => readFileSync(file, "utf8"))
+    .join("\n"),
 );

@@ -1,4 +1,5 @@
 @import "./confirm-dialog.css";
+@import "./page.css";
 
 /* Composition only. Visual rules stay in gallery.css.
    Libre Baskerville is gallery-only and never used on a built page. */
@@ -155,16 +156,6 @@ body.is-side-settling .side-user {
   box-shadow: none;
 }
 
-/* The system horizontal bar is the wrong scrollbar. Hide it and draw the thin thumb. */
-.page-filters .tabs {
-  scrollbar-width: none;
-  overscroll-behavior-x: contain;
-}
-.page-filters .tabs::-webkit-scrollbar {
-  display: none;
-  height: 0;
-}
-
 .tabs-bar-thumb {
   position: absolute;
   z-index: 2;
@@ -181,7 +172,6 @@ body.is-side-settling .side-user {
 .side-fold,
 .side-links a,
 .side .person-copy span,
-.notes-page .page-head h1,
 .notes-grid .cell-task {
   white-space: nowrap;
 }
@@ -286,13 +276,7 @@ body.is-lance-collapsed .lance-side [data-lance-collapse]::after {
   transform: translate(-50%, -50%);
 }
 
-.notes-page,
-.notes-page h1,
-.notes-page h2,
-.notes-page .page-head h1 {
-  font-family: var(--font);
-}
-
+/* The page card. The stack inside it is css/page.css. */
 .notes-page {
   flex: 1;
   min-width: 0;
@@ -308,42 +292,6 @@ body.is-lance-collapsed .lance-side [data-lance-collapse]::after {
   box-shadow: 0 0 0 1px var(--black-12);
 }
 
-.notes-page .page-head {
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-16);
-  height: 60px;
-  margin-inline: calc(var(--space-2) * -1);
-  padding: 0 calc(var(--space-16) + var(--space-2));
-  border-bottom: 1px solid var(--line);
-}
-
-.notes-page .page-title {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: var(--space-8);
-  height: 30px;
-  min-width: 0;
-  position: static;
-  z-index: auto;
-  margin: 0;
-  padding: 0;
-  border: 0;
-  background: transparent;
-}
-
-.page-mark {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 30px;
-  height: 30px;
-  color: var(--black);
-}
-
-.notes-page .page-head h1,
 .lance-hello,
 .meta-v {
   font-size: 14px;
@@ -351,71 +299,17 @@ body.is-lance-collapsed .lance-side [data-lance-collapse]::after {
   text-wrap: var(--text-wrap-title);
 }
 
-/* The list title and a subpage trail share one 20px line, so the icon and the first word do not jump. */
-.notes-page .page-head h1 {
-  display: flex;
-  align-items: center;
-  height: 20px;
-  min-width: 0;
-  line-height: 20px;
-}
-
-.notes-page .page-head h1 .page-back {
-  height: 20px;
-  margin: 0 -5px;
-  padding: 0 5px;
-  font: inherit;
-  font-size: var(--text-14);
-  font-weight: 400;
-  line-height: 20px;
-  color: var(--black);
-}
-
-.notes-page .page-head h1 .page-crumb,
-.notes-page .page-head h1 .page-current {
-  line-height: 20px;
-}
-
-.notes-page .page-head h1 .page-crumb {
-  margin: 0 var(--space-4);
-  color: var(--black-25);
-}
-
-.notes-page .page-head h1 .page-current {
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  text-wrap: nowrap;
-  color: var(--black);
-}
-
 .lance-hello { font-size: var(--text-16); font-weight: 500; }
 .meta-v { font-size: 16px; }
 
-.notes-page .page-head .count,
-.notes-page .count,
 .notes-grid {
   font-variant-numeric: var(--numeric);
 }
-
-.notes-page .page-head .count { font-size: 14px; color: var(--black-50); }
 
 .detail p,
 .lance-suggest,
 .notes-grid .cell-task {
   text-wrap: var(--text-wrap-copy);
-}
-
-.notes-page .page-head .search {
-  flex-wrap: nowrap;
-  width: 281px;
-  height: 38px;
-  margin-left: auto;
-  overflow: hidden;
-  white-space: nowrap;
-  padding: 10px;
-  background: var(--sidebar-grey);
 }
 
 .stage { display: flex; flex-direction: column; gap: 16px; min-width: 0; padding: 16px; }
@@ -1226,48 +1120,10 @@ html[data-theme="dark"] .note-more[aria-expanded="true"] { background: var(--gre
   background: var(--black-25);
 }
 
-.page-filters { display: flex; flex-direction: column; }
-
-.page-filters .tabs {
-  flex-wrap: nowrap;
-  gap: 8px;
-  width: 100%;
-  margin: 0;
-  padding: var(--space-8) var(--space-16);
-  background: var(--sidebar-grey);
-  overflow-x: auto;
-  overflow-y: hidden;
-}
-
-.page-filters .tabs-frame {
-  background: var(--sidebar-grey);
-  --scroll-fade: var(--sidebar-grey);
-}
-
-.notes-page:not([data-view="top"]) .page-filters .tabs-frame {
-  width: calc(100% + var(--space-2) * 2);
-  max-width: none;
-  margin-inline: calc(var(--space-2) * -1);
-}
-
-.notes-page:not([data-view="top"]) .page-filters .tabs {
-  padding-inline: calc(var(--space-16) + var(--space-2));
-}
-
-.page-filters .tabs-scroll > .tabs {
-  width: max-content;
-  overflow: visible;
-}
-
 .tabs-fade {
   position: relative;
   background: var(--sidebar-grey);
   --scroll-fade: var(--sidebar-grey);
-}
-
-.page-filters .tab {
-  flex: none;
-  white-space: nowrap;
 }
 
 .filter-tools { display: contents; }

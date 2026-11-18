@@ -1,0 +1,175 @@
+/* Prefixed from css/page.css. The page stack inside `.notes-page`. Loads after the gallery specimen it replaces. */
+/* The page stack every screen shares: title and actions, then tabs, then the toolbar.
+   Scoped to `.notes-page`, the page root. The card frame around it stays in notes.css,
+   so an app with its own shell can take the stack without the frame.
+   Packaged into @lance-live/sds styles.css. */
+
+:where(.sds) .notes-page, :where(.sds).notes-page,
+:where(.sds) .notes-page h1, :where(.sds).notes-page h1,
+:where(.sds) .notes-page h2, :where(.sds).notes-page h2,
+:where(.sds) .notes-page .page-head h1, :where(.sds).notes-page .page-head h1 {
+  font-family: var(--font);
+}
+
+:where(.sds) .notes-page .page-head, :where(.sds).notes-page .page-head {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-16);
+  height: 60px;
+  margin-inline: calc(var(--space-2) * -1);
+  padding: 0 calc(var(--space-16) + var(--space-2));
+  border-bottom: 1px solid var(--line);
+}
+
+:where(.sds) .notes-page .page-title, :where(.sds).notes-page .page-title {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--space-8);
+  height: 30px;
+  min-width: 0;
+  position: static;
+  z-index: auto;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+:where(.sds) .page-mark, :where(.sds).page-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  color: var(--black);
+}
+
+:where(.sds) .notes-page .page-head h1, :where(.sds).notes-page .page-head h1 {
+  font-size: 14px;
+  font-weight: 400;
+  text-wrap: var(--text-wrap-title);
+  white-space: nowrap;
+}
+
+/* The list title and a subpage trail share one 20px line, so the icon and the first word do not jump. */
+:where(.sds) .notes-page .page-head h1, :where(.sds).notes-page .page-head h1 {
+  display: flex;
+  align-items: center;
+  height: 20px;
+  min-width: 0;
+  line-height: 20px;
+}
+
+:where(.sds) .notes-page .page-head h1 .page-back, :where(.sds).notes-page .page-head h1 .page-back {
+  height: 20px;
+  margin: 0 -5px;
+  padding: 0 5px;
+  font: inherit;
+  font-size: var(--text-14);
+  font-weight: 400;
+  line-height: 20px;
+  color: var(--black);
+}
+
+:where(.sds) .notes-page .page-head h1 .page-crumb, :where(.sds).notes-page .page-head h1 .page-crumb,
+:where(.sds) .notes-page .page-head h1 .page-current, :where(.sds).notes-page .page-head h1 .page-current {
+  line-height: 20px;
+}
+
+:where(.sds) .notes-page .page-head h1 .page-crumb, :where(.sds).notes-page .page-head h1 .page-crumb {
+  margin: 0 var(--space-4);
+  color: var(--black-25);
+}
+
+:where(.sds) .notes-page .page-head h1 .page-current, :where(.sds).notes-page .page-head h1 .page-current {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-wrap: nowrap;
+  color: var(--black);
+}
+
+:where(.sds) .notes-page .page-head .count, :where(.sds).notes-page .page-head .count,
+:where(.sds) .notes-page .count, :where(.sds).notes-page .count {
+  font-variant-numeric: var(--numeric);
+}
+
+:where(.sds) .notes-page .page-head .count, :where(.sds).notes-page .page-head .count { font-size: 14px; color: var(--black-50); }
+
+:where(.sds) .notes-page .page-head .search, :where(.sds).notes-page .page-head .search {
+  flex-wrap: nowrap;
+  width: 281px;
+  height: 38px;
+  margin-left: auto;
+  overflow: hidden;
+  white-space: nowrap;
+  padding: 10px;
+  background: var(--sidebar-grey);
+}
+
+:where(.sds) .notes-page .page-head .head-actions, :where(.sds).notes-page .page-head .head-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  margin-left: auto;
+}
+
+:where(.sds) .notes-page .page-head .head-actions > .btn, :where(.sds).notes-page .page-head .head-actions > .btn,
+:where(.sds) .notes-page .page-head .head-actions > .auto-assign, :where(.sds).notes-page .page-head .head-actions > .auto-assign {
+  margin-left: 0;
+}
+
+/* Tabs under the title. */
+:where(.sds) .page-filters, :where(.sds).page-filters { display: flex; flex-direction: column; }
+
+:where(.sds) .page-filters .tabs, :where(.sds).page-filters .tabs {
+  flex-wrap: nowrap;
+  gap: 8px;
+  width: 100%;
+  margin: 0;
+  padding: var(--space-8) var(--space-16);
+  background: var(--sidebar-grey);
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/* The system horizontal bar is the wrong scrollbar. Hide it and draw the thin thumb. */
+:where(.sds) .page-filters .tabs, :where(.sds).page-filters .tabs {
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+}
+:where(.sds) .page-filters .tabs::-webkit-scrollbar, :where(.sds).page-filters .tabs::-webkit-scrollbar {
+  display: none;
+  height: 0;
+}
+
+:where(.sds) .page-filters .tabs-frame, :where(.sds).page-filters .tabs-frame {
+  background: var(--sidebar-grey);
+  --scroll-fade: var(--sidebar-grey);
+}
+
+:where(.sds) .notes-page:not([data-view="top"]) .page-filters .tabs-frame, :where(.sds).notes-page:not([data-view="top"]) .page-filters .tabs-frame {
+  width: calc(100% + var(--space-2) * 2);
+  max-width: none;
+  margin-inline: calc(var(--space-2) * -1);
+}
+
+:where(.sds) .notes-page:not([data-view="top"]) .page-filters .tabs, :where(.sds).notes-page:not([data-view="top"]) .page-filters .tabs {
+  padding-inline: calc(var(--space-16) + var(--space-2));
+}
+
+:where(.sds) .page-filters .tabs-scroll > .tabs, :where(.sds).page-filters .tabs-scroll > .tabs {
+  width: max-content;
+  overflow: visible;
+}
+
+:where(.sds) .page-filters .tab, :where(.sds).page-filters .tab {
+  flex: none;
+  white-space: nowrap;
+}
+
+:where(.sds) .notes-page .page-filters .tabs, :where(.sds).notes-page .page-filters .tabs { padding-block: var(--space-8); }
+

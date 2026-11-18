@@ -30,20 +30,6 @@ body.app-shell .side-frame {
   display: contents;
 }
 
-/* Shared page stack: title and actions, then tabs, then the search toolbar. */
-.notes-page .page-filters .tabs { padding-block: var(--space-8); }
-.notes-page .page-head .head-actions {
-  display: flex;
-  align-items: center;
-  gap: var(--space-8);
-  margin-left: auto;
-}
-
-.notes-page .page-head .head-actions > .btn,
-.notes-page .page-head .head-actions > .auto-assign {
-  margin-left: 0;
-}
-
 /* A long page title stays one line. The PM actions drop their labels before the title disappears. */
 .pm-page .page-head { container-type: inline-size; }
 

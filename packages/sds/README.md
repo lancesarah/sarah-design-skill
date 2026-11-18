@@ -21,6 +21,19 @@ Keep the Tailwind entry split. A single `@import "tailwindcss"` drops the import
 import { Button, SegmentedControl } from "@lance-live/sds";
 ```
 
+## Pages
+
+A page puts `notes-page` and `sds` on its root. `PageHeader` then draws the page stack from `css/page.css`: a 60px title row with the mark, the title, the count, and the actions on the right, then the tab band under it. Without `notes-page`, `PageHeader` falls back to the gallery specimen (a grey sticky band with a serif title), which is not a built page.
+
+```tsx
+<div className="notes-page sds">
+  <PageHeader mark="grid" title="Boards" count="12" actions={actions} />
+  <div className="page-filters"><Tabs label="Boards" items={items} value={value} onValueChange={setValue} /></div>
+</div>
+```
+
+The card frame around a page (its margin, corner radius, and outline) is not in the package. An app with its own shell keeps its own frame.
+
 Until this package is published, point the app at the workspace:
 
 ```json

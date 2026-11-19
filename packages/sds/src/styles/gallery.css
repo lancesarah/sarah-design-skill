@@ -3283,6 +3283,19 @@ html[data-theme="dark"] :where(.sds) .segmented .slide-pill, html[data-theme="da
 /* Scroll long dropdowns without compressing their option rows. */
 :where(.sds) .menu > *, :where(.sds).menu > * { flex-shrink: 0; }
 
+
+/* Compact form popup shell; the host owns focus, dismissal and positioning. */
+:where(.sds) .form-dialog, :where(.sds).form-dialog { display: flex; flex-direction: column; gap: 0; min-width: 0; overflow: hidden; padding: 0; color: var(--black); background: var(--white); font-family: var(--font); border: 1px solid var(--line-card); border-radius: var(--radius-card); box-shadow: var(--shadow-menu); }
+:where(.sds) .form-dialog-header, :where(.sds).form-dialog-header { flex: none; padding: var(--space-16) var(--space-25); padding-right: calc(var(--space-25) + 28px); border-bottom: 1px solid var(--line); }
+:where(.sds) .form-dialog [data-slot="dialog-title"], :where(.sds).form-dialog [data-slot="dialog-title"] { margin: 0; color: var(--black); font-size: var(--text-14); font-weight: 500; line-height: 20px; }
+:where(.sds) .form-dialog-header p, :where(.sds).form-dialog-header p { margin: var(--space-4) 0 0; color: var(--text-muted); font-size: var(--text-12); line-height: 16px; }
+:where(.sds) .form-dialog-body, :where(.sds).form-dialog-body { flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: var(--space-16) var(--space-25); }
+:where(.sds) .form-dialog-footer, :where(.sds).form-dialog-footer { display: flex; flex: none; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: var(--space-8); padding: var(--space-16) var(--space-25); border-top: 1px solid var(--line); }
+:where(.sds) .form-dialog-close, :where(.sds).form-dialog-close { position: absolute; top: var(--space-12); right: var(--space-16); }
+:where(.sds) .form-dialog-header, :where(.sds).form-dialog-header { display: flex; align-items: flex-start; gap: var(--space-8); }
+:where(.sds) .form-dialog-header-copy, :where(.sds).form-dialog-header-copy { min-width: 0; }
+:where(.sds) .form-dialog-header-icon, :where(.sds).form-dialog-header-icon { display: flex; flex: none; color: var(--text-muted); }
+
 /* Run sheet. Each to-do is finished on its line. The table stays in todos.css. */
 
 :where(.sds) .sheet-work, :where(.sds).sheet-work {

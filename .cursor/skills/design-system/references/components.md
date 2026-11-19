@@ -721,3 +721,12 @@ When a card or row has one primary selector (checkbox, switch, or selection cont
 ### Info tooltip
 
 Use `InfoTooltip` for info-icon help everywhere. Its shared 14px muted icon is focusable and displays the tooltip above the icon, separated by `--space-8`. The component owns placement and exposes no below-placement override. Hover and focus show it; Escape and blur dismiss it. Use the popover top layer so card overflow does not clip help. Do not build local info-icon wrappers with different placement.
+
+
+## Compact form popup
+
+Use `.sds.form-dialog` for focused settings forms such as Sales hours, a destination, or account configuration. Keep the host dialog's focus trap, Escape handling, accessible title and dismissal callbacks. This is distinct from destructive confirmation and record editors.
+
+Use `.form-dialog-header`, `.form-dialog-body`, and `.form-dialog-footer`. Header and footer each have a single full-width 1px `--line` divider. The title is `--text-14`, weight 500, line-height 20px; supporting copy is `--text-12`/16px. Header, body and footer use 16px vertical and 25px horizontal padding. The body scrolls independently on small screens. Use the existing editor close drawing (`.editor-dialog-close`, 14px `close` glyph, 28px target) at the top right, with a localized accessible name.
+
+Footer actions are grouped on the right, 8px apart: secondary Cancel immediately before the primary save action. They stay together when the popup narrows. Button styling comes from the shared Button component. No left-aligned Cancel or custom close glyph.

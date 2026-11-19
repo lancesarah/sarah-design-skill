@@ -809,7 +809,7 @@ html[data-theme="dark"] .board-room-due { background: var(--grey); }
   width: 20px;
   height: 20px;
   border-radius: var(--radius-circle);
-  background: color-mix(in srgb, var(--action) 12%, transparent);
+  background: var(--action-tint);
   color: var(--action);
   font-size: var(--text-12);
   font-weight: 600;
@@ -1276,7 +1276,7 @@ html[data-theme="dark"] .board-card .widget-head .board-card-avatar { background
 .hk-settings .settings-row-label .board-tipped > .i { color: var(--black-50); }
 .hk-days-off .settings-row-control > .hk-inline { display: flex; flex-wrap: wrap; gap: var(--space-4); }
 .hk-days-off .settings-row-control .btn { flex: none; width: 40px; height: 28px; box-sizing: border-box; justify-content: center; }
-.hk-settings .settings-card > .hk-availability { padding: 0 var(--space-16) var(--space-8); }
+.hk-settings .settings-card > .hk-availability { padding: 0 var(--space-25) var(--space-16); }
 
 /* Weekly availability uses day tabs with one editor visible at a time. */
 .hk-availability [role="tabpanel"] > .hk-availability-day { border-top: 0; }
@@ -1288,7 +1288,7 @@ html[data-theme="dark"] .board-card .widget-head .board-card-avatar { background
 .hk-availability-tabs [role="tab"]:hover { background: var(--surface-hover); }
 .hk-availability-tabs .hk-day-tile[data-available="true"] > [role="tab"] { background: var(--filter-chip-bg); border-color: var(--action); }
 html[data-theme="dark"] .hk-availability-tabs .hk-day-tile[data-available="true"] > [role="tab"]:hover {
-  background: color-mix(in srgb, var(--action) 5%, var(--surface-hover));
+  background: var(--action-tint);
 }
 .hk-availability-tab-status { font-size: var(--text-12); color: var(--text-muted); }
 .hk-availability-tabs [role="tab"]:focus-visible { outline: 2px solid var(--action); outline-offset: -3px; }
@@ -1346,7 +1346,7 @@ html.is-keys .hk-day-tile { transition: none; }
 .board-workflow-actions { display: flex; align-items: center; justify-content: flex-end; gap: var(--space-8); }
 .board-workflow .text-well { width: 100%; }
 
-.board-minibar-item .settings-row-control { flex-shrink: 1; }
+.board-minibar-item .settings-row-control > input:first-child { flex: 1; }
 .board-minibar-item input { min-width: 0; }
 .board-minibar-item .board-minibar-quantity { width: calc(var(--space-25) * 3); }
 .board-minibar-item .btn { flex: none; }
@@ -1359,7 +1359,7 @@ html.is-keys .hk-day-tile { transition: none; }
 }
 
 .editor-dialog-card.is-pills.board-bulk-dialog .editor-dialog-body { gap: var(--space-16); }
-.board-limits-dialog .editor-dialog-body > .hk-help { margin: 0; }
+.board-limits-dialog .settings-sections > .hk-help { margin: 0; }
 
 .board-bulk-section, .board-limits-section { display: grid; gap: var(--space-8); min-width: 0; }
 .board-bulk-filters { display: flex; flex-wrap: wrap; gap: var(--space-8); }
@@ -1429,9 +1429,7 @@ html[data-theme="dark"] .board-limits-table tr[data-selected] { background: var(
 .board-date-picker { width: 248px; padding: var(--space-8); }
 .board-inspection { display: grid; gap: var(--space-16); }
 .board-inspection > .btn { justify-self: start; }
-.board-inspection-check { display: flex; align-items: center; gap: var(--space-8); padding: var(--space-12) var(--space-16); cursor: pointer; }
-.board-inspection-check + .board-inspection-check { border-top: 1px solid var(--line); }
-.board-inspection-check:hover { background: var(--surface-hover); }
+.board-inspection-check.settings-row { justify-content: flex-start; gap: var(--space-8); cursor: pointer; }
 
 
 .board-upload-drop,

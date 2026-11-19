@@ -11,12 +11,24 @@ export function placeTooltip(host: HTMLElement, placement: Placement = "above") 
   const gap = Number.parseFloat(getComputedStyle(host).getPropertyValue("--tip-gap")) || 8;
   tip.style.left = `${placement === "right" ? rect.right + gap : rect.left + rect.width / 2}px`;
   tip.style.top = `${placement === "right" ? rect.top + rect.height / 2 : placement === "below" ? rect.bottom + gap : rect.top - gap}px`;
+  // Measure the visible, wrapped tooltip rather than its hidden popover box.
+  const bounds = tip.getBoundingClientRect();
+  if (bounds.width && bounds.height) {
+    const edge = 8;
+    const shiftX = bounds.left < edge ? edge - bounds.left : bounds.right > window.innerWidth - edge ? window.innerWidth - edge - bounds.right : 0;
+    const shiftY = bounds.top < edge ? edge - bounds.top : bounds.bottom > window.innerHeight - edge ? window.innerHeight - edge - bounds.bottom : 0;
+    tip.style.left = `${Number.parseFloat(tip.style.left) + shiftX}px`;
+    tip.style.top = `${Number.parseFloat(tip.style.top) + shiftY}px`;
+  }
   return tip;
 }
 
 export function showTooltip(host: HTMLElement, placement?: Placement) {
   const tip = placeTooltip(host, placement);
-  if (tip?.isConnected && tip.showPopover && !tip.matches(":popover-open")) tip.showPopover();
+  if (tip?.isConnected && tip.showPopover && !tip.matches(":popover-open")) {
+    tip.showPopover();
+    placeTooltip(host, placement);
+  }
 }
 
 export function hideTooltip(host: HTMLElement) {

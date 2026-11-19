@@ -43,4 +43,22 @@ describe("Settings rows", () => {
     expect(light).not.toHaveBeenCalled();
   });
 
+  it("delegates a native single-switch row once, including inside a form", () => {
+    const change = vi.fn();
+    render(<SettingsRow label="Calls"><button role="switch" aria-checked="false" onClick={change}>Toggle calls</button><input type="checkbox" aria-hidden="true" tabIndex={-1} readOnly /></SettingsRow>);
+    fireEvent.click(screen.getByText("Calls", { selector: ".settings-row-label" }));
+    expect(change).toHaveBeenCalledTimes(1);
+    fireEvent.click(screen.getByRole("switch", { name: "Toggle calls" }));
+    expect(change).toHaveBeenCalledTimes(2);
+  });
+
+  it("does not activate disabled toggles or choose between multiple actions", () => {
+    const change = vi.fn();
+    const view = render(<SettingsRow label="Locked"><button role="switch" aria-checked="false" disabled onClick={change}>Toggle locked</button></SettingsRow>);
+    fireEvent.click(screen.getByText("Locked", { selector: ".settings-row-label" }));
+    expect(change).not.toHaveBeenCalled();
+    view.rerender(<SettingsRow label="Multiple"><button role="switch" aria-checked="false" onClick={change}>Toggle</button><button>Configure</button></SettingsRow>);
+    fireEvent.click(screen.getByText("Multiple", { selector: ".settings-row-label" }));
+    expect(change).not.toHaveBeenCalled();
+  });
 });

@@ -190,7 +190,7 @@ export function RequiredToast({
 
   useLayoutEffect(() => {
     const toast = ref.current;
-    const card = document.querySelector(".editor-dialog-card");
+    const card = document.activeElement?.closest(".form-dialog, .editor-dialog-card") ?? document.querySelector(".editor-dialog-card");
     if (!toast || !card) return;
     const box = card.getBoundingClientRect();
     toast.style.left = `${box.left + box.width / 2}px`;
@@ -209,7 +209,7 @@ export function RequiredToast({
 
   if (typeof document === "undefined") return null;
   return createPortal(
-    <div key={id} ref={ref} className={leaving ? "required-toast is-leaving" : "required-toast"} role="status">
+    <div key={id} ref={ref} className={leaving ? "sds required-toast is-leaving" : "sds required-toast"} role="status">
       {message}
     </div>,
     document.body,

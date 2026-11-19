@@ -20,10 +20,12 @@
   --action-hover: var(--blue-hover);
   /* A picked card's fill: the action blue washed into the page, so the pick reads without a ring. */
   --action-tint: color-mix(in srgb, var(--action) 10%, var(--white));
+  --action-tint-hover: color-mix(in srgb, var(--action) 16%, var(--white));
   --destructive: var(--red);
   --text-muted: var(--black-50);
   --bg-surface: var(--white);
   --surface-hover: var(--sidebar-grey);
+  --settings-expansion-bg: var(--sidebar-grey);
 
   /* Department tags. Each department is its own text color on a 15% fill. */
   --tag-text: #ffc130;
@@ -52,8 +54,8 @@
   /* Completed status points at the low-urgency hue. */
   --status-complete: var(--urgency-low);
 
-  /* Filter chip fill is 5% of --blue. Switch knob stays separate. */
-  --filter-chip-bg: rgb(53 147 221 / 5%);
+  /* Compatibility alias: generic blue washes share the same action tint. */
+  --filter-chip-bg: var(--action-tint);
   --switch-knob: #f7f7f7;
   /* Strong curves. Built-in CSS easings are too weak for UI motion. */
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
@@ -67,6 +69,8 @@
   --switch-ov1: 1px;
   --switch-ov2: 0px;
 
+  /* Long tooltip copy wraps at a readable measure; short labels stay compact. */
+  --tooltip-max-width: 280px;
   --shadow-menu: 0 4px 20px rgb(0 0 0 / 10%);
   --shadow-card: 0 3px 7px rgb(0 0 0 / 4%);
   /* The photo viewer's backdrop. Dark in both themes, so a photo reads the same in each. */
@@ -173,6 +177,7 @@ html[data-theme="dark"] {
   --grey-low: color-mix(in srgb, var(--white) 50%, var(--grey));
   /* The dark page swallows a 10% wash, so the pick takes more blue. */
   --action-tint: color-mix(in srgb, var(--action) 18%, var(--white));
+  --action-tint-hover: color-mix(in srgb, var(--action) 26%, var(--white));
   /* Halfway from --grey to --black-12. A widget head, one rise above its --grey list, where a full step reads too heavy. */
   --grey-mid: color-mix(in srgb, var(--grey) 50%, var(--black-12));
   /* One step lighter than --grey. Light --black-12 is 1.39 on white and 1.28 on the hover fill.

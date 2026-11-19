@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useId, useRef, useState, type ReactNode } from "react";
-import { Button, SuccessCheck, FilterPicker, Chip, ThemeSwitch, DataTable, Tabs, EditorDialog, EditorPill, EditorPills, Icon, Menu, Person, Status, taskMenuItem, SectionHeader, SettingsCard, SettingsMenuRow, SettingsRow, SettingsToggleRow, TimePicker, formatTime, useCopyFeedback, type MenuItem } from "@lance-live/sds";
+import { Button, SuccessCheck, FilterPicker, Chip, ThemeSwitch, DataTable, Tabs, EditorDialog, EditorPill, EditorPills, Icon, Menu, Person, Status, taskMenuItem, SectionHeader, SettingsCard, SettingsSections, SettingsMenuRow, SettingsRow, SettingsToggleRow, TimePicker, formatTime, useCopyFeedback, type MenuItem } from "@lance-live/sds";
+import { AddOptionField } from "@lance-live/sds/add-option";
 import { PageLayout, PageTitle } from "../page-layout";
 import { SearchBox } from "../chrome";
 import { OTHER_BOARD_STAFF, ROOMS, SERVICES, UNASSIGNED, formatDuration, isDone, roomFloor, type Room, type Staff } from "./data";
@@ -70,6 +71,7 @@ export function LimitsPage({ value, staff, selected, onSave, onBack }: { value: 
     <Button variant="secondary" onClick={onBack}>Cancel</Button>
     <Button disabled={!valid} onClick={() => onSave(draft)}><Icon name="check" />Save limits</Button>
   </>}>
+    <SettingsSections>
     <p className="hk-help">Auto-assign fills rooms within the caps first. With hard limits on, extra rooms stay unassigned. With hard limits off, extra rooms are spread across the team.</p>
     <SettingsCard label="Limit enforcement" className="board-limits-enforcement">
       <SettingsToggleRow label="Enforce hard limits" value={draft.hard} onValueChange={hard => setDraft(current => ({ ...current, hard }))} />
@@ -94,6 +96,7 @@ export function LimitsPage({ value, staff, selected, onSave, onBack }: { value: 
       </SettingsCard>
     </section>
     {!valid && <p role="alert" className="hk-help">Use whole numbers of zero or more.</p>}
+    </SettingsSections>
   </EditorDialog>;
 }
 
@@ -147,6 +150,7 @@ export function RoomEditor({ room, rooms, staff, onSave, onBack }: { room?: Room
   }
 
   return <WorkflowFrame title={`Room ${room.number}`} breadcrumb={`Edit room ${room.number}`} onBack={onBack}>
+    <SettingsSections>
     <section>
       <SectionHeader icon="bed" title="Room details" />
       <SettingsCard label="Room details">
@@ -161,7 +165,7 @@ export function RoomEditor({ room, rooms, staff, onSave, onBack }: { room?: Room
           <Button variant="secondary" onClick={addMinibarItem}><Icon name="plus" />Add item</Button>
         </SettingsRow>
         {minibarItems.map((item, index) => (
-          <SettingsRow key={item.id} label={`Item ${index + 1}`} className="board-minibar-item">
+          <SettingsRow key={item.id} label={`Item ${index + 1}`} layout="stacked" className="board-minibar-item">
             <input className="sds line" aria-label={`Minibar item ${index + 1} name`} placeholder="Item name" value={item.name} onChange={event => updateMinibarItem(item.id, { name: event.target.value })} />
             <input className="sds line board-minibar-quantity" type="number" min="1" step="1" aria-label={`Minibar item ${index + 1} quantity`} value={item.quantity} onChange={event => updateMinibarItem(item.id, { quantity: event.target.value })} />
             <Button icon variant="danger-light" aria-label={`Remove minibar item ${index + 1}`} onClick={() => setMinibarItems(current => current.filter(entry => entry.id !== item.id))}><Icon name="trash" /></Button>
@@ -173,6 +177,7 @@ export function RoomEditor({ room, rooms, staff, onSave, onBack }: { room?: Room
     <section><SectionHeader icon="user" title="Assignments" /><SettingsCard label="Assignments"><SettingsMenuRow label="Housekeeper" items={assignment("housekeeper")} value={draft.housekeeper} onValueChange={housekeeper => patch({ housekeeper })} /><SettingsMenuRow label="Inspector" items={assignment("inspector")} value={draft.inspector} onValueChange={inspector => patch({ inspector })} /></SettingsCard></section>
     <section><SectionHeader icon="clipboard" title="Notes" /><textarea className="sds text-well" aria-label="Room notes" placeholder="Add room notes…" value={draft.notes ?? ""} onChange={event => patch({ notes: event.target.value })} /></section>
     <div className="board-workflow-actions"><Button variant="secondary" onClick={onBack}>Cancel</Button><Button disabled={!draft.number || duplicate || !validMinibar} onClick={saveRoom}><Icon name="check" size={14} />Save changes</Button></div>
+    </SettingsSections>
   </WorkflowFrame>;
 }
 
@@ -259,14 +264,15 @@ export function ReportPage({ rooms, staff, date, onBack }: { rooms: Room[]; staf
                   {name}<Icon name="close" size={14} />
                 </Button>)}
               </div>
-              <div className="board-report-add">
-                <input className="sds line" aria-label="Housekeeper name" placeholder="Add name…" value={newHousekeeper} onChange={event => setNewHousekeeper(event.target.value)} onKeyDown={event => {
-                  if (event.key !== "Enter") return;
-                  event.preventDefault();
-                  addHousekeeper();
-                }} />
-                <Button variant="secondary" disabled={!newHousekeeper.trim()} onClick={addHousekeeper}><Icon name="plus" size={14} />Add</Button>
-              </div>
+              <AddOptionField
+                className="board-report-add"
+                label="Housekeeper name"
+                placeholder="Add name…"
+                value={newHousekeeper}
+                onValueChange={setNewHousekeeper}
+                onAdd={addHousekeeper}
+                addLabel="Add"
+              />
             </>}</dd>
           </div>
         </dl>

@@ -153,6 +153,8 @@ export function OverlayMenu({
   const style: CSSProperties = {
     position: "fixed",
     zIndex: 80,
+    // Modal hosts can disable body pointer events. The portaled menu is still interactive.
+    pointerEvents: "auto",
   };
 
   return createPortal(

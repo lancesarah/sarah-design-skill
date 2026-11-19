@@ -292,6 +292,14 @@ export const icons = {
   "mail": {
     "viewBox": "0 0 14 14",
     "body": "<g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" style=\"stroke-width: var(--icon-stroke)\"><rect x=\"1.5\" y=\"3\" width=\"11\" height=\"8\" rx=\"1.3\"/><path d=\"m2 3.5 5 4 5-4\"/></g>"
+  },
+  "shield": {
+    "viewBox": "0 0 14 14",
+    "body": "<g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" style=\"stroke-width: var(--icon-stroke)\"><path d=\"M7 1.5 11.5 3.3v3.8c0 2.5-1.8 4.2-4.5 5.4C4.3 11.3 2.5 9.6 2.5 7.1V3.3L7 1.5Z\"/></g>"
+  },
+  "eye-off": {
+    "viewBox": "0 0 14 14",
+    "body": "<g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" style=\"stroke-width: var(--icon-stroke)\"><path d=\"M1.5 7S3.5 3 7 3s5.5 4 5.5 4-2 4-5.5 4S1.5 7 1.5 7Z\"/><circle cx=\"7\" cy=\"7\" r=\"1.7\"/><path d=\"M2 2l10 10\"/></g>"
   }
 } as const;
 

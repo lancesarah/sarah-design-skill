@@ -25,10 +25,13 @@ A component uses the role. It does not use `--blue` or `--red`.
 | `--text-muted` | `--black-50` | Secondary text, placeholders, meta |
 | `--bg-surface` | `--white` | The page. Dark mode follows `--white` |
 | `--status-complete` | `--urgency-low` | Completed. Same hue as low urgency |
-| `--filter-chip-bg` | 5% of `--blue` | Filter chip fill |
+| `--action-tint` | 10% of `--action` mixed with `--white`; 18% in dark mode | The single fill for generic blue tints and selected action surfaces |
+| `--filter-chip-bg` | `--action-tint` | Compatibility alias for filter and selection fills |
 | `--switch-knob` | `#f5f5f5` | Switch thumb |
 
 Department chips and urgency chips keep using the hue names. Those names are the raw values.
+
+Every generic blue-tinted surface uses `var(--action-tint)`, including filters, selected rows, action badges, and tinted selection cards. Do not create a separate blue hex, opacity, or mix at a call site. With the default blue and light surface the resolved fill is `#EBF4FC`; the default dark fill is approximately `#223340`. The token remains theme- and accent-adaptive. Department and urgency colors keep their semantic fills.
 
 `--text-muted` and `--black-50` are the same value. The hover ladder still names `--black-50`, because that step is a neutral, not the muted-text job. Muted copy uses `--text-muted`.
 
@@ -195,3 +198,5 @@ Sidebar icon buttons stay unfilled. The switch under Settings uses `--action` an
 - `--outline-image`: 1px pure black at 10% opacity, inset on photographs. In dark mode it is pure white at 10% opacity, not the hairline and not a tinted grey.
 - `--icon-stroke`: `calc(1 / 0.95)`. Icons with class `i` are scaled to 0.95, and this keeps the painted stroke at `1`. Every icon is the line construction `#i-calendar` and `#i-camera` use, on a 14 grid with round ends and joins. See [polish.md](polish.md).
 - `--hit` / `--hit-touch`: 40px and 44px hit areas. The visible control stays its gallery size.
+
+Interactive accent-tinted surfaces use `--action-tint-hover` on hover (16% action in light mode, 26% in dark mode), keeping the blue hue instead of the neutral row hover fill.

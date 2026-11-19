@@ -10683,7 +10683,7 @@ html[data-theme="dark"] :where(.sds) .board-room-due, html[data-theme="dark"] :w
   width: 20px;
   height: 20px;
   border-radius: var(--radius-circle);
-  background: color-mix(in srgb, var(--action) 12%, transparent);
+  background: var(--action-tint);
   color: var(--action);
   font-size: var(--text-12);
   font-weight: 600;
@@ -11146,7 +11146,7 @@ html[data-theme="dark"] :where(.sds) .board-chip:not(:disabled):is(:hover, [aria
 :where(.sds) .hk-settings .settings-row-label .board-tipped > .i, :where(.sds).hk-settings .settings-row-label .board-tipped > .i { color: var(--black-50); }
 :where(.sds) .hk-days-off .settings-row-control > .hk-inline, :where(.sds).hk-days-off .settings-row-control > .hk-inline { display: flex; flex-wrap: wrap; gap: var(--space-4); }
 :where(.sds) .hk-days-off .settings-row-control .btn, :where(.sds).hk-days-off .settings-row-control .btn { flex: none; width: 40px; height: 28px; box-sizing: border-box; justify-content: center; }
-:where(.sds) .hk-settings .settings-card > .hk-availability, :where(.sds).hk-settings .settings-card > .hk-availability { padding: 0 var(--space-16) var(--space-8); }
+:where(.sds) .hk-settings .settings-card > .hk-availability, :where(.sds).hk-settings .settings-card > .hk-availability { padding: 0 var(--space-25) var(--space-16); }
 
 /* Weekly availability uses day tabs with one editor visible at a time. */
 :where(.sds) .hk-availability [role="tabpanel"] > .hk-availability-day, :where(.sds).hk-availability [role="tabpanel"] > .hk-availability-day { border-top: 0; }
@@ -11158,7 +11158,7 @@ html[data-theme="dark"] :where(.sds) .board-chip:not(:disabled):is(:hover, [aria
 :where(.sds) .hk-availability-tabs [role="tab"]:hover, :where(.sds).hk-availability-tabs [role="tab"]:hover { background: var(--surface-hover); }
 :where(.sds) .hk-availability-tabs .hk-day-tile[data-available="true"] > [role="tab"], :where(.sds).hk-availability-tabs .hk-day-tile[data-available="true"] > [role="tab"] { background: var(--filter-chip-bg); border-color: var(--action); }
 html[data-theme="dark"] :where(.sds) .hk-availability-tabs .hk-day-tile[data-available="true"] > [role="tab"]:hover, html[data-theme="dark"] :where(.sds).hk-availability-tabs .hk-day-tile[data-available="true"] > [role="tab"]:hover {
-  background: color-mix(in srgb, var(--action) 5%, var(--surface-hover));
+  background: var(--action-tint);
 }
 :where(.sds) .hk-availability-tab-status, :where(.sds).hk-availability-tab-status { font-size: var(--text-12); color: var(--text-muted); }
 :where(.sds) .hk-availability-tabs [role="tab"]:focus-visible, :where(.sds).hk-availability-tabs [role="tab"]:focus-visible { outline: 2px solid var(--action); outline-offset: -3px; }
@@ -11216,7 +11216,7 @@ html.is-keys :where(.sds) .hk-day-tile, html.is-keys :where(.sds).hk-day-tile { 
 :where(.sds) .board-workflow-actions, :where(.sds).board-workflow-actions { display: flex; align-items: center; justify-content: flex-end; gap: var(--space-8); }
 :where(.sds) .board-workflow .text-well, :where(.sds).board-workflow .text-well { width: 100%; }
 
-:where(.sds) .board-minibar-item .settings-row-control, :where(.sds).board-minibar-item .settings-row-control { flex-shrink: 1; }
+:where(.sds) .board-minibar-item .settings-row-control > input:first-child, :where(.sds).board-minibar-item .settings-row-control > input:first-child { flex: 1; }
 :where(.sds) .board-minibar-item input, :where(.sds).board-minibar-item input { min-width: 0; }
 :where(.sds) .board-minibar-item .board-minibar-quantity, :where(.sds).board-minibar-item .board-minibar-quantity { width: calc(var(--space-25) * 3); }
 :where(.sds) .board-minibar-item .btn, :where(.sds).board-minibar-item .btn { flex: none; }
@@ -11229,7 +11229,7 @@ html.is-keys :where(.sds) .hk-day-tile, html.is-keys :where(.sds).hk-day-tile { 
 }
 
 :where(.sds) .editor-dialog-card.is-pills.board-bulk-dialog .editor-dialog-body, :where(.sds).editor-dialog-card.is-pills.board-bulk-dialog .editor-dialog-body { gap: var(--space-16); }
-:where(.sds) .board-limits-dialog .editor-dialog-body > .hk-help, :where(.sds).board-limits-dialog .editor-dialog-body > .hk-help { margin: 0; }
+:where(.sds) .board-limits-dialog .settings-sections > .hk-help, :where(.sds).board-limits-dialog .settings-sections > .hk-help { margin: 0; }
 
 :where(.sds) .board-bulk-section, :where(.sds).board-bulk-section, :where(.sds) .board-limits-section, :where(.sds).board-limits-section { display: grid; gap: var(--space-8); min-width: 0; }
 :where(.sds) .board-bulk-filters, :where(.sds).board-bulk-filters { display: flex; flex-wrap: wrap; gap: var(--space-8); }
@@ -11299,9 +11299,7 @@ html[data-theme="dark"] :where(.sds) .board-limits-table tr[data-selected], html
 :where(.sds) .board-date-picker, :where(.sds).board-date-picker { width: 248px; padding: var(--space-8); }
 :where(.sds) .board-inspection, :where(.sds).board-inspection { display: grid; gap: var(--space-16); }
 :where(.sds) .board-inspection > .btn, :where(.sds).board-inspection > .btn { justify-self: start; }
-:where(.sds) .board-inspection-check, :where(.sds).board-inspection-check { display: flex; align-items: center; gap: var(--space-8); padding: var(--space-12) var(--space-16); cursor: pointer; }
-:where(.sds) .board-inspection-check + .board-inspection-check, :where(.sds).board-inspection-check + .board-inspection-check { border-top: 1px solid var(--line); }
-:where(.sds) .board-inspection-check:hover, :where(.sds).board-inspection-check:hover { background: var(--surface-hover); }
+:where(.sds) .board-inspection-check.settings-row, :where(.sds).board-inspection-check.settings-row { justify-content: flex-start; gap: var(--space-8); cursor: pointer; }
 
 
 :where(.sds) .board-upload-drop, :where(.sds).board-upload-drop,

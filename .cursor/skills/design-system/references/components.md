@@ -17,6 +17,7 @@ Color, type, and spacing are gallery specimens. They are not components. Header,
 
 - When: the one action that creates or commits on that view.
 - When not: a second action, a filter, a fact, or the confirming delete. A page that only views leaves that corner empty.
+- Every labeled primary action has one leading SDS icon. Use the plus for Add, the check for Save, and the matching action glyph for other commands. Text-only primary buttons inherit the commit check. A loading indicator occupies the same slot.
 - Default: `.btn`.
 - States: rest is `--action` with white text. Hover is `--action-hover` in both themes. One per surface. Rest is the `--action` fill under `--depth-sheen`, with `--depth-edge` and `--depth-drop` as the shadow. `--depth-rim` is a 1px inner highlight drawn on `::after`. That is the depth. A flat blue fill is wrong. Disabled drops the depth. Nothing else on that surface uses this fill. Press scales the whole control to `0.98` and does not darken the fill. Disabled is the same button at 60% opacity. It does not scale and does not take a hover fill. A button is 28px, line-height 20px, padding `--space-4` 6px. An icon in the button uses that same padding. The label and the icon are centered. Side padding is equal.
 
@@ -81,7 +82,7 @@ Large is the same box at 18px, with a 5px radius and a 12px check. It is for a r
 - When: a setting that is on or off, such as dark mode.
 - When not: a choice among three or more. That is tabs or segments. A row that is included or left out is a checkbox.
 - Default: `.theme-switch`, off.
-- States: off track is `--grey`, on track is `--action`, knob is `--switch-knob`. The knob travels `--switch-dur` (160ms) on `--ease-out` and stops at the end. The track snaps. Reduced motion skips the travel and keeps the color. On a hovered secondary button the off track steps to `--grey-up`. The on track stays `--action`.
+- States: off track is `--grey`, on track is `--action`, knob is `--switch-knob`. The knob travels `--switch-dur` (160ms) on `--ease-out` and stops at the end. Drive travel from the checked or pressed state so pointer, keyboard, and row activation share the same motion. The initial render and unrelated saves keep the thumb still. The track snaps. Reduced motion skips the travel and keeps the color. On a hovered secondary button the off track steps to `--grey-up`. The on track stays `--action`.
 
 ## Department tag
 
@@ -197,14 +198,16 @@ Every editable description and notes field is this box. A complaint description,
 - When: a tool in a header or a panel bar with no room for a label: show or hide a panel, expand, pin, history, new chat. Every panel toggle is this button, in every header.
 - When not: the primary action. That button has a label. An action on the page itself, such as New beside a table. That is the secondary icon-only button, with its stroke.
 - Default: `IconButton`. A 30px square, a `--black-50` glyph at 18px, and no fill or stroke at rest. It always has an `aria-label`.
-- States: rest is clear. Hover fills `--grey`, one step from the surface; in the Lance panel that step is `--sidebar-grey`. Press scales the whole control. The glyph stays `--black-50` on hover. It never turns `--black`, and it never takes a stroke. Sidebar icon buttons stay unfilled at rest.
+- Quiet variant: `IconButton variant="quiet"` keeps the same 30px hit area and transparent background. Hover changes the glyph from `--black-50` to `--black` without changing its stroke weight. Use for embedded tools such as password visibility controls. Keyboard focus remains visible.
+- Default states: rest is clear. Hover fills `--grey`, one step from the surface; in the Lance panel that step is `--sidebar-grey`. Press scales the whole control. The glyph stays `--black-50` on hover. It never turns `--black`, and it never takes a stroke. Sidebar icon buttons stay unfilled at rest.
 
 ## Text button
 
 - When: only the plus that starts a record in a widget's grey head.
 - When not: anywhere else. An action on the page, in the filter row, in a selection toolbar, in the header, or a labeled action in a card's grey head (Auto-assign, Collect) is the secondary button. "Quiet" is not a reason to drop the stroke. If you are unsure, it is secondary. The main action on a view is the primary button.
 - Default: `TextIcon`. Label, small, and delete.
-- States: rest is clear. Hover fills one step from the surface it sits on. The label, the icon, and the gap do not move on hover. Press scales the whole control to `0.98`. The delete variant stays `--destructive` at rest and on hover, and opens Delete confirmation first.
+- Quiet variant: `IconButton variant="quiet"` keeps the same 30px hit area and transparent background. Hover changes the glyph from `--black-50` to `--black` without changing its stroke weight. Use for embedded tools such as password visibility controls. Keyboard focus remains visible.
+- Default states: rest is clear. Hover fills one step from the surface it sits on. The label, the icon, and the gap do not move on hover. Press scales the whole control to `0.98`. The delete variant stays `--destructive` at rest and on hover, and opens Delete confirmation first.
 
 ## Lance composer
 
@@ -232,7 +235,7 @@ Every editable description and notes field is this box. A complaint description,
 - When: a name or a shortcut is not already written on the control.
 - When not: a menu, and not as the only place a fact is written.
 - Default: the gallery tip.
-- States: the first tip can wait and fade. The next tip snaps. A tip opened from the keyboard appears in the same frame. A click does not hide it. It paints above the page, the table, and the sidebar. A tip fits on one line. A tip on a tag is centered on that tag, and the shadow is on the tip.
+- States: the first tip can wait and fade. The next tip snaps. A tip opened from the keyboard appears in the same frame. A click does not hide it. It paints above the page, the table, and the sidebar. Short tips fit on one line. Long tips wrap at `--tooltip-max-width` (280px), capped to the viewport with an 8px edge inset. Let height grow with the content and break long words; do not truncate help text or impose a line clamp. The same measure applies to label, shortcut, and info tooltips. A tip on a tag is centered on that tag, and the shadow is on the tip.
 
 ## Toast
 
@@ -252,7 +255,7 @@ Every editable description and notes field is this box. A complaint description,
 
 - When: switching between two or three modes that are different, such as a filter or a toggle between views of the same content. Three at most.
 - When not: the main switch for a page or its primary categories. That is tabs. Not the department bar, or more than three modes.
-- Default: `.segmented`, with one segment selected.
+- Default: `.segmented`, with one segment selected. Inside a hovered settings row, the track follows its ground one step deeper: `--grey` in light mode and `--black-12` in dark mode. Unselected option hover takes the next step; the selected pill retains its existing fill and depth.
 - States: selected is `--white` with `--stroke` and `--black` text, and it does not take the unselected hover. Unselected hover is `--grey` and the label stays `--black-50`.
 
 ## Header
@@ -348,6 +351,8 @@ Forced by: make the title bigger; turn the step count into a progress bar on the
 The track is 42px tall and the full width of its group. It is a stripe of `--grey`, `--space-2` wide, repeating every `--space-4`. The fill is that same stripe in `--action`, and its width is the share that is done. The count sits with the bar, on the line above it. It does not sit inside the stripe. Do not draw a second bar, a solid fill, or a different height.
 
 ## Sidebar
+
+Settings uses an inset navigation variant on the same surface as its options. Its 277px left column stays anchored to the page’s left edge under the header while the options scroll independently. Preserve search, folder groups, and section links. On narrow screens use the navigation sheet. The page header owns the top-right Back action. English Settings navigation group headings and links use sentence case, with the first word capitalized and acronyms such as PMS and CRM and product names. Author casing in the source copy, with locale-appropriate casing for translations.
 
 - When: every product page. It is the left nav.
 - When not: a second nav, or a restyle of this one per page.
@@ -689,6 +694,8 @@ Screen-only note layout is not in this catalog. Do not fold one-off note chrome 
 
 ## Page section headings
 
+Section headers and settings row labels use sentence case: capitalize the first word only, plus proper names and acronyms (for example, “Guest services”, “Work orders”, and “AI agent”). Do not capitalize every word and do not use CSS text-transform to alter copy.
+
 Section headings on the page surface include a relevant 16px icon from the shared icon set, followed by an 8px gap and 14px, medium-weight (500) text. Both use `--text-muted`. Align the icon and text vertically. Apply this to section headings, including chart and table section titles; widget headers retain their own component formatting.
 
 ## Settings card
@@ -704,9 +711,9 @@ Settings spacing rule: `SettingsSections spacing="areas"` separates whole descri
 
 The card uses the existing white surface, 1px `--line-card` edge, and 10px radius. Rows are at least 60px tall with 16px vertical and 25px horizontal padding, 14px normal labels, and hairline separators between rows. Supporting copy is 12px muted, directly below the label or inline via `inlineDescription`. Stacked copy uses a 2px title-to-subtitle gap and 16px vertical padding; longer copy can grow. When an icon accompanies stacked copy, it sits in its own leading column, vertically centered beside both lines with a 16px gap. Both text lines share the same left edge. Icon-only labels retain the compact 8px gap. Hover uses the existing surface step without a fade.
 
-Use `SectionHeader variant="described"` to introduce an entire settings area, such as Work preferences or Schedule preferences. It is a 16px medium dark title with a 14px muted `description` below it. The shared header owns 20px top padding, 8px bottom padding, and 16px external space before the following subsection or card. The icon is optional. Keep this area heading outside the cards it describes. Standard `SectionHeader` is for smaller subsections within that area: a 14px muted title, optional icon and trailing context. Use `level={3}` for those subsection headings beneath the area’s level-2 heading. A section header names one subsection; the larger described heading explains the whole area. Use `SettingsRow layout="inline"` (the default) for compact selectors: label and supporting copy on the left, controls centered vertically on the right at their intrinsic width. Use it for day choices, a room range, dropdowns, and single fields. Never stretch the control group to the row width or hardcode its measured browser width. Inline rows reuse the existing narrow-screen wrap rule; grouped choices may wrap within the available width. Use `SettingsRow layout="stacked"` for larger controls below their label and description, such as theme previews or a weekly schedule. It uses 20px vertical and 25px horizontal padding and a 16px gap before the controls. Inline and stacked rows both own the same immediate surface-step hover; consumers do not suppress it or reproduce it locally. Custom controls keep their own interaction and accessible names; a stacked row is a labeled group, not one large button.
+Use `SectionHeader variant="described"` to introduce an entire settings area, such as Work preferences or Schedule preferences. It is a 16px medium dark title with a 14px muted `description` aligned to the right on the same line, wrapping when needed. The shared header owns 20px top padding, 8px bottom padding, and 16px external space before the following subsection or card. The icon is optional. Keep this area heading outside the cards it describes. Standard `SectionHeader` is for smaller subsections within that area: a 14px muted title, optional icon and trailing context. Use `level={3}` for those subsection headings beneath the area’s level-2 heading. A section header names one subsection; the larger described heading explains the whole area. Use `SettingsRow layout="inline"` (the default) for compact selectors: label and supporting copy on the left, controls centered vertically on the right at their intrinsic width. Use it for day choices, a room range, dropdowns, and single fields. Never stretch the control group to the row width or hardcode its measured browser width. Inline rows reuse the existing narrow-screen wrap rule; grouped choices may wrap within the available width. Use `SettingsRow layout="stacked"` for larger controls below their label and description, such as theme previews or a weekly schedule. It uses 20px vertical and 25px horizontal padding and a 16px gap before the controls. Inline and stacked rows with an enabled action or editable control own the same immediate surface-step hover; consumers do not reproduce it locally. Informational rows with only text, status, or an info tooltip have no row hover. Native disabled controls and read-only fields alone do not create a hover surface. Navigational rows (including a shared row inside an outer button or link) retain the shared hover, as do clickable aria-disabled actions that explain why they are unavailable. Custom controls keep their own interaction and accessible names; a stacked row is a labeled group, not one large button.
 
-`SettingsToggleRow` owns a labeled ThemeSwitch; clicking the row toggles it once, while info controls remain separate. Keyboard activation remains on the switch. `SettingsMenuRow` composes the shared Menu, including suffixes and groups. `SettingsInputRow` composes the outlined text input and accepts native input props for text, number, validation, and disabled states. `SettingsRow` is the composition variant for ranges, day buttons, actions, or other controls; it does not make the entire row interactive. Supply accessible names for custom controls. The `info` slot accepts an existing tooltip trigger. All values remain controlled by the consumer.
+`SettingsToggleRow` owns a labeled ThemeSwitch; clicking the row toggles it once, while info controls remain separate. Keyboard activation remains on the switch. `SettingsMenuRow` composes the shared Menu, including suffixes and groups. `SettingsInputRow` composes the outlined text input and accepts native input props for text, number, validation, and disabled states. `SettingsRow` is the composition variant for ranges, day buttons, actions, or other controls; background clicks activate a sole enabled toggle once, while links, info controls, disabled controls, and rows with multiple actions remain independent. Supply accessible names for custom controls. The `info` slot accepts an existing tooltip trigger. All values remain controlled by the consumer.
 
 Use `SettingsCard variant="destructive"` for destructive options such as offboarding or resetting preferences. It uses the standard 1px `--line-card` grey border and 16px vertical row padding at all viewport sizes, including rows with subtitles. Use `--destructive` red for the row title and leading icon, retain muted supporting copy, and pair it with a danger action button. Confirmation behavior belongs to the consumer.
 
@@ -721,3 +728,25 @@ When a card or row has one primary selector (checkbox, switch, or selection cont
 ### Info tooltip
 
 Use `InfoTooltip` for info-icon help everywhere. Its shared 14px muted icon is focusable and displays the tooltip above the icon, separated by `--space-8`. The component owns placement and exposes no below-placement override. Hover and focus show it; Escape and blur dismiss it. Use the popover top layer so card overflow does not clip help. Do not build local info-icon wrappers with different placement.
+
+## Add option field
+
+Use `AddOptionField` from `@lance-live/sds/add-option` for adding a name, muted phrase, or other list entry. It reuses the report editor’s line input and secondary Add button with the shared plus icon. Its entry loads its own stylesheet. Keep the field and Add button together, with an 8px gap. It stretches to its container and accepts a class for screen-owned width limits. Use its exported `AddOptionButton` when a plus opens the field. Icon-only triggers need an accessible name that identifies the target item.
+
+Pass controlled `value`, `onValueChange`, and `onAdd`, plus localized `label`, `placeholder`, and `addLabel`. Use `addAriaLabel` for a more specific accessible action name. The Add button is disabled for blank input or a disabled field. Pass `addDisabled` to block a duplicate while the input remains editable. Enter adds once and prevents an enclosing form submission. IME composition keeps Enter in the input. The consumer owns normalization, duplicates, saving, and clearing the value after a successful add. Existing list chips and remove controls stay with the consumer.
+
+SettingsRow automatically delegates a background click when it contains exactly one enabled switch or checkbox and no other actions or editable controls. Direct clicks on buttons, labels, links, fields, or help affordances keep their native behavior. Disabled controls and multi-action rows do not delegate.
+
+Expanded content inside a settings card uses `.settings-card-expansion` and the shared `--settings-expansion-bg` token (subtle grey in each theme). The collapsed parent row retains the normal card surface. Keep the existing single hairline boundary and shared row padding; do not add a nested border or card merely to distinguish expansion.
+
+## Compact form popup
+
+Use `.sds.form-dialog` for focused settings forms such as Sales hours, a destination, or account configuration. Keep the host dialog's focus trap, Escape handling, accessible title and dismissal callbacks. This is distinct from destructive confirmation and record editors.
+
+Use `.form-dialog-header`, `.form-dialog-body`, and `.form-dialog-footer`. The header has no divider, matching Bulk edit; the footer keeps a single full-width 1px `--line` divider. The title matches Bulk edit: `--text-20`, weight 500, line-height24px; supporting copy is `--text-12`/16px. The header uses25px top and horizontal padding with no bottom padding; the body provides the single16px gap below the header. Body and footer use16px vertical and25px horizontal padding. Never stack extra header padding with the body gap. The body stacks its direct field groups16px apart and scrolls independently on small screens. Each field keeps its label, control and helper copy in one group. Use the existing editor close drawing (`.editor-dialog-close`,14px `close` glyph,28px target) at25px from the top and right, with a localized accessible name.
+
+Right-align footer actions with an 8px gap. Keep secondary Cancel immediately before the primary action in one group. Place any additional actions, including Remove or Reset, at the far right after that group. Use the same order in the DOM so keyboard focus follows the visible buttons. If space runs short, wrap the additional actions as a group and keep Cancel and the primary action together. Button styling comes from the shared Button component. No left-aligned Cancel or custom close glyph. Field labels are regular weight400 at14px; section headings retain their own hierarchy.
+
+A table column can show its record count through `DataColumn.count`. The count sits beside its title in muted normal-weight tabular figures, separated by4px, and participates in the column width measurement. Keep this metadata in the table header rather than adding a separate count row above it.
+
+Example placeholders in English text inputs and multiline descriptions use `e.g., …`. Keep the example concrete; do not prefix it with `Example:` or omit the comma. Write the copy at its source rather than applying CSS text transforms. Popup titles and field labels use sentence case: capitalize the first word, proper names and acronyms only.

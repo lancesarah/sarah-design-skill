@@ -52,10 +52,16 @@ export type SettingsRowProps = {
 };
 
 export function SettingsRow({ label, description, inlineDescription, info, icon, children, className, toggle, layout = "inline" }: SettingsRowProps) {
-  return <div className={["sds settings-row", `settings-row-${layout}`, inlineDescription ? "has-inline-description" : "", toggle ? "is-toggle" : "", className].filter(Boolean).join(" ")} role={layout === "stacked" ? "group" : undefined} aria-label={layout === "stacked" ? label : undefined} onClick={toggle ? event => {
-    if ((event.target as HTMLElement).closest("button, a, input, select, textarea, [tabindex], .board-tipped")) return;
-    event.currentTarget.querySelector<HTMLButtonElement>(".theme-switch")?.click();
-  } : undefined}>
+  return <div className={["sds settings-row", `settings-row-${layout}`, inlineDescription ? "has-inline-description" : "", toggle ? "is-toggle" : "", className].filter(Boolean).join(" ")} role={layout === "stacked" ? "group" : undefined} aria-label={layout === "stacked" ? label : undefined} onClick={event => {
+    if (event.defaultPrevented || (event.target as Element).closest("button, a, label, input, select, textarea, [tabindex], [contenteditable], .board-tipped")) return;
+    const controls = Array.from(event.currentTarget.querySelectorAll<HTMLElement>('button, a[href], input, select, textarea, [contenteditable="true"]')).filter(control => !control.matches('[type="hidden"], [aria-hidden="true"], [hidden]'));
+    if (!toggle && controls.length !== 1) return;
+    const toggles = controls.filter(control => control.matches('.theme-switch, [role="switch"], [role="checkbox"], input[type="checkbox"]'));
+    if (toggles.length !== 1) return;
+    const control = toggles[0];
+    if (!control.matches('.theme-switch, [role="switch"], [role="checkbox"], input[type="checkbox"]') || control.matches(':disabled, [aria-disabled="true"]')) return;
+    control.click();
+  }}>
     <div className="settings-row-leading">
       {icon ? <Icon name={icon} size={16} /> : null}
       <div className="settings-row-copy"><span className="settings-row-label">{label}{info}</span>{description ? <span className="settings-row-description">{description}</span> : null}</div>

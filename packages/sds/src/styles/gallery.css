@@ -379,6 +379,18 @@ html.is-keys :where(.sds) * {
 :where(.sds) .btn-tertiary:hover, :where(.sds).btn-tertiary:hover, :where(.sds) .btn-tertiary.is-hover, :where(.sds).btn-tertiary.is-hover, :where(.sds) .btn-tertiary[aria-expanded="true"], :where(.sds).btn-tertiary[aria-expanded="true"] { background: var(--black-12); color: var(--black); }
 :where(.sds) .btn:has(svg):not(.btn-icon), :where(.sds).btn:has(svg):not(.btn-icon) { padding: 5px 8px 5px 6px; }
 
+/* Labeled primary actions can supply their own glyph. The default commit mark
+   also covers link buttons and older callers that supply just a label. */
+:where(.sds) .btn:not(:is(.btn-secondary, .btn-tertiary, .btn-danger, .btn-danger-light, .btn-icon)):not(:has(svg, img, [role="img"])):not(:empty)::before, :where(.sds).btn:not(:is(.btn-secondary, .btn-tertiary, .btn-danger, .btn-danger-light, .btn-icon)):not(:has(svg, img, [role="img"])):not(:empty)::before {
+  content: "";
+  width: 14px;
+  height: 14px;
+  flex: none;
+  background: currentColor;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Cpath d='M3 7.2 5.6 10 11 4.2' fill='none' stroke='black' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+
 :where(.sds) .chip, :where(.sds).chip {
   display: inline-flex;
   align-items: center;
@@ -752,7 +764,9 @@ html[data-theme="dark"] :where(.sds) .field textarea, html[data-theme="dark"] :w
   align-items: center;
   gap: 6px;
   width: max-content;
-  height: 20px;
+  max-width: min(var(--tooltip-max-width, 280px), calc(100vw - 16px));
+  min-height: 20px;
+  height: auto;
   margin: 0;
   padding: 2px 5px;
   border: 0;
@@ -764,7 +778,9 @@ html[data-theme="dark"] :where(.sds) .field textarea, html[data-theme="dark"] :w
   font-size: 12px;
   font-weight: 500;
   line-height: 16px;
-  white-space: nowrap;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  text-align: left;
   inset: auto;
 }
 :where(.sds) .tip span, :where(.sds).tip span { color: var(--black-25); font-weight: 600; }
@@ -789,7 +805,8 @@ html[data-theme="dark"] :where(.sds) .field textarea, html[data-theme="dark"] :w
   border: 0;
   overflow: visible;
   width: max-content;
-  height: 20px;
+  min-height: 20px;
+  height: auto;
   padding: 2px 5px;
   background: var(--black);
   color: var(--white);
@@ -848,6 +865,7 @@ html.is-tip-open :where(.sds) .tip-host:not(.is-tip-source):is(:hover, :focus-vi
   box-shadow: var(--stroke), var(--ring-popup), var(--shadow-menu);
 }
 :where(.sds) .confirm strong, :where(.sds).confirm strong { font-size: 14px; font-weight: 500; line-height: normal; }
+:where(.sds) .confirm .confirm-detail, :where(.sds).confirm .confirm-detail { color: var(--black-50); font-size: 12px; font-weight: 400; line-height: normal; }
 :where(.sds) .confirm p, :where(.sds).confirm p { margin: 0; color: var(--black-50); font-size: 12px; font-weight: 400; line-height: normal; }
 :where(.sds) .confirm-actions, :where(.sds).confirm-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 6px; }
 :where(.sds) .btn-danger, :where(.sds).btn-danger { background: var(--destructive); color: var(--white); box-shadow: none; }
@@ -895,7 +913,7 @@ html[data-theme="dark"] :where(.sds) .menu .call-resolution, html[data-theme="da
 
 /* Table */
 :where(.sds) .table-wrap, :where(.sds).table-wrap { display: flex; flex-direction: column; gap: 8px; max-width: 100%; overflow-x: auto; }
-:where(.sds) .grid, :where(.sds).grid {
+:where(.sds) .table-wrap .grid, :where(.sds).table-wrap .grid {
   display: grid;
   grid-template-columns: 72px 327px 129px 94px 75px 129px 90px;
   gap: 1px;
@@ -905,7 +923,7 @@ html[data-theme="dark"] :where(.sds) .menu .call-resolution, html[data-theme="da
   border-radius: 6px;
   overflow: hidden;
 }
-:where(.sds) .grid > *, :where(.sds).grid > * {
+:where(.sds) .table-wrap .grid > *, :where(.sds).table-wrap .grid > * {
   display: flex;
   align-items: center;
   gap: 6px;
@@ -914,15 +932,15 @@ html[data-theme="dark"] :where(.sds) .menu .call-resolution, html[data-theme="da
   background: var(--white);
   font-size: 12px;
 }
-:where(.sds) .grid .head, :where(.sds).grid .head { background: var(--sidebar-grey); color: var(--black); }
-:where(.sds) .grid .head span, :where(.sds).grid .head span { display: inline-flex; align-items: center; gap: 6px; opacity: 0.5; }
+:where(.sds) .table-wrap .grid .head, :where(.sds).table-wrap .grid .head { background: var(--sidebar-grey); color: var(--black); }
+:where(.sds) .table-wrap .grid .head span, :where(.sds).table-wrap .grid .head span { display: inline-flex; align-items: center; gap: 6px; opacity: 0.5; }
 :where(.sds) .cell-open, :where(.sds).cell-open { color: var(--black-50); }
 :where(.sds) .cell-task, :where(.sds).cell-task { justify-content: space-between; }
 :where(.sds) .cell-task .chev, :where(.sds).cell-task .chev { opacity: 0; }
-:where(.sds) .grid.live:has(.row:hover) > .row, :where(.sds).grid.live:has(.row:hover) > .row,
-:where(.sds) .grid.is-row-hover > .row, :where(.sds).grid.is-row-hover > .row { background: var(--sidebar-grey); }
-:where(.sds) .grid.live:has(.row:hover) .chev, :where(.sds).grid.live:has(.row:hover) .chev,
-:where(.sds) .grid.is-row-hover .chev, :where(.sds).grid.is-row-hover .chev { opacity: 1; }
+:where(.sds) .table-wrap .grid.live:has(.row:hover) > .row, :where(.sds).table-wrap .grid.live:has(.row:hover) > .row,
+:where(.sds) .table-wrap .grid.is-row-hover > .row, :where(.sds).table-wrap .grid.is-row-hover > .row { background: var(--sidebar-grey); }
+:where(.sds) .table-wrap .grid.live:has(.row:hover) .chev, :where(.sds).table-wrap .grid.live:has(.row:hover) .chev,
+:where(.sds) .table-wrap .grid.is-row-hover .chev, :where(.sds).table-wrap .grid.is-row-hover .chev { opacity: 1; }
 :where(.sds) .count, :where(.sds).count { margin: 0; font-size: 12px; color: var(--black-50); }
 
 /* Tabs */
@@ -1392,7 +1410,7 @@ body.is-side-settling :where(.sds) .side-item:focus-within .side-actions, body.i
   background: var(--grey);
   transition: background-color var(--switch-track-dur) var(--switch-ease);
 }
-:where(.sds) .theme-switch[aria-pressed="true"] .theme-switch-track, :where(.sds).theme-switch[aria-pressed="true"] .theme-switch-track { background: var(--action); }
+:where(.sds) .theme-switch:is([aria-pressed="true"], [aria-checked="true"]) .theme-switch-track, :where(.sds).theme-switch:is([aria-pressed="true"], [aria-checked="true"]) .theme-switch-track { background: var(--action); }
 :where(.sds) .theme-switch-knob, :where(.sds).theme-switch-knob {
   position: absolute;
   left: 2px;
@@ -1402,24 +1420,11 @@ body.is-side-settling :where(.sds) .side-item:focus-within .side-actions, body.i
   border-radius: var(--radius-circle);
   background: var(--switch-knob);
   translate: 0 0;
+  transition: translate var(--switch-dur) var(--switch-ease);
 }
-:where(.sds) .theme-switch[aria-pressed="true"] .theme-switch-knob, :where(.sds).theme-switch[aria-pressed="true"] .theme-switch-knob { translate: var(--switch-travel) 0; }
-:where(.sds) .theme-switch.is-init[aria-pressed="true"] .theme-switch-knob, :where(.sds).theme-switch.is-init[aria-pressed="true"] .theme-switch-knob {
-  animation: switch-on var(--switch-dur) var(--switch-ease) both;
-}
-:where(.sds) .theme-switch.is-init[aria-pressed="false"] .theme-switch-knob, :where(.sds).theme-switch.is-init[aria-pressed="false"] .theme-switch-knob {
-  animation: switch-off var(--switch-dur) var(--switch-ease) both;
-}
+:where(.sds) .theme-switch:is([aria-pressed="true"], [aria-checked="true"]) .theme-switch-knob, :where(.sds).theme-switch:is([aria-pressed="true"], [aria-checked="true"]) .theme-switch-knob { translate: var(--switch-travel) 0; }
 @media (prefers-reduced-motion: reduce) {
-  :where(.sds) .theme-switch-knob, :where(.sds).theme-switch-knob { animation: none !important; }
-}
-@keyframes switch-on {
-  0%   { translate: 0 0; }
-  100% { translate: var(--switch-travel) 0; }
-}
-@keyframes switch-off {
-  0%   { translate: var(--switch-travel) 0; }
-  100% { translate: 0 0; }
+  :where(.sds) .theme-switch-knob, :where(.sds).theme-switch-knob { transition: none; }
 }
 :where(.sds) .side-user .avatar, :where(.sds).side-user .avatar { width: 31px; height: 31px; object-fit: cover; padding: 0; }
 :where(.sds) .side-user .person-copy, :where(.sds).side-user .person-copy { font-size: 12px; }
@@ -3227,7 +3232,8 @@ html[data-theme="dark"] :where(.sds) .segmented .slide-pill, html[data-theme="da
 :where(.sds) .settings-card-actions, :where(.sds).settings-card-actions { display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-8); padding: var(--space-16) var(--space-25); border-top: 1px solid var(--line); }
 :where(.sds) .settings-row, :where(.sds).settings-row { box-sizing: border-box; display: flex; align-items: center; justify-content: space-between; gap: var(--space-16); min-height: 60px; padding: var(--space-16) var(--space-25); font-size: var(--text-14); font-weight: 400; line-height: 20px; }
 :where(.sds) .settings-card > .settings-row + .settings-row, :where(.sds).settings-card > .settings-row + .settings-row { border-top: 1px solid var(--line); }
-:where(.sds) .settings-row:hover, :where(.sds).settings-row:hover { background: var(--surface-hover); }
+/* Information alone is not an action: only editable/action rows take a hover surface. */
+:where(.sds) .settings-row:has(> .settings-row-control :is(button:not(:disabled), a[href], input:not(:disabled):not([readonly]):not([type="hidden"]), select:not(:disabled), textarea:not(:disabled):not([readonly]), [contenteditable="true"], [role="button"]:not(:disabled), [role="switch"]:not(:disabled), [role="checkbox"]:not(:disabled), [role="radio"]:not(:disabled), [role="combobox"]:not(:disabled), [role="slider"]:not(:disabled), [role="tab"]:not(:disabled)):not(.info-tooltip, .info-tooltip *)):hover, :where(.sds).settings-row:has(> .settings-row-control :is(button:not(:disabled), a[href], input:not(:disabled):not([readonly]):not([type="hidden"]), select:not(:disabled), textarea:not(:disabled):not([readonly]), [contenteditable="true"], [role="button"]:not(:disabled), [role="switch"]:not(:disabled), [role="checkbox"]:not(:disabled), [role="radio"]:not(:disabled), [role="combobox"]:not(:disabled), [role="slider"]:not(:disabled), [role="tab"]:not(:disabled)):not(.info-tooltip, .info-tooltip *)):hover, :where(.sds) .settings-row:is(button:not(:disabled), a[href], [role="button"]:not(:disabled)):hover, :where(.sds).settings-row:is(button:not(:disabled), a[href], [role="button"]:not(:disabled)):hover, :where(.sds) :is(button:not(:disabled), a[href], [role="button"]:not(:disabled)) .settings-row:hover, :where(.sds):is(button:not(:disabled), a[href], [role="button"]:not(:disabled)) .settings-row:hover { background: var(--surface-hover); }
 :where(.sds) .settings-row.is-toggle, :where(.sds).settings-row.is-toggle { cursor: pointer; }
 :where(.sds) .settings-row-leading, :where(.sds).settings-row-leading { display: flex; align-items: center; gap: var(--space-8); min-width: 0; }
 :where(.sds) .settings-row-leading > .i, :where(.sds).settings-row-leading > .i { flex-shrink: 0; color: var(--text-muted); }
@@ -3276,6 +3282,52 @@ html[data-theme="dark"] :where(.sds) .segmented .slide-pill, html[data-theme="da
 
 /* Scroll long dropdowns without compressing their option rows. */
 :where(.sds) .menu > *, :where(.sds).menu > * { flex-shrink: 0; }
+
+/* Quiet tools retain the same full target while only the glyph changes. */
+:where(.sds) .sds.side-icon.is-quiet, :where(.sds).sds.side-icon.is-quiet { background: transparent; }
+:where(.sds) .sds.side-icon.is-quiet:not(:disabled):hover, :where(.sds).sds.side-icon.is-quiet:not(:disabled):hover,
+:where(.sds) .sds.side-icon.is-quiet:not(:disabled).is-hover, :where(.sds).sds.side-icon.is-quiet:not(:disabled).is-hover { color: var(--black); background: transparent; }
+
+:where(.sds) .settings-row:has(.theme-switch:not(:disabled), [role="switch"]:not(:disabled), [role="checkbox"]:not(:disabled)), :where(.sds).settings-row:has(.theme-switch:not(:disabled), [role="switch"]:not(:disabled), [role="checkbox"]:not(:disabled)) { cursor: pointer; }
+
+/* Section subtitles share the heading line and use the remaining space. */
+:where(.sds) .section-header:has(.section-header-description) .section-header-copy, :where(.sds).section-header:has(.section-header-description) .section-header-copy { display: flex; flex: 1; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--space-8) var(--space-16); min-width: 0; }
+:where(.sds) .section-header:has(.section-header-description) .section-header-copy > :is(h2, h3), :where(.sds).section-header:has(.section-header-description) .section-header-copy > :is(h2, h3) { flex: 0 0 auto; }
+:where(.sds) .section-header .section-header-description, :where(.sds).section-header .section-header-description { margin: 0 0 0 auto; max-width: 100%; text-align: right; }
+
+/* Expanded settings content shares a neutral, theme-aware surface. */
+:where(.sds) .settings-card-expansion, :where(.sds).settings-card-expansion { background: var(--settings-expansion-bg); }
+:where(.sds) .settings-card-expansion > .settings-row, :where(.sds).settings-card-expansion > .settings-row { background: transparent; }
+
+/* Segments stay one surface step above the hovered settings row. */
+:where(.sds) .settings-row:hover .segmented, :where(.sds).settings-row:hover .segmented { background: var(--grey); }
+:where(.sds) .settings-row:hover .segment:not([aria-selected="true"]):hover, :where(.sds).settings-row:hover .segment:not([aria-selected="true"]):hover { background: var(--black-12); }
+html[data-theme="dark"] :where(.sds) .settings-row:hover .segmented, html[data-theme="dark"] :where(.sds).settings-row:hover .segmented { background: var(--black-12); }
+html[data-theme="dark"] :where(.sds) .settings-row:hover .segment:not([aria-selected="true"]):hover, html[data-theme="dark"] :where(.sds).settings-row:hover .segment:not([aria-selected="true"]):hover { background: var(--grey-up); }
+
+/* Compact form popup shell; the host owns focus, dismissal and positioning. */
+:where(.sds) .form-dialog, :where(.sds).form-dialog { display: flex; flex-direction: column; gap: 0; min-width: 0; overflow: hidden; padding: 0; color: var(--black); background: var(--white); font-family: var(--font); border: 0; border-radius: var(--radius-card); box-shadow: var(--stroke), var(--ring-popup), var(--elevation-menu); }
+:where(.sds) .form-dialog-header, :where(.sds).form-dialog-header { flex: none; padding: var(--space-25); padding-bottom: var(--space-16); padding-right: calc(var(--space-25) * 2 + 28px); border-bottom: 0; }
+:where(.sds) .form-dialog [data-slot="dialog-title"], :where(.sds).form-dialog [data-slot="dialog-title"] { margin: 0; color: var(--black); font-size: var(--text-20); font-weight: 500; line-height: 24px; }
+:where(.sds) .form-dialog-header p, :where(.sds).form-dialog-header p { margin: var(--space-4) 0 0; color: var(--text-muted); font-size: var(--text-12); line-height: 16px; }
+:where(.sds) .form-dialog-body, :where(.sds).form-dialog-body { display: grid; align-content: start; gap: var(--space-16); flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: var(--space-16) var(--space-25); }
+:where(.sds) .form-dialog-header + .form-dialog-body { padding-top: 0; }
+:where(.sds) .form-dialog-footer, :where(.sds).form-dialog-footer { display: flex; flex: none; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: var(--space-8); padding: var(--space-16) var(--space-25); border-top: 1px solid var(--line); }
+:where(.sds) .form-dialog-close, :where(.sds).form-dialog-close { position: absolute; top: var(--space-25); right: var(--space-25); }
+
+:where(.sds) .sheet-header-count, :where(.sds).sheet-header-count { margin-inline-start: var(--space-4); color: var(--text-muted); font-weight: 400; font-variant-numeric: tabular-nums; }
+
+:where(.sds) .form-dialog-header, :where(.sds).form-dialog-header { display: flex; align-items: flex-start; gap: var(--space-8); }
+:where(.sds) .form-dialog-header-copy, :where(.sds).form-dialog-header-copy { min-width: 0; }
+:where(.sds) .form-dialog-header-icon, :where(.sds).form-dialog-header-icon { display: flex; flex: none; color: var(--text-muted); }
+
+/* Map legacy field roles inside a shared form to the SDS theme. */
+:where(.sds) .form-dialog, :where(.sds).form-dialog { --foreground: var(--black); --muted-foreground: var(--text-muted); --border: var(--line-card); --background: var(--white); --card: var(--white); --primary: var(--action); --primary-foreground: var(--white); --muted: var(--sidebar-grey); --input: var(--line-card); }
+
+:where(.sds) .form-dialog > form, :where(.sds).form-dialog > form { display: contents; }
+:where(.sds) .form-dialog-header, :where(.sds).form-dialog-header, :where(.sds) .form-dialog-body, :where(.sds).form-dialog-body, :where(.sds) .form-dialog-footer, :where(.sds).form-dialog-footer { margin-block: 0; }
+
+:where(.sds) .form-dialog label, :where(.sds).form-dialog label, :where(.sds) .form-dialog [data-slot="label"], :where(.sds).form-dialog [data-slot="label"] { font-size: var(--text-14); font-weight: 400; line-height: 20px; }
 
 /* Run sheet. Each to-do is finished on its line. The table stays in todos.css. */
 

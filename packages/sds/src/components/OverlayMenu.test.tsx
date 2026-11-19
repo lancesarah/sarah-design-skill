@@ -1,5 +1,6 @@
-import { describe, expect, it } from "vitest";
-import { placeAtPoint, placeMenu } from "./OverlayMenu";
+import { fireEvent, render, screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
+import { OverlayMenu, placeAtPoint, placeMenu } from "./OverlayMenu";
 
 describe("placeAtPoint", () => {
   const view = { width: 800, height: 600 };
@@ -29,5 +30,20 @@ describe("placeMenu", () => {
     const trigger = { top: 100, left: 800, right: 828, bottom: 128, width: 28, height: 28 } as DOMRect;
     const placed = placeMenu(trigger, { width: 132, height: 35 }, "below", "end");
     expect(placed).toEqual({ top: 132, left: 696 });
+  });
+});
+
+describe("OverlayMenu in a modal host", () => {
+  it("remains pointer interactive when the host disables body pointer events", () => {
+    const select = vi.fn();
+    document.body.style.pointerEvents = "none";
+    try {
+      render(<OverlayMenu open anchorRef={{ current: null }} point={{ x: 20, y: 20 }}><button role="menuitem" onClick={select}>Sales team</button></OverlayMenu>);
+      expect(window.getComputedStyle(screen.getByRole("menu")).pointerEvents).toBe("auto");
+      fireEvent.click(screen.getByRole("menuitem", { name: "Sales team" }));
+      expect(select).toHaveBeenCalledTimes(1);
+    } finally {
+      document.body.style.pointerEvents = "";
+    }
   });
 });

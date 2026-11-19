@@ -69,10 +69,7 @@ export function ThemeSwitch({
       type="button"
       aria-pressed={pressed}
       aria-label={label}
-      onClick={(event) => {
-        event.currentTarget.classList.add("is-init");
-        onPressedChange(!pressed);
-      }}
+      onClick={() => onPressedChange(!pressed)}
     >
       <span className="theme-switch-label">{label}</span>
       <span className="theme-switch-track" aria-hidden="true">

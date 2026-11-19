@@ -63,6 +63,8 @@ export function orderDataColumns<T>(columns: Array<DataColumn<T>>): Array<DataCo
 export type DataColumn<T> = {
   id: string;
   title: string;
+  /** Optional record count shown as muted metadata beside the column title. */
+  count?: number;
   /**
    * Set by the column, not inferred from its title.
    * "status" is a status or status-like indicator and sits immediately after the primary column.
@@ -141,6 +143,8 @@ export type DataTableProps<T extends { id: string }> = {
    * press does not scale the row and those controls stay valid.
    */
   interactive?: boolean;
+  /** Accessible name for a sheet rendered as a table. */
+  tableLabel?: string;
   /** Wrap a row so cell renderers can share row state. */
   wrapRow?: (row: T, children: ReactNode) => ReactNode;
   /**
@@ -226,6 +230,7 @@ export function DataTable<T extends { id: string }>({
   onSortChange,
   rowActions,
   interactive = false,
+  tableLabel,
   wrapRow,
   enteringId,
 }: DataTableProps<T>) {
@@ -248,6 +253,7 @@ export function DataTable<T extends { id: string }>({
   const closeMenu = () => setMenu(null);
   const hasMenu = Boolean(onDelete || rowMenu);
   const list = variant === "list";
+  const namedTable = !list && Boolean(tableLabel);
 
   useEffect(() => {
     if (!menu) return;
@@ -285,7 +291,7 @@ export function DataTable<T extends { id: string }>({
     });
   }, [columns, rows, sort]);
 
-  const measureKey = columns.map((column) => `${column.id}:${column.title}:${column.flex ? 1 : 0}:${column.text ?? ""}:${column.minWidth ?? ""}:${column.labelInset ?? 0}`).join("|");
+  const measureKey = columns.map((column) => `${column.id}:${column.title}:${column.count ?? ""}:${column.flex ? 1 : 0}:${column.text ?? ""}:${column.minWidth ?? ""}:${column.labelInset ?? 0}`).join("|");
   // Screens often pass a fresh columns array each render. Widths only follow the column shape and the rows, so measure on those.
   const columnsRef = useRef(columns);
   columnsRef.current = columns;
@@ -300,7 +306,7 @@ export function DataTable<T extends { id: string }>({
       if (font) probe.style.font = font;
       document.body.appendChild(probe);
       const titles = columns.map((column) => {
-        probe.textContent = column.title;
+        probe.textContent = column.title + (column.count === undefined ? "" : ` ${column.count}`);
         return Math.ceil(probe.getBoundingClientRect().width) + (column.labelInset ?? 0);
       });
       probe.remove();
@@ -415,6 +421,8 @@ export function DataTable<T extends { id: string }>({
       <div
         ref={gridRef}
         className="sheet-grid"
+        role={namedTable ? "table" : undefined}
+        aria-label={namedTable ? tableLabel : undefined}
         style={{
           ["--line-pad" as string]: "0px",
           columnGap: 0,
@@ -426,16 +434,16 @@ export function DataTable<T extends { id: string }>({
         }}
         aria-busy={!list && !revealed && shown.length > 0 ? true : undefined}
       >
-        {list ? null : <div className="sheet-head" style={{ margin: 0, padding: 0 }}>
+        {list ? null : <div className="sheet-head" role={namedTable ? "row" : undefined} style={{ margin: 0, padding: 0 }}>
           {columns.map((column, index) => {
             const sorted = sort?.columnId === column.id ? sort.direction : undefined;
             const title = (
               <span ref={(node) => { titleRefs.current[index] = node; }} style={{ whiteSpace: "nowrap" }}>
-                {column.title}
+                {column.title}{column.count === undefined ? null : <span className="sheet-header-count">{column.count}</span>}
               </span>
             );
             return (
-              <span key={column.id} style={headerStyle()}>
+              <span key={column.id} role={namedTable ? "columnheader" : undefined} style={headerStyle()}>
                 {column.sortable && onSortChange ? (
                   <button
                     className="sheet-sort"
@@ -462,7 +470,7 @@ export function DataTable<T extends { id: string }>({
             );
           })}
         </div>}
-        <div data-sheet>
+        <div data-sheet role={namedTable ? "rowgroup" : undefined}>
           {shown.map((row) => {
             const selected = selectedId === row.id;
             const openRow = (event: { target: EventTarget | null }) => {
@@ -478,7 +486,7 @@ export function DataTable<T extends { id: string }>({
               onRowClick?.(row);
             };
             const cells = columns.map((column, index) => (
-              <div key={column.id} data-text={column.text} data-ink={column.ink} style={{ ...cellStyle, ...(list ? { alignItems: "center", alignSelf: "center" } : {}), ["--sk-i" as string]: index, whiteSpace: column.textDisplay === "wrap" ? "normal" : undefined }}>
+              <div key={column.id} role={namedTable ? "cell" : undefined} data-text={column.text} data-ink={column.ink} style={{ ...cellStyle, ...(list ? { alignItems: "center", alignSelf: "center" } : {}), ["--sk-i" as string]: index, whiteSpace: column.textDisplay === "wrap" ? "normal" : undefined }}>
                 {!list && skeletonOn ? (
                   <span className={revealed ? "sheet-placeholder" : "sheet-placeholder is-pulsing"} aria-hidden="true">
                     <SkeletonCell column={column} />
@@ -503,6 +511,7 @@ export function DataTable<T extends { id: string }>({
             const line = (
               <div
                 className={lineClass}
+                role={namedTable ? "row" : undefined}
                 style={lineStyle}
                 tabIndex={onRowClick ? 0 : undefined}
                 onClick={onRowClick ? openRow : undefined}
@@ -518,7 +527,7 @@ export function DataTable<T extends { id: string }>({
               </div>
             );
             const article = (
-              <article className={selected ? "sheet is-open" : "sheet"} data-record={row.id} aria-selected={selected || undefined} style={{ marginInline: 0 }}>
+              <article role={namedTable ? "presentation" : undefined} className={selected ? "sheet is-open" : "sheet"} data-record={row.id} aria-selected={selected || undefined} style={{ marginInline: 0 }}>
                 <div className="sheet-clip">
                   <div className="sheet-inner">{line}</div>
                 </div>

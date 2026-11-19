@@ -1,27 +1,22 @@
 "use client";
 
-import { useEffect, useId, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState, type MouseEvent } from "react";
 import { createPortal } from "react-dom";
-import { Confirm } from "./Confirm";
+import { Confirm, type ConfirmProps } from "./Confirm";
 
 export function ConfirmDialog({
   open,
-  name,
-  noun = "record",
-  action,
-  title,
-  detail,
+  keepOpenOnConfirm = false,
   onCancel,
   onConfirm,
-}: {
+  busy = false,
+  disabled = false,
+  cancelDisabled = false,
+  ...confirmProps
+}: ConfirmProps & {
   open: boolean;
-  name: string;
-  noun?: string;
-  action?: string;
-  title?: string;
-  detail?: string;
-  onCancel?: () => void;
-  onConfirm?: () => void;
+  /** Controlled async actions can leave the dialog open until their result arrives. */
+  keepOpenOnConfirm?: boolean;
 }) {
   const ref = useRef<HTMLDialogElement>(null);
   const titleId = useId();
@@ -37,17 +32,25 @@ export function ConfirmDialog({
 
   useEffect(() => {
     const dialog = ref.current;
-    if (!open || !dialog || dialog.open) return;
+    if (!dialog) return;
+    if (!open) { if (dialog.open) dialog.close(); return; }
+    if (dialog.open) return;
     dialog.classList.remove("is-closing");
     dialog.showModal();
   }, [open, mounted]);
 
-  function settle(confirming: boolean) {
+  function settle(confirming: boolean, event?: MouseEvent<HTMLButtonElement>) {
+    if (busy || (confirming ? disabled : cancelDisabled)) return;
+    if (confirming && keepOpenOnConfirm) {
+      if (event) onConfirmRef.current?.(event);
+      return;
+    }
     const dialog = ref.current;
+    if (dialog?.classList.contains("is-closing")) return;
     const finish = () => {
       dialog?.classList.remove("is-closing");
       if (dialog?.open) dialog.close();
-      if (confirming) onConfirmRef.current?.();
+      if (confirming && event) onConfirmRef.current?.(event);
       else onCancelRef.current?.();
     };
     if (!dialog?.open || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
@@ -84,13 +87,12 @@ export function ConfirmDialog({
       {open ? (
         <Confirm
           titleId={titleId}
-          name={name}
-          noun={noun}
-          action={action}
-          title={title}
-          detail={detail}
+          {...confirmProps}
+          busy={busy}
+          disabled={disabled}
+          cancelDisabled={cancelDisabled}
           onCancel={() => settle(false)}
-          onConfirm={() => settle(true)}
+          onConfirm={(event) => settle(true, event)}
         />
       ) : null}
     </dialog>,

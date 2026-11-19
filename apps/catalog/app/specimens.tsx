@@ -3,6 +3,20 @@
 import { useEffect, useState } from "react";
 import { InfoTooltip, TimePicker, SettingsCard, SettingsRow, SettingsToggleRow, SettingsMenuRow, SettingsInputRow, SectionHeader, Button, IconButton, SegmentedControl, ThemeSwitch, type ButtonVariant } from "@lance-live/sds";
 import { DocPage, Example } from "./docs-example";
+import { AddOptionField } from "@lance-live/sds/add-option";
+
+function AddOptionExample() {
+  const [value, setValue] = useState("");
+  const [options, setOptions] = useState<string[]>([]);
+  return <div style={{ display: "grid", gap: "var(--space-8)", width: "100%", maxWidth: 480 }}>
+    <AddOptionField label="New option" placeholder="Add an option…" value={value} onValueChange={setValue} addLabel="Add" onAdd={() => {
+      const option = value.trim();
+      if (!options.includes(option)) setOptions(current => [...current, option]);
+      setValue("");
+    }} />
+    {options.length > 0 && <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--space-8)" }}>{options.map(option => <span className="sds mini-pill" key={option}>{option}</span>)}</div>}
+  </div>;
+}
 
 function Plus() {
   return (
@@ -148,6 +162,9 @@ export function Specimens({ page }: { page: string }) {
       <Example id="settings-stacked" title="Area heading, subsections, and stacked controls" description="The larger described heading introduces the whole settings area. Smaller section headers label subsections; stacked rows put controls below their labels." code={'<SectionHeader variant="described" title="Appearance" description="Choose how Lance looks for you." />\n<SectionHeader level={3} title="Display preferences" icon="tune" />\n<SettingsCard label="Appearance">\n  <SettingsRow layout="stacked" label="Theme" description="Applies in this browser.">\n    {themeControls}\n  </SettingsRow>\n</SettingsCard>'}>
         <StackedSettingsExample />
       </Example>
+      <Example id="add-option-field" title="Add option field" description="A controlled line field and labeled Add button. Enter adds once, and blank input disables Add. The consumer owns duplicate checks and saving." code={'import { AddOptionField } from "@lance-live/sds/add-option";\n\n<AddOptionField label="New option" placeholder="Add an option…" value={value} onValueChange={setValue} onAdd={addOption} addLabel="Add" />'}>
+        <AddOptionExample />
+      </Example>
     </DocPage>;
   }
   if (page === "button") {
@@ -180,6 +197,10 @@ export function DetailsToggle({ onClick }: { onClick: () => void }) {
           <IconButton icon="panel" aria-label="Show details" state="hover" />
           <IconButton icon="fullscreen" aria-label="Expand" />
           <IconButton icon="clock" aria-label="History" />
+        </Example>
+        <Example id="quiet-icon-button" title="Quiet icon" description="A full icon-button target that stays clear on hover. Only the glyph color changes." code={`<IconButton icon="eye" variant="quiet" aria-label="Show password" />`}>
+          <IconButton icon="eye" variant="quiet" aria-label="Show password" />
+          <IconButton icon="eye-off" variant="quiet" aria-label="Hide password" state="hover" />
         </Example>
         <Example id="disabled" title="Disabled" description="An action that is not available yet. Every variant keeps its shape and fades." code={`import { Button } from "@lance-live/sds";
 

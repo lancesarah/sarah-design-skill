@@ -45,8 +45,8 @@ export function Status({ status, iconOnly = false }: { status: "open" | "progres
   );
 }
 
-export function Urgency({ level, children, style }: { level: "urgent" | "high" | "standard" | "low"; children?: ReactNode; style?: CSSProperties }) {
-  const label = level === "urgent" ? "Urgent" : level === "high" ? "High" : level === "standard" ? "Standard" : "Low";
+export function Urgency({ level, label, children, style }: { label?: string; level: "urgent" | "high" | "standard" | "low"; children?: ReactNode; style?: CSSProperties }) {
+  const defaultLabel = level === "urgent" ? "Urgent" : level === "high" ? "High" : level === "standard" ? "Standard" : "Low";
   return (
     <span className={`sds urgency urgency-${level}`} style={style}>
       {level === "urgent" ? (
@@ -55,7 +55,7 @@ export function Urgency({ level, children, style }: { level: "urgent" | "high" |
           <rect x="6.7" y="9.2" width=".6" height=".6" fill="currentColor" />
         </svg>
       ) : null}
-      {label}
+      {label ?? defaultLabel}
       {children}
     </span>
   );

@@ -27,7 +27,8 @@ export type MenuProps = {
   value?: string;
   onValueChange?: (value: string) => void;
   placeholder?: string;
-  placeholderIcon?: IconName;
+  /** Set to null for a plain selection. Individual options can still specify an icon. */
+  placeholderIcon?: IconName | null;
   searchable?: boolean;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
@@ -57,6 +58,7 @@ export function Menu({
   const shown = open ?? internalOpen;
   const listId = useId();
   const selected = items.find((item) => item.value === value);
+  const triggerIcon = selected?.icon ?? placeholderIcon;
   const visible = items.filter((item) => item.label.toLowerCase().includes(query.trim().toLowerCase()));
 
   useEffect(() => {
@@ -89,7 +91,7 @@ export function Menu({
       >
         <span className="pair">
           {selected?.triggerContent ?? <>
-            <Icon name={selected?.icon ?? placeholderIcon} size={14} />
+            {triggerIcon ? <Icon name={triggerIcon} size={14} /> : null}
             <span className={selected ? undefined : "dim"}>{selected?.label ?? placeholder}{selected?.suffix ? <span className="menu-label-suffix"> · {selected.suffix}</span> : null}</span>
           </>}
         </span>

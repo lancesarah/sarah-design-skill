@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { InfoTooltip, TimePicker, SettingsCard, SettingsRow, SettingsToggleRow, SettingsMenuRow, SettingsInputRow, SectionHeader, Button, IconButton, SegmentedControl, ThemeSwitch, type ButtonVariant } from "@lance-live/sds";
+import { InfoTooltip, TimePicker, SettingsCard, SettingsSections, SettingsRow, SettingsToggleRow, SettingsMenuRow, SettingsInputRow, SectionHeader, Button, IconButton, SegmentedControl, ThemeSwitch, type ButtonVariant } from "@lance-live/sds";
 import { DocPage, Example } from "./docs-example";
 import { AddOptionField } from "@lance-live/sds/add-option";
 
@@ -125,14 +125,14 @@ function SettingsExample() {
   const [limit, setLimit] = useState("15");
   const [days, setDays] = useState<string[]>([]);
   return <div style={{ width: "100%", maxWidth: 720 }}>
-    <SectionHeader icon="tune" title="Work preferences" info={<InfoTooltip label="Settings apply to this team member." />} aside="Applies to this team member." />
+    <SettingsSections><section><SectionHeader icon="tune" title="Work preferences" info={<InfoTooltip label="Settings apply to this team member." />} aside="Applies to this team member." />
     <SettingsCard label="Work preferences example">
       <SettingsInputRow label="Room limit" input={{ type: "number", min: 1, value: limit, onChange: event => setLimit(event.target.value) }} />
       <SettingsToggleRow layout="inline" label="Training" value={training} onValueChange={setTraining} />
       <SettingsMenuRow label="Language preference" icon="globe" value={language} onValueChange={setLanguage} items={[{ value: "en", label: "🇺🇸 English", suffix: "EN" }, { value: "es", label: "🇪🇸 Español", suffix: "ES" }]} />
       <SettingsRow layout="inline" label="Preferred days off"><div style={{ display: "flex", gap: "var(--space-4)", flexWrap: "wrap" }}>{["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map(day => <Button key={day} variant="secondary" style={{ width: 40 }} aria-pressed={days.includes(day)} onClick={() => setDays(current => current.includes(day) ? current.filter(value => value !== day) : [...current, day])}>{day}</Button>)}</div></SettingsRow>
     </SettingsCard>
-    <div style={{ marginTop: "var(--space-25)" }}><SettingsCard label="Destructive setting example" variant="destructive"><SettingsRow label="Reset preferences" icon="tune" description="Restore the example values."><Button variant="danger-light" onClick={() => { setTraining(false); setLanguage("en"); setLimit("15"); setDays([]); }}>Reset</Button></SettingsRow></SettingsCard></div>
+    </section><section><SettingsCard label="Destructive setting example" variant="destructive"><SettingsRow label="Reset preferences" icon="tune" description="Restore the example values."><Button variant="danger-light" onClick={() => { setTraining(false); setLanguage("en"); setLimit("15"); setDays([]); }}>Reset</Button></SettingsRow></SettingsCard></section></SettingsSections>
   </div>;
 }
 

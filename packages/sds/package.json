@@ -32,12 +32,28 @@
       "default": "./dist/add-option.js"
     },
     "./add-option.css": "./dist/add-option.css",
+    "./text-entry": {
+      "types": "./dist/text-entry.d.ts",
+      "import": "./dist/text-entry.js",
+      "default": "./dist/text-entry.js"
+    },
+    "./settings-switch": {
+      "types": "./dist/settings-switch.d.ts",
+      "import": "./dist/settings-switch.js",
+      "default": "./dist/settings-switch.js"
+    },
     "./file-drop-zone": {
       "types": "./dist/file-drop-zone.d.ts",
       "import": "./dist/file-drop-zone.js",
       "default": "./dist/file-drop-zone.js"
     },
-    "./file-drop-zone.css": "./dist/file-drop-zone.css"
+    "./file-drop-zone.css": "./dist/file-drop-zone.css",
+    "./language-select": {
+      "types": "./dist/language-select.d.ts",
+      "import": "./dist/language-select.js",
+      "default": "./dist/language-select.js"
+    },
+    "./language-select.css": "./dist/language-select.css"
   },
   "scripts": {
     "build": "node scripts/prefix-gallery.mjs && tsup && tsup --config tsup.page.config.ts && node scripts/copy-css.mjs",

@@ -3,7 +3,14 @@
 import { useEffect, useState } from "react";
 import { InfoTooltip, TimePicker, SettingsCard, SettingsSections, SettingsRow, SettingsToggleRow, SettingsMenuRow, SettingsInputRow, SectionHeader, Button, IconButton, SegmentedControl, ThemeSwitch, type ButtonVariant } from "@lance-live/sds";
 import { DocPage, Example } from "./docs-example";
+import { SettingsSwitch } from "@lance-live/sds/settings-switch";
+import { LineField, TextWell } from "@lance-live/sds/text-entry";
 import { AddOptionField } from "@lance-live/sds/add-option";
+
+function SettingsSwitchExample() {
+  const [checked, setChecked] = useState(false);
+  return <SettingsSwitch label="Email alerts" checked={checked} onCheckedChange={setChecked} />;
+}
 
 function AddOptionExample() {
   const [value, setValue] = useState("");
@@ -153,7 +160,7 @@ function StackedSettingsExample() {
 }
 
 export function Specimens({ page }: { page: string }) {
-  if (page === "time-picker") return <DocPage title="Time picker" description="Type an exact time or choose a half-hour suggestion."><Example id="time-picker" title="Editable time" description="Uses the shared line field and menu. Supports AM/PM or 24-hour input, keyboard navigation, and minute precision." code={'<TimePicker label="Start time" value={time} onValueChange={setTime} />'}><TimePickerExample /></Example></DocPage>;
+  if (page === "time-picker") return <DocPage title="Time picker" description="Choose the hour and minute separately."><Example id="time-picker" title="Editable time" description="A 24-hour clock with keyboard-accessible hour and minute choices." code={'<TimePicker label="Start time" value={time} onValueChange={setTime} />'}><TimePickerExample /></Example></DocPage>;
   if (page === "settings-card") {
     return <DocPage title="Settings card" description="Related settings in consistent rows, introduced by a separate page-surface section header.">
       <Example id="settings-variants" title="Inline rows and compact selectors" description="Label on the left; compact controls on the right at their intrinsic width. Text entry, toggle, dropdown, grouped controls, and a standalone destructive action with the standard grey border and 16px vertical padding. Toggle rows are clickable; other rows leave interaction to their controls." code={'<SectionHeader icon="tune" title="Work preferences" aside="Optional context" />\n<SettingsCard label="Work preferences">\n  <SettingsToggleRow label="Training" value={training} onValueChange={setTraining} />\n  <SettingsInputRow label="Room limit" input={{ type: "number", value: limit, onChange: handleChange }} />\n</SettingsCard>'}>
@@ -161,6 +168,12 @@ export function Specimens({ page }: { page: string }) {
       </Example>
       <Example id="settings-stacked" title="Area heading, subsections, and stacked controls" description="The larger described heading introduces the whole settings area. Smaller section headers label subsections; stacked rows put controls below their labels." code={'<SectionHeader variant="described" title="Appearance" description="Choose how Lance looks for you." />\n<SectionHeader level={3} title="Display preferences" icon="tune" />\n<SettingsCard label="Appearance">\n  <SettingsRow layout="stacked" label="Theme" description="Applies in this browser.">\n    {themeControls}\n  </SettingsRow>\n</SettingsCard>'}>
         <StackedSettingsExample />
+      </Example>
+      <Example id="text-entry" title="Text entry" description="Use a line field for a short value and a text well for longer instructions." code={'import { LineField, TextWell } from "@lance-live/sds/text-entry";'}>
+        <div style={{ display: "grid", gap: "var(--space-16)" }}>
+          <label>Name<LineField placeholder="Front desk" /></label>
+          <label>Instructions<TextWell rows={3} placeholder="Add instructions…" /></label>
+        </div>
       </Example>
       <Example id="add-option-field" title="Add option field" description="A controlled line field and labeled Add button. Enter adds once, and blank input disables Add. The consumer owns duplicate checks and saving." code={'import { AddOptionField } from "@lance-live/sds/add-option";\n\n<AddOptionField label="New option" placeholder="Add an option…" value={value} onValueChange={setValue} onAdd={addOption} addLabel="Add" />'}>
         <AddOptionExample />
@@ -216,6 +229,9 @@ export function SaveLater() {
   if (page === "switch") {
     return (
       <DocPage title="Switch" description="A switch turns one setting on or off. The label says what it sets. On is the one blue.">
+        <Example id="settings-switch" title="Settings switch" description="A named on/off preference. Use SettingsToggleRow when the whole row should activate it." code={'<SettingsSwitch label="Email alerts" checked={enabled} onCheckedChange={setEnabled} />'}>
+          <SettingsSwitchExample />
+        </Example>
         <Example id="switch-example" title="Default" description="Dark mode. This one switches the gallery." code={`import { ThemeSwitch } from "@lance-live/sds";
 
 export function DarkMode() {

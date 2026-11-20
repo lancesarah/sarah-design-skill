@@ -719,7 +719,7 @@ Use `SettingsCard variant="destructive"` for destructive options such as offboar
 
 ## Time picker
 
-Use `TimePicker` for an editable time of day. It composes the 32px line field, muted clock and chevron icons, and shared overlay menu with half-hour suggestions. Use the normal field font, padding, radius, stroke, and focus treatment. Display `9:00AM`; store controlled values as `09:00`. Typing supports every minute, including 24-hour input. Invalid text stays visible with feedback instead of silently changing the saved value. Arrow Down opens suggestions; arrows navigate; Enter selects; Escape dismisses. The consumer owns date, timezone, and cross-window validation. Gallery: `#time-picker`.
+Use `TimePicker` for a local time of day. Place the hour and minute selectors side by side, with a muted system chevron in each. Show a localized hour with AM/PM and a two-digit minute. Store a single 24-hour `HH:mm` value. Give both selectors accessible names and preserve the schedule’s allowed interval and bounds. The consumer owns the date, timezone, and cross-window validation. Gallery: `#time-picker`.
 
 ### Single-selector cards and rows
 

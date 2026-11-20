@@ -1,5 +1,6 @@
 "use client";
 
+import { FileDropZone } from "@lance-live/sds/file-drop-zone";
 import { useEffect, useRef, useState, type DragEvent } from "react";
 import { Button, SuccessCheck, DataTable, EditorDialog, Icon, InfoTooltip, Menu, Meter, OverlayMenu, SettingsCard, SettingsRow, reoutlineInvalidFields } from "@lance-live/sds";
 import { useAnchoredMenu } from "./board-parts";
@@ -379,9 +380,8 @@ export function UploadBoard({ date, onClose, roomNumbers = [], onImport, onMarkD
           ))}
         </ul>
       ) : (
-        <button type="button" className="board-upload-drop" data-dragging={dragging || undefined} onClick={() => input.current?.click()} onDragOver={dragOver} onDragLeave={() => setDragging(false)} onDrop={drop}>
-          <Icon name="upload" size={24} /><span>Upload files<span className="board-upload-help">Drop or select multiple images, PDFs, or CSV files</span></span>
-        </button>
+        <FileDropZone title="Upload files" description="Drop or select multiple images, PDFs, or CSV files"
+          onChoose={() => input.current?.click()} onFilesDropped={add} />
       )}
       {visibleError ? <p className="board-upload-error" role="alert">{visibleError}</p> : null}
     </EditorDialog>

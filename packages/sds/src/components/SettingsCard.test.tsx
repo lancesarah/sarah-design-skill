@@ -10,7 +10,7 @@ describe("Settings rows", () => {
     fireEvent.click(screen.getByText("Training", { selector: ".settings-row-label" }));
     expect(change).toHaveBeenCalledTimes(1);
     expect(change).toHaveBeenLastCalledWith(true);
-    fireEvent.click(screen.getByRole("button", { name: "Training" }));
+    fireEvent.click(screen.getByRole("switch", { name: "Training" }));
     expect(change).toHaveBeenCalledTimes(2);
     fireEvent.click(screen.getByRole("button", { name: "About training" }));
     expect(info).toHaveBeenCalledTimes(1);

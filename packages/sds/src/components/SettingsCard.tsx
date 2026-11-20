@@ -1,8 +1,9 @@
 "use client";
 
+import { LineField } from "../text-entry";
 import { useId, type ReactNode, type InputHTMLAttributes } from "react";
 import { Icon, type IconName } from "../icons";
-import { ThemeSwitch } from "./Fields";
+import { SettingsSwitch } from "../settings-switch";
 import { Menu, type MenuProps } from "./Menu";
 
 /** Described headings introduce a whole settings area; default headers label its subsections. */
@@ -72,12 +73,12 @@ export function SettingsRow({ label, description, inlineDescription, info, icon,
 
 type RowCopy = Omit<SettingsRowProps, "children" | "toggle">;
 export function SettingsToggleRow({ value, onValueChange, ...props }: RowCopy & { value: boolean; onValueChange: (value: boolean) => void }) {
-  return <SettingsRow {...props} toggle><ThemeSwitch label={props.label} pressed={value} onPressedChange={onValueChange} /></SettingsRow>;
+  return <SettingsRow {...props} toggle><SettingsSwitch label={props.label} checked={value} onCheckedChange={onValueChange} /></SettingsRow>;
 }
 export function SettingsMenuRow({ items, value, onValueChange, menuClassName, ...props }: RowCopy & Pick<MenuProps, "items" | "value" | "onValueChange"> & { menuClassName?: string }) {
   return <SettingsRow {...props}><Menu className={menuClassName} items={items} value={value} onValueChange={onValueChange} /></SettingsRow>;
 }
 export function SettingsInputRow({ input, ...props }: RowCopy & { input: InputHTMLAttributes<HTMLInputElement> }) {
   const id = useId();
-  return <SettingsRow {...props}><input {...input} id={input.id ?? id} aria-label={input["aria-label"] ?? props.label} className={["sds line settings-input", input.className].filter(Boolean).join(" ")} /></SettingsRow>;
+  return <SettingsRow {...props}><LineField {...input} id={input.id ?? id} aria-label={input["aria-label"] ?? props.label} className={["settings-input", input.className].filter(Boolean).join(" ")} /></SettingsRow>;
 }

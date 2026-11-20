@@ -11302,7 +11302,6 @@ html[data-theme="dark"] :where(.sds) .board-limits-table tr[data-selected], html
 :where(.sds) .board-inspection-check.settings-row, :where(.sds).board-inspection-check.settings-row { justify-content: flex-start; gap: var(--space-8); cursor: pointer; }
 
 
-:where(.sds) .board-upload-drop, :where(.sds).board-upload-drop,
 :where(.sds) .board-upload-files li, :where(.sds).board-upload-files li {
   display: flex;
   align-items: center;
@@ -11312,9 +11311,6 @@ html[data-theme="dark"] :where(.sds) .board-limits-table tr[data-selected], html
   border-radius: var(--radius-control);
 }
 
-:where(.sds) .board-upload-drop, :where(.sds).board-upload-drop { width: 100%; background: var(--white); border: 1px dashed var(--black-25); color: var(--black); font: inherit; text-align: left; cursor: pointer; }
-:where(.sds) .board-upload-drop:hover, :where(.sds).board-upload-drop:hover, :where(.sds) .board-upload-drop[data-dragging], :where(.sds).board-upload-drop[data-dragging] { background: var(--surface-hover); }
-:where(.sds) .board-upload-drop > .i, :where(.sds).board-upload-drop > .i { flex-shrink: 0; color: var(--text-muted); }
 :where(.sds) .board-upload-help, :where(.sds).board-upload-help { display: block; margin-top: var(--space-4); color: var(--text-muted); font-size: var(--text-12); }
 :where(.sds) .board-upload-files, :where(.sds).board-upload-files {
   display: grid;

@@ -168,7 +168,7 @@ export function RoomEditor({ room, rooms, staff, onSave, onBack }: { room?: Room
           <SettingsRow key={item.id} label={`Item ${index + 1}`} layout="stacked" className="board-minibar-item">
             <input className="sds line" aria-label={`Minibar item ${index + 1} name`} placeholder="Item name" value={item.name} onChange={event => updateMinibarItem(item.id, { name: event.target.value })} />
             <input className="sds line board-minibar-quantity" type="number" min="1" step="1" aria-label={`Minibar item ${index + 1} quantity`} value={item.quantity} onChange={event => updateMinibarItem(item.id, { quantity: event.target.value })} />
-            <Button icon variant="danger-light" aria-label={`Remove minibar item ${index + 1}`} onClick={() => setMinibarItems(current => current.filter(entry => entry.id !== item.id))}><Icon name="trash" /></Button>
+            <Button icon variant="secondary" aria-label={`Remove minibar item ${index + 1}`} onClick={() => setMinibarItems(current => current.filter(entry => entry.id !== item.id))}><Icon name="trash" /></Button>
           </SettingsRow>
         ))}
       </SettingsCard>

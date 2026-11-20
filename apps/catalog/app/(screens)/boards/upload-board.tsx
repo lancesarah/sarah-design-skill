@@ -373,7 +373,7 @@ export function UploadBoard({ date, onClose, roomNumbers = [], onImport, onMarkD
                 <span>{file.name}</span>
                 <span>{formatFileSize(file.size)}</span>
               </div>
-              <Button icon variant="danger-light" className="board-upload-remove" aria-label={`Remove ${file.name}`} onClick={() => remove(fileKey(file))}>
+              <Button icon variant="secondary" className="board-upload-remove" aria-label={`Remove ${file.name}`} onClick={() => remove(fileKey(file))}>
                 <span aria-hidden="true">−</span>
               </Button>
             </li>

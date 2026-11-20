@@ -2308,7 +2308,7 @@ html[data-theme="dark"] :where(.sds) .thread-person:hover, html[data-theme="dark
   padding: var(--space-12) calc(var(--space-12) + 28px) var(--space-12) var(--space-12);
   border-radius: var(--radius-card);
   background: var(--white);
-  box-shadow: var(--stroke-card), 0 6px 8px -4px rgb(0 0 0 / 16%);
+  box-shadow: var(--stroke-card), var(--shadow-card);
   opacity: 1;
   transition: opacity var(--motion-grow-out) var(--ease-out);
 }
@@ -2330,9 +2330,6 @@ html[data-theme="dark"] :where(.sds) .thread-person:hover, html[data-theme="dark
   background: var(--white);
 }
 
-html[data-theme="dark"] :where(.sds) .ticket-overview, html[data-theme="dark"] :where(.sds).ticket-overview {
-  box-shadow: var(--stroke-card), 0 6px 8px -4px rgb(0 0 0 / 50%);
-}
 
 :where(.sds) .ticket-overview-dismiss, :where(.sds).ticket-overview-dismiss {
   position: absolute;
@@ -10416,7 +10413,7 @@ html[data-theme="dark"] :where(.sds) .board-fact, html[data-theme="dark"] :where
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, transparent 25%, rgb(255 255 255 / 28%) 50%, transparent 75%);
+  background: linear-gradient(90deg, transparent 25%, color-mix(in srgb, var(--on-image) 28%, transparent) 50%, transparent 75%);
   animation: board-sk-shimmer 640ms linear backwards;
   animation-delay: calc(180ms + min(var(--sk-i, 0), 5) * 36ms);
 }
@@ -13850,11 +13847,11 @@ html[data-theme="dark"] :where(.sds) .brief-list button[aria-selected="true"] .g
 :where(.sds) .guest-handoff, :where(.sds).guest-handoff {
   padding-right: var(--space-12);
   background: var(--action-tint);
-  box-shadow: 0 0 0 1px color-mix(in srgb, var(--action) 25%, transparent), 0 6px 8px -4px rgb(0 0 0 / 12%);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--action) 25%, transparent), var(--shadow-card);
 }
 
 html[data-theme="dark"] :where(.sds) .guest-handoff, html[data-theme="dark"] :where(.sds).guest-handoff {
-  box-shadow: 0 0 0 1px color-mix(in srgb, var(--action) 35%, transparent), 0 6px 8px -4px rgb(0 0 0 / 50%);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--action) 35%, transparent), var(--shadow-card);
 }
 
 :where(.sds) .guest-handoff-text, :where(.sds).guest-handoff-text {

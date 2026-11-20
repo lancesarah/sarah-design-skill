@@ -2716,7 +2716,7 @@ html[data-theme="dark"] .ticket-resolved .btn-tertiary { background: var(--black
   padding: var(--space-12) calc(var(--space-12) + 28px) var(--space-12) var(--space-12);
   border-radius: var(--radius-card);
   background: var(--white);
-  box-shadow: var(--stroke-card), 0 6px 8px -4px rgb(0 0 0 / 16%);
+  box-shadow: var(--stroke-card), var(--shadow-card);
 }
 
 .ticket-overview.is-set {
@@ -2759,9 +2759,6 @@ html[data-theme="dark"] .ticket-resolved .btn-tertiary { background: var(--black
   -webkit-line-clamp: 2;
 }
 
-html[data-theme="dark"] .ticket-overview {
-  box-shadow: var(--stroke-card), 0 6px 8px -4px rgb(0 0 0 / 50%);
-}
 
 @media (prefers-reduced-motion: reduce) {
   .typing-dots span { animation: none; }

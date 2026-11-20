@@ -924,7 +924,7 @@ html[data-theme="dark"] .thread-person:hover { background: var(--grey); }
   padding: var(--space-12) calc(var(--space-12) + 28px) var(--space-12) var(--space-12);
   border-radius: var(--radius-card);
   background: var(--white);
-  box-shadow: var(--stroke-card), 0 6px 8px -4px rgb(0 0 0 / 16%);
+  box-shadow: var(--stroke-card), var(--shadow-card);
   opacity: 1;
   transition: opacity var(--motion-grow-out) var(--ease-out);
 }
@@ -946,9 +946,6 @@ html[data-theme="dark"] .thread-person:hover { background: var(--grey); }
   background: var(--white);
 }
 
-html[data-theme="dark"] .ticket-overview {
-  box-shadow: var(--stroke-card), 0 6px 8px -4px rgb(0 0 0 / 50%);
-}
 
 .ticket-overview-dismiss {
   position: absolute;

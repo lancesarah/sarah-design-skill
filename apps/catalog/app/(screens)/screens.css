@@ -2197,11 +2197,11 @@ html[data-theme="dark"] .brief-list button[aria-selected="true"] .guest-mark { b
 .guest-handoff {
   padding-right: var(--space-12);
   background: var(--action-tint);
-  box-shadow: 0 0 0 1px color-mix(in srgb, var(--action) 25%, transparent), 0 6px 8px -4px rgb(0 0 0 / 12%);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--action) 25%, transparent), var(--shadow-card);
 }
 
 html[data-theme="dark"] .guest-handoff {
-  box-shadow: 0 0 0 1px color-mix(in srgb, var(--action) 35%, transparent), 0 6px 8px -4px rgb(0 0 0 / 50%);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--action) 35%, transparent), var(--shadow-card);
 }
 
 .guest-handoff-text {

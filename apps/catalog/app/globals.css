@@ -35,7 +35,7 @@ body {
 
 
 html[data-text-ink="soft"]:not([data-theme="dark"]) [data-soft-ink] {
-  color: #3D3D3D !important;
+  color: color-mix(in srgb, var(--black) 76%, var(--white)) !important;
 }
 
 .dev-switch {
@@ -139,13 +139,13 @@ html[data-tab-style="line"] .tabs-bar .tab[aria-selected="true"] {
 }
 
 html[data-tab-style="line"] .tab {
-  color: #8a8a8a;
+  color: var(--text-muted);
 }
 
 html[data-tab-style="line"] .tab:hover,
 html[data-tab-style="line"] .tab.is-hover,
 html[data-tab-style="line"] .tab[aria-selected="true"] {
-  color: #1a1a1a;
+  color: var(--black);
 }
 
 html[data-tab-style="line"] .tab[aria-selected="true"] {
@@ -162,7 +162,7 @@ html[data-tab-style="line"] .tab[aria-selected="true"] .count {
 }
 
 html[data-tab-style="line"] .tabs {
-  box-shadow: inset 0 -1px 0 #ececec;
+  box-shadow: inset 0 -1px 0 var(--line);
 }
 
 html[data-tab-style="line"] .tab[aria-selected="true"]::after {

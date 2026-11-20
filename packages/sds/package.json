@@ -31,7 +31,13 @@
       "import": "./dist/add-option.js",
       "default": "./dist/add-option.js"
     },
-    "./add-option.css": "./dist/add-option.css"
+    "./add-option.css": "./dist/add-option.css",
+    "./file-drop-zone": {
+      "types": "./dist/file-drop-zone.d.ts",
+      "import": "./dist/file-drop-zone.js",
+      "default": "./dist/file-drop-zone.js"
+    },
+    "./file-drop-zone.css": "./dist/file-drop-zone.css"
   },
   "scripts": {
     "build": "node scripts/prefix-gallery.mjs && tsup && tsup --config tsup.page.config.ts && node scripts/copy-css.mjs",

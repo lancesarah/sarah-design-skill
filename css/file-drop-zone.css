@@ -1,0 +1,21 @@
+.sds.file-drop-zone {
+  display: flex;
+  width: 100%;
+  min-block-size: 81px;
+  align-items: center;
+  gap: var(--space-16);
+  padding: var(--space-10) var(--space-20);
+  border: 1px dashed var(--black-25);
+  border-radius: var(--radius-control);
+  background: var(--white);
+  color: var(--black);
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+.sds.file-drop-zone:is(:hover, [data-dragging]):enabled { background: var(--surface-hover); }
+.sds.file-drop-zone:focus-visible { outline: 2px solid var(--action); outline-offset: 2px; }
+.sds.file-drop-zone:disabled { opacity: .5; cursor: default; }
+.sds.file-drop-zone > .i { flex: none; color: var(--text-muted); }
+.sds.file-drop-zone > span { min-width: 0; overflow-wrap: anywhere; }
+.sds.file-drop-zone small { display: block; margin-top: var(--space-4); color: var(--text-muted); font-size: var(--text-12); }

@@ -1,8 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { InfoTooltip, TimePicker, SettingsCard, SettingsSections, SettingsRow, SettingsToggleRow, SettingsMenuRow, SettingsInputRow, SectionHeader, Button, IconButton, SegmentedControl, ThemeSwitch, type ButtonVariant } from "@lance-live/sds";
 import { DocPage, Example } from "./docs-example";
+import { LanguageSelect } from "@lance-live/sds/language-select";
+import { LineField, TextWell } from "@lance-live/sds/text-entry";
+import { FileDropZone } from "@lance-live/sds/file-drop-zone";
 import { AddOptionField } from "@lance-live/sds/add-option";
 
 function AddOptionExample() {
@@ -152,7 +155,23 @@ function StackedSettingsExample() {
   </div>;
 }
 
+function SettingsPrimitivesExample() {
+  const [language, setLanguage] = useState("en");
+  const [name, setName] = useState("");
+  const [notes, setNotes] = useState("");
+  const [fileName, setFileName] = useState("");
+  const file = useRef<HTMLInputElement>(null);
+  return <div style={{display:"grid",gap:"var(--space-20)",width:"min(100%, 480px)"}}>
+    <label>App language<LanguageSelect label="App language" value={language} onValueChange={setLanguage} options={[{value:"en",label:"English",flag:"🇺🇸",abbreviation:"EN"},{value:"es",label:"Español",flag:"🇪🇸",abbreviation:"ES"}]} /></label>
+    <label htmlFor="settings-line-example">Name<LineField id="settings-line-example" value={name} placeholder="Enter a name" onChange={event=>setName(event.target.value)} /></label>
+    <label htmlFor="settings-well-example">Notes<TextWell id="settings-well-example" value={notes} placeholder="Add a note" onChange={event=>setNotes(event.target.value)} /></label>
+    <input ref={file} type="file" hidden onChange={event=>setFileName(event.target.files?.[0]?.name??"")} />
+    <FileDropZone title={fileName||"Choose a file"} description="Drop a document here or browse your files." hasFile={Boolean(fileName)} onChoose={()=>file.current?.click()} onFilesDropped={files=>setFileName(files[0]?.name??"")} />
+  </div>;
+}
+
 export function Specimens({ page }: { page: string }) {
+  if (page === "settings-primitives") return <DocPage title="Settings primitives" description="Shared native text fields, language choices, and file selection."><Example id="settings-primitives" title="Fields, language and upload" description="Native input behavior with the shared component styling." code={'import { LanguageSelect } from "@lance-live/sds/language-select";\nimport { LineField, TextWell } from "@lance-live/sds/text-entry";\nimport { FileDropZone } from "@lance-live/sds/file-drop-zone";'}><SettingsPrimitivesExample /></Example></DocPage>;
   if (page === "time-picker") return <DocPage title="Time picker" description="Type an exact time or choose a half-hour suggestion."><Example id="time-picker" title="Editable time" description="Uses the shared line field and menu. Supports AM/PM or 24-hour input, keyboard navigation, and minute precision." code={'<TimePicker label="Start time" value={time} onValueChange={setTime} />'}><TimePickerExample /></Example></DocPage>;
   if (page === "settings-card") {
     return <DocPage title="Settings card" description="Related settings in consistent rows, introduced by a separate page-surface section header.">

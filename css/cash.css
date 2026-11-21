@@ -28,11 +28,11 @@
   opacity: 0;
 }
 
-.cash-page .sheet-stage:hover .cash-pin,
+.cash-page .sheet-stage:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) .cash-pin,
 .cash-page .sheet-stage:focus-within .cash-pin { opacity: 1; }
 
-.cash-pin:hover,
-.cash-pin.is-hover { background: var(--black-12); color: var(--black); }
+.cash-pin:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)),
+.cash-pin.is-hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) { background: var(--black-12); color: var(--black); }
 
 .cash-pin .i { margin: 0; }
 
@@ -277,7 +277,7 @@
   font-variant-numeric: var(--numeric);
 }
 
-.cash-qty:hover { box-shadow: 0 0 0 1px var(--black-12); }
+.cash-qty:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) { box-shadow: 0 0 0 1px var(--black-12); }
 .cash-qty:focus { outline: none; color: var(--black); box-shadow: 0 0 0 1px var(--black-25); }
 .cash-qty::placeholder { color: var(--text-muted); }
 
@@ -355,9 +355,9 @@
   pointer-events: none;
 }
 
-.cash-new-location:hover { background: var(--grey); }
+.cash-new-location:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) { background: var(--grey); }
 
-html[data-theme="dark"] .cash-new-location:hover { background: var(--black-12); }
+html[data-theme="dark"] .cash-new-location:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) { background: var(--black-12); }
 
 .cash-manage {
   display: flex;
@@ -426,7 +426,7 @@ html[data-theme="dark"] .cash-new-location:hover { background: var(--black-12); 
   color: var(--black);
 }
 
-.inset-card-tools > button:hover,
+.inset-card-tools > button:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)),
 .inset-card-tools > .cash-more[aria-expanded="true"] { background: var(--grey); }
 
 .inset-card-chevron .i {
@@ -528,8 +528,8 @@ html[data-theme="dark"] .cash-new-location:hover { background: var(--black-12); 
   opacity: 0;
 }
 
-.cash-card-name:hover button,
-.cash-bank-figure:hover .cash-bank-edit { opacity: 1; }
+.cash-card-name:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) button,
+.cash-bank-figure:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) .cash-bank-edit { opacity: 1; }
 
 .cash-card-name:focus-within button,
 .cash-bank-figure:focus-within .cash-bank-edit { opacity: 0; }
@@ -599,7 +599,7 @@ html[data-theme="dark"] .cash-new-location:hover { background: var(--black-12); 
   color: var(--black-50);
 }
 
-.cash-choose-dept:hover,
+.cash-choose-dept:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)),
 .cash-choose-dept[aria-expanded="true"] { background: var(--grey); }
 
 .cash-choose-dept[aria-expanded="true"] .cash-choose-chevron { transform: rotate(180deg); }
@@ -760,10 +760,10 @@ html[data-theme="dark"] .cash-new-location:hover { background: var(--black-12); 
 
 html[data-theme="dark"] .cash-qty { background: var(--grey); }
 
-html[data-theme="dark"] .inset-card-tools > button:hover,
+html[data-theme="dark"] .inset-card-tools > button:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)),
 html[data-theme="dark"] .inset-card-tools > .cash-more[aria-expanded="true"] { background: var(--grey); }
 
-html[data-theme="dark"] .cash-choose-dept:hover,
+html[data-theme="dark"] .cash-choose-dept:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)),
 html[data-theme="dark"] .cash-choose-dept[aria-expanded="true"] {
   background: var(--black-12);
   box-shadow: 0 0 0 1px var(--black-25);

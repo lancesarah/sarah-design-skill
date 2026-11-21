@@ -25,7 +25,7 @@
 .board-activity-average .tip-host { color: var(--text-muted); }
 
 @media (hover: hover) and (pointer: fine) {
-  .board-activity-contact:not(:hover):not(:focus-within) .board-activity-message {
+  .board-activity-contact:not(:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *))):not(:focus-within) .board-activity-message {
     opacity: 0;
     pointer-events: none;
   }
@@ -36,7 +36,7 @@
     transition: opacity 120ms ease;
   }
 
-  .board-activity-contact:hover:not(:focus-within) .board-activity-message {
+  .board-activity-contact:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)):not(:focus-within) .board-activity-message {
     transition-delay: 100ms;
   }
 
@@ -447,7 +447,7 @@ html[data-theme="dark"] .board-fact { background: var(--grey); }
 .boards-side .board-card.board-custom-list:not(.is-drop) > .widget-head {
   background: color-mix(in srgb, var(--board-list-color) 12%, var(--white));
 }
-.boards-side .board-custom-list .board-room:not(.is-done, .is-selected, .board-room-skeleton):hover {
+.boards-side .board-custom-list .board-room:not(.is-done, .is-selected, .board-room-skeleton):hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) {
   background: color-mix(in srgb, var(--board-list-color) 8%, var(--white));
 }
 .board-list-swatch {
@@ -489,11 +489,11 @@ html[data-theme="dark"] .board-fact { background: var(--grey); }
   cursor: grab;
 }
 
-.board-room:hover { background: var(--surface-hover); }
+.board-room:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) { background: var(--surface-hover); }
 
 /* A cleaned room keeps the complete green. Hover does not wash it back to grey. */
 .board-room.is-done,
-.board-room.is-done:hover {
+.board-room.is-done:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) {
   background: color-mix(in srgb, var(--status-complete) 14%, transparent);
 }
 
@@ -517,7 +517,7 @@ html[data-theme="dark"] .board-fact { background: var(--grey); }
 }
 
 .board-room-skeleton,
-.board-room-skeleton:hover {
+.board-room-skeleton:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) {
   background: none;
   cursor: default;
   pointer-events: none;
@@ -623,11 +623,11 @@ html[data-theme="dark"] .board-fact { background: var(--grey); }
 .board-room-lead .check { cursor: pointer; }
 
 /* On a hovered row the box steps past the row's grey. */
-.board-room:hover .check:hover:not([aria-checked="true"]) .check-box { background: var(--grey); }
+.board-room:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) .check:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)):not([aria-checked="true"]) .check-box { background: var(--grey); }
 
 /* A picked room is tinted like a picked person, and hover does not add a second step. */
 .board-room.is-selected,
-.board-room.is-selected:hover { background: var(--filter-chip-bg); }
+.board-room.is-selected:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) { background: var(--filter-chip-bg); }
 
 /* While rooms are picked the toolbar is their actions. Clear sits at the far end. */
 .notes-page .page-toolbar.board-picked {
@@ -670,7 +670,7 @@ html[data-theme="dark"] .board-fact { background: var(--grey); }
   cursor: pointer;
 }
 
-.board-room-link:is(:hover, :focus-visible) {
+.board-room-link:is(:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)), :focus-visible) {
   text-decoration: underline;
   text-underline-offset: 3px;
 }
@@ -724,9 +724,9 @@ html[data-theme="dark"] .board-fact { background: var(--grey); }
   color: var(--black-50);
 }
 
-.board-chip:not(:disabled):is(:hover, [aria-expanded="true"]) { background: var(--grey); }
+.board-chip:not(:disabled):is(:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)), [aria-expanded="true"]) { background: var(--grey); }
 
-.board-chip:not(:disabled):is(:hover, [aria-expanded="true"]) .i { display: inline; }
+.board-chip:not(:disabled):is(:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)), [aria-expanded="true"]) .i { display: inline; }
 
 .board-chip:disabled { cursor: inherit; }
 
@@ -796,11 +796,11 @@ html[data-theme="dark"] .board-room-due { background: var(--grey); }
   color: var(--black-25);
 }
 
-.board-flag:hover { color: var(--black-50); }
+.board-flag:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) { color: var(--black-50); }
 
 .board-room-moon[aria-pressed="true"] { color: var(--black); }
 
-.board-room-moon[aria-pressed="true"]:hover { color: var(--black); }
+.board-room-moon[aria-pressed="true"]:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) { color: var(--black); }
 
 .board-stay {
   display: inline-flex;
@@ -898,17 +898,19 @@ html[data-theme="dark"] .board-room-due { background: var(--grey); }
   line-height: 20px;
 }
 
+html[data-theme="dark"] .board-room:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) { background: var(--grey); }
+
 html[data-theme="dark"] .board-room.is-done,
-html[data-theme="dark"] .board-room.is-done:hover {
+html[data-theme="dark"] .board-room.is-done:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) {
   background: color-mix(in srgb, var(--status-complete) 12%, transparent);
 }
 
 html[data-theme="dark"] .board-room.is-selected,
-html[data-theme="dark"] .board-room.is-selected:hover { background: var(--filter-chip-bg); }
+html[data-theme="dark"] .board-room.is-selected:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) { background: var(--filter-chip-bg); }
 
-html[data-theme="dark"] .board-room:hover .check:hover:not([aria-checked="true"]) .check-box { background: var(--black-12); }
+html[data-theme="dark"] .board-room:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) .check:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)):not([aria-checked="true"]) .check-box { background: var(--black-12); }
 
-html[data-theme="dark"] .board-chip:not(:disabled):is(:hover, [aria-expanded="true"]),
+html[data-theme="dark"] .board-chip:not(:disabled):is(:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)), [aria-expanded="true"]),
 html[data-theme="dark"] .board-card .widget-head .board-card-avatar { background: var(--black-12); }
 
 /* Housekeeper subpage, using the shared 820px content measure. */
@@ -922,7 +924,7 @@ html[data-theme="dark"] .board-card .widget-head .board-card-avatar { background
   text-align: inherit;
   cursor: pointer;
 }
-.board-person-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+.board-person-link:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) { text-decoration: underline; text-underline-offset: 3px; }
 .board-person-link:focus-visible { outline: 2px solid var(--action); outline-offset: 2px; }
 .housekeeper-scroll { flex: 1; min-height: 0; overflow: auto; }
 .housekeeper-page { max-width: 820px; margin: 0 auto; padding: calc(var(--space-25) * 2) var(--space-25); }
@@ -1000,7 +1002,7 @@ html[data-theme="dark"] .board-card .widget-head .board-card-avatar { background
   cursor: pointer;
   transition: right 400ms var(--ease-drawer);
 }
-.boards-side-toggle:hover { background: var(--sidebar-grey); color: var(--black); }
+.boards-side-toggle:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) { background: var(--sidebar-grey); color: var(--black); }
 .boards-side-toggle:focus-visible { outline: 2px solid var(--action); outline-offset: 2px; }
 .boards-side-toggle svg { transform: rotate(-90deg); }
 .boards-layout.is-side-collapsed .boards-side-toggle { right: 0; }
@@ -1113,7 +1115,7 @@ html[data-theme="dark"] .board-card .widget-head .board-card-avatar { background
   padding-inline: var(--space-16);
 }
 @media (hover: hover) {
-  :is(.hk-assignment-fields, .hk-work-status, .hk-schedule-content > .hk-setting-stack) > :is(div, label):hover {
+  :is(.hk-assignment-fields, .hk-work-status, .hk-schedule-content > .hk-setting-stack) > :is(div, label):hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) {
     background: var(--surface-hover);
   }
 }
@@ -1161,7 +1163,7 @@ html[data-theme="dark"] .board-card .widget-head .board-card-avatar { background
 .hk-availability-window .hk-overnight { grid-column: 1 / -1; margin: 0; }
 .hk-availability-error { font-size: var(--text-12); color: var(--destructive); margin: 0; }
 .hk-unavailable { align-self: center; }
-.hk-schedule-content > .hk-setting-stack > .hk-availability:hover { background: transparent; }
+.hk-schedule-content > .hk-setting-stack > .hk-availability:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) { background: transparent; }
 
 .housekeeper-charts .home-activity-chart > li { --bar-height: 196px; }
 
@@ -1285,9 +1287,9 @@ html[data-theme="dark"] .board-card .widget-head .board-card-avatar { background
 
 .hk-availability-tabs { display: flex; gap: var(--space-4); overflow-x: auto; padding-bottom: var(--space-4); }
 .hk-availability-tabs [role="tab"] { display: flex; flex-direction: column; align-items: stretch; gap: var(--space-12); padding: var(--space-8); text-align: left; border: 1px solid var(--line-card); border-radius: var(--radius-control); background: var(--white); color: var(--black); font: inherit; cursor: pointer; }
-.hk-availability-tabs [role="tab"]:hover { background: var(--surface-hover); }
+.hk-availability-tabs [role="tab"]:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) { background: var(--surface-hover); }
 .hk-availability-tabs .hk-day-tile[data-available="true"] > [role="tab"] { background: var(--filter-chip-bg); border-color: var(--action); }
-html[data-theme="dark"] .hk-availability-tabs .hk-day-tile[data-available="true"] > [role="tab"]:hover {
+html[data-theme="dark"] .hk-availability-tabs .hk-day-tile[data-available="true"] > [role="tab"]:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) {
   background: var(--action-tint);
 }
 .hk-availability-tab-status { font-size: var(--text-12); color: var(--text-muted); }
@@ -1389,8 +1391,8 @@ html.is-keys .hk-day-tile { transition: none; }
 
 .board-limits-table.settings-card { overflow: auto; }
 .board-limits-enforcement.settings-card { border: 0; background: var(--surface-hover); }
-.board-limits-enforcement .settings-row:hover { background: var(--grey); }
-html[data-theme="dark"] .board-limits-enforcement .settings-row:hover { background: var(--black-12); }
+.board-limits-enforcement .settings-row:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) { background: var(--grey); }
+html[data-theme="dark"] .board-limits-enforcement .settings-row:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) { background: var(--black-12); }
 .board-limits-section > .section-header { margin-block-end: 0; }
 .board-limits-table table { width: 100%; min-width: 520px; border-collapse: collapse; table-layout: fixed; }
 .board-limits-table .board-limits-person-column { width: calc(var(--space-16) * 9); }
@@ -1443,7 +1445,7 @@ html[data-theme="dark"] .board-limits-table tr[data-selected] { background: var(
 }
 
 .board-upload-drop { width: 100%; background: var(--white); border: 1px dashed var(--black-25); color: var(--black); font: inherit; text-align: left; cursor: pointer; }
-.board-upload-drop:hover, .board-upload-drop[data-dragging] { background: var(--surface-hover); }
+.board-upload-drop:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)), .board-upload-drop[data-dragging] { background: var(--surface-hover); }
 .board-upload-drop > .i { flex-shrink: 0; color: var(--text-muted); }
 .board-upload-help { display: block; margin-top: var(--space-4); color: var(--text-muted); font-size: var(--text-12); }
 .board-upload-files {
@@ -1644,7 +1646,7 @@ html[data-theme="dark"] .board-limits-table tr[data-selected] { background: var(
   color: var(--text-muted);
   font-size: var(--text-12);
 }
-.board-upload-preview-link:hover { color: var(--black); background: var(--sidebar-grey); }
+.board-upload-preview-link:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) { color: var(--black); background: var(--sidebar-grey); }
 .board-upload-warning { color: var(--black); margin: 0; font-size: var(--text-14); }
 .editor-dialog-card.is-pills.board-upload-exception .editor-dialog-body { gap: var(--space-25); }
 .board-upload-exception .editor-dialog-body > .hk-help { margin: 0; }
@@ -1679,7 +1681,7 @@ html[data-theme="dark"] .board-limits-table tr[data-selected] { background: var(
 .board-volume { display: flex; align-items: start; gap: var(--space-25); }
 .board-volume-overview { padding: var(--space-16); flex-shrink: 0; }
 .board-volume-link { padding: var(--space-8); border-radius: var(--radius-control); text-align: left; cursor: pointer; }
-.board-volume-link:hover { background: var(--surface-hover); }
+.board-volume-link:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) { background: var(--surface-hover); }
 
 .board-room-status {
   display: flex;

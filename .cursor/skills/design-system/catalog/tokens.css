@@ -26,6 +26,9 @@
   --bg-surface: var(--white);
   --surface-hover: var(--sidebar-grey);
   --settings-expansion-bg: var(--sidebar-grey);
+  --surface-hover-nested: var(--grey);
+  --settings-pending-delay: 500ms;
+  --surface-hover-strong: var(--black-12);
 
   /* Department tags. Each department is its own text color on a 15% fill. */
   --tag-text: #ffc130;
@@ -56,6 +59,9 @@
 
   /* Compatibility alias: generic blue washes share the same action tint. */
   --filter-chip-bg: var(--action-tint);
+  --check-ink: #ffffff;
+  --check-line: var(--black-25);
+  --check-stroke: 1.5px;
   --switch-knob: #f7f7f7;
   /* Strong curves. Built-in CSS easings are too weak for UI motion. */
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
@@ -162,6 +168,8 @@ html[data-theme="dark"] {
   --scrim-modal: rgb(0 0 0 / 65%);
   --surface-hover: var(--grey);
   /* The page is lighter than the nav and chat. Chrome stays the darker surface. */
+  --surface-hover: var(--grey);
+  --surface-hover-nested: var(--black-12);
   --sidebar-grey: #1A1A1A;
   /* Halfway from the chrome to #212121. #212121 against the nav read too heavy, so the page card sits one half step up. */
   --page-mid: color-mix(in srgb, var(--sidebar-grey) 50%, #212121);

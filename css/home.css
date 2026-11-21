@@ -157,8 +157,8 @@
   cursor: pointer;
   transition: background-color 150ms var(--ease-out);
 }
-.home-week-day:hover { background: var(--sidebar-grey); }
-html[data-theme="dark"] .home-week-day:hover { background: var(--grey); }
+.home-week-day:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) { background: var(--sidebar-grey); }
+html[data-theme="dark"] .home-week-day:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) { background: var(--grey); }
 /* The picked day is the filter chip's blue, and it keeps that fill on hover. */
 .home-week-day[aria-selected="true"],
 html[data-theme="dark"] .home-week-day[aria-selected="true"] { background: var(--filter-chip-bg); }
@@ -224,7 +224,7 @@ html[data-theme="dark"] .home-week-day[aria-selected="true"] { background: var(-
   cursor: pointer;
   transition: background-color var(--motion-hover) ease, color var(--motion-hover) ease;
 }
-.home-chip:hover { background: var(--black-12); color: var(--black); }
+.home-chip:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) { background: var(--black-12); color: var(--black); }
 .home-feedback .home-chip[aria-pressed="true"] { background: var(--black-12); color: var(--black); }
 .home-lance-copy h2 {
   margin: 0;
@@ -626,7 +626,7 @@ html[data-theme="dark"] .home-week-day[aria-selected="true"] { background: var(-
 }
 /* Room map: the key, then one row per floor, the floor on the left and its rooms wrapping beside it. A long map scrolls under the key. */
 /* The filter is a secondary button on the grey head, so its hover is one step past the head. */
-.widget-head .btn-secondary:hover,
+.widget-head .btn-secondary:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)),
 .widget-head .btn-secondary[aria-expanded="true"] { background: var(--grey); }
 .widget-head .btn-secondary .i { color: var(--text-muted); }
 /* The filter menu: Type and Floor, each with its current value before the chevron. Each opens its options to the side. */
@@ -703,11 +703,11 @@ html[data-theme="dark"] .home-week-day[aria-selected="true"] { background: var(-
   background: var(--urgency-high-bg);
 }
 button.home-map-room { cursor: pointer; }
-button.home-map-room:hover { background: var(--grey); }
-button.home-map-room.is-occupied:hover { background: color-mix(in srgb, var(--urgency-high) 12%, transparent); }
+button.home-map-room:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) { background: var(--grey); }
+button.home-map-room.is-occupied:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) { background: color-mix(in srgb, var(--urgency-high) 12%, transparent); }
 button.home-map-room:active { scale: 0.96; }
 html[data-theme="dark"] .home-map-room:not(.is-occupied) { background: var(--grey); }
-html[data-theme="dark"] button.home-map-room:not(.is-occupied):hover { background: var(--black-12); }
+html[data-theme="dark"] button.home-map-room:not(.is-occupied):hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) { background: var(--black-12); }
 .home-map-number {
   font-size: var(--text-12);
   font-weight: 500;
@@ -1063,7 +1063,7 @@ html[data-theme="dark"] .is-1 > .home-podium-step {
   line-height: 20px;
 }
 .home-section-head a.text-icon { color: var(--black); text-decoration: none; }
-.home-section-head a.text-icon:hover { background: var(--grey); }
+.home-section-head a.text-icon:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) { background: var(--grey); }
 .home-count {
   margin-left: var(--space-4);
   color: var(--text-muted);
@@ -1088,10 +1088,10 @@ html[data-theme="dark"] .is-1 > .home-podium-step {
   color: var(--black);
   text-decoration: none;
 }
-.home-row:hover { background: var(--grey); }
+.home-row:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) { background: var(--grey); }
 .home-row:focus-visible { outline: 2px solid var(--action); outline-offset: -2px; }
 .home-tile :is(.mini-pill, .avatar:not(.is-empty)) { background: var(--grey); }
-.home-row:hover :is(.mini-pill, .avatar:not(.is-empty)) { background: var(--black-12); }
+.home-row:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) :is(.mini-pill, .avatar:not(.is-empty)) { background: var(--black-12); }
 .home-row-copy {
   display: flex;
   flex-direction: column;
@@ -1117,9 +1117,9 @@ html[data-theme="dark"] .is-1 > .home-podium-step {
 
 html[data-theme="dark"] .home-tile { background: var(--grey); }
 html[data-theme="dark"] .home-lance-stack { --home-lance-side: var(--grey); }
-html[data-theme="dark"] .home-row:hover { background: var(--black-12); }
+html[data-theme="dark"] .home-row:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) { background: var(--black-12); }
 html[data-theme="dark"] .home-tile :is(.mini-pill, .avatar:not(.is-empty)) { background: var(--black-12); }
-html[data-theme="dark"] .home-row:hover :is(.mini-pill, .avatar:not(.is-empty)) { background: var(--grey-up); }
+html[data-theme="dark"] .home-row:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) :is(.mini-pill, .avatar:not(.is-empty)) { background: var(--grey-up); }
 
 @media (max-width: 900px) {
   .home-lance,
@@ -1164,7 +1164,7 @@ html[data-theme="dark"] .home-row:hover :is(.mini-pill, .avatar:not(.is-empty)) 
   animation: home-remove-in 160ms var(--ease-out);
   transition: background-color var(--motion-hover) ease, scale 160ms var(--ease-out);
 }
-.home-edit-remove:hover { background: var(--sidebar-grey); }
+.home-edit-remove:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) { background: var(--sidebar-grey); }
 .home-edit-remove:active { scale: 0.98; }
 .home-edit-remove::before {
   content: "";
@@ -1172,7 +1172,7 @@ html[data-theme="dark"] .home-row:hover :is(.mini-pill, .avatar:not(.is-empty)) 
   inset: calc(var(--space-4) * -1);
 }
 html[data-theme="dark"] .home-edit-remove { background: var(--grey); }
-html[data-theme="dark"] .home-edit-remove:hover { background: var(--black-12); }
+html[data-theme="dark"] .home-edit-remove:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) { background: var(--black-12); }
 @keyframes home-remove-in {
   from { opacity: 0; scale: 0.9; }
   to { opacity: 1; scale: 1; }
@@ -1272,9 +1272,9 @@ body.is-widget-dragging { user-select: none; }
   background: var(--sidebar-grey);
   transition: scale 160ms var(--ease-out);
 }
-.home-gallery-tile:hover { background: var(--grey); }
+.home-gallery-tile:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) { background: var(--grey); }
 html[data-theme="dark"] .home-gallery-tile { background: var(--grey); }
-html[data-theme="dark"] .home-gallery-tile:hover { background: var(--black-12); }
+html[data-theme="dark"] .home-gallery-tile:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) { background: var(--black-12); }
 /* A widget already on Home tints its tile blue, hovered or not. Selecting fades the blue in. Deselecting drops it at once. */
 .home-gallery-tile:has(> .home-gallery-pick[aria-pressed="true"]),
 html[data-theme="dark"] .home-gallery-tile:has(> .home-gallery-pick[aria-pressed="true"]) {

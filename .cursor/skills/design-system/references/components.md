@@ -13,6 +13,8 @@ Each component below has four lines: when, when not, default, and the states alr
 
 Color, type, and spacing are gallery specimens. They are not components. Header, detail panel, and every control below are in this file. The filter row, the note card, the comment thread, and the task row are blocks in [patterns.md](patterns.md).
 
+**Hard rule: action-button labels always stay on one line.** Buttons do not shrink; surrounding copy or action groups wrap instead.
+
 ## Primary button
 
 - When: the one action that creates or commits on that view.
@@ -750,3 +752,14 @@ Right-align footer actions with an 8px gap. Keep secondary Cancel immediately be
 A table column can show its record count through `DataColumn.count`. The count sits beside its title in muted normal-weight tabular figures, separated by4px, and participates in the column width measurement. Keep this metadata in the table header rather than adding a separate count row above it.
 
 Example placeholders in English text inputs and multiline descriptions use `e.g., …`. Keep the example concrete; do not prefix it with `Example:` or omit the comma. Write the copy at its source rather than applying CSS text transforms. Popup titles and field labels use sentence case: capitalize the first word, proper names and acronyms only.
+
+
+## Settings primitives
+
+- **When:** native text entry, an app-language choice, or a file selection surface inside an existing form.
+- **When not:** a setting that already fits SettingsInputRow or SettingsToggleRow; use those composed rows. An editable record fact uses the pill editor instead.
+- `LineField` and `TextWell` import from `@lance-live/sds/text-entry` and retain native input/textarea props, labels, refs, values, and constraints. LineField uses the white outlined field; TextWell uses the inset note surface.
+- `LanguageSelect` imports from `@lance-live/sds/language-select`. Supply native names, optional flags/abbreviations, a selected value, an accessible label, disabled state, and `onValueChange`. It composes the shared keyboard-navigable Menu.
+- `FileDropZone` imports from `@lance-live/sds/file-drop-zone`. Supply title, description, choose/drop handlers, disabled state, and `hasFile`. File validation and the native picker remain the calling flow's responsibility.
+- `SettingsSwitch` imports from `@lance-live/sds/settings-switch` and uses checked/onCheckedChange. Its existing Switch drawing is shared; do not invent a second visual switch.
+- Busy rows and segmented controls use the shared 500ms pending-feedback delay. Interaction locks immediately; quick saves keep the surface steady. Disabled controls do not take hover fills.

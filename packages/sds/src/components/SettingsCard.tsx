@@ -2,7 +2,9 @@
 
 import { useId, type ReactNode, type InputHTMLAttributes } from "react";
 import { Icon, type IconName } from "../icons";
-import { ThemeSwitch } from "./Fields";
+import { SettingsSwitch } from "../settings-switch";
+import { LineField } from "../text-entry";
+import { activateSettingsRow } from "../settings-row-interaction";
 import { Menu, type MenuProps } from "./Menu";
 
 /** Described headings introduce a whole settings area; default headers label its subsections. */
@@ -47,21 +49,13 @@ export type SettingsRowProps = {
   icon?: IconName;
   children: ReactNode;
   className?: string;
-  /** Only switch rows delegate background clicks to their switch. */
+  /** Delegate the row’s single action while keeping inline controls independent. */
   toggle?: boolean;
+  busy?: boolean;
 };
 
-export function SettingsRow({ label, description, inlineDescription, info, icon, children, className, toggle, layout = "inline" }: SettingsRowProps) {
-  return <div className={["sds settings-row", `settings-row-${layout}`, inlineDescription ? "has-inline-description" : "", toggle ? "is-toggle" : "", className].filter(Boolean).join(" ")} role={layout === "stacked" ? "group" : undefined} aria-label={layout === "stacked" ? label : undefined} onClick={event => {
-    if (event.defaultPrevented || (event.target as Element).closest("button, a, label, input, select, textarea, [tabindex], [contenteditable], .board-tipped")) return;
-    const controls = Array.from(event.currentTarget.querySelectorAll<HTMLElement>('button, a[href], input, select, textarea, [contenteditable="true"]')).filter(control => !control.matches('[type="hidden"], [aria-hidden="true"], [hidden]'));
-    if (!toggle && controls.length !== 1) return;
-    const toggles = controls.filter(control => control.matches('.theme-switch, [role="switch"], [role="checkbox"], input[type="checkbox"]'));
-    if (toggles.length !== 1) return;
-    const control = toggles[0];
-    if (!control.matches('.theme-switch, [role="switch"], [role="checkbox"], input[type="checkbox"]') || control.matches(':disabled, [aria-disabled="true"]')) return;
-    control.click();
-  }}>
+export function SettingsRow({ label, description, inlineDescription, info, icon, children, className, toggle, busy, layout = "inline" }: SettingsRowProps) {
+  return <div className={["sds settings-row", `settings-row-${layout}`, inlineDescription ? "has-inline-description" : "", toggle ? "is-toggle" : "", className].filter(Boolean).join(" ")} role={layout === "stacked" ? "group" : undefined} aria-label={layout === "stacked" ? label : undefined} aria-busy={busy || undefined} onClick={event => activateSettingsRow(event, toggle)}>
     <div className="settings-row-leading">
       {icon ? <Icon name={icon} size={16} /> : null}
       <div className="settings-row-copy"><span className="settings-row-label">{label}{info}</span>{description ? <span className="settings-row-description">{description}</span> : null}</div>
@@ -71,13 +65,13 @@ export function SettingsRow({ label, description, inlineDescription, info, icon,
 }
 
 type RowCopy = Omit<SettingsRowProps, "children" | "toggle">;
-export function SettingsToggleRow({ value, onValueChange, ...props }: RowCopy & { value: boolean; onValueChange: (value: boolean) => void }) {
-  return <SettingsRow {...props} toggle><ThemeSwitch label={props.label} pressed={value} onPressedChange={onValueChange} /></SettingsRow>;
+export function SettingsToggleRow({ value, onValueChange, busy, disabled, ...props }: RowCopy & { value: boolean; onValueChange: (value: boolean) => void; disabled?: boolean }) {
+  return <SettingsRow {...props} busy={busy} toggle><SettingsSwitch label={props.label} checked={value} disabled={disabled || busy} aria-busy={busy || undefined} onCheckedChange={onValueChange} /></SettingsRow>;
 }
 export function SettingsMenuRow({ items, value, onValueChange, menuClassName, ...props }: RowCopy & Pick<MenuProps, "items" | "value" | "onValueChange"> & { menuClassName?: string }) {
   return <SettingsRow {...props}><Menu className={menuClassName} items={items} value={value} onValueChange={onValueChange} /></SettingsRow>;
 }
 export function SettingsInputRow({ input, ...props }: RowCopy & { input: InputHTMLAttributes<HTMLInputElement> }) {
   const id = useId();
-  return <SettingsRow {...props}><input {...input} id={input.id ?? id} aria-label={input["aria-label"] ?? props.label} className={["sds line settings-input", input.className].filter(Boolean).join(" ")} /></SettingsRow>;
+  return <SettingsRow {...props}><LineField {...input} id={input.id ?? id} aria-label={input["aria-label"] ?? props.label} className={["settings-input", input.className].filter(Boolean).join(" ")} /></SettingsRow>;
 }

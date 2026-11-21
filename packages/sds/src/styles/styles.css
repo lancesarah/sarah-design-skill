@@ -141,8 +141,8 @@ button.sds:active:not(:disabled) {
   color: var(--white);
 }
 
-.sds.btn:hover:not(:disabled),
-.sds.btn.is-hover:not(:disabled) {
+.sds.btn:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)):not(:disabled),
+.sds.btn.is-hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)):not(:disabled) {
   background: var(--action-hover);
 }
 
@@ -158,8 +158,8 @@ button.sds:active:not(:disabled) {
   box-shadow: var(--stroke);
 }
 
-.sds.btn-secondary:hover:not(:disabled),
-.sds.btn-secondary.is-hover:not(:disabled) {
+.sds.btn-secondary:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)):not(:disabled),
+.sds.btn-secondary.is-hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)):not(:disabled) {
   background: var(--sidebar-grey);
 }
 
@@ -169,8 +169,8 @@ button.sds:active:not(:disabled) {
   box-shadow: none;
 }
 
-.sds.btn-tertiary:hover:not(:disabled),
-.sds.btn-tertiary.is-hover:not(:disabled),
+.sds.btn-tertiary:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)):not(:disabled),
+.sds.btn-tertiary.is-hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)):not(:disabled),
 .sds.btn-tertiary[aria-expanded="true"] {
   background: var(--black-12);
   color: var(--black);
@@ -186,8 +186,8 @@ button.sds:active:not(:disabled) {
   box-shadow: none;
 }
 
-.sds.btn-danger:hover:not(:disabled),
-.sds.btn-danger.is-hover:not(:disabled) {
+.sds.btn-danger:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)):not(:disabled),
+.sds.btn-danger.is-hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)):not(:disabled) {
   background: color-mix(in srgb, var(--destructive) 88%, black);
 }
 
@@ -197,8 +197,8 @@ button.sds:active:not(:disabled) {
   box-shadow: none;
 }
 
-.sds.btn-danger-light:hover:not(:disabled),
-.sds.btn-danger-light.is-hover:not(:disabled) {
+.sds.btn-danger-light:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)):not(:disabled),
+.sds.btn-danger-light.is-hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)):not(:disabled) {
   background: color-mix(in srgb, var(--destructive) 12%, transparent);
   color: var(--destructive);
 }
@@ -251,21 +251,21 @@ button.sds:active:not(:disabled) {
   color: var(--black-50);
 }
 
-.sds.segmented .segment:hover,
-.sds.segmented .segment.is-hover {
+.sds.segmented .segment:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)),
+.sds.segmented .segment.is-hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) {
   background: var(--grey);
   color: var(--black-50);
 }
 
-.sds.segmented .segment[aria-selected="true"]:hover,
-.sds.segmented .segment[aria-selected="true"].is-hover {
+.sds.segmented .segment[aria-selected="true"]:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)),
+.sds.segmented .segment[aria-selected="true"].is-hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) {
   background: var(--white);
   color: var(--black);
 }
 
 html[data-theme="dark"] .sds.segmented .segment[aria-selected="true"],
-html[data-theme="dark"] .sds.segmented .segment[aria-selected="true"]:hover,
-html[data-theme="dark"] .sds.segmented .segment[aria-selected="true"].is-hover {
+html[data-theme="dark"] .sds.segmented .segment[aria-selected="true"]:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)),
+html[data-theme="dark"] .sds.segmented .segment[aria-selected="true"].is-hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) {
   background: var(--grey);
 }
 
@@ -378,11 +378,11 @@ html[data-theme="dark"] .sds.segmented .slide-pill {
 }
 
 .sds.segmented.has-slide > .segment[aria-selected="true"],
-.sds.segmented.has-slide > .segment[aria-selected="true"]:hover,
-.sds.segmented.has-slide > .segment[aria-selected="true"].is-hover,
+.sds.segmented.has-slide > .segment[aria-selected="true"]:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)),
+.sds.segmented.has-slide > .segment[aria-selected="true"].is-hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)),
 html[data-theme="dark"] .sds.segmented.has-slide > .segment[aria-selected="true"],
-html[data-theme="dark"] .sds.segmented.has-slide > .segment[aria-selected="true"]:hover,
-html[data-theme="dark"] .sds.segmented.has-slide > .segment[aria-selected="true"].is-hover {
+html[data-theme="dark"] .sds.segmented.has-slide > .segment[aria-selected="true"]:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)),
+html[data-theme="dark"] .sds.segmented.has-slide > .segment[aria-selected="true"].is-hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) {
   background: transparent;
   box-shadow: none;
 }
@@ -410,8 +410,8 @@ html[data-theme="dark"] .sds.btn:not(.btn-secondary):not(.btn-tertiary):not(.btn
   color: var(--button-fill);
 }
 
-html[data-theme="dark"] .sds.btn:not(.btn-secondary):not(.btn-tertiary):not(.btn-danger):not(.btn-danger-light):hover:not(:disabled),
-html[data-theme="dark"] .sds.btn:not(.btn-secondary):not(.btn-tertiary):not(.btn-danger):not(.btn-danger-light).is-hover:not(:disabled) {
+html[data-theme="dark"] .sds.btn:not(.btn-secondary):not(.btn-tertiary):not(.btn-danger):not(.btn-danger-light):hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)):not(:disabled),
+html[data-theme="dark"] .sds.btn:not(.btn-secondary):not(.btn-tertiary):not(.btn-danger):not(.btn-danger-light).is-hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)):not(:disabled) {
   background: var(--action-hover);
   color: var(--button-fill);
 }
@@ -422,14 +422,14 @@ html[data-theme="dark"] .sds.btn-secondary {
   box-shadow: var(--stroke);
 }
 
-html[data-theme="dark"] .sds.btn-secondary:hover:not(:disabled),
-html[data-theme="dark"] .sds.btn-secondary.is-hover:not(:disabled) {
+html[data-theme="dark"] .sds.btn-secondary:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)):not(:disabled),
+html[data-theme="dark"] .sds.btn-secondary.is-hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)):not(:disabled) {
   background: var(--grey);
   color: var(--black);
 }
 
 html[data-theme="dark"] .sds.btn-danger,
-html[data-theme="dark"] .sds.btn-danger:hover,
+html[data-theme="dark"] .sds.btn-danger:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)),
 html[data-theme="dark"] .sds.btn-danger:active {
   color: var(--button-fill);
 }
@@ -561,10 +561,10 @@ button.sds:disabled {
 :where(.sds) .sheet-line .title-sub-note.is-hint,
 :where(.sds) .sheet-line .title-sub-note::placeholder { color: transparent; }
 
-:where(.sds) .sheet-line:hover .title-sub-note.is-hint,
-:where(.sds) .sheet-line.is-hover .title-sub-note.is-hint,
-:where(.sds) .sheet-line:hover .title-sub-note:not(:focus)::placeholder,
-:where(.sds) .sheet-line.is-hover .title-sub-note:not(:focus)::placeholder { color: var(--black-50); }
+:where(.sds) .sheet-line:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) .title-sub-note.is-hint,
+:where(.sds) .sheet-line.is-hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) .title-sub-note.is-hint,
+:where(.sds) .sheet-line:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) .title-sub-note:not(:focus)::placeholder,
+:where(.sds) .sheet-line.is-hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) .title-sub-note:not(:focus)::placeholder { color: var(--black-50); }
 
 :where(.sds) .title-sub-field:focus,
 :where(.sds) .title-sub-note:focus {
@@ -612,12 +612,12 @@ button.sds:disabled {
 }
 
 /* Department trigger. Same hover as the table type chip: grey fill, chevron, and the open state keeps both. */
-button.sds.dept:hover,
+button.sds.dept:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)),
 button.sds.dept[aria-expanded="true"] {
   background: var(--grey);
   color: var(--black);
 }
-html[data-theme="dark"] button.sds.dept:hover,
+html[data-theme="dark"] button.sds.dept:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)),
 html[data-theme="dark"] button.sds.dept[aria-expanded="true"] {
   background: var(--black-12);
   box-shadow: 0 0 0 1px var(--black-25);
@@ -634,7 +634,7 @@ button.sds.dept > .dept-chevron {
   color: var(--black-50);
   pointer-events: none;
 }
-button.sds.dept:hover > .dept-chevron,
+button.sds.dept:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) > .dept-chevron,
 button.sds.dept[aria-expanded="true"] > .dept-chevron {
   width: 10px;
   min-width: 10px;
@@ -672,12 +672,12 @@ button.sds.view-pick .meta-chevron {
   opacity: 0;
 }
 
-button.sds.view-pick:hover,
+button.sds.view-pick:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)),
 button.sds.view-pick[aria-expanded="true"] {
   background: var(--sidebar-grey);
 }
 
-button.sds.view-pick:hover .meta-chevron,
+button.sds.view-pick:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) .meta-chevron,
 button.sds.view-pick[aria-expanded="true"] .meta-chevron {
   opacity: 1;
 }
@@ -891,8 +891,8 @@ html[data-theme="dark"] .sds.avatar.is-photo > img {
   border-radius: 5px;
 }
 
-.sds.check:hover:not(:disabled) .check-box,
-.sds.check.is-hover:not(:disabled) .check-box {
+.sds.check:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)):not(:disabled) .check-box,
+.sds.check.is-hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)):not(:disabled) .check-box {
   background: var(--sidebar-grey);
 }
 
@@ -901,24 +901,24 @@ html[data-theme="dark"] .sds.avatar.is-photo > img {
   box-shadow: none;
 }
 
-.sds.check[aria-checked="true"]:hover:not(:disabled) .check-box,
-.sds.check[aria-checked="true"].is-hover:not(:disabled) .check-box {
+.sds.check[aria-checked="true"]:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)):not(:disabled) .check-box,
+.sds.check[aria-checked="true"].is-hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)):not(:disabled) .check-box {
   background: var(--action-hover);
 }
 
-html[data-theme="dark"] .sds.check:hover:not(:disabled) .check-box,
-html[data-theme="dark"] .sds.check.is-hover:not(:disabled) .check-box {
+html[data-theme="dark"] .sds.check:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)):not(:disabled) .check-box,
+html[data-theme="dark"] .sds.check.is-hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)):not(:disabled) .check-box {
   background: var(--grey);
 }
 
 html[data-theme="dark"] .sds.check[aria-checked="true"] .check-box,
-html[data-theme="dark"] .sds.check[aria-checked="true"]:hover:not(:disabled) .check-box,
-html[data-theme="dark"] .sds.check[aria-checked="true"].is-hover:not(:disabled) .check-box {
+html[data-theme="dark"] .sds.check[aria-checked="true"]:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)):not(:disabled) .check-box,
+html[data-theme="dark"] .sds.check[aria-checked="true"].is-hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)):not(:disabled) .check-box {
   background: var(--action);
 }
 
-html[data-theme="dark"] .sds.check[aria-checked="true"]:hover:not(:disabled) .check-box,
-html[data-theme="dark"] .sds.check[aria-checked="true"].is-hover:not(:disabled) .check-box {
+html[data-theme="dark"] .sds.check[aria-checked="true"]:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)):not(:disabled) .check-box,
+html[data-theme="dark"] .sds.check[aria-checked="true"].is-hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)):not(:disabled) .check-box {
   background: var(--action-hover);
 }
 

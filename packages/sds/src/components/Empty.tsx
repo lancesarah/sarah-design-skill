@@ -9,14 +9,18 @@ export function Empty({
   title,
   children,
   action,
+  variant = "outlined",
+  className,
 }: {
   icon: IconName;
   title: string;
   children?: ReactNode;
   action?: ReactNode;
+  variant?: "outlined" | "plain";
+  className?: string;
 }) {
   return (
-    <div className="sds empty">
+    <div className={["sds empty", variant === "plain" ? "empty-plain" : "empty-outlined", className].filter(Boolean).join(" ")}>
       <div className="empty-copy">
         <span className="empty-mark" aria-hidden="true">
           <Icon name={icon} size={24} />

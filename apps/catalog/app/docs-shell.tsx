@@ -38,6 +38,7 @@ const NAV: Group[] = [
           { id: "department", label: "Department tag" },
           { id: "segments", label: "Segmented control" },
           { id: "settings-card", label: "Settings card" },
+          { id: "settings-primitives", label: "Settings primitives" },
           { id: "time-picker", label: "Time picker" },
         ],
       },

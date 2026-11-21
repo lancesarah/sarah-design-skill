@@ -212,7 +212,7 @@ body .lance-side {
 }
 
 body .lance-side .lance { background: var(--white); }
-body .lance-side .side-icon:hover { background: var(--grey); }
+body .lance-side .side-icon:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) { background: var(--grey); }
 
 body.is-lance-collapsed .lance-side {
   flex-basis: calc(30px + var(--space-16) * 2);
@@ -387,7 +387,7 @@ body.is-lance-collapsed .lance-side [data-lance-collapse]::after {
   background: var(--sidebar-grey);
   overflow: hidden;
 }
-.brief-list button:hover .note-avatar-slot,
+.brief-list button:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) .note-avatar-slot,
 .brief-list button[aria-selected="true"] .note-avatar-slot { background: var(--grey); }
 .note-avatar-slot img {
   width: 39px;
@@ -399,9 +399,9 @@ body.is-lance-collapsed .lance-side [data-lance-collapse]::after {
 }
 .brief-list button.is-ready .note-avatar-slot img { opacity: 1; }
 
-.brief-list button:hover,
+.brief-list button:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)),
 .brief-list button[aria-selected="true"] { background: var(--sidebar-grey); }
-html[data-theme="dark"] .brief-list button:hover,
+html[data-theme="dark"] .brief-list button:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)),
 html[data-theme="dark"] .brief-list button[aria-selected="true"] { background: var(--grey); }
 .brief-list button[hidden] { display: none; }
 
@@ -643,9 +643,9 @@ html[data-theme="dark"] .brief-list button[aria-selected="true"] { background: v
   color: var(--black);
 }
 
-.note-more:hover,
+.note-more:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)),
 .note-more[aria-expanded="true"] { background: var(--sidebar-grey); }
-html[data-theme="dark"] .note-more:hover,
+html[data-theme="dark"] .note-more:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)),
 html[data-theme="dark"] .note-more[aria-expanded="true"] { background: var(--grey); }
 
 .note-menu { align-self: center; }
@@ -842,7 +842,7 @@ html[data-theme="dark"] .note-more[aria-expanded="true"] { background: var(--gre
   opacity: 0;
   overflow: hidden;
 }
-.author-pick:hover .meta-chevron,
+.author-pick:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) .meta-chevron,
 .author-pick[aria-expanded="true"] .meta-chevron,
 .author-sizer .meta-chevron {
   max-width: 10px;
@@ -878,13 +878,13 @@ html[data-theme="dark"] .note-more[aria-expanded="true"] { background: var(--gre
   opacity: 0;
   overflow: hidden;
 }
-.dept-pick:hover .meta-chevron,
+.dept-pick:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) .meta-chevron,
 .dept-pick[aria-expanded="true"] .meta-chevron {
   max-width: 10px;
   margin-inline-start: var(--space-4);
   opacity: 1;
 }
-.view-pick:hover .meta-chevron,
+.view-pick:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) .meta-chevron,
 .view-pick[aria-expanded="true"] .meta-chevron { opacity: 1; }
 .dept-pick[aria-expanded="true"] .meta-chevron,
 .view-pick[aria-expanded="true"] .meta-chevron { transform: rotate(180deg); }
@@ -1249,8 +1249,8 @@ html[data-theme="dark"] .notes-page img.avatar {
   pointer-events: none;
   transition: opacity 120ms;
 }
-.comment:hover .comment-views,
-.comment.is-hover .comment-views,
+.comment:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) .comment-views,
+.comment.is-hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) .comment-views,
 .comment:has(.view-pick[aria-expanded="true"]) .comment-views {
   opacity: 1;
   pointer-events: auto;
@@ -1277,8 +1277,8 @@ html[data-theme="dark"] .notes-page img.avatar {
   pointer-events: none;
   transition: opacity 120ms;
 }
-.comment:hover .comment-menu,
-.comment.is-hover .comment-menu,
+.comment:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) .comment-menu,
+.comment.is-hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) .comment-menu,
 .comment:has(.comment-more[aria-expanded="true"]) .comment-menu {
   opacity: 1;
   pointer-events: auto;
@@ -1296,13 +1296,13 @@ html[data-theme="dark"] .notes-page img.avatar {
   background: transparent;
   color: var(--black);
 }
-.comment:hover .comment-more,
-.comment.is-hover .comment-more { background: var(--sidebar-grey); }
-.comment-more:hover,
+.comment:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) .comment-more,
+.comment.is-hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) .comment-more { background: var(--sidebar-grey); }
+.comment-more:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)),
 .comment-more[aria-expanded="true"] { background: var(--grey); }
-html[data-theme="dark"] .comment:hover .comment-more,
-html[data-theme="dark"] .comment.is-hover .comment-more { background: var(--grey); }
-html[data-theme="dark"] .comment-more:hover,
+html[data-theme="dark"] .comment:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) .comment-more,
+html[data-theme="dark"] .comment.is-hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) .comment-more { background: var(--grey); }
+html[data-theme="dark"] .comment-more:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)),
 html[data-theme="dark"] .comment-more[aria-expanded="true"] { background: var(--black-12); }
 .comment-menu .menu.is-context {
   position: fixed;

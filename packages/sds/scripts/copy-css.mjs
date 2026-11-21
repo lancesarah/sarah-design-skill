@@ -11,3 +11,5 @@ writeFileSync(
     .map((file) => readFileSync(file, "utf8"))
     .join("\n"),
 );
+
+copyFileSync("../../css/language-select.css", "dist/language-select.css");

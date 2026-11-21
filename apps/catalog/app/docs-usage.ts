@@ -190,6 +190,21 @@ export const USAGE: Record<string, Usage> = {
       "Use `SettingsCard variant=\"destructive\"` for destructive options such as offboarding or resetting preferences. It uses the standard 1px `--line-card` grey border and 16px vertical row padding at all viewport sizes, including rows with subtitles. Use `--destructive` red for the row title and leading icon, retain muted supporting copy, and pair it with a danger action button. Confirmation behavior belongs to the consumer."
     ]
   },
+  "settings-primitives": {
+    "when": [
+      "native text entry, an app-language choice, or a file selection surface inside an existing form."
+    ],
+    "whenNot": [
+      "a setting that already fits SettingsInputRow or SettingsToggleRow; use those composed rows. An editable record fact uses the pill editor instead."
+    ],
+    "rules": [
+      "`LineField` and `TextWell` import from `@lance-live/sds/text-entry` and retain native input/textarea props, labels, refs, values, and constraints. LineField uses the white outlined field; TextWell uses the inset note surface.",
+      "`LanguageSelect` imports from `@lance-live/sds/language-select`. Supply native names, optional flags/abbreviations, a selected value, an accessible label, disabled state, and `onValueChange`. It composes the shared keyboard-navigable Menu.",
+      "`FileDropZone` imports from `@lance-live/sds/file-drop-zone`. Supply title, description, choose/drop handlers, disabled state, and `hasFile`. File validation and the native picker remain the calling flow's responsibility.",
+      "`SettingsSwitch` imports from `@lance-live/sds/settings-switch` and uses checked/onCheckedChange. Its existing Switch drawing is shared; do not invent a second visual switch.",
+      "Busy rows and segmented controls use the shared 500ms pending-feedback delay. Interaction locks immediately; quick saves keep the surface steady. Disabled controls do not take hover fills."
+    ]
+  },
   "time-picker": {
     "when": [],
     "whenNot": [],

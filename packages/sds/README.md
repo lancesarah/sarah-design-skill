@@ -67,3 +67,12 @@ Use `SettingsSections spacing="areas"` for 40px between whole areas. Nest `Setti
 Use the `SettingsCard actions` slot for footer buttons. It owns its divider and 16px vertical / 25px horizontal padding. A stacked row already owns its 16px copy-to-control gap: nested grids must not add a second top margin. Attendance, time off, and standalone actions belong in the 25px subsection stack.
 
 Spacing ownership is enforced in component CSS: `SettingsSections` clears direct-child external margins and trailing content margins, `SettingsRow layout="stacked"` clears outer margins on its control content, and `SettingsCard actions` clears action margins. Page styles only arrange domain-specific controls; they do not redefine the shared gaps or compensate for them.
+
+### Shared settings primitives
+
+- `@lance-live/sds/language-select`: `LanguageSelect` takes `value`, `options`, `label`, `disabled`, and `onValueChange`; options can include native names, flags, and abbreviations.
+- `@lance-live/sds/text-entry`: `LineField` and `TextWell` keep native input/textarea props and the shared field drawing.
+- `@lance-live/sds/settings-switch`: `SettingsSwitch` uses `checked`, `label`, and `onCheckedChange`, with native disabled behavior.
+- `@lance-live/sds/settings-row-interaction`: `activateSettingsRow` delegates a row's single action while preserving native, disabled, busy, hidden, and multi-action boundaries.
+
+Button labels stay on one line; surrounding layouts wrap. Pending row/segmented feedback shares `--settings-pending-delay` (500ms); controls lock immediately. Nested neutral hover uses `--surface-hover-nested`, and In progress retains the blue semantic mark independently of an action accent.

@@ -120,25 +120,25 @@
 
 /* The side panel keeps the filled urgency. The table cell stays the colored word. */
 .complaints-page .todo-side .sheet-chip:has(.urgency-urgent),
-.complaints-page .todo-side .sheet-chip:has(.urgency-urgent):hover,
+.complaints-page .todo-side .sheet-chip:has(.urgency-urgent):hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)),
 .complaints-page .todo-side .sheet-chip:has(.urgency-urgent)[aria-expanded="true"] {
   background: var(--urgency-urgent-bg);
 }
 
 .complaints-page .todo-side .sheet-chip:has(.urgency-high),
-.complaints-page .todo-side .sheet-chip:has(.urgency-high):hover,
+.complaints-page .todo-side .sheet-chip:has(.urgency-high):hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)),
 .complaints-page .todo-side .sheet-chip:has(.urgency-high)[aria-expanded="true"] {
   background: var(--urgency-high-bg);
 }
 
 .complaints-page .todo-side .sheet-chip:has(.urgency-standard),
-.complaints-page .todo-side .sheet-chip:has(.urgency-standard):hover,
+.complaints-page .todo-side .sheet-chip:has(.urgency-standard):hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)),
 .complaints-page .todo-side .sheet-chip:has(.urgency-standard)[aria-expanded="true"] {
   background: var(--sidebar-grey);
 }
 
 .complaints-page .todo-side .sheet-chip:has(.urgency-low),
-.complaints-page .todo-side .sheet-chip:has(.urgency-low):hover,
+.complaints-page .todo-side .sheet-chip:has(.urgency-low):hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)),
 .complaints-page .todo-side .sheet-chip:has(.urgency-low)[aria-expanded="true"] {
   background: var(--urgency-low-bg);
 }

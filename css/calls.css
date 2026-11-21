@@ -183,7 +183,7 @@
   color: var(--black);
 }
 
-.calls-page .call-play:hover { background: var(--grey); }
+.calls-page .call-play:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) { background: var(--grey); }
 
 .calls-page .call-play[aria-pressed="true"] {
   background: var(--action);
@@ -194,7 +194,7 @@ html[data-theme="dark"] .calls-page .call-play[aria-pressed="true"] {
   color: var(--button-fill);
 }
 
-.calls-page .call-play[aria-pressed="true"]:hover { background: var(--action-hover); }
+.calls-page .call-play[aria-pressed="true"]:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) { background: var(--action-hover); }
 
 .calls-page .call-elapsed,
 .calls-page .call-duration {
@@ -226,7 +226,7 @@ html[data-theme="dark"] .calls-page .call-play[aria-pressed="true"] {
   line-height: 20px;
 }
 
-html[data-theme="dark"] .calls-page .call-play:hover:not([aria-pressed="true"]) {
+html[data-theme="dark"] .calls-page .call-play:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)):not([aria-pressed="true"]) {
   background: var(--black-12);
 }
 
@@ -249,9 +249,9 @@ html[data-theme="dark"] .calls-page .call-play:hover:not([aria-pressed="true"]) 
   transition: transform 160ms var(--ease-out);
 }
 
-.calls-page .todo-side .call-resolution:hover .sheet-edit,
+.calls-page .todo-side .call-resolution:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) .sheet-edit,
 .calls-page .todo-side .call-resolution[aria-expanded="true"] .sheet-edit,
-.calls-page .todo-side .side-type:hover .sheet-edit,
+.calls-page .todo-side .side-type:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) .sheet-edit,
 .calls-page .todo-side .side-type[aria-expanded="true"] .sheet-edit {
   width: 10px;
   min-width: 10px;
@@ -306,7 +306,7 @@ html[data-theme="dark"] .calls-page .call-play:hover:not([aria-pressed="true"]) 
   line-height: 16px;
 }
 
-.calls-page .call-transcript-head:hover,
+.calls-page .call-transcript-head:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)),
 .calls-page .call-transcript-head:active { background: transparent; }
 
 .calls-page .call-transcript-head[aria-expanded="false"] .i { transform: rotate(-90deg); }

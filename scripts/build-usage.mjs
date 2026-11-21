@@ -50,6 +50,7 @@ export const SOURCES = {
   segments: [c("Segments")],
   menu: [c("Menu")],
   "settings-card": [c("Settings card")],
+  "settings-primitives": [c("Settings primitives")],
   "time-picker": [c("Time picker")],
   "filter-menu": [{ file: "patterns", heading: "Filter row" }],
   confirm: [c("Delete confirmation")],

@@ -10,7 +10,7 @@ describe("Settings rows", () => {
     fireEvent.click(screen.getByText("Training", { selector: ".settings-row-label" }));
     expect(change).toHaveBeenCalledTimes(1);
     expect(change).toHaveBeenLastCalledWith(true);
-    fireEvent.click(screen.getByRole("button", { name: "Training" }));
+    fireEvent.click(screen.getByRole("switch", { name: "Training" }));
     expect(change).toHaveBeenCalledTimes(2);
     fireEvent.click(screen.getByRole("button", { name: "About training" }));
     expect(info).toHaveBeenCalledTimes(1);
@@ -59,6 +59,30 @@ describe("Settings rows", () => {
     expect(change).not.toHaveBeenCalled();
     view.rerender(<SettingsRow label="Multiple"><button role="switch" aria-checked="false" onClick={change}>Toggle</button><button>Configure</button></SettingsRow>);
     fireEvent.click(screen.getByText("Multiple", { selector: ".settings-row-label" }));
+    expect(change).not.toHaveBeenCalled();
+  });
+});
+
+
+describe("Settings row delegation boundaries", () => {
+  it("activates the sole action inside a focusable ancestor", () => {
+    const action = vi.fn();
+    render(<div role="tabpanel" tabIndex={0}><SettingsRow label="Edit routing"><button onClick={action}>Edit</button></SettingsRow></div>);
+    fireEvent.click(screen.getByText("Edit routing"));
+    expect(action).toHaveBeenCalledTimes(1);
+  });
+  it("focuses a text field without synthesizing a click", () => {
+    const click = vi.fn();
+    render(<SettingsRow label="Display name"><input aria-label="Display name field" onClick={click}/></SettingsRow>);
+    fireEvent.click(screen.getByText("Display name"));
+    expect(screen.getByRole("textbox")).toHaveFocus();
+    expect(click).not.toHaveBeenCalled();
+  });
+  it("locks a busy toggle immediately", () => {
+    const change = vi.fn();
+    render(<SettingsToggleRow label="Pending" value={false} busy onValueChange={change}/>);
+    expect(screen.getByRole("switch")).toBeDisabled();
+    fireEvent.click(screen.getByText("Pending", { selector: ".settings-row-label" }));
     expect(change).not.toHaveBeenCalled();
   });
 });

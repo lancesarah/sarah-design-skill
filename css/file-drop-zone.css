@@ -13,7 +13,7 @@
   text-align: start;
   cursor: pointer;
 }
-.sds.file-drop-zone:is(:hover, [data-dragging]):enabled { background: var(--surface-hover); }
+.sds.file-drop-zone:is(:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)), [data-dragging]):enabled { background: var(--surface-hover); }
 .sds.file-drop-zone:focus-visible { outline: 2px solid var(--action); outline-offset: 2px; }
 .sds.file-drop-zone:disabled { opacity: .5; cursor: default; }
 .sds.file-drop-zone > .i { flex: none; color: var(--text-muted); }

@@ -166,6 +166,8 @@ export function OverlayMenu({
       data-menu={marker}
       style={style}
       onPointerDown={onPointerDown}
+      onWheel={event => event.stopPropagation()}
+      onTouchMove={event => event.stopPropagation()}
     >
       {children}
     </div>,

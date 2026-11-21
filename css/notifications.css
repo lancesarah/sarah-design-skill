@@ -19,7 +19,7 @@
 
 body.is-side-collapsed .side-count,
 body.is-side-settling .side-count,
-.side-item:hover > a .side-count,
+.side-item:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) > a .side-count,
 .side-item:focus-within > a .side-count {
   display: none;
 }
@@ -131,8 +131,8 @@ body.is-inbox-open .notes-page {
   background: transparent;
 }
 
-.notice-head .chip:hover:not(:disabled),
-.notice-head .chip.is-hover:not(:disabled) {
+.notice-head .chip:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)):not(:disabled),
+.notice-head .chip.is-hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)):not(:disabled) {
   background: var(--grey);
 }
 
@@ -245,11 +245,11 @@ body.is-inbox-open .notes-page {
 }
 
 .notice-page[aria-selected="true"]::before,
-.notice-page[aria-selected="true"]:hover::before {
+.notice-page[aria-selected="true"]:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *))::before {
   background-color: var(--black-50);
 }
 
-.notice-page:hover::before {
+.notice-page:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *))::before {
   background-color: var(--black-50);
 }
 
@@ -315,17 +315,17 @@ body.is-inbox-open .notes-page {
 .notice-row .avatar[data-dept="Management"],
 .thread-mark[data-dept="Management"] { color: var(--dept-management); background: var(--dept-management-bg); }
 
-.notice-row:hover .avatar,
+.notice-row:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) .avatar,
 .notice-row[aria-selected="true"] .avatar {
   box-shadow: 0 0 0 var(--space-2) var(--sidebar-grey);
 }
 
-html[data-theme="dark"] .notice-row:hover .avatar,
+html[data-theme="dark"] .notice-row:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) .avatar,
 html[data-theme="dark"] .notice-row[aria-selected="true"] .avatar {
   box-shadow: 0 0 0 var(--space-2) var(--grey);
 }
 
-.notice-row:hover,
+.notice-row:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)),
 .notice-row[aria-selected="true"] {
   background: var(--sidebar-grey);
 }
@@ -395,12 +395,12 @@ html[data-theme="dark"] .notice-row .avatar.is-photo img {
   box-shadow: 0 0 0 var(--space-2) var(--white);
 }
 
-.notice-row:hover .avatar-verified,
+.notice-row:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) .avatar-verified,
 .notice-row[aria-selected="true"] .avatar-verified {
   box-shadow: 0 0 0 var(--space-2) var(--sidebar-grey);
 }
 
-html[data-theme="dark"] .notice-row:hover .avatar-verified,
+html[data-theme="dark"] .notice-row:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) .avatar-verified,
 html[data-theme="dark"] .notice-row[aria-selected="true"] .avatar-verified {
   box-shadow: 0 0 0 var(--space-2) var(--grey);
 }
@@ -437,7 +437,7 @@ html[data-theme="dark"] .notice-row[aria-selected="true"] .avatar-verified {
   line-height: 20px;
 }
 
-.notice-row:hover .notice-note,
+.notice-row:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) .notice-note,
 .notice-row[aria-selected="true"] .notice-note {
   background: var(--grey);
 }
@@ -482,7 +482,7 @@ html[data-theme="dark"] .notice-row[aria-selected="true"] .avatar-verified {
   line-height: 20px;
 }
 
-html[data-theme="dark"] .notice-row:hover,
+html[data-theme="dark"] .notice-row:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)),
 html[data-theme="dark"] .notice-row[aria-selected="true"] {
   background: var(--grey);
 }
@@ -491,7 +491,7 @@ html[data-theme="dark"] .notice-note {
   background: var(--grey);
 }
 
-html[data-theme="dark"] .notice-row:hover .notice-note,
+html[data-theme="dark"] .notice-row:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) .notice-note,
 html[data-theme="dark"] .notice-row[aria-selected="true"] .notice-note {
   background: var(--black-12);
 }
@@ -587,11 +587,11 @@ html[data-theme="dark"] .notice-row[aria-selected="true"] .notice-note {
   cursor: pointer;
 }
 
-.notice-head .thread-back:hover,
-.thread-banner .thread-back:hover { background: var(--grey); }
+.notice-head .thread-back:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)),
+.thread-banner .thread-back:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) { background: var(--grey); }
 
-html[data-theme="dark"] .notice-head .thread-back:hover,
-html[data-theme="dark"] .thread-banner .thread-back:hover { background: var(--black-12); }
+html[data-theme="dark"] .notice-head .thread-back:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)),
+html[data-theme="dark"] .thread-banner .thread-back:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) { background: var(--black-12); }
 
 .thread-back .i { transform: rotate(90deg); }
 
@@ -621,9 +621,9 @@ html[data-theme="dark"] .thread-banner .thread-back:hover { background: var(--bl
 button.thread-banner-main { cursor: pointer; }
 button.thread-banner-main:active:not(:disabled) { scale: 1; }
 
-.thread-banner:has(> button.thread-banner-main):hover { background: var(--sidebar-grey); }
+.thread-banner:has(> button.thread-banner-main):hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) { background: var(--sidebar-grey); }
 
-html[data-theme="dark"] .thread-banner:has(> button.thread-banner-main):hover { background: var(--grey); }
+html[data-theme="dark"] .thread-banner:has(> button.thread-banner-main):hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) { background: var(--grey); }
 
 .thread-detail-head { gap: var(--space-8); }
 
@@ -789,9 +789,9 @@ html[data-theme="dark"] .thread-banner:has(> button.thread-banner-main):hover { 
   padding: var(--space-8) var(--space-12);
 }
 
-.thread-person:hover { background: var(--sidebar-grey); }
+.thread-person:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) { background: var(--sidebar-grey); }
 
-html[data-theme="dark"] .thread-person:hover { background: var(--grey); }
+html[data-theme="dark"] .thread-person:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) { background: var(--grey); }
 
 .thread-person .person { width: 100%; }
 
@@ -835,12 +835,12 @@ html[data-theme="dark"] .thread-person:hover { background: var(--grey); }
 
 /* A picked row takes the chip's blue, so the row and its chip above read as one choice. Hover does not add a second step, and the picture drops its ring so it sits on the tint. */
 .notice-row.check[aria-checked="true"],
-.notice-row.check[aria-checked="true"]:hover {
+.notice-row.check[aria-checked="true"]:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) {
   background: var(--filter-chip-bg);
 }
 
 .notice-row.check[aria-checked="true"] .avatar,
-.notice-row.check[aria-checked="true"]:hover .avatar {
+.notice-row.check[aria-checked="true"]:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) .avatar {
   box-shadow: none;
 }
 
@@ -1286,11 +1286,11 @@ html[data-theme="dark"] .ticket-resolved .btn-tertiary { background: var(--black
   transition: none;
 }
 
-.ticket-row:hover {
+.ticket-row:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) {
   background: var(--sidebar-grey);
 }
 
-html[data-theme="dark"] .ticket-row:hover {
+html[data-theme="dark"] .ticket-row:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) {
   background: var(--grey);
 }
 

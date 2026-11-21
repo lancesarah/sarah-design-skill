@@ -12,31 +12,18 @@ describe("TimePicker", () => {
     expect(parseTime("9:60AM")).toBeNull();
     expect(formatTime("00:00")).toBe("12:00AM");
   });
-  it("commits typed times and retains invalid drafts without changing the saved value", () => {
+  it("edits each part while preserving the other part", () => {
     const change = vi.fn();
-    render(<TimePicker label="Start" value="09:00" onValueChange={change} />);
-    const field = screen.getByRole("textbox", { name: "Start" });
-    fireEvent.change(field, { target: { value: "10:17PM" } });
-    fireEvent.blur(field);
+    render(<TimePicker label="Start" value="09:17" onValueChange={change} />);
+    fireEvent.change(screen.getByRole("combobox", { name: "Start — hour" }), { target: { value: "22" } });
     expect(change).toHaveBeenLastCalledWith("22:17");
-    fireEvent.change(field, { target: { value: "25:00" } });
-    fireEvent.blur(field);
-    expect(change).toHaveBeenCalledTimes(1);
-    expect(field).toHaveAttribute("aria-invalid", "true");
+    fireEvent.change(screen.getByRole("combobox", { name: "Start — minute" }), { target: { value: "31" } });
+    expect(change).toHaveBeenLastCalledWith("09:31");
   });
-  it("selects a suggestion and dismisses the menu", () => {
-    HTMLElement.prototype.scrollIntoView = vi.fn();
-    const bounds = vi.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockReturnValue({ x: 0, y: 0, top: 0, left: 0, right: 200, bottom: 32, width: 200, height: 32, toJSON: () => ({}) });
-    const change = vi.fn();
-    render(<TimePicker label="End" value="17:00" onValueChange={change} />);
-    fireEvent.click(screen.getByRole("button", { name: "Choose End" }));
-    const selected = screen.getByRole("menuitemradio", { name: "5:00PM" });
-    expect(selected).toHaveFocus();
-    fireEvent.keyDown(selected, { key: "ArrowDown" });
-    expect(screen.getByRole("menuitemradio", { name: "5:30PM" })).toHaveFocus();
-    fireEvent.click(screen.getByRole("menuitemradio", { name: "5:30PM" }));
-    expect(change).toHaveBeenCalledWith("17:30");
-    expect(screen.queryByRole("menu")).not.toBeInTheDocument();
-    bounds.mockRestore();
+  it("restricts choices to the allowed times", () => {
+    render(<TimePicker label="End" value="17:15" min="17:15" max="17:45" step={900} required onValueChange={vi.fn()} />);
+    const minutes = screen.getByRole("combobox", { name: "End — minute" }) as HTMLSelectElement;
+    expect(Array.from(minutes.options, option => option.value)).toEqual(["", "15", "30", "45"]);
+    expect(minutes.options[0].disabled).toBe(true);
   });
 });

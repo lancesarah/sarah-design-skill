@@ -2685,7 +2685,7 @@ html[data-theme="dark"] :where(.sds) .ticket-resolved .btn-tertiary, html[data-t
   padding: var(--space-12) calc(var(--space-12) + 28px) var(--space-12) var(--space-12);
   border-radius: var(--radius-card);
   background: var(--white);
-  box-shadow: var(--stroke-card), 0 6px 8px -4px rgb(0 0 0 / 16%);
+  box-shadow: var(--stroke-card), var(--shadow-card);
 }
 
 :where(.sds) .ticket-overview.is-set, :where(.sds).ticket-overview.is-set {
@@ -2728,9 +2728,6 @@ html[data-theme="dark"] :where(.sds) .ticket-resolved .btn-tertiary, html[data-t
   -webkit-line-clamp: 2;
 }
 
-html[data-theme="dark"] :where(.sds) .ticket-overview, html[data-theme="dark"] :where(.sds).ticket-overview {
-  box-shadow: var(--stroke-card), 0 6px 8px -4px rgb(0 0 0 / 50%);
-}
 
 @media (prefers-reduced-motion: reduce) {
   :where(.sds) .typing-dots span, :where(.sds).typing-dots span { animation: none; }
@@ -3221,16 +3218,13 @@ html[data-theme="dark"] :where(.sds) .segmented .slide-pill, html[data-theme="da
 :where(.sds) .settings-card-destructive .settings-row-leading > .i, :where(.sds).settings-card-destructive .settings-row-leading > .i { color: var(--destructive); }
 
 /* Time picker shares the line field and overlay menu surfaces. */
-:where(.sds) .time-picker, :where(.sds).time-picker { min-width: 0; width: 100%; }
-:where(.sds) .time-picker-field, :where(.sds).time-picker-field { box-sizing: border-box; display: flex; align-items: center; gap: var(--space-8); }
-:where(.sds) .time-picker-field > .i, :where(.sds).time-picker-field > .i { flex-shrink: 0; color: var(--text-muted); }
-:where(.sds) .time-picker-field:focus-within, :where(.sds).time-picker-field:focus-within { box-shadow: 0 0 0 1px var(--black-25); }
-:where(.sds) .time-picker-field input, :where(.sds).time-picker-field input { border: 0; outline: none; padding: 0; width: 100%; min-width: 0; background: transparent; color: inherit; font: inherit; font-variant-numeric: var(--numeric); }
-:where(.sds) .time-picker-trigger, :where(.sds).time-picker-trigger { display: flex; align-items: center; justify-content: center; align-self: stretch; border: 0; background: transparent; color: var(--text-muted); padding: 0; cursor: pointer; }
-:where(.sds) .time-picker-trigger:focus-visible, :where(.sds).time-picker-trigger:focus-visible { outline: 2px solid var(--action); border-radius: var(--radius-control); }
-:where(.sds) .time-picker-field[data-disabled], :where(.sds).time-picker-field[data-disabled] { opacity: .5; }
-:where(.sds) .time-picker-menu, :where(.sds).time-picker-menu { max-height: 256px; overflow-y: auto; }
-:where(.sds) .time-picker-error, :where(.sds).time-picker-error { color: var(--destructive); font-size: var(--text-12); line-height: 16px; }
+:where(.sds) .split-time, :where(.sds).split-time { display: inline-flex; align-items: center; flex: none; width: fit-content; gap: var(--space-8); }
+:where(.sds) .split-time-part, :where(.sds).split-time-part { position: relative; display: inline-flex; align-items: center; }
+:where(.sds) .split-time-part select, :where(.sds).split-time-part select { appearance: none; height: 30px; padding: 0 var(--space-25) 0 var(--space-8); border: 1px solid var(--line-card); border-radius: var(--radius-control); background: var(--white); color: var(--black); font: inherit; font-variant-numeric: tabular-nums; cursor: pointer; }
+:where(.sds) .split-time-part > svg, :where(.sds).split-time-part > svg { position: absolute; right: var(--space-8); pointer-events: none; color: var(--text-muted); }
+:where(.sds) .split-time-part select:focus-visible, :where(.sds).split-time-part select:focus-visible { outline: 2px solid var(--action); outline-offset: 0; }
+:where(.sds) .split-time-part select:disabled, :where(.sds).split-time-part select:disabled { opacity: .5; cursor: default; }
+:where(.sds) .split-time[aria-invalid="true"] select, :where(.sds).split-time[aria-invalid="true"] select { border-color: var(--destructive); }
 
 /* Info help has one placement: above the icon, including inside cards. */
 :where(.sds) .info-tooltip, :where(.sds).info-tooltip { display: inline-flex; align-items: center; color: var(--text-muted); vertical-align: middle; }

@@ -1,7 +1,6 @@
 "use client";
 
 import { LineField } from "./text-entry";
-
 import type { ComponentProps } from "react";
 import { Button, Icon } from "@lance-live/sds";
 import "@lance-live/sds/add-option.css";
@@ -46,7 +45,6 @@ export function AddOptionField({
   return (
     <div className={["sds add-option-field", className].filter(Boolean).join(" ")}>
       <LineField
-        className="sds line"
         type="text"
         aria-label={label}
         placeholder={placeholder}

@@ -8,5 +8,6 @@ export default defineConfig({
   dts: true,
   sourcemap: true,
   clean: false,
+  splitting: false,
   external: ["react", "react-dom", "@lance-live/sds"],
 });

@@ -6,7 +6,13 @@ import { DocPage, Example } from "./docs-example";
 import { LanguageSelect } from "@lance-live/sds/language-select";
 import { LineField, TextWell } from "@lance-live/sds/text-entry";
 import { FileDropZone } from "@lance-live/sds/file-drop-zone";
+import { SettingsSwitch } from "@lance-live/sds/settings-switch";
 import { AddOptionField } from "@lance-live/sds/add-option";
+
+function SettingsSwitchExample() {
+  const [checked, setChecked] = useState(false);
+  return <SettingsSwitch label="Email alerts" checked={checked} onCheckedChange={setChecked} />;
+}
 
 function AddOptionExample() {
   const [value, setValue] = useState("");
@@ -181,6 +187,12 @@ export function Specimens({ page }: { page: string }) {
       <Example id="settings-stacked" title="Area heading, subsections, and stacked controls" description="The larger described heading introduces the whole settings area. Smaller section headers label subsections; stacked rows put controls below their labels." code={'<SectionHeader variant="described" title="Appearance" description="Choose how Lance looks for you." />\n<SectionHeader level={3} title="Display preferences" icon="tune" />\n<SettingsCard label="Appearance">\n  <SettingsRow layout="stacked" label="Theme" description="Applies in this browser.">\n    {themeControls}\n  </SettingsRow>\n</SettingsCard>'}>
         <StackedSettingsExample />
       </Example>
+      <Example id="text-entry" title="Text entry" description="Use a line field for a short value and a text well for longer instructions." code={'import { LineField, TextWell } from "@lance-live/sds/text-entry";'}>
+        <div style={{ display: "grid", gap: "var(--space-16)" }}>
+          <label>Name<LineField placeholder="Front desk" /></label>
+          <label>Instructions<TextWell rows={3} placeholder="Add instructions…" /></label>
+        </div>
+      </Example>
       <Example id="add-option-field" title="Add option field" description="A controlled line field and labeled Add button. Enter adds once, and blank input disables Add. The consumer owns duplicate checks and saving." code={'import { AddOptionField } from "@lance-live/sds/add-option";\n\n<AddOptionField label="New option" placeholder="Add an option…" value={value} onValueChange={setValue} onAdd={addOption} addLabel="Add" />'}>
         <AddOptionExample />
       </Example>
@@ -235,6 +247,9 @@ export function SaveLater() {
   if (page === "switch") {
     return (
       <DocPage title="Switch" description="A switch turns one setting on or off. The label says what it sets. On is the one blue.">
+        <Example id="settings-switch" title="Settings switch" description="A named on/off preference. Use SettingsToggleRow when the whole row should activate it." code={'<SettingsSwitch label="Email alerts" checked={enabled} onCheckedChange={setEnabled} />'}>
+          <SettingsSwitchExample />
+        </Example>
         <Example id="switch-example" title="Default" description="Dark mode. This one switches the gallery." code={`import { ThemeSwitch } from "@lance-live/sds";
 
 export function DarkMode() {

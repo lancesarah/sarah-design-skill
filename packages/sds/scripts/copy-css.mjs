@@ -2,6 +2,7 @@ import { copyFileSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 
 mkdirSync("dist", { recursive: true });
 copyFileSync("../../css/tokens.css", "dist/tokens.css");
+copyFileSync("../../css/language-select.css", "dist/language-select.css");
 copyFileSync("../../css/file-drop-zone.css", "dist/file-drop-zone.css");
 copyFileSync("../../css/add-option.css", "dist/add-option.css");
 copyFileSync("src/styles/screens.css", "dist/screens.css");

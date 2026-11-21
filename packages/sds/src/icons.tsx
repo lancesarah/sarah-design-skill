@@ -300,6 +300,18 @@ export const icons = {
   "eye-off": {
     "viewBox": "0 0 14 14",
     "body": "<g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" style=\"stroke-width: var(--icon-stroke)\"><path d=\"M1.5 7S3.5 3 7 3s5.5 4 5.5 4-2 4-5.5 4S1.5 7 1.5 7Z\"/><circle cx=\"7\" cy=\"7\" r=\"1.7\"/><path d=\"M2 2l10 10\"/></g>"
+  },
+  "box": {
+    "viewBox": "0 0 14 14",
+    "body": "<g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" style=\"stroke-width: var(--icon-stroke)\"><path d=\"M7 1.5 12 4.3v5.4L7 12.5l-5-2.8V4.3L7 1.5ZM2 4.3 7 7l5-2.7M7 7v5.5\"/></g>"
+  },
+  "building": {
+    "viewBox": "0 0 14 14",
+    "body": "<g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" style=\"stroke-width: var(--icon-stroke)\"><path d=\"M2 12.5h10M3 12.5V2h6v10.5M9 6h2.5v6.5M5 4.5h2M5 7h2M5.5 12v-2h1.5v2\"/></g>"
+  },
+  "briefcase": {
+    "viewBox": "0 0 14 14",
+    "body": "<g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" style=\"stroke-width: var(--icon-stroke)\"><path d=\"M5 4V2.5h4V4M2.5 4h9a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1h-9a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1ZM1.5 7.2Q7 10 12.5 7.2M7 8.4v1\"/></g>"
   }
 } as const;
 

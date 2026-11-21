@@ -542,7 +542,7 @@ html[data-theme="dark"] .board-fact { background: var(--grey); }
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, transparent 25%, rgb(255 255 255 / 28%) 50%, transparent 75%);
+  background: linear-gradient(90deg, transparent 25%, color-mix(in srgb, var(--on-image) 28%, transparent) 50%, transparent 75%);
   animation: board-sk-shimmer 640ms linear backwards;
   animation-delay: calc(180ms + min(var(--sk-i, 0), 5) * 36ms);
 }
@@ -1434,7 +1434,6 @@ html[data-theme="dark"] .board-limits-table tr[data-selected] { background: var(
 .board-inspection-check.settings-row { justify-content: flex-start; gap: var(--space-8); cursor: pointer; }
 
 
-.board-upload-drop,
 .board-upload-files li {
   display: flex;
   align-items: center;
@@ -1444,9 +1443,6 @@ html[data-theme="dark"] .board-limits-table tr[data-selected] { background: var(
   border-radius: var(--radius-control);
 }
 
-.board-upload-drop { width: 100%; background: var(--white); border: 1px dashed var(--black-25); color: var(--black); font: inherit; text-align: left; cursor: pointer; }
-.board-upload-drop:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)), .board-upload-drop[data-dragging] { background: var(--surface-hover); }
-.board-upload-drop > .i { flex-shrink: 0; color: var(--text-muted); }
 .board-upload-help { display: block; margin-top: var(--space-4); color: var(--text-muted); font-size: var(--text-12); }
 .board-upload-files {
   display: grid;

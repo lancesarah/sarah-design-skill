@@ -1,9 +1,9 @@
 "use client";
 
+import { LineField } from "../text-entry";
 import { useId, type ReactNode, type InputHTMLAttributes } from "react";
 import { Icon, type IconName } from "../icons";
 import { SettingsSwitch } from "../settings-switch";
-import { LineField } from "../text-entry";
 import { activateSettingsRow } from "../settings-row-interaction";
 import { Menu, type MenuProps } from "./Menu";
 

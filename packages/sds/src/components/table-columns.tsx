@@ -6,7 +6,8 @@ import { type DataColumn, type DataTextDisplay, type DataTextSize } from "./Data
 import { DEPARTMENTS, DepartmentChip } from "./DepartmentChip";
 import { Status, Urgency } from "./Feedback";
 import { OverlayMenu } from "./OverlayMenu";
-import { Person } from "./People";
+import { Avatar, Person } from "./People";
+import { Menu } from "./Menu";
 
 /** Chip label sits this far inside the chip. Headers line up with the label, not the chip edge. */
 export const CHIP_LABEL_INSET = 4;
@@ -403,6 +404,7 @@ export function TypeCell({
 }
 
 export type AssigneePerson = {
+  photo?: string;
   name: string;
   avatar: string;
   fullName: string;
@@ -522,7 +524,7 @@ function AssigneeChoices({
             person.name,
             person.name === current,
             () => onPick(person.name),
-            <Person name={person.name} initials={person.avatar} variant="pill" />,
+            <Person name={person.fullName || person.name} initials={person.avatar} photo={person.photo} variant="pill" />,
           ),
         ),
       ]}
@@ -530,15 +532,7 @@ function AssigneeChoices({
   );
 }
 
-export function AssignedDropdown({
-  people = ASSIGNEE_PEOPLE,
-  value = UNASSIGNED,
-  initials,
-  isOpen,
-  onSelect,
-  onOpenChange,
-  style,
-}: {
+type AssignedDropdownProps = {
   people?: readonly AssigneePerson[];
   value?: string;
   /** Initials for a value that is not already in people. */
@@ -547,7 +541,64 @@ export function AssignedDropdown({
   onSelect?: (value: string) => void;
   onOpenChange?: (isOpen: boolean) => void;
   style?: CSSProperties;
-}) {
+};
+
+/** Form selector. The table keeps its compact trigger through TaskAssignee. */
+export function AssignedDropdown({
+  people = ASSIGNEE_PEOPLE, value = UNASSIGNED, initials, isOpen, onSelect, onOpenChange, style,
+}: AssignedDropdownProps) {
+  const [current, setCurrent] = useState(value);
+  const [localOpen, setLocalOpen] = useState(false);
+  const host = useRef<HTMLDivElement>(null);
+  useEffect(() => { setCurrent(value); }, [value]);
+  const roster = assigneeRoster(current, initials, people);
+  const open = isOpen ?? localOpen;
+  const setOpen = (next: boolean) => {
+    if (isOpen === undefined) setLocalOpen(next);
+    onOpenChange?.(next);
+  };
+  const items = [
+    {
+      value: UNASSIGNED,
+      label: "Unassigned",
+      content: <Person name="Unassigned" variant="unassigned" />,
+      triggerContent: <><Avatar size="mini" empty /><span className="dim">Unassigned</span></>,
+    },
+    ...roster.map(person => {
+      const label = person.fullName || person.name;
+      return {
+        value: person.name,
+        label,
+        content: <Person name={label} photo={person.photo} initials={person.avatar} variant="pill" />,
+        triggerContent: <><Avatar size="mini" photo={person.photo} initials={person.avatar} /><span>{label}</span></>,
+      };
+    }),
+  ];
+  return (
+    <div ref={host} style={style} onKeyDown={event => {
+      if (open && event.key === "Escape") {
+        event.stopPropagation();
+        setOpen(false);
+        host.current?.querySelector<HTMLButtonElement>(".trigger")?.focus();
+      }
+    }}>
+      <Menu searchable open={open} onOpenChange={setOpen} value={isUnassigned(current) ? UNASSIGNED : current}
+        items={items} placeholderIcon={null}
+        onValueChange={next => { setCurrent(next); onSelect?.(next); }}
+      />
+    </div>
+  );
+}
+
+function CompactAssigneeDropdown({
+  people = ASSIGNEE_PEOPLE,
+  value = UNASSIGNED,
+  initials,
+  isOpen,
+  onSelect,
+  onOpenChange,
+  style,
+}: AssignedDropdownProps) {
   const roster = assigneeRoster(value, initials, people);
   const { current, setCurrent, open, setOpen, ref } = useAssigneeChoice(value, isOpen, onOpenChange);
   const empty = isUnassigned(current);
@@ -701,7 +752,7 @@ export function TaskAssignee({
     return <NamedAssignee name={name} initials={initials} people={people} isOpen={isOpen} onSelect={onSelect} onOpenChange={onOpenChange} style={style} />;
   }
   return (
-    <AssignedDropdown
+    <CompactAssigneeDropdown
       people={people}
       value={name || UNASSIGNED}
       initials={initials}

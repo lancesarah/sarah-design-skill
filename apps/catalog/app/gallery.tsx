@@ -731,10 +731,10 @@ export function Assignee() {
         code={`import { AssignedDropdown } from "@lance-live/sds";
 
 export function Assigned() {
-  return <AssignedDropdown value="Mark" initials="MJ" />;
+  return <AssignedDropdown value="sarah" people={[{ name: "sarah", fullName: "Sarah Mou", avatar: "SM", photo: "/avatar-sarah.png" }]} />;
 }`}
       >
-        <AssignedDropdown value="Mark" initials="MJ" />
+        <AssignedDropdown value="sarah" people={[{ name: "sarah", fullName: "Sarah Mou", avatar: "SM", photo: "/avatar-sarah.png" }]} />
       </Example>
       <Example
         id="cell-named-assignee"

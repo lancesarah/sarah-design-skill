@@ -73,6 +73,7 @@ export function Avatar({
 export function Person({
   initials = "SM",
   name,
+  photo,
   role,
   title,
   time,
@@ -80,6 +81,7 @@ export function Person({
 }: {
   initials?: string;
   name: string;
+  photo?: string;
   role?: string;
   title?: string;
   time?: string;
@@ -88,7 +90,7 @@ export function Person({
   if (variant === "mini") {
     return (
       <span className="sds mini-line">
-        <Avatar initials={initials} size="mini" />
+        <Avatar initials={initials} photo={photo} size="mini" />
         {name}
       </span>
     );
@@ -96,7 +98,7 @@ export function Person({
   if (variant === "pill" || variant === "unassigned" || variant === "message") {
     const pill = (
       <span className={["sds", "mini-pill", variant === "unassigned" ? "is-empty" : ""].filter(Boolean).join(" ")}>
-        <Avatar initials={initials} size="mini" empty={variant === "unassigned"} />
+        <Avatar initials={initials} photo={variant === "unassigned" ? undefined : photo} size="mini" empty={variant === "unassigned"} />
         {variant === "unassigned" ? "Unassigned" : name}
       </span>
     );
@@ -113,7 +115,7 @@ export function Person({
   }
   return (
     <span className="sds person">
-      <Avatar initials={initials} size={variant === "title" ? "lg" : "md"} />
+      <Avatar initials={initials} photo={photo} size={variant === "title" ? "lg" : "md"} />
       {variant === "name" ? (
         <span>{name}</span>
       ) : (
